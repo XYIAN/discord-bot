@@ -2,6 +2,14 @@
 
 All notable changes to the Arch 2 Addicts Discord Bot project will be documented in this file.
 
+## [0.0.6] - 2024-10-04
+
+### Fixed
+- Welcome message routing - now sends to general chat instead of guild chat
+- Farewell message routing - now sends to general chat instead of guild chat
+- Updated welcome message content for general community audience
+- Improved message tone and information for new community members
+
 ## [0.0.5] - 2024-10-04
 
 ### Added
