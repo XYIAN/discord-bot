@@ -2,6 +2,24 @@
 
 All notable changes to the Arch 2 Addicts Discord Bot project will be documented in this file.
 
+## [0.0.5] - 2024-10-04
+
+### Added
+- Guild Expedition webhook integration
+- Daily expedition messages with strategy tips
+- Expedition-specific commands and functionality
+- Purple-themed expedition messages for visual distinction
+
+### Fixed
+- Webhook URL format issue (discordapp.com → discord.com)
+- All webhook channels now working properly
+
+## [0.0.4] - 2024-10-04
+
+### Fixed
+- Webhook URL format issue (discordapp.com → discord.com)
+- All webhook channels now working properly
+
 ## [0.0.3] - 2024-10-04
 
 ### Added
