@@ -2,6 +2,18 @@
 
 All notable changes to the Arch 2 Addicts Discord Bot project will be documented in this file.
 
+## [0.0.2] - 2024-10-04
+
+### Added
+- Railway deployment configuration
+- Complete environment variable setup for production
+- Railway deployment guide and verification steps
+- Production-ready bot configuration
+
+### Updated
+- Environment variables with all webhook URLs and hosting config
+- Deployment documentation with Railway-specific instructions
+
 ## [0.0.1] - 2024-12-19
 
 ### Added
