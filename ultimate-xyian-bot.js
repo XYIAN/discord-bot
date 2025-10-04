@@ -17,7 +17,8 @@ const webhooks = {
     xyian: process.env.XYIAN_GUILD_WEBHOOK,
     general: process.env.GENERAL_CHAT_WEBHOOK,
     recruit: process.env.GUILD_RECRUIT_WEBHOOK,
-    expedition: process.env.GUILD_EXPEDITION_WEBHOOK
+    expedition: process.env.GUILD_EXPEDITION_WEBHOOK,
+    arena: process.env.GUILD_ARENA_WEBHOOK
 };
 
 // Member activity tracking
@@ -35,7 +36,16 @@ const archeroQA = {
     "how to join guild": "To join XYIAN OFFICIAL guild: 1) Be level 50+ in Archero 2, 2) Have 300k+ power, 3) Be active daily, 4) Complete 2 boss battles per day, 5) Make 1 guild donation per day. Guild ID: 213797",
     "umbral tempest": "Umbral Tempest Event Tips: 1) Use high DPS builds, 2) Focus on area damage skills, 3) Save your ultimate for boss phases, 4) Join with guild members for better rewards, 5) Complete daily event quests for maximum rewards.",
     "best build": "Best build depends on your class: Warrior - Demon Blade + defensive skills, Mage - Staff of Light + magical skills, Archer - Windforce + mobility skills. Focus on synergy between your weapon and chosen skills.",
-    "daily reset": "Daily reset happens at 5:00 PM Pacific Time. Remember to complete your daily quests, boss battles, and guild donations before reset to maximize your rewards!"
+    "daily reset": "Daily reset happens at 5:00 PM Pacific Time. Remember to complete your daily quests, boss battles, and guild donations before reset to maximize your rewards!",
+    "arena": "Arena is a fully automated PvP mode where you select heroes and gear, then AI handles combat. Winning increases ladder points, losses decrease them. Rewards include gold, scrolls, and Arena Exchange Tickets based on your PvP tier and ranking.",
+    "supreme arena": "Supreme Arena is the ultimate PvP challenge requiring perfect hero selection and gear optimization. It's fully automated like regular Arena but with much higher difficulty and better rewards. Only the most skilled players with optimal builds can consistently win.",
+    "arena vs supreme arena": "Both are fully automated PvP modes. Arena is accessible to most players with decent rewards. Supreme Arena is the ultimate challenge with much higher difficulty but offers the best rewards and exclusive items. Both use the same ranking system and seasonal resets.",
+    "arena tips": "Arena Tips: 1) Use Dragoon as your primary hero, 2) Use Griffin only if you have a complete Griffin build, 3) Equip Revive Rune for second chance, 4) Prioritize ranged attack enhancements, 5) Focus on S-tier gear upgrades, 6) Complete daily arena runs, 7) Aim for top 15 in bracket for tier advancement.",
+    "supreme arena tips": "Supreme Arena Tips: 1) Use Dragoon as your primary hero, 2) Use Griffin only if you have a complete Griffin build, 3) Revive Rune is essential, 4) Max level hero with best runes, 5) S-tier equipment only, 6) Multi-shot, Ricochet, Piercing skills, 7) Only top 1% players compete here.",
+    "best arena heroes": "Top Arena Heroes: 1) Dragoon - The absolute best Arena hero, 2) Griffin - Only use if you have a complete Griffin build, 3) Avoid other heroes for competitive Arena. Dragoon is the clear #1 choice for both Arena and Supreme Arena.",
+    "arena runes": "Best Arena Runes: 1) Revive Rune (essential for second chance), 2) Guardian Rune (solid alternative), 3) Flame Knock Touch Rune (good backup). Focus on runes that enhance ranged attacks and survivability.",
+    "arena rewards": "Arena Rewards: Daily rewards based on PvP tier and ranking include gold, scrolls, and Arena Exchange Tickets. Use Arena Exchange Tickets in the Arena Shop for exclusive items. Rankings reset each season with tier advancement opportunities.",
+    "arena ranking": "Arena Ranking: Winning matches increases ladder points, losses decrease them. Stronger opponents yield more points. Aim for top 15 in your bracket by season's end for tier advancement. Rankings reset each season."
 };
 
 // Daily tips database
@@ -50,6 +60,34 @@ const dailyTips = [
     "🛡️ **Defense Tip**: Don't ignore defensive stats - surviving longer often means more damage dealt overall!",
     "🎮 **General Tip**: Take breaks between long sessions - fresh eyes spot opportunities you might miss when tired!",
     "🌟 **Advanced Tip**: Master the art of kiting - keeping enemies at optimal range maximizes your damage while minimizing theirs!"
+];
+
+// Arena tips database (research-based)
+const arenaTips = [
+    "🏟️ **Arena Hero Selection**: Dragoon is the top Arena hero! Use Griffin only if you have a complete Griffin build!",
+    "⚔️ **Arena Automation**: Arena battles are fully automated - select your best hero and gear, then let AI handle combat!",
+    "🎯 **Arena Runes**: Equip the Revive Rune for a second chance! Guardian or Flame Knock Touch are solid alternatives!",
+    "💪 **Arena Ranking**: Winning increases ladder points, losses decrease them. Stronger foes yield more points!",
+    "🔥 **Arena Rewards**: Based on PvP tier and ranking - earn gold, scrolls, and Arena Exchange Tickets daily!",
+    "⚡ **Arena Strategy**: Prioritize ranged attack enhancements - projectiles perform best in PvP scenarios!",
+    "🛡️ **Arena Heroes**: Dragoon is #1, Griffin is #2 but only with full build. Avoid other heroes for competitive Arena!",
+    "🌟 **Arena Daily**: Complete daily arena runs for consistent rewards and seasonal progression!",
+    "💎 **Arena Shop**: Use Arena Exchange Tickets in the Arena Shop for exclusive items and upgrades!",
+    "🏆 **Arena Seasons**: Rankings reset each season - aim for top 15 in your bracket for tier advancement!"
+];
+
+// Supreme Arena tips database (research-based)
+const supremeArenaTips = [
+    "👑 **Supreme Arena**: The ultimate PvP challenge requiring perfect hero selection and gear optimization!",
+    "⚔️ **Supreme Heroes**: Dragoon is the absolute best for Supreme Arena! Griffin only if you have complete build!",
+    "🎯 **Supreme Runes**: Revive Rune is essential - gives you a second chance in the most challenging battles!",
+    "💪 **Supreme Gear**: Focus on S-tier equipment upgrades - avoid using them as upgrade material!",
+    "🔥 **Supreme Skills**: Prioritize Multi-shot, Ricochet, and Piercing for maximum projectile efficiency!",
+    "⚡ **Supreme Strategy**: Supreme Arena is fully automated - your preparation and gear selection matter most!",
+    "🛡️ **Supreme Rewards**: Supreme Arena offers the highest tier rewards and exclusive items!",
+    "🌟 **Supreme Ranking**: Only the most skilled players with optimal builds can consistently win!",
+    "💎 **Supreme Preparation**: Ensure your hero is max level with best possible runes and equipment!",
+    "🏆 **Supreme Elite**: This is where the top 1% of players compete - bring your absolute best!"
 ];
 
 // Umbral Tempest strategies
@@ -146,6 +184,9 @@ async function sendDailyMessages() {
     // Send expedition message
     await sendExpeditionMessage();
     
+    // Send arena tip
+    await sendArenaTip();
+    
     console.log('✅ Daily messages sent!');
 }
 
@@ -236,6 +277,21 @@ async function sendExpeditionMessage() {
     await sendToExpedition({ embeds: [embed] });
 }
 
+// Send arena tip
+async function sendArenaTip() {
+    const arenaTip = arenaTips[Math.floor(Math.random() * arenaTips.length)];
+    const supremeTip = supremeArenaTips[Math.floor(Math.random() * supremeArenaTips.length)];
+    
+    const embed = new EmbedBuilder()
+        .setTitle('🏟️ Daily Arena Tips')
+        .setDescription(`**Arena & Supreme Arena Strategies**\n\n${arenaTip}\n\n${supremeTip}\n\n💪 **Key Differences:**\n• **Arena**: Focus on speed and efficiency\n• **Supreme Arena**: Ultimate challenge requiring perfect execution\n• **Rewards**: Supreme Arena offers the best rewards\n• **Strategy**: Both require high DPS and optimal positioning`)
+        .setColor(0xFF4500) // Orange for arena
+        .setTimestamp()
+        .setFooter({ text: 'XYIAN OFFICIAL - Arena Tips' });
+
+    await sendToArena({ embeds: [embed] });
+}
+
 // Webhook sending functions
 async function sendToXYIAN(content) {
     if (!webhooks.xyian) return;
@@ -278,6 +334,17 @@ async function sendToExpedition(content) {
         await webhook.send(content);
     } catch (error) {
         console.error('❌ Failed to send expedition message:', error.message);
+    }
+}
+
+async function sendToArena(content) {
+    if (!webhooks.arena) return;
+    
+    try {
+        const webhook = new WebhookClient({ url: webhooks.arena });
+        await webhook.send(content);
+    } catch (error) {
+        console.error('❌ Failed to send arena message:', error.message);
     }
 }
 
@@ -336,6 +403,11 @@ client.on('messageCreate', async (message) => {
             case 'expedition':
                 await sendExpeditionMessage();
                 await message.reply('🏰 Guild expedition message sent!');
+                break;
+                
+            case 'arena':
+                await sendArenaTip();
+                await message.reply('🏟️ Arena tips sent!');
                 break;
                 
             // XYIAN Guild Commands (require XYIAN OFFICIAL role)
@@ -486,7 +558,7 @@ client.on('messageCreate', async (message) => {
             case 'help':
                 const generalHelpEmbed = new EmbedBuilder()
                     .setTitle('🤖 XYIAN Ultimate Bot Commands')
-                    .setDescription('**General Commands:**\n`!ping` - Check bot status\n`!tip` - Send daily tip\n`!recruit` - Send recruitment\n`!expedition` - Send expedition message\n`!test` - Send test messages\n`!reset` - Send reset messages\n`!help` - This help\n\n**XYIAN Commands (XYIAN OFFICIAL role required):**\n`!xyian help` - XYIAN command list\n\n**Q&A System:**\nAsk any Archero 2 question naturally!')
+                    .setDescription('**General Commands:**\n`!ping` - Check bot status\n`!tip` - Send daily tip\n`!recruit` - Send recruitment\n`!expedition` - Send expedition message\n`!arena` - Send arena tips\n`!test` - Send test messages\n`!reset` - Send reset messages\n`!help` - This help\n\n**XYIAN Commands (XYIAN OFFICIAL role required):**\n`!xyian help` - XYIAN command list\n\n**Q&A System:**\nAsk any Archero 2 question naturally!\n\n**Arena Questions:**\n`arena`, `supreme arena`, `best arena heroes`, `arena runes`, `arena rewards`')
                     .setColor(0x00BFFF)
                     .setTimestamp()
                     .setFooter({ text: 'XYIAN OFFICIAL' });
