@@ -2,9 +2,9 @@
   "name": "arch2-discord-bot",
   "version": "0.0.1",
   "description": "Discord bot for Arch 2 Addicts community with XYIAN guild integration",
-  "main": "daily-messaging-bot.js",
+  "main": "ultimate-xyian-bot.js",
   "scripts": {
-    "start": "node daily-messaging-bot.js",
+    "start": "node ultimate-xyian-bot.js",
     "dev": "ts-node --esm src/index.ts",
     "build": "tsc",
     "build:watch": "tsc --watch",
