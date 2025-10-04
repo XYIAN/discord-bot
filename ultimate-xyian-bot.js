@@ -16,7 +16,8 @@ const client = new Client({
 const webhooks = {
     xyian: process.env.XYIAN_GUILD_WEBHOOK,
     general: process.env.GENERAL_CHAT_WEBHOOK,
-    recruit: process.env.GUILD_RECRUIT_WEBHOOK
+    recruit: process.env.GUILD_RECRUIT_WEBHOOK,
+    expedition: process.env.GUILD_EXPEDITION_WEBHOOK
 };
 
 // Member activity tracking
@@ -142,6 +143,9 @@ async function sendDailyMessages() {
     // Send guild recruitment
     await sendGuildRecruitment();
     
+    // Send expedition message
+    await sendExpeditionMessage();
+    
     console.log('✅ Daily messages sent!');
 }
 
@@ -220,6 +224,18 @@ async function sendGeneralWelcome() {
     await sendToGeneral({ embeds: [embed] });
 }
 
+// Send guild expedition message
+async function sendExpeditionMessage() {
+    const embed = new EmbedBuilder()
+        .setTitle('🏰 XYIAN Guild Expedition')
+        .setDescription('**Ready for another day of conquest and glory!**\n\n⚔️ **Expedition Focus:**\n• Complete daily expedition challenges\n• Maximize guild contribution points\n• Unlock rare rewards and materials\n• Support your fellow guild members\n\n🎯 **Today\'s Strategy:**\n• Focus on high-value targets\n• Coordinate with guild members\n• Use optimal builds for each stage\n• Share discoveries and tips\n\n💪 **Let\'s show everyone why XYIAN is the best!**')
+        .setColor(0x8A2BE2) // Purple for expedition
+        .setTimestamp()
+        .setFooter({ text: 'XYIAN OFFICIAL - Guild Expedition' });
+
+    await sendToExpedition({ embeds: [embed] });
+}
+
 // Webhook sending functions
 async function sendToXYIAN(content) {
     if (!webhooks.xyian) return;
@@ -251,6 +267,17 @@ async function sendToRecruit(content) {
         await webhook.send(content);
     } catch (error) {
         console.error('❌ Failed to send recruitment message:', error.message);
+    }
+}
+
+async function sendToExpedition(content) {
+    if (!webhooks.expedition) return;
+    
+    try {
+        const webhook = new WebhookClient({ url: webhooks.expedition });
+        await webhook.send(content);
+    } catch (error) {
+        console.error('❌ Failed to send expedition message:', error.message);
     }
 }
 
@@ -304,6 +331,11 @@ client.on('messageCreate', async (message) => {
             case 'reset':
                 await sendDailyResetMessages();
                 await message.reply('🔄 Reset messages sent!');
+                break;
+                
+            case 'expedition':
+                await sendExpeditionMessage();
+                await message.reply('🏰 Guild expedition message sent!');
                 break;
                 
             // XYIAN Guild Commands (require XYIAN OFFICIAL role)
@@ -454,7 +486,7 @@ client.on('messageCreate', async (message) => {
             case 'help':
                 const generalHelpEmbed = new EmbedBuilder()
                     .setTitle('🤖 XYIAN Ultimate Bot Commands')
-                    .setDescription('**General Commands:**\n`!ping` - Check bot status\n`!tip` - Send daily tip\n`!recruit` - Send recruitment\n`!test` - Send test messages\n`!reset` - Send reset messages\n`!help` - This help\n\n**XYIAN Commands (XYIAN OFFICIAL role required):**\n`!xyian help` - XYIAN command list\n\n**Q&A System:**\nAsk any Archero 2 question naturally!')
+                    .setDescription('**General Commands:**\n`!ping` - Check bot status\n`!tip` - Send daily tip\n`!recruit` - Send recruitment\n`!expedition` - Send expedition message\n`!test` - Send test messages\n`!reset` - Send reset messages\n`!help` - This help\n\n**XYIAN Commands (XYIAN OFFICIAL role required):**\n`!xyian help` - XYIAN command list\n\n**Q&A System:**\nAsk any Archero 2 question naturally!')
                     .setColor(0x00BFFF)
                     .setTimestamp()
                     .setFooter({ text: 'XYIAN OFFICIAL' });
