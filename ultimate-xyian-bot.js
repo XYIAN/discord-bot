@@ -527,22 +527,23 @@ client.on('messageCreate', async (message) => {
 client.on('guildMemberAdd', async (member) => {
     console.log(`👋 New member joined: ${member.user.username}`);
     
-    // Send welcome message
+    // Send welcome message to GENERAL CHAT (not guild chat)
     const welcomeEmbed = new EmbedBuilder()
-        .setTitle('🏰 Welcome to XYIAN OFFICIAL')
-        .setDescription(`Welcome ${member} to the elite XYIAN guild - the premier Arch 2 Addicts community.`)
-        .setColor(0xffd700)
+        .setTitle('🎉 Welcome to Arch 2 Addicts!')
+        .setDescription(`Welcome ${member} to the Arch 2 Addicts community - your premier destination for Archero 2 discussion and strategy!`)
+        .setColor(0x00ff88)
         .addFields(
-            { name: 'Daily Requirements', value: '• Complete 2 Boss Battles\n• Make 1 Guild Donation\n• Maintain active participation', inline: false },
-            { name: 'Management Commands', value: 'Use `!help` to view all available commands', inline: false },
-            { name: 'Game Assistance', value: 'Ask any Arch 2 related questions for instant answers', inline: false }
+            { name: 'Community Features', value: '• Daily tips and strategies\n• Guild recruitment opportunities\n• Expert Q&A system\n• Event discussions and guides', inline: false },
+            { name: 'Getting Started', value: 'Use `!help` to view all available commands\nAsk any Archero 2 question for instant answers', inline: false },
+            { name: 'Join Our Guild', value: 'Looking for a guild? Check out XYIAN OFFICIAL!\nGuild ID: 213797', inline: false }
         )
         .setThumbnail(member.user.displayAvatarURL())
-        .setTimestamp();
+        .setTimestamp()
+        .setFooter({ text: 'Arch 2 Addicts Community' });
     
-    await sendToXYIAN({ embeds: [welcomeEmbed] });
+    await sendToGeneral({ embeds: [welcomeEmbed] });
     
-    // Assign XYIAN OFFICIAL role if it exists
+    // Assign XYIAN OFFICIAL role if it exists (for guild members)
     const xyianRole = member.guild.roles.cache.find(role => role.name === 'XYIAN OFFICIAL');
     if (xyianRole) {
         await member.roles.add(xyianRole);
@@ -559,15 +560,15 @@ client.on('guildMemberRemove', async (member) => {
     // Remove from activity tracking
     memberActivity.delete(member.id);
     
-    // Send farewell message
+    // Send farewell message to GENERAL CHAT (not guild chat)
     const farewellEmbed = new EmbedBuilder()
-        .setTitle('👋 Member Left XYIAN')
-        .setDescription(`${member.user.username} has left the guild.`)
+        .setTitle('👋 Member Left Arch 2 Addicts')
+        .setDescription(`${member.user.username} has left the community.`)
         .setColor(0xff6b6b)
         .setTimestamp()
-        .setFooter({ text: 'XYIAN OFFICIAL' });
+        .setFooter({ text: 'Arch 2 Addicts Community' });
     
-    await sendToXYIAN({ embeds: [farewellEmbed] });
+    await sendToGeneral({ embeds: [farewellEmbed] });
 });
 
 // Error handling
