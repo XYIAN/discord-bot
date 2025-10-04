@@ -2,6 +2,28 @@
 
 All notable changes to the Arch 2 Addicts Discord Bot project will be documented in this file.
 
+## [0.0.3] - 2024-10-04
+
+### Added
+- Ultimate XYIAN Bot with comprehensive feature set
+- Daily reset messaging at 5pm Pacific Time
+- Complete XYIAN guild command system
+- Advanced Q&A system for Archero 2 questions
+- Guild and general channel reset messages
+- Member activity tracking and management
+- Welcome/farewell message system
+- Role-based command access (XYIAN OFFICIAL)
+
+### Features
+- Daily messaging system (tips, recruitment, events)
+- Daily reset notifications (5pm Pacific)
+- XYIAN guild commands (!xyian info, !xyian members, etc.)
+- Natural language Q&A system
+- Weapon, skill, and build recommendations
+- Guild management and statistics
+- Event reminders and strategies
+- Umbral Tempest event support
+
 ## [0.0.2] - 2024-10-04
 
 ### Added
