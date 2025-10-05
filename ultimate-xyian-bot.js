@@ -355,12 +355,12 @@ function loadKnowledgeDatabase() {
             // Flatten the categorized data into a flat key-value structure
             archeroDatabase = {};
             
-            // Process each category and flatten the data
-            const categories = ['gameInfo', 'weapons', 'characters', 'mechanics', 'events', 'guild', 'artifacts', 'statistics'];
+            // Process all categories from the unified knowledge system
+            const categories = ['theorycrafting', 'discordChannels', 'wikiPages', 'forumThreads', 'gameInfo', 'weapons', 'characters', 'mechanics', 'events', 'guild', 'artifacts', 'statistics'];
             categories.forEach(category => {
-                if (data[category]) {
-                    Object.keys(data[category]).forEach(key => {
-                        const entry = data[category][key];
+                if (data.categories && data.categories[category]) {
+                    Object.keys(data.categories[category]).forEach(key => {
+                        const entry = data.categories[category][key];
                         if (entry && entry.content) {
                             // Create meaningful keys from the content
                             const keywords = entry.keywords || [];
@@ -380,7 +380,9 @@ function loadKnowledgeDatabase() {
                 }
             });
             
-            console.log(`✅ Loaded knowledge database with ${Object.keys(archeroDatabase).length} entries`);
+            console.log(`✅ Loaded unified knowledge database with ${Object.keys(archeroDatabase).length} entries`);
+            console.log(`📊 Total sources: ${data.sources ? data.sources.length : 0}`);
+            console.log(`📊 Total entries: ${data.totalEntries || 0}`);
         } else {
             console.log('⚠️ Knowledge database not found, using empty database');
             archeroDatabase = {};
