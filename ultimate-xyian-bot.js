@@ -267,7 +267,8 @@ function loadAnalytics() {
 loadAnalytics();
 
 // Start API server
-const apiServer = require('./api-server');
+const startApiServer = require('./api-server');
+startApiServer();
 
 // Helper function to add reaction feedback to responses
 async function addReactionFeedback(response) {
@@ -1924,7 +1925,8 @@ client.on('guildMemberAdd', async (member) => {
             .addFields(
                 { name: 'Community Features', value: '• Daily tips and strategies\n• Guild recruitment opportunities\n• Expert Q&A system\n• Event discussions and guides', inline: false },
                 { name: 'Getting Started', value: 'Use `!help` to view all available commands\nAsk any Archero 2 question for instant answers', inline: false },
-                { name: 'Join Our Guild', value: 'Looking for a guild? Check out XYIAN OFFICIAL!\nGuild ID: 213797', inline: false }
+                { name: 'Join Our Guild', value: 'Looking for a guild? Check out XYIAN OFFICIAL!\nGuild ID: 213797', inline: false },
+                { name: '🤖 AI-Powered Help', value: 'Check out the **Archero AI** channel for advanced build analysis and personalized strategies!', inline: false }
             )
             .setThumbnail(member.user.displayAvatarURL())
             .setTimestamp()
