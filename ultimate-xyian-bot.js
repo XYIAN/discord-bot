@@ -1419,6 +1419,18 @@ client.on('messageCreate', async (message) => {
     // Debug logging to track duplicate responses
     console.log(`🔍 Message received: ${message.content} from ${message.author.username} in ${message.channel.name} - VERSION 2.0`);
     
+    // ==================== CRITICAL GATE: DECIDE IF WE SHOULD RESPOND ====================
+    const isCommand = message.content.startsWith('!') || message.content.startsWith('/');
+    const isDM = message.channel.type === 1;
+    const isAIChannel = ['bot-questions', 'bot-questions-advanced', 'archero-ai'].includes(message.channel.name);
+    
+    // If it's NOT a command, NOT a DM, and NOT in AI channel -> IGNORE
+    if (!isCommand && !isDM && !isAIChannel) {
+        console.log(`⏭️ IGNORING: Not a command, not DM, not AI channel (${message.channel.name})`);
+        return;
+    }
+    // ==================== END GATE ====================
+    
     // Handle Direct Messages
     if (message.channel.type === 1) { // DM channel
         console.log(`💬 DM from ${message.author.username} (ID: ${message.author.id}): ${message.content}`);
