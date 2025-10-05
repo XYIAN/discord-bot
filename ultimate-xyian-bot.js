@@ -407,6 +407,10 @@ function loadKnowledgeDatabase() {
 // Load knowledge database on startup
 loadKnowledgeDatabase();
 
+// AI Response Toggle - Controls whether bot responds to AI questions
+let aiResponseEnabled = true;
+const AI_QUESTIONS_CHANNEL_ID = '1424322391160393790'; // Channel ID from the webhook URL
+
 // Start API server
 const startApiServer = require('./services/api-server');
 startApiServer();
@@ -465,7 +469,7 @@ async function sendPersonalizedOnboarding(member) {
             .addFields(
                 { 
                     name: '🎮 Available Commands', 
-                    value: '• `!ping` - Check if I\'m online\n• `!help` - See all commands\n• `!menu` - Public question menu\n• `!xyian info` - Guild information (requires role)\n• `!tip` - Daily Archero 2 tips (requires role)\n• `!discord-bot-clean` - Admin cleanup (XYIAN OFFICIAL only)', 
+                    value: '• `!ping` - Check if I\'m online\n• `!help` - See all commands\n• `!menu` - Public question menu\n• `!xyian info` - Guild information (requires role)\n• `!tip` - Daily Archero 2 tips (requires role)\n• `!discord-bot-clean` - Admin cleanup (XYIAN OFFICIAL only)\n• `!ai-toggle` - Toggle AI responses (XYIAN OFFICIAL only)', 
                     inline: false 
                 },
                 { 
@@ -1758,7 +1762,10 @@ client.on('messageCreate', async (message) => {
     // ==================== CRITICAL GATE: ONLY AI CHANNELS GET LIVE RESPONSES ====================
     const isCommand = message.content.startsWith('!') || message.content.startsWith('/');
     const isDM = message.channel.type === 1;
-    const isAIChannel = ['bot-questions', 'bot-questions-advanced', 'archero-ai'].includes(message.channel.name);
+    
+    // Check if this is the specific AI questions channel (by ID for security)
+    const isAIChannel = message.channel.id === AI_QUESTIONS_CHANNEL_ID || 
+                       message.channel.name === 'arch-ai';
     
     // IGNORE these channels completely (no responses at all) - ONLY CRON JOBS ALLOWED
     const ignoreChannels = ['guild-recruit-chat', 'xyian-guild', 'guild-chat', 'recruit', 'guild-recruit', 'guild-recruit-chat', 'guild-recruit'];
@@ -1801,6 +1808,12 @@ client.on('messageCreate', async (message) => {
     // CRITICAL: ONLY AI CHANNELS CAN HAVE LIVE RESPONSES WITHOUT COMMANDS
     if (!isCommand && !isDM && !isAIChannel) {
         console.log(`⏭️ IGNORING: Not a command, not DM, not AI channel (${message.channel.name}) - ONLY AI CHANNELS GET LIVE RESPONSES`);
+        return;
+    }
+    
+    // Check AI toggle for AI channel responses
+    if (isAIChannel && !isCommand && !aiResponseEnabled) {
+        console.log(`⏭️ AI RESPONSES DISABLED: AI responses are currently turned off`);
         return;
     }
     // ==================== END GATE ====================
@@ -2528,7 +2541,7 @@ client.on('messageCreate', async (message) => {
             case 'help':
                 const generalHelpEmbed = new EmbedBuilder()
                     .setTitle('🤖 XYIAN Ultimate Bot Commands')
-                    .setDescription('**Basic Commands:**\n`!ping` - Check bot status\n`!help` - This help\n`!menu` - Show question menu\n\n**For Archero 2 Questions:**\n🔹 **Go to the AI chat channels** for detailed answers!\n🔹 Use `#bot-questions` or `#archero-ai` for Q&A\n🔹 This channel is for general discussion only\n\n**Role-Based Commands:**\n• XYIAN OFFICIAL: Full access + Channel management\n• XYIAN Guild Verified: Basic AI questions\n• Admin: Administrative commands\n\n**Admin Commands:**\n`!discord-bot-clean` - Clean duplicate bot processes (XYIAN OFFICIAL only)')
+                    .setDescription('**Basic Commands:**\n`!ping` - Check bot status\n`!help` - This help\n`!menu` - Show question menu\n\n**For Archero 2 Questions:**\n🔹 **Go to the AI chat channels** for detailed answers!\n🔹 Use `#arch-ai` for Q&A\n🔹 This channel is for general discussion only\n\n**Role-Based Commands:**\n• XYIAN OFFICIAL: Full access + Channel management\n• XYIAN Guild Verified: Basic AI questions\n• Admin: Administrative commands\n\n**Admin Commands:**\n`!discord-bot-clean` - Clean duplicate bot processes (XYIAN OFFICIAL only)\n`!ai-toggle` - Toggle AI responses on/off (XYIAN OFFICIAL only)')
                     .setColor(0x00BFFF)
                     .setTimestamp()
                     .setFooter({ text: 'XYIAN OFFICIAL' });
@@ -2538,9 +2551,9 @@ client.on('messageCreate', async (message) => {
             case 'menu':
                 const menuEmbed = new EmbedBuilder()
                     .setTitle('🎮 Archero 2 Question Menu')
-                    .setDescription('**For Archero 2 Questions:**\n\n🔹 **Go to the AI chat channels!**\n• `#bot-questions` - General questions\n• `#archero-ai` - Advanced questions\n\n**Popular Questions:**\n• "What\'s the best weapon?"\n• "Which character should I use?"\n• "Is Dragon Helmet + Oracle good?"\n• "What\'s the best set for PvP?"\n• "How do orbs work?"\n\n**This channel is for general discussion only!**')
+                    .setDescription('**For Archero 2 Questions:**\n\n🔹 **Go to the AI chat channels!**\n• `#arch-ai` - AI-powered Archero 2 questions\n\n**Popular Questions:**\n• "What\'s the best weapon?"\n• "Which character should I use?"\n• "Is Dragon Helmet + Oracle good?"\n• "What\'s the best set for PvP?"\n• "How do orbs work?"\n\n**This channel is for general discussion only!**')
                     .addFields(
-                        { name: '💡 Pro Tip', value: 'Use the AI chat channels for detailed Archero 2 help!', inline: false },
+                        { name: '💡 Pro Tip', value: 'Use the #arch-ai channel for detailed Archero 2 help!', inline: false },
                         { name: '🏰 Guild Questions', value: 'For XYIAN guild-specific questions, use `!xyian help` (requires XYIAN Guild Verified role)', inline: false }
                     )
                     .setColor(0x9b59b6)
@@ -2850,6 +2863,28 @@ client.on('messageCreate', async (message) => {
                         ]
                     });
                 }
+                break;
+                
+            case 'ai-toggle':
+                // Toggle AI responses on/off (XYIAN OFFICIAL only)
+                if (!hasXYIANRole(message.member)) {
+                    await message.reply('❌ This command requires the XYIAN OFFICIAL role.');
+                    return;
+                }
+                
+                aiResponseEnabled = !aiResponseEnabled;
+                const status = aiResponseEnabled ? 'ENABLED' : 'DISABLED';
+                const color = aiResponseEnabled ? 0x00FF00 : 0xFF0000;
+                
+                const toggleEmbed = new EmbedBuilder()
+                    .setTitle(`🤖 AI Response Toggle`)
+                    .setDescription(`AI responses are now **${status}**\n\n**Channel:** arch-ai (ID: ${AI_QUESTIONS_CHANNEL_ID})\n**Webhook:** ${webhooks.aiQuestions ? '✅ Connected' : '❌ Not configured'}`)
+                    .setColor(color)
+                    .setTimestamp()
+                    .setFooter({ text: 'XYIAN OFFICIAL - AI Control' });
+                
+                await message.reply({ embeds: [toggleEmbed] });
+                console.log(`🤖 AI Response Toggle: ${status} by ${message.author.username}`);
                 break;
                 
             default:
