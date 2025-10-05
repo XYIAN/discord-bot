@@ -20,6 +20,14 @@
 
 XYIAN Bot is a comprehensive Discord bot designed specifically for the **Archero 2** gaming community. It combines advanced guild management, game strategy assistance, and community engagement features to create the ultimate gaming Discord experience.
 
+### 🆕 **Latest Features (v0.0.8)**
+
+- **👤 Personalized Onboarding System** - New members receive custom DM setup with 3-step preference configuration
+- **🎯 Advanced Build Analysis** - Dragon/Oracle/Griffin build types with detailed character resonance mechanics
+- **⭐ Character Resonance System** - 3-star and 6-star resonance recommendations with power scaling
+- **🤖 AI Questions Channel** - Dedicated channel for complex build analysis and optimization
+- **📊 Build Type Selection** - Personalized recommendations based on user preferences
+
 ### 🌟 **Key Features**
 
 - **🏆 Guild Management** - Complete XYIAN guild administration and member tracking
@@ -27,6 +35,8 @@ XYIAN Bot is a comprehensive Discord bot designed specifically for the **Archero
 - **📊 Arena Intelligence** - Supreme Arena strategies with 3-character team compositions
 - **🎯 Daily Systems** - Automated daily tips, rewards, and activity tracking
 - **🤖 Smart Q&A** - AI-powered responses to game questions and strategies
+- **👤 Personalized Onboarding** - Custom DM setup for new members with build preferences
+- **🎯 Advanced Build Analysis** - Character resonance, item synergies, and optimization
 - **📈 Analytics** - Server statistics and member engagement tracking
 - **🔔 Notifications** - Event reminders, guild expeditions, and arena updates
 
