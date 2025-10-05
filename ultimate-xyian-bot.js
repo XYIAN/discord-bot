@@ -922,6 +922,9 @@ client.once('clientReady', () => {
     setupDailyResetMessaging();
     
     console.log('✅ All systems activated!');
+    
+    // Start continuous monitoring
+    startContinuousMonitoring();
 });
 
 // Daily messaging system
@@ -1636,6 +1639,65 @@ client.on('messageCreate', async (message) => {
                 await message.reply({ embeds: [auditEmbed] });
                 messageResponseTracker.set(spamKey, true);
                 await logBotResponse(message.channel.name, message.content, 'Audit Logs Command', message.author.id, message.author.username);
+                break;
+                
+            case 'test-spam-filter':
+                // Only XYIAN OFFICIAL can test spam filter
+                if (!hasXYIANRole(message.member)) {
+                    await message.reply('❌ This command requires the XYIAN OFFICIAL role.');
+                    return;
+                }
+                
+                const testId = Math.random().toString(36).substring(7);
+                const testMessage = `TEST_SPAM_FILTER_${testId}_XXX`;
+                
+                // Send test message to debug channel
+                await sendToAdmin({ content: `🧪 **SPAM FILTER TEST START** - Test ID: ${testId}` });
+                await sendToAdmin({ content: `📝 **TEST MESSAGE**: ${testMessage}` });
+                await sendToAdmin({ content: `⏰ **TIMESTAMP**: ${new Date().toISOString()}` });
+                
+                // Send test message to current channel
+                await message.reply(`🧪 **SPAM FILTER TEST** - Test ID: ${testId}\n📝 **TEST MESSAGE**: ${testMessage}\n⏰ **TIMESTAMP**: ${new Date().toISOString()}`);
+                
+                // Log the test
+                messageResponseTracker.set(spamKey, true);
+                await logBotResponse(message.channel.name, message.content, 'Spam Filter Test', message.author.id, message.author.username);
+                
+                // Schedule monitoring in 5 seconds
+                setTimeout(async () => {
+                    await sendToAdmin({ content: `🔍 **MONITORING TEST** - Test ID: ${testId}\n⏰ **CHECK TIME**: ${new Date().toISOString()}\n📊 **AUDIT LOGS**: ${auditLog.length} total entries` });
+                    
+                    // Check for duplicates in audit logs
+                    const testLogs = auditLog.filter(log => log.message.includes(testId));
+                    await sendToAdmin({ content: `📊 **DUPLICATE CHECK** - Test ID: ${testId}\n🔢 **FOUND**: ${testLogs.length} entries with test ID\n📝 **ENTRIES**: ${testLogs.map(log => `${log.responseType} at ${log.timestamp}`).join(', ')}` });
+                }, 5000);
+                
+                break;
+                
+            case 'monitor-debug':
+                // Only XYIAN OFFICIAL can monitor debug
+                if (!hasXYIANRole(message.member)) {
+                    await message.reply('❌ This command requires the XYIAN OFFICIAL role.');
+                    return;
+                }
+                
+                // Send comprehensive debug info
+                const debugEmbed = new EmbedBuilder()
+                    .setTitle('🔍 DEBUG MONITORING STATUS')
+                    .setColor(0xFF6B35)
+                    .addFields(
+                        { name: '📊 Audit Logs', value: `${auditLog.length} total entries`, inline: true },
+                        { name: '🚫 Spam Filter', value: `${messageResponseTracker.size} tracked messages`, inline: true },
+                        { name: '⏰ Current Time', value: new Date().toISOString(), inline: true },
+                        { name: '📝 Recent Logs', value: auditLog.slice(-5).map(log => `${log.responseType} in ${log.channel}`).join('\n') || 'None', inline: false }
+                    )
+                    .setTimestamp();
+                
+                await message.reply({ embeds: [debugEmbed] });
+                await sendToAdmin({ embeds: [debugEmbed] });
+                
+                messageResponseTracker.set(spamKey, true);
+                await logBotResponse(message.channel.name, message.content, 'Debug Monitor', message.author.id, message.author.username);
                 break;
                 
             case 'create-channel':
@@ -2431,6 +2493,50 @@ const processedMembers = new Set();
 // SPAM FILTER - Track message responses to prevent multiple responses
 const messageResponseTracker = new Map();
 const auditLog = [];
+
+// CONTINUOUS MONITORING SYSTEM
+let monitoringActive = false;
+let testCounter = 0;
+
+// Start continuous monitoring
+function startContinuousMonitoring() {
+    if (monitoringActive) return;
+    
+    monitoringActive = true;
+    console.log('🔍 Starting continuous monitoring system...');
+    
+    // Test every 30 seconds
+    setInterval(async () => {
+        if (!monitoringActive) return;
+        
+        testCounter++;
+        const testId = `MONITOR_${testCounter}_${Date.now()}`;
+        
+        try {
+            // Send test to debug channel
+            await sendToAdmin({ content: `🔍 **AUTO MONITOR TEST #${testCounter}** - Test ID: ${testId}` });
+            await sendToAdmin({ content: `⏰ **TIMESTAMP**: ${new Date().toISOString()}` });
+            await sendToAdmin({ content: `📊 **AUDIT LOGS**: ${auditLog.length} total entries` });
+            await sendToAdmin({ content: `🚫 **SPAM FILTER**: ${messageResponseTracker.size} tracked messages` });
+            
+            // Check for recent duplicates
+            const recentLogs = auditLog.slice(-10);
+            const duplicateCheck = recentLogs.filter(log => 
+                log.timestamp > new Date(Date.now() - 60000).toISOString()
+            );
+            
+            await sendToAdmin({ content: `📝 **RECENT ACTIVITY**: ${duplicateCheck.length} entries in last minute` });
+            
+            if (duplicateCheck.length > 5) {
+                await sendToAdmin({ content: `⚠️ **HIGH ACTIVITY DETECTED** - ${duplicateCheck.length} responses in last minute` });
+            }
+            
+        } catch (error) {
+            console.error('❌ Monitoring error:', error);
+            await sendToAdmin({ content: `❌ **MONITORING ERROR**: ${error.message}` });
+        }
+    }, 30000); // Every 30 seconds
+}
 
 // Helper function to log all bot responses for audit
 async function logBotResponse(channelName, messageContent, responseType, userId, username) {
