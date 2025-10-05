@@ -2,6 +2,28 @@
 
 All notable changes to the Arch 2 Addicts Discord Bot project will be documented in this file.
 
+## [0.0.8] - 2024-10-05
+
+### Added
+- **Personalized Onboarding System**: DM-based setup for new members with 3-step customization
+- **Build Type Selection**: Dragon/Oracle/Griffin build preferences with detailed recommendations
+- **Advanced Resonance Mechanics**: Comprehensive character resonance system documentation
+- **AI Questions Channel**: Dedicated webhook for complex build analysis and questions
+- **Character Tier System**: Detailed Legendary, Epic, and Regular character information
+- **Resonance Power Scaling**: Level-based resonance strength calculations
+
+### Enhanced
+- **DM Support**: Full direct message handling with personalized responses
+- **Build Analysis**: Advanced item synergy and character optimization guidance
+- **Character Recommendations**: Detailed tier-based character selection strategy
+- **Setup Flow**: Streamlined 3-step personalized onboarding process
+- **AI Integration**: Enhanced AI context with advanced game mechanics knowledge
+
+### Fixed
+- **Build Type Handling**: Proper dragon/oracle/griffin selection in setup flow
+- **Preference Tracking**: Complete user preference storage and management
+- **Message Formatting**: Professional embeds with comprehensive build guides
+
 ## [0.0.7] - 2024-10-05
 
 ### Added

@@ -110,11 +110,200 @@ const webhooks = {
     general: process.env.GENERAL_CHAT_WEBHOOK,
     recruit: process.env.GUILD_RECRUIT_WEBHOOK,
     expedition: process.env.GUILD_EXPEDITION_WEBHOOK,
-    arena: process.env.GUILD_ARENA_WEBHOOK
+    arena: process.env.GUILD_ARENA_WEBHOOK,
+    aiQuestions: 'https://discord.com/api/webhooks/REDACTED'
 };
 
 // Member activity tracking
 const memberActivity = new Map();
+
+// User preferences for personalized messages
+const userPreferences = new Map();
+
+// Personalized onboarding system
+async function sendPersonalizedOnboarding(member) {
+    try {
+        // Send DM to new member
+        const onboardingEmbed = new EmbedBuilder()
+            .setTitle('🎉 Welcome to Arch 2 Addicts!')
+            .setDescription(`Hi ${member.user.username}! I'm XY Elder, your personal Archero 2 assistant.\n\nWould you like to receive **personalized messages** to help you improve your gameplay?`)
+            .setColor(0x9b59b6)
+            .addFields(
+                { name: '🤖 What I can help with:', value: '• Daily reset reminders\n• Build optimization tips\n• Arena strategies\n• Character recommendations\n• Item synergy advice', inline: false },
+                { name: '⚡ Quick Setup', value: 'Just reply with **"yes"** to get started with personalized tips!', inline: false }
+            )
+            .setThumbnail(member.user.displayAvatarURL())
+            .setTimestamp()
+            .setFooter({ text: 'XYIAN Bot - Personalized Assistant' });
+        
+        await member.send({ embeds: [onboardingEmbed] });
+        console.log(`📩 Sent onboarding DM to ${member.user.username}`);
+        
+        // Store that we're waiting for their response
+        userPreferences.set(member.id, { 
+            status: 'awaiting_response',
+            preferences: {},
+            setupStep: 0
+        });
+        
+    } catch (error) {
+        console.error(`❌ Failed to send onboarding DM to ${member.user.username}:`, error);
+    }
+}
+
+// Handle personalized setup responses
+async function handlePersonalizedSetup(message) {
+    const userId = message.author.id;
+    const userPrefs = userPreferences.get(userId);
+    
+    if (!userPrefs || userPrefs.status !== 'awaiting_response') return false;
+    
+    const content = message.content.toLowerCase().trim();
+    
+    if (content === 'yes' || content === 'y' || content === 'yeah' || content === 'sure') {
+        // Start setup process
+        userPrefs.status = 'in_setup';
+        userPrefs.setupStep = 1;
+        userPreferences.set(userId, userPrefs);
+        
+        const setupEmbed = new EmbedBuilder()
+            .setTitle('🎯 Personalized Setup - Step 1/3')
+            .setDescription('Great! Let\'s customize your experience.\n\n**Question 1:** Would you like daily reset reminders?\n\nThese will remind you about:\n• Daily boss battles\n• Guild donations\n• Event deadlines\n• Daily quests')
+            .setColor(0x00BFFF)
+            .addFields(
+                { name: '💡 Reply with:', value: '**"yes"** or **"no"**', inline: false }
+            )
+            .setTimestamp()
+            .setFooter({ text: 'XYIAN Bot - Setup Step 1' });
+        
+        await message.reply({ embeds: [setupEmbed] });
+        return true;
+    } else if (content === 'no' || content === 'n' || content === 'nope') {
+        // User declined personalized messages
+        userPreferences.delete(userId);
+        
+        const declineEmbed = new EmbedBuilder()
+            .setTitle('👍 No Problem!')
+            .setDescription('You can always change your mind later by DMing me again!\n\nFor now, you can still use me in the server for general questions and commands.')
+            .setColor(0x95A5A6)
+            .setTimestamp()
+            .setFooter({ text: 'XYIAN Bot' });
+        
+        await message.reply({ embeds: [declineEmbed] });
+        return true;
+    }
+    
+    return false;
+}
+
+// Continue setup process
+async function continuePersonalizedSetup(message) {
+    const userId = message.author.id;
+    const userPrefs = userPreferences.get(userId);
+    
+    if (!userPrefs || userPrefs.status !== 'in_setup') return false;
+    
+    const content = message.content.toLowerCase().trim();
+    const isYes = content === 'yes' || content === 'y' || content === 'yeah' || content === 'sure';
+    const isNo = content === 'no' || content === 'n' || content === 'nope';
+    
+    if (!isYes && !isNo) {
+        await message.reply('Please reply with **"yes"** or **"no"** to continue setup.');
+        return true;
+    }
+    
+    switch (userPrefs.setupStep) {
+        case 1: // Daily reset reminders
+            userPrefs.preferences.dailyReminders = isYes;
+            userPrefs.setupStep = 2;
+            
+            const step2Embed = new EmbedBuilder()
+                .setTitle('🎯 Personalized Setup - Step 2/3')
+                .setDescription('**Question 2:** Would you like build optimization tips?\n\nThese will help you with:\n• Character recommendations\n• Item synergies\n• Build strategies\n• Resonance optimization')
+                .setColor(0x00BFFF)
+                .addFields(
+                    { name: '💡 Reply with:', value: '**"yes"** or **"no"**', inline: false }
+                )
+                .setTimestamp()
+                .setFooter({ text: 'XYIAN Bot - Setup Step 2' });
+            
+            await message.reply({ embeds: [step2Embed] });
+            break;
+            
+        case 2: // Build tips
+            userPrefs.preferences.buildTips = isYes;
+            
+            if (isYes) {
+                userPrefs.setupStep = 2.5; // Go to build type selection
+                const buildTypeEmbed = new EmbedBuilder()
+                    .setTitle('🎯 Build Type Selection')
+                    .setDescription('What type of build are you most interested in?\n\n**Options:**\n• **Dragon** - High damage, tanky builds\n• **Oracle** - Balanced, versatile builds\n• **Griffin** - Speed, mobility builds')
+                    .setColor(0xE74C3C)
+                    .addFields(
+                        { name: '💡 Reply with:', value: '**"dragon"**, **"oracle"**, or **"griffin"**', inline: false }
+                    )
+                    .setTimestamp()
+                    .setFooter({ text: 'XYIAN Bot - Build Selection' });
+                
+                await message.reply({ embeds: [buildTypeEmbed] });
+            } else {
+                // Skip to step 3
+                userPrefs.setupStep = 3;
+                await sendStep3(message, userPrefs);
+            }
+            break;
+            
+        case 2.5: // Build type selection
+            const buildType = content.toLowerCase();
+            if (buildType === 'dragon' || buildType === 'oracle' || buildType === 'griffin') {
+                userPrefs.preferences.buildType = buildType;
+                userPrefs.setupStep = 3;
+                await sendStep3(message, userPrefs);
+            } else {
+                await message.reply('Please reply with **"dragon"**, **"oracle"**, or **"griffin"** to continue.');
+            }
+            break;
+            
+        case 3: // Arena tips
+            userPrefs.preferences.arenaTips = isYes;
+            userPrefs.status = 'completed';
+            
+                const completionEmbed = new EmbedBuilder()
+                    .setTitle('🎉 Setup Complete!')
+                    .setDescription('Your personalized experience is ready!\n\n**Your Preferences:**\n' + 
+                        `• Daily Reminders: ${userPrefs.preferences.dailyReminders ? '✅' : '❌'}\n` +
+                        `• Build Tips: ${userPrefs.preferences.buildTips ? '✅' : '❌'}\n` +
+                        `• Build Type: ${userPrefs.preferences.buildType ? userPrefs.preferences.buildType.charAt(0).toUpperCase() + userPrefs.preferences.buildType.slice(1) : 'Not selected'}\n` +
+                        `• Arena Tips: ${userPrefs.preferences.arenaTips ? '✅' : '❌'}`)
+                    .setColor(0x00FF88)
+                    .addFields(
+                        { name: '🚀 What\'s Next?', value: 'I\'ll send you personalized tips based on your preferences! You can always change these by DMing me again.', inline: false },
+                        { name: '💡 Pro Tip', value: 'For advanced build analysis, check out the AI questions channel!', inline: false }
+                    )
+                    .setTimestamp()
+                    .setFooter({ text: 'XYIAN Bot - Setup Complete' });
+            
+            await message.reply({ embeds: [completionEmbed] });
+            break;
+    }
+    
+    userPreferences.set(userId, userPrefs);
+    return true;
+}
+
+async function sendStep3(message, userPrefs) {
+    const step3Embed = new EmbedBuilder()
+        .setTitle('🎯 Personalized Setup - Step 3/3')
+        .setDescription('**Question 3:** Would you like arena strategy tips?\n\nThese will help you with:\n• Supreme Arena team composition\n• Character resonance strategies\n• Item bonuses and synergies\n• Competitive tactics')
+        .setColor(0x00BFFF)
+        .addFields(
+            { name: '💡 Reply with:', value: '**"yes"** or **"no"**', inline: false }
+        )
+        .setTimestamp()
+        .setFooter({ text: 'XYIAN Bot - Setup Step 3' });
+    
+    await message.reply({ embeds: [step3Embed] });
+}
 
 // Bot Questions functionality (inline to avoid import issues)
 const advancedArcheroQA = {
@@ -431,6 +620,7 @@ function setupDailyMessaging() {
     const dailyInterval = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
     setInterval(() => {
         sendDailyMessages();
+        sendGuildRecruitmentSchedule(); // Every other day recruitment
     }, dailyInterval);
     
     console.log('✅ Daily messaging schedule set!');
@@ -473,9 +663,6 @@ async function sendDailyMessages() {
     // Send daily tip
     await sendDailyTip();
     
-    // Send guild recruitment
-    await sendGuildRecruitment();
-    
     // Send expedition message
     await sendExpeditionMessage();
     
@@ -483,6 +670,22 @@ async function sendDailyMessages() {
     await sendArenaTip();
     
     console.log('✅ Daily messages sent!');
+}
+
+// Send guild recruitment every other day
+let recruitDayCounter = 0;
+async function sendGuildRecruitmentSchedule() {
+    console.log('📅 Checking guild recruitment schedule...');
+    
+    recruitDayCounter++;
+    
+    // Send every other day (day 2, 4, 6, etc.)
+    if (recruitDayCounter % 2 === 0) {
+        await sendGuildRecruitment();
+        console.log('✅ Guild recruitment sent (every other day)');
+    } else {
+        console.log('⏭️ Skipping guild recruitment (not recruitment day)');
+    }
 }
 
 // Send daily reset messages
@@ -733,6 +936,17 @@ async function sendToArena(content) {
     }
 }
 
+async function sendToAIQuestions(content) {
+    if (!webhooks.aiQuestions) return;
+    
+    try {
+        const webhook = new WebhookClient({ url: webhooks.aiQuestions });
+        await webhook.send(content);
+    } catch (error) {
+        console.error('❌ Failed to send AI questions message:', error.message);
+    }
+}
+
 // Q&A function
 function getAnswer(question) {
     const lowerQuestion = question.toLowerCase();
@@ -746,14 +960,120 @@ function getAnswer(question) {
     return null;
 }
 
-// Check if user has XYIAN OFFICIAL role
+// Role checking functions
 function hasXYIANRole(member) {
     return member.roles.cache.some(role => role.name === 'XYIAN OFFICIAL');
+}
+
+function hasXYIANGuildVerified(member) {
+    return member.roles.cache.some(role => role.name === 'XYIAN Guild Verified');
+}
+
+function hasAdminRole(member) {
+    return member.roles.cache.some(role => role.name === 'Admin');
+}
+
+function hasSupremeArenaRole(member) {
+    return member.roles.cache.some(role => role.name === 'Supreme Arena');
+}
+
+function hasUmbralTempestRole(member) {
+    return member.roles.cache.some(role => role.name === 'Umbral Tempest');
+}
+
+function hasServerBoosterRole(member) {
+    return member.roles.cache.some(role => role.name === 'Server Booster');
+}
+
+// Check if user can access basic features (any verified role)
+function hasBasicAccess(member) {
+    return hasXYIANRole(member) || 
+           hasXYIANGuildVerified(member) || 
+           hasAdminRole(member) ||
+           hasServerBoosterRole(member);
 }
 
 // Message handling
 client.on('messageCreate', async (message) => {
     if (message.author.bot) return;
+    
+    // Handle Direct Messages
+    if (message.channel.type === 1) { // DM channel
+        console.log(`💬 DM from ${message.author.username}: ${message.content}`);
+        
+        // Handle DM commands
+        if (message.content.startsWith('!')) {
+            const args = message.content.slice(1).trim().split(/ +/);
+            const commandName = args.shift()?.toLowerCase();
+            
+            switch (commandName) {
+                case 'ping':
+                    await message.reply('🏰 XYIAN Ultimate Bot - Online! (DM Mode)');
+                    break;
+                    
+                case 'help':
+                    const dmHelpEmbed = new EmbedBuilder()
+                        .setTitle('🤖 XYIAN Bot - DM Commands')
+                        .setDescription('**Available DM Commands:**\n`!ping` - Check bot status\n`!help` - This help\n`!menu` - Show question menu\n\n**Q&A:**\nAsk any Archero 2 question naturally!\n\n**Note:** For full functionality with role-based features, please use me in the Arch 2 Addicts server!')
+                        .setColor(0x9b59b6)
+                        .setTimestamp()
+                        .setFooter({ text: 'XYIAN Bot - DM Support' });
+                    await message.reply({ embeds: [dmHelpEmbed] });
+                    break;
+                    
+                case 'menu':
+                    const dmMenuEmbed = new EmbedBuilder()
+                        .setTitle('🎮 Archero 2 Question Menu (DM)')
+                        .setDescription('**Ask me anything about Archero 2!**\n\n**Popular Questions:**\n• "What\'s the best weapon?"\n• "Which character should I use?"\n• "Is Dragon Helmet + Oracle good?"\n• "What\'s the best set for PvP?"\n• "How do orbs work?"\n\n**Just type your question naturally!**')
+                        .setColor(0x9b59b6)
+                        .setTimestamp()
+                        .setFooter({ text: 'XYIAN Bot - DM Menu' });
+                    await message.reply({ embeds: [dmMenuEmbed] });
+                    break;
+                    
+                default:
+                    // Try Q&A for unknown commands
+                    const answer = getAnswer(message.content);
+                    if (answer) {
+                        const qaEmbed = new EmbedBuilder()
+                            .setTitle('❓ Archero 2 Q&A (DM)')
+                            .setDescription(answer)
+                            .setColor(0x32CD32)
+                            .setTimestamp()
+                            .setFooter({ text: 'XYIAN Bot - DM Q&A' });
+                        await message.reply({ embeds: [qaEmbed] });
+                    } else {
+                        await message.reply('❓ I didn\'t understand that. Try asking an Archero 2 question or use `!help` for commands.');
+                    }
+            }
+        } else {
+            // Check if user is in personalized setup
+            if (await handlePersonalizedSetup(message) || await continuePersonalizedSetup(message)) {
+                return;
+            }
+            
+            // Handle Q&A for non-command messages
+            const answer = getAnswer(message.content);
+            if (answer) {
+                const qaEmbed = new EmbedBuilder()
+                    .setTitle('❓ Archero 2 Q&A (DM)')
+                    .setDescription(answer)
+                    .setColor(0x32CD32)
+                    .setTimestamp()
+                    .setFooter({ text: 'XYIAN Bot - DM Q&A' });
+                await message.reply({ embeds: [qaEmbed] });
+            } else {
+                const dmEmbed = new EmbedBuilder()
+                    .setTitle('🤖 XYIAN Bot - Direct Message')
+                    .setDescription(`Hello ${message.author.username}! I'm the XYIAN Bot for the Arch 2 Addicts community.\n\n**Available Commands:**\n• \`!help\` - Show all commands\n• \`!menu\` - Show question menu\n• Ask any Archero 2 question!\n\n**Note:** For full functionality, please use me in the Arch 2 Addicts server!`)
+                    .setColor(0x9b59b6)
+                    .setTimestamp()
+                    .setFooter({ text: 'XYIAN Bot - DM Support' });
+                await message.reply({ embeds: [dmEmbed] });
+            }
+        }
+        return;
+    }
     
     // Handle commands
     if (message.content.startsWith('!')) {
@@ -766,11 +1086,26 @@ client.on('messageCreate', async (message) => {
                 break;
                 
             case 'tip':
+                // Only XYIAN OFFICIAL can trigger daily tips
+                if (!hasXYIANRole(message.member)) {
+                    await message.reply('❌ This command requires the XYIAN OFFICIAL role.');
+                    return;
+                }
                 await sendDailyTip();
                 await message.reply('📝 Daily tip sent!');
                 break;
                 
             case 'recruit':
+                // Only XYIAN OFFICIAL can trigger recruitment from guild chat
+                if (!hasXYIANRole(message.member)) {
+                    await message.reply('❌ This command requires the XYIAN OFFICIAL role.');
+                    return;
+                }
+                // Check if it's in guild chat
+                if (message.channel.name !== 'xyian-guild') {
+                    await message.reply('❌ This command can only be used in the XYIAN guild channel.');
+                    return;
+                }
                 await sendGuildRecruitment();
                 await message.reply('🏰 Guild recruitment sent!');
                 break;
@@ -783,16 +1118,31 @@ client.on('messageCreate', async (message) => {
                 break;
                 
             case 'reset':
+                // XYIAN Guild Verified or higher can trigger reset messages
+                if (!hasBasicAccess(message.member)) {
+                    await message.reply('❌ This command requires XYIAN Guild Verified role or higher.');
+                    return;
+                }
                 await sendDailyResetMessages();
                 await message.reply('🔄 Reset messages sent!');
                 break;
                 
             case 'expedition':
+                // XYIAN Guild Verified or higher can trigger expedition
+                if (!hasBasicAccess(message.member)) {
+                    await message.reply('❌ This command requires XYIAN Guild Verified role or higher.');
+                    return;
+                }
                 await sendExpeditionMessage();
                 await message.reply('🏰 Guild expedition message sent!');
                 break;
                 
             case 'arena':
+                // XYIAN Guild Verified or higher can trigger arena tips
+                if (!hasBasicAccess(message.member)) {
+                    await message.reply('❌ This command requires XYIAN Guild Verified role or higher.');
+                    return;
+                }
                 await sendArenaTip();
                 await message.reply('🏟️ Arena tips sent!');
                 break;
@@ -945,11 +1295,60 @@ client.on('messageCreate', async (message) => {
             case 'help':
                 const generalHelpEmbed = new EmbedBuilder()
                     .setTitle('🤖 XYIAN Ultimate Bot Commands')
-                    .setDescription('**General Commands:**\n`!ping` - Check bot status\n`!tip` - Send daily tip\n`!recruit` - Send recruitment\n`!expedition` - Send expedition message\n`!arena` - Send arena tips\n`!test` - Send test messages\n`!reset` - Send reset messages\n`!help` - This help\n\n**XYIAN Commands (XYIAN OFFICIAL role required):**\n`!xyian help` - XYIAN command list\n\n**Q&A System:**\nAsk any Archero 2 question naturally!\n\n**Arena Questions:**\n`arena`, `supreme arena`, `best arena heroes`, `arena runes`, `arena rewards`')
+                    .setDescription('**Public Commands:**\n`!ping` - Check bot status\n`!menu` - Show public question menu\n`!help` - This help\n\n**XYIAN OFFICIAL Commands:**\n`!tip` - Send daily tip\n`!recruit` - Send recruitment (guild chat only)\n`!xyian help` - XYIAN command list\n\n**XYIAN Guild Verified Commands:**\n`!expedition` - Send expedition message\n`!arena` - Send arena tips\n`!reset` - Send reset messages\n\n**Admin Commands:**\n`!test` - Send test messages\n\n**Q&A System:**\nAsk any Archero 2 question naturally!\n\n**Role Requirements:**\n- XYIAN OFFICIAL: Full access\n- XYIAN Guild Verified: Basic AI questions\n- Admin: Administrative commands')
                     .setColor(0x00BFFF)
                     .setTimestamp()
                     .setFooter({ text: 'XYIAN OFFICIAL' });
                 await message.reply({ embeds: [generalHelpEmbed] });
+                break;
+                
+            case 'menu':
+                const menuEmbed = new EmbedBuilder()
+                    .setTitle('🎮 Public Archero 2 Question Menu')
+                    .setDescription('**Ask me anything about Archero 2!**\n\n**Popular Questions:**\n• "What\'s the best weapon?"\n• "Which character should I use?"\n• "Is Dragon Helmet + Oracle good?"\n• "What\'s the best set for PvP?"\n• "How do orbs work?"\n• "What\'s the difference between Sacred Hall and Tier Up?"\n\n**Just type your question naturally!**\nExample: "I have dragon helmet and oracle spear, is this a good combo?"')
+                    .addFields(
+                        { name: '💡 Pro Tip', value: 'Be specific! The more details you give, the better I can help you.', inline: false },
+                        { name: '🏰 Guild Questions', value: 'For XYIAN guild-specific questions, use `!xyian help` (requires XYIAN Guild Verified role)', inline: false }
+                    )
+                    .setColor(0x9b59b6)
+                    .setTimestamp()
+                    .setFooter({ text: 'XYIAN Bot - Public Menu' });
+                await message.reply({ embeds: [menuEmbed] });
+                break;
+                
+            case 'ai-menu':
+                // Send formatted menu to AI questions channel
+                const aiMenuEmbed = new EmbedBuilder()
+                    .setTitle('🤖 Advanced Archero 2 Analysis Channel')
+                    .setDescription('**Welcome to the AI-Powered Build Analysis Channel!**\n\nAsk complex questions about builds, item synergies, and character optimization.')
+                    .addFields(
+                        { 
+                            name: '📊 Build Analysis Examples', 
+                            value: '• "I have 3 Griffin items, 3 Oracle, and 2 Dragon - what\'s the best build?"\n• "My highest character is 4-star Helix, should I use him or 2-star Thor?"\n• "What\'s the best resonance combo for PvP with my current items?"\n• "Is Dragon Helmet + Oracle Spear + Griffin Boots a good combo?"', 
+                            inline: false 
+                        },
+                        { 
+                            name: '🎯 Character Resonance Guide', 
+                            value: '**3-Star Resonance (First Slot):**\n• Rolla ⭐⭐⭐ - BEST (freeze is vital)\n• Helix ⭐⭐⭐ - Strong DPS\n• Thor ⭐⭐⭐ - Legendary option\n\n**6-Star Resonance (Second Slot):**\n• Loki ⭐⭐⭐⭐⭐⭐ - TOP CHOICE\n• Demon King ⭐⭐⭐⭐⭐⭐ - Shield specialist\n• Otta ⭐⭐⭐⭐⭐⭐ - High-level option', 
+                            inline: false 
+                        },
+                        { 
+                            name: '⚡ Build Type Recommendations', 
+                            value: '**Dragon Builds:** High damage, tanky - Use Thor/Demon King + Rolla + Loki\n**Oracle Builds:** Balanced, versatile - Use Helix/Alex + Rolla + Demon King\n**Griffin Builds:** Speed, mobility - Use Nyanja/Griffin + Nyanja + Loki', 
+                            inline: false 
+                        },
+                        { 
+                            name: '💡 Pro Tips', 
+                            value: '• Higher character levels = stronger resonance effects\n• Level 7 Rolla >> 3-star Rolla for resonance\n• Use highest star character as primary (3+ stars for resonance)\n• Freeze attacks provide major advantage in PvP', 
+                            inline: false 
+                        }
+                    )
+                    .setColor(0x9b59b6)
+                    .setTimestamp()
+                    .setFooter({ text: 'XYIAN Bot - AI Analysis Channel' });
+                
+                await sendToAIQuestions({ embeds: [aiMenuEmbed] });
+                await message.reply('📤 Advanced analysis menu sent to AI questions channel!');
                 break;
                 
             default:
@@ -1019,11 +1418,14 @@ client.on('messageCreate', async (message) => {
             }
         }
         
-        // Try AI for general questions, then fallback to database
+        // Q&A System with role-based access
         let answer = null;
         let isAIResponse = false;
         
-        if (AIService) {
+        // Check if user has access to AI features
+        const hasAIAccess = hasBasicAccess(message.member);
+        
+        if (AIService && hasAIAccess) {
             try {
                 answer = await generateAIResponse(message.content, message.channel.name);
                 if (answer && answer.length > 10) {
@@ -1034,21 +1436,25 @@ client.on('messageCreate', async (message) => {
             }
         }
         
-        // Fallback to database if AI didn't respond
+        // Fallback to database if AI didn't respond or user doesn't have access
         if (!answer || !isAIResponse) {
             answer = getAnswer(message.content);
             
             // If no database answer, provide a helpful fallback
             if (!answer) {
-                answer = getFallbackResponse(message.content);
+                if (hasAIAccess) {
+                    answer = getFallbackResponse(message.content);
+                } else {
+                    answer = "❓ I'd love to help with your Archero 2 question! However, AI-powered responses require the **XYIAN Guild Verified** role or higher. You can still ask basic questions, or use `!menu` to see what I can help with!";
+                }
             }
             
             const qaEmbed = new EmbedBuilder()
                 .setTitle(isAIResponse ? '🤖 AI-Powered Archero 2 Answer' : '❓ Archero 2 Q&A')
                 .setDescription(answer)
-                .setColor(isAIResponse ? 0x32CD32 : 0x00BFFF)
+                .setColor(isAIResponse ? 0x32CD32 : (hasAIAccess ? 0x00BFFF : 0xFF6B35))
                 .setTimestamp()
-                .setFooter({ text: isAIResponse ? 'XYIAN Bot - AI Enhanced' : 'XYIAN OFFICIAL' });
+                .setFooter({ text: isAIResponse ? 'XYIAN Bot - AI Enhanced' : (hasAIAccess ? 'XYIAN OFFICIAL' : 'Basic Access') });
             await message.reply({ embeds: [qaEmbed] });
         } else {
             // AI response
@@ -1063,9 +1469,23 @@ client.on('messageCreate', async (message) => {
     }
 });
 
+// Track processed members to prevent duplicates
+const processedMembers = new Set();
+
 // Welcome new members
 client.on('guildMemberAdd', async (member) => {
-    console.log(`👋 New member joined: ${member.user.username}`);
+    const memberId = member.user.id;
+    
+    // Check if we've already processed this member
+    if (processedMembers.has(memberId)) {
+        console.log(`⚠️ Duplicate member join event for ${member.user.username} (ID: ${memberId}) - skipping`);
+        return;
+    }
+    
+    // Mark as processed
+    processedMembers.add(memberId);
+    
+    console.log(`👋 New member joined: ${member.user.username} (ID: ${memberId})`);
     
     // Send welcome message to GENERAL CHAT (not guild chat)
     const welcomeEmbed = new EmbedBuilder()
@@ -1081,16 +1501,21 @@ client.on('guildMemberAdd', async (member) => {
         .setTimestamp()
         .setFooter({ text: 'Arch 2 Addicts Community' });
     
-    await sendToGeneral({ embeds: [welcomeEmbed] });
-    
-    // Assign XYIAN OFFICIAL role if it exists (for guild members)
-    const xyianRole = member.guild.roles.cache.find(role => role.name === 'XYIAN OFFICIAL');
-    if (xyianRole) {
-        await member.roles.add(xyianRole);
-        console.log(`Assigned XYIAN OFFICIAL role to ${member.user.username}`);
-    } else {
-        console.warn('XYIAN OFFICIAL role not found.');
+    try {
+        await sendToGeneral({ embeds: [welcomeEmbed] });
+        console.log(`✅ Welcome message sent for ${member.user.username} (ID: ${memberId})`);
+        
+        // Send personalized onboarding DM
+        await sendPersonalizedOnboarding(member);
+        
+    } catch (error) {
+        console.error(`❌ Failed to send welcome message for ${member.user.username}:`, error);
     }
+    
+    // Clean up processed members after 5 minutes to prevent memory leaks
+    setTimeout(() => {
+        processedMembers.delete(memberId);
+    }, 5 * 60 * 1000);
 });
 
 // Handle member leaving
