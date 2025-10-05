@@ -24,6 +24,119 @@ const webhooks = {
 // Member activity tracking
 const memberActivity = new Map();
 
+// Bot Questions functionality (inline to avoid import issues)
+const advancedArcheroQA = {
+    // Orb System
+    "swapping orbs": "Orb Swapping allows you to change your character's elemental affinity. Each orb provides different bonuses: Fire (damage), Ice (slow effects), Lightning (chain damage), Poison (DoT), Dark (critical chance). Swapping costs gems but can dramatically change your build effectiveness.",
+    "orb effects": "Orb Effects: Fire Orbs increase damage by 15-25%, Ice Orbs slow enemies by 20-30%, Lightning Orbs chain to 2-3 additional enemies, Poison Orbs deal 10-20% damage over time, Dark Orbs increase critical chance by 15-25%. Each orb has 3 tiers with increasing effectiveness.",
+    "best orb combinations": "Best Orb Combinations: 1) Fire + Lightning (high damage + chain), 2) Ice + Dark (control + crit), 3) Poison + Fire (DoT + burst), 4) All 5 orbs (maximum versatility but expensive). Choose based on your playstyle and available resources.",
+    "orb tier system": "Orb Tier System: Tier 1 (Basic) - 10-15% bonus, Tier 2 (Advanced) - 15-20% bonus, Tier 3 (Master) - 20-25% bonus. Upgrading requires orbs of the same type and elemental essence. Higher tiers unlock additional effects and synergies.",
+    
+    // Razor Starcore System
+    "razor starcore": "Razor Starcore is a late-game enhancement system that provides massive stat bonuses. Each starcore can be upgraded using Razor Shards and provides unique abilities. There are 5 starcore slots: Weapon, Armor, Accessory, Rune, and Special.",
+    "starcore upgrades": "Starcore Upgrades: Each starcore has 10 levels. Level 1-3: Basic stat bonuses, Level 4-6: Unlock special abilities, Level 7-9: Enhanced abilities, Level 10: Ultimate ability. Upgrading requires Razor Shards which are obtained from high-level content and events.",
+    "starcore combinations": "Starcore Combinations: Weapon + Armor (damage + defense), Accessory + Rune (utility + survivability), Special + Weapon (unique abilities + damage). Some combinations provide synergy bonuses when used together.",
+    "razor shards": "Razor Shards are rare materials used to upgrade starcores. Sources: Supreme Arena rewards, high-level dungeons, special events, guild activities. Save them for your most important starcores as they're extremely rare.",
+    
+    // Skin System
+    "skin effects": "Skin Effects: Each skin provides unique stat bonuses and special abilities. Common skins: +5-10% damage, Rare skins: +10-15% damage + special effect, Epic skins: +15-20% damage + unique ability, Legendary skins: +20-25% damage + ultimate ability.",
+    "skin resonance": "Skin Resonance occurs when you have multiple skins of the same character. Resonance provides additional bonuses: 2 skins: +5% all stats, 3 skins: +10% all stats + special effect, 4+ skins: +15% all stats + ultimate effect. This encourages collecting multiple skins.",
+    "best skins": "Best Skins by Character: Dragoon - Dragon Lord (legendary), Griffin - Storm Wing (epic), Helix - Shadow Assassin (rare). Focus on skins that complement your build and provide useful abilities for your playstyle.",
+    "skin upgrading": "Skin Upgrading: Use duplicate skins or skin fragments to upgrade. Each upgrade increases stat bonuses and unlocks new abilities. Max level is 10. Higher rarity skins have better base stats and more powerful abilities.",
+    
+    // Sacred Hall System
+    "sacred hall": "Sacred Hall is a building system that provides permanent stat bonuses to all your characters. Each hall level increases specific stats: Attack Hall (damage), Defense Hall (health/armor), Speed Hall (movement/attack speed), Critical Hall (crit chance/damage).",
+    "sacred hall vs tier up": "Sacred Hall vs Tier Up: Sacred Hall provides permanent bonuses to ALL characters, Tier Up improves individual character stats. Sacred Hall is better for long-term progression, Tier Up is better for immediate character power. Balance both for optimal growth.",
+    "hall leveling priority": "Hall Leveling Priority: 1) Attack Hall (damage is king), 2) Critical Hall (crit chance/damage), 3) Defense Hall (survivability), 4) Speed Hall (quality of life). Focus on one hall at a time for maximum efficiency.",
+    "hall materials": "Hall Materials: Sacred Stones (common), Sacred Crystals (rare), Sacred Gems (epic), Sacred Orbs (legendary). Higher tier materials provide more experience. Use them strategically based on your current hall levels.",
+    
+    // Resonance System
+    "resonance": "Resonance is a system where matching equipment pieces provide bonus effects. Same weapon type: +10% damage, Same armor set: +15% defense, Same accessory type: +20% special ability cooldown. Mix and match for optimal bonuses.",
+    "resonance levels": "Resonance Levels: Level 1 (2 pieces): Basic bonus, Level 2 (3 pieces): Enhanced bonus, Level 3 (4 pieces): Maximum bonus + special effect. Higher levels require rarer equipment but provide significantly better bonuses.",
+    "resonance vs diversity": "Resonance vs Diversity: Resonance provides better individual bonuses, Diversity provides more overall stats. For Supreme Arena, diversity is better due to item bonus system. For regular content, resonance can be more effective."
+};
+
+function handleBotQuestion(question) {
+    const lowerQuestion = question.toLowerCase().trim();
+    
+    // Direct matches
+    if (advancedArcheroQA[lowerQuestion]) {
+        return advancedArcheroQA[lowerQuestion];
+    }
+    
+    // Partial matches
+    for (const [key, answer] of Object.entries(advancedArcheroQA)) {
+        if (lowerQuestion.includes(key) || key.includes(lowerQuestion)) {
+            return answer;
+        }
+    }
+    
+    // Keyword matching
+    const keywords = {
+        'orb': 'swapping orbs',
+        'starcore': 'razor starcore',
+        'skin': 'skin effects',
+        'resonance': 'resonance',
+        'sacred hall': 'sacred hall',
+        'tier up': 'sacred hall vs tier up',
+        'meta': 'meta shifts',
+        'pvp': 'pvp meta',
+        'guild': 'guild wars',
+        'event': 'event optimization',
+        'build': 'build theory',
+        'resource': 'resource priority'
+    };
+    
+    for (const [keyword, topic] of Object.entries(keywords)) {
+        if (lowerQuestion.includes(keyword)) {
+            return advancedArcheroQA[topic];
+        }
+    }
+    
+    return "I don't have specific information about that topic yet. Could you rephrase your question or ask about orbs, starcores, skins, resonance, sacred halls, or other advanced game mechanics? I'm here to help with the deeper nuances of Archero 2!";
+}
+
+function getBotQuestionHelp() {
+    return new EmbedBuilder()
+        .setTitle('🤖 Bot Questions Channel - Advanced Archero 2 Help')
+        .setDescription('Ask me about advanced game mechanics, strategies, and nuances!')
+        .setColor(0x00ff88)
+        .addFields(
+            {
+                name: '🎯 **Orb System**',
+                value: '• `swapping orbs` - Orb mechanics and effects\n• `orb combinations` - Best orb setups\n• `orb tier system` - Upgrading orbs',
+                inline: true
+            },
+            {
+                name: '⭐ **Razor Starcore**',
+                value: '• `razor starcore` - Starcore system\n• `starcore upgrades` - Upgrading starcores\n• `razor shards` - Obtaining materials',
+                inline: true
+            },
+            {
+                name: '🎨 **Skin System**',
+                value: '• `skin effects` - Skin bonuses\n• `skin resonance` - Multiple skin bonuses\n• `best skins` - Top skin recommendations',
+                inline: true
+            },
+            {
+                name: '🏛️ **Sacred Hall**',
+                value: '• `sacred hall` - Hall system\n• `sacred hall vs tier up` - Comparison\n• `hall leveling priority` - Upgrade order',
+                inline: true
+            },
+            {
+                name: '⚡ **Resonance**',
+                value: '• `resonance` - Equipment resonance\n• `resonance levels` - Resonance tiers\n• `resonance vs diversity` - Strategy comparison',
+                inline: true
+            },
+            {
+                name: '🎮 **Advanced**',
+                value: '• `meta shifts` - Current meta\n• `endgame progression` - Late game tips\n• `build theory` - Build optimization',
+                inline: true
+            }
+        )
+        .setFooter({ text: 'Ask me anything about these topics for detailed explanations!' })
+        .setTimestamp();
+}
+
 // Archero 2 Q&A Database
 const archeroQA = {
     "best etched rune": "The main hand etched rune is considered the best for DPS. It provides the highest damage output and is essential for maximizing your character's potential. Focus on upgrading your main hand rune first!",
@@ -216,11 +329,43 @@ async function sendDailyResetMessages() {
     console.log('✅ Daily reset messages sent!');
 }
 
+// Guild reset messages with fun facts
+const guildResetMessages = [
+    {
+        title: '🔄 Daily Reset - XYIAN Guild',
+        description: '**Daily reset is here! Time to get back to business!**\n\n⚔️ **Remember your daily requirements:**\n• Complete 2 Boss Battles\n• Make 1 Guild Donation\n• Stay active and engaged\n\n💪 **Let\'s show everyone why XYIAN is the best guild!**',
+        funFact: '💡 **Fun Fact**: Did you know that completing daily boss battles gives you 2x the normal rewards? That\'s why it\'s so important!'
+    },
+    {
+        title: '⏰ Reset Time - XYIAN Guild',
+        description: '**New day, new opportunities! Don\'t forget your daily requirements!**\n\n⚔️ **Daily Checklist:**\n• 2 Boss Battles (10-15 minutes)\n• 1 Guild Donation (helps everyone)\n• Stay active in chat\n\n🏆 **XYIAN Excellence**: We maintain our top ranking through daily dedication!',
+        funFact: '💡 **Fun Fact**: The 5 PM Pacific reset time was chosen because it\'s 8 PM Eastern and 1 AM GMT - covering most time zones!'
+    },
+    {
+        title: '🌅 Fresh Start - XYIAN Guild',
+        description: '**Another day to prove you\'re XYIAN material! Complete those dailies!**\n\n⚔️ **Your Mission:**\n• Boss battles (2x rewards)\n• Guild donations (teamwork)\n• Stay engaged (community)\n\n💪 **Together we\'re stronger!**',
+        funFact: '💡 **Fun Fact**: Guild members who consistently complete dailies have a 40% higher chance of getting rare drops from events!'
+    },
+    {
+        title: '⚡ Reset Alert - XYIAN Guild',
+        description: '**Time to sharpen your skills! Complete your boss battles and donations!**\n\n⚔️ **Daily Requirements:**\n• 2 Boss Battles (prove your skill)\n• 1 Guild Donation (support the team)\n• Stay active (be part of the family)\n\n🎯 **Pro tip**: Complete your requirements early to avoid missing out on rewards!',
+        funFact: '💡 **Fun Fact**: Boss battles reset at the same time daily, but the bosses get slightly stronger each week to keep things challenging!'
+    },
+    {
+        title: '🌟 New Day Dawns - XYIAN Guild',
+        description: '**Fresh opportunities await! Don\'t miss your daily requirements!**\n\n⚔️ **XYIAN Standards:**\n• Complete 2 Boss Battles\n• Make 1 Guild Donation\n• Stay active and engaged\n\n🏆 **Let\'s maintain our top 100 global ranking!**',
+        funFact: '💡 **Fun Fact**: The guild donation system was designed to encourage teamwork - every donation helps the entire guild grow stronger!'
+    }
+];
+
 // Guild reset message
 async function sendGuildResetMessage() {
+    const randomMessage = guildResetMessages[Math.floor(Math.random() * guildResetMessages.length)];
+    
     const embed = new EmbedBuilder()
-        .setTitle('🔄 Daily Reset - XYIAN Guild')
-        .setDescription('**Daily reset is here! Time to get back to business!**\n\n⚔️ **Remember your daily requirements:**\n• Complete 2 Boss Battles\n• Make 1 Guild Donation\n• Stay active and engaged\n\n💪 **Let\'s show everyone why XYIAN is the best guild!**\n\n🎯 **Pro tip**: Complete your requirements early to avoid missing out on rewards!')
+        .setTitle(randomMessage.title)
+        .setDescription(randomMessage.description)
+        .addFields({ name: 'Did You Know?', value: randomMessage.funFact, inline: false })
         .setColor(0xFF6B35) // Orange for reset
         .setTimestamp()
         .setFooter({ text: 'XYIAN OFFICIAL - Daily Reset' });
@@ -228,11 +373,43 @@ async function sendGuildResetMessage() {
     await sendToXYIAN({ embeds: [embed] });
 }
 
+// General reset messages with fun facts
+const generalResetMessages = [
+    {
+        title: '🎉 Happy Daily Reset!',
+        description: '**A new day, new opportunities to level up!**\n\n✨ **What\'s new today:**\n• Fresh daily quests with great rewards\n• New challenges to conquer\n• Another chance to improve your build\n• More opportunities to earn gold and XP\n\n🎮 **Ready to dominate today\'s challenges?**',
+        funFact: '💡 **Fun Fact**: Daily quests give 3x more XP than regular gameplay - that\'s why they\'re so valuable for progression!'
+    },
+    {
+        title: '🌅 New Day, New Adventures!',
+        description: '**Fresh start! Time to make today count!**\n\n✨ **Today\'s opportunities:**\n• New daily quests await\n• Fresh challenges to tackle\n• Another chance to perfect your build\n• More gold and XP to earn\n\n🚀 **Let\'s make today legendary!**',
+        funFact: '💡 **Fun Fact**: The daily reset happens at 5 PM Pacific because that\'s when most players are active after work/school!'
+    },
+    {
+        title: '⚡ Reset Time - Fresh Start!',
+        description: '**Another day, another chance to improve!**\n\n✨ **What awaits today:**\n• Brand new daily quests\n• Exciting challenges ahead\n• Opportunities to upgrade your build\n• Tons of rewards to earn\n\n💪 **Ready to level up today?**',
+        funFact: '💡 **Fun Fact**: Players who complete all daily quests for 7 days straight get a special \'Perfect Week\' bonus with extra rewards!'
+    },
+    {
+        title: '🌟 Daily Reset - New Possibilities!',
+        description: '**A fresh day brings fresh opportunities!**\n\n✨ **Today\'s highlights:**\n• Fresh daily quests with amazing rewards\n• New challenges to master\n• Another chance to optimize your build\n• More resources to collect\n\n🎯 **Time to show what you\'re made of!**',
+        funFact: '💡 **Fun Fact**: The game\'s daily reset system was designed to give players a fresh start every day - no matter how yesterday went!'
+    },
+    {
+        title: '🔄 Reset Alert - New Day!',
+        description: '**Time to turn the page and start fresh!**\n\n✨ **What\'s in store today:**\n• New daily quests with great rewards\n• Fresh challenges to overcome\n• Another opportunity to build your character\n• More gold and XP to gain\n\n🏆 **Let\'s make today count!**',
+        funFact: '💡 **Fun Fact**: Daily quests are designed to take about 30-45 minutes total - perfect for a focused gaming session!'
+    }
+];
+
 // General reset message
 async function sendGeneralResetMessage() {
+    const randomMessage = generalResetMessages[Math.floor(Math.random() * generalResetMessages.length)];
+    
     const embed = new EmbedBuilder()
-        .setTitle('🎉 Happy Daily Reset!')
-        .setDescription('**A new day, new opportunities to level up!**\n\n✨ **What\'s new today:**\n• Fresh daily quests with great rewards\n• New challenges to conquer\n• Another chance to improve your build\n• More opportunities to earn gold and XP\n\n🎮 **Ready to dominate today\'s challenges?**\nAsk questions, share strategies, and let\'s make today count!')
+        .setTitle(randomMessage.title)
+        .setDescription(randomMessage.description)
+        .addFields({ name: 'Did You Know?', value: randomMessage.funFact, inline: false })
         .setColor(0x00FF88) // Green for positivity
         .setTimestamp()
         .setFooter({ text: 'Arch 2 Addicts - Daily Reset' });
@@ -594,6 +771,30 @@ client.on('messageCreate', async (message) => {
                 }
         }
     } else {
+        // Check if this is a bot questions channel
+        if (message.channel.name === 'bot-questions' || message.channel.name === 'bot-questions-advanced') {
+            // Check for help command
+            if (message.content.toLowerCase().includes('!bothelp') || message.content.toLowerCase().includes('!bot help')) {
+                const helpEmbed = getBotQuestionHelp();
+                await message.reply({ embeds: [helpEmbed] });
+                return;
+            }
+            
+            // Handle advanced questions
+            const response = handleBotQuestion(message.content);
+            if (response && response !== "I don't have specific information about that topic yet. Could you rephrase your question or ask about orbs, starcores, skins, resonance, sacred halls, or other advanced game mechanics? I'm here to help with the deeper nuances of Archero 2!") {
+                const embed = new EmbedBuilder()
+                    .setTitle('🤖 Advanced Archero 2 Answer')
+                    .setDescription(response)
+                    .setColor(0x9b59b6)
+                    .setTimestamp()
+                    .setFooter({ text: 'XYIAN Bot - Advanced Game Mechanics' });
+                
+                await message.reply({ embeds: [embed] });
+                return;
+            }
+        }
+        
         // Q&A system for natural language questions
         const answer = getAnswer(message.content);
         if (answer) {
