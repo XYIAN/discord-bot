@@ -1,6 +1,59 @@
 const { Client, GatewayIntentBits, EmbedBuilder, WebhookClient } = require('discord.js');
 require('dotenv').config();
 
+// AI Service (optional - requires OpenAI API key)
+let AIService = null;
+let OpenAI = null;
+
+// Try to load OpenAI
+try {
+    OpenAI = require('openai');
+    if (process.env.OPENAI_API_KEY) {
+        AIService = new OpenAI({
+            apiKey: process.env.OPENAI_API_KEY,
+        });
+        console.log('✅ AI Service loaded successfully');
+    } else {
+        console.log('⚠️ OpenAI API key not found. AI features disabled.');
+    }
+} catch (error) {
+    console.log('⚠️ OpenAI package not installed. AI features disabled.');
+}
+
+// AI helper functions
+async function generateAIResponse(message, channelName) {
+    if (!AIService) return null;
+    
+    try {
+        const context = getAIContext(channelName);
+        const completion = await AIService.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [
+                { role: "system", content: context },
+                { role: "user", content: message }
+            ],
+            max_tokens: 500,
+            temperature: 0.7,
+        });
+        return completion.choices[0]?.message?.content || null;
+    } catch (error) {
+        console.error('❌ OpenAI API error:', error);
+        return null;
+    }
+}
+
+function getAIContext(channelName) {
+    const baseContext = `You are an expert Archero 2 bot assistant for the XYIAN guild community. You have deep knowledge of characters, game mechanics, and strategies. Be helpful, enthusiastic, and knowledgeable. Use emojis appropriately and provide specific, actionable advice.`;
+    
+    if (channelName === 'bot-questions' || channelName === 'bot-questions-advanced') {
+        return `${baseContext} This is the advanced bot questions channel. Provide detailed, technical answers about character abilities, builds, game mechanics, and strategies.`;
+    } else if (channelName === 'xyian-guild') {
+        return `${baseContext} This is the XYIAN guild channel. Focus on guild requirements, Supreme Arena strategies, and team coordination. Guild ID: 213797.`;
+    } else {
+        return `${baseContext} This is a general Archero 2 community channel. Provide helpful advice about basic game mechanics and character recommendations.`;
+    }
+}
+
 // Initialize Discord client with all necessary intents
 const client = new Client({
     intents: [
@@ -451,12 +504,38 @@ const guildResetMessages = [
 
 // Guild reset message
 async function sendGuildResetMessage() {
-    const randomMessage = guildResetMessages[Math.floor(Math.random() * guildResetMessages.length)];
+    let title = '';
+    let description = '';
+    let funFact = '';
+    
+    // Try AI first, then fallback to database
+    if (AIService && AIService.isAIAvailable()) {
+        try {
+            const aiMessage = await AIService.generateDailyMessage('guild');
+            if (aiMessage) {
+                // Parse AI response (simple parsing)
+                const lines = aiMessage.split('\n').filter(line => line.trim());
+                title = lines[0] || '🔄 Daily Reset - XYIAN Guild';
+                description = lines.slice(1).join('\n') || '**Daily reset is here! Time to get back to business!**';
+                funFact = '💡 **AI Generated**: This message was created by AI for variety!';
+            }
+        } catch (error) {
+            console.error('❌ AI daily message error:', error);
+        }
+    }
+    
+    // Fallback to database if AI didn't work
+    if (!title) {
+        const randomMessage = guildResetMessages[Math.floor(Math.random() * guildResetMessages.length)];
+        title = randomMessage.title;
+        description = randomMessage.description;
+        funFact = randomMessage.funFact;
+    }
     
     const embed = new EmbedBuilder()
-        .setTitle(randomMessage.title)
-        .setDescription(randomMessage.description)
-        .addFields({ name: 'Did You Know?', value: randomMessage.funFact, inline: false })
+        .setTitle(title)
+        .setDescription(description)
+        .addFields({ name: 'Did You Know?', value: funFact, inline: false })
         .setColor(0xFF6B35) // Orange for reset
         .setTimestamp()
         .setFooter({ text: 'XYIAN OFFICIAL - Daily Reset' });
@@ -871,30 +950,74 @@ client.on('messageCreate', async (message) => {
                 return;
             }
             
-            // Handle advanced questions
-            const response = handleBotQuestion(message.content);
-            if (response && response !== "I don't have specific information about that topic yet. Could you rephrase your question or ask about orbs, starcores, skins, resonance, sacred halls, or other advanced game mechanics? I'm here to help with the deeper nuances of Archero 2!") {
+            // Try AI first, then fallback to database
+            let response = null;
+            if (AIService) {
+                try {
+                    response = await generateAIResponse(message.content, message.channel.name);
+                } catch (error) {
+                    console.error('❌ AI response error:', error);
+                }
+            }
+            
+            // Fallback to database if AI didn't respond
+            if (!response) {
+                response = handleBotQuestion(message.content);
+                if (response && response !== "I don't have specific information about that topic yet. Could you rephrase your question or ask about orbs, starcores, skins, resonance, sacred halls, or other advanced game mechanics? I'm here to help with the deeper nuances of Archero 2!") {
+                    const embed = new EmbedBuilder()
+                        .setTitle('🤖 Advanced Archero 2 Answer')
+                        .setDescription(response)
+                        .setColor(0x9b59b6)
+                        .setTimestamp()
+                        .setFooter({ text: 'XYIAN Bot - Advanced Game Mechanics' });
+                    
+                    await message.reply({ embeds: [embed] });
+                    return;
+                }
+            } else {
+                // AI response
                 const embed = new EmbedBuilder()
-                    .setTitle('🤖 Advanced Archero 2 Answer')
+                    .setTitle('🤖 AI-Powered Archero 2 Answer')
                     .setDescription(response)
                     .setColor(0x9b59b6)
                     .setTimestamp()
-                    .setFooter({ text: 'XYIAN Bot - Advanced Game Mechanics' });
+                    .setFooter({ text: 'XYIAN Bot - AI Enhanced' });
                 
                 await message.reply({ embeds: [embed] });
                 return;
             }
         }
         
-        // Q&A system for natural language questions
-        const answer = getAnswer(message.content);
-        if (answer) {
+        // Try AI for general questions, then fallback to database
+        let answer = null;
+        if (AIService) {
+            try {
+                answer = await generateAIResponse(message.content, message.channel.name);
+            } catch (error) {
+                console.error('❌ AI response error:', error);
+            }
+        }
+        
+        // Fallback to database if AI didn't respond
+        if (!answer) {
+            answer = getAnswer(message.content);
+            if (answer) {
+                const qaEmbed = new EmbedBuilder()
+                    .setTitle('❓ Archero 2 Q&A')
+                    .setDescription(answer)
+                    .setColor(0x32CD32)
+                    .setTimestamp()
+                    .setFooter({ text: 'XYIAN OFFICIAL' });
+                await message.reply({ embeds: [qaEmbed] });
+            }
+        } else {
+            // AI response
             const qaEmbed = new EmbedBuilder()
-                .setTitle('❓ Archero 2 Q&A')
+                .setTitle('🤖 AI-Powered Archero 2 Answer')
                 .setDescription(answer)
                 .setColor(0x32CD32)
                 .setTimestamp()
-                .setFooter({ text: 'XYIAN OFFICIAL' });
+                .setFooter({ text: 'XYIAN Bot - AI Enhanced' });
             await message.reply({ embeds: [qaEmbed] });
         }
     }
