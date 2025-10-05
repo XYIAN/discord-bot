@@ -1419,7 +1419,7 @@ client.on('messageCreate', async (message) => {
     // Debug logging to track duplicate responses
     console.log(`🔍 Message received: ${message.content} from ${message.author.username} in ${message.channel.name} - VERSION 2.0`);
     
-    // ==================== CRITICAL GATE: DECIDE IF WE SHOULD RESPOND ====================
+    // ==================== CRITICAL GATE: ONLY AI CHANNELS GET LIVE RESPONSES ====================
     const isCommand = message.content.startsWith('!') || message.content.startsWith('/');
     const isDM = message.channel.type === 1;
     const isAIChannel = ['bot-questions', 'bot-questions-advanced', 'archero-ai'].includes(message.channel.name);
@@ -1442,9 +1442,9 @@ client.on('messageCreate', async (message) => {
         }
     }
     
-    // If it's NOT a command, NOT a DM, and NOT in AI channel -> IGNORE
+    // CRITICAL: ONLY AI CHANNELS CAN HAVE LIVE RESPONSES WITHOUT COMMANDS
     if (!isCommand && !isDM && !isAIChannel) {
-        console.log(`⏭️ IGNORING: Not a command, not DM, not AI channel (${message.channel.name})`);
+        console.log(`⏭️ IGNORING: Not a command, not DM, not AI channel (${message.channel.name}) - ONLY AI CHANNELS GET LIVE RESPONSES`);
         return;
     }
     // ==================== END GATE ====================
@@ -2214,17 +2214,15 @@ client.on('messageCreate', async (message) => {
             }
         }
         
-        // CRITICAL: Only respond to plain text in AI channel, commands everywhere else
-        const isCommand = message.content.startsWith('!') || message.content.startsWith('/');
-        const isAIChannel = message.channel.name === 'bot-questions' || message.channel.name === 'bot-questions-advanced' || message.channel.name === 'archero-ai';
-        
-        // If it's not a command AND not in AI channel, skip Q&A
-        if (!isCommand && !isAIChannel) {
-            console.log(`⏭️ Skipping Q&A - not a command and not in AI channel (${message.channel.name})`);
-            return;
-        }
+        // This logic is now handled by the gate above - no duplicate checks needed
         
         // This code should never be reached for guild recruit channels due to the gate above
+        
+        // FINAL SAFETY CHECK: ONLY AI CHANNELS CAN HAVE LIVE RESPONSES
+        if (!isAIChannel && !isCommand && !isDM) {
+            console.log(`🚨 SAFETY CHECK FAILED: Attempted live response in non-AI channel (${message.channel.name})`);
+            return;
+        }
         
         // Q&A System with role-based access - PRIORITIZE DATABASE OVER AI
         let answer = null;
