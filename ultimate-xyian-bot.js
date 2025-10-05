@@ -59,25 +59,27 @@ function getAIContext(channelName) {
     
     const gameMechanics = `Game Systems: Orbs (Fire/Ice/Lightning/Poison/Dark), Starcores (Razor starcore upgrades), Skins (provide abilities), Resonance (character synergies), Sacred Hall vs Tier Up (different progression paths), Supreme Arena (3 characters, 3 builds, item bonuses), Arena (Dragoon/Griffin top heroes), Guild requirements (2 daily boss battles, donations).`;
     
+    const weaponDatabase = `WEAPON DATABASE: Only 3 S-tier weapons exist: Oracle Staff (mage), Griffin Claws (melee), Dragoon Crossbow (ranged). Tier progression: Epic → Legendary → Mythic → Chaotic (max). Basic weapons (Bow, Staff, Claws) cannot level past Legendary. Thor's Mjolnir is an ability, NOT a weapon.`;
+    
     if (channelName === 'bot-questions' || channelName === 'bot-questions-advanced') {
-        return `${baseContext} ${characterKnowledge} ${gameMechanics} This is the advanced bot questions channel. Provide detailed, technical answers about character abilities, builds, game mechanics, strategies, and competitive play. Include specific numbers, percentages, and optimal combinations.`;
+        return `${baseContext} ${characterKnowledge} ${gameMechanics} ${weaponDatabase} This is the advanced bot questions channel. Provide detailed, technical answers about character abilities, builds, game mechanics, strategies, and competitive play. Include specific numbers, percentages, and optimal combinations. ONLY use information from the database - do not make up weapon names, abilities, or stats.`;
     } else if (channelName === 'xyian-guild') {
-        return `${baseContext} ${characterKnowledge} ${gameMechanics} This is the XYIAN guild channel (Guild ID: 213797). Focus on guild requirements (2 daily boss battles, donations), Supreme Arena strategies, team coordination, and competitive guild management. Emphasize teamwork and optimization.`;
+        return `${baseContext} ${characterKnowledge} ${gameMechanics} ${weaponDatabase} This is the XYIAN guild channel (Guild ID: 213797). Focus on guild requirements (2 daily boss battles, donations), Supreme Arena strategies, team coordination, and competitive guild management. Emphasize teamwork and optimization.`;
     } else if (channelName === 'arena' || channelName === 'supreme-arena') {
-        return `${baseContext} ${characterKnowledge} Focus on Arena and Supreme Arena strategies. Dragoon and Griffin are top heroes (Dragoon preferred unless full Griffin build). Cover runes, builds, positioning, and competitive tactics.`;
+        return `${baseContext} ${characterKnowledge} ${weaponDatabase} Focus on Arena and Supreme Arena strategies. Dragoon and Griffin are top heroes (Dragoon preferred unless full Griffin build). Cover runes, builds, positioning, and competitive tactics.`;
     } else {
-        return `${baseContext} ${characterKnowledge} This is a general Archero 2 community channel. Provide helpful advice about basic game mechanics, character recommendations, and beginner-friendly strategies.`;
+        return `${baseContext} ${characterKnowledge} ${weaponDatabase} This is a general Archero 2 community channel. Provide helpful advice about basic game mechanics, character recommendations, and beginner-friendly strategies.`;
     }
 }
 
 // Fallback response functions for when AI fails
 function getFallbackResponse(message) {
     const fallbacks = [
-        "🎮 **Great question!** While I'm processing that, here's some general Archero 2 advice: Focus on upgrading your main weapon and character abilities. The Staff of Light and Demon Blade are excellent choices for most builds!",
-        "⚔️ **Interesting question!** For now, I'd recommend checking out our XYIAN guild strategies. We focus on Supreme Arena optimization and daily boss battles. Feel free to ask about specific characters or weapons!",
-        "🏰 **Good question!** As a XYIAN guild member, I'd suggest focusing on your daily requirements (2 boss battles + donations) and optimizing your character builds. What specific aspect would you like to know more about?",
-        "💎 **Solid question!** The key to Archero 2 success is understanding character synergies and weapon combinations. Thor and Demon King are particularly powerful for different playstyles. What's your current setup?",
-        "🔥 **Excellent question!** For competitive play, focus on Dragoon or Griffin for Arena, and make sure to complete your daily guild requirements. Need help with a specific character or strategy?"
+        "🎮 **Great question!** I know about the 3 S-tier weapons (Oracle Staff, Griffin Claws, Dragoon Crossbow), character resonance (3-star/6-star slots), and basic game mechanics. However, I'm not sure about that specific question. Could you rephrase it or ask about weapons, characters, or resonance?",
+        "⚔️ **Interesting question!** I have detailed info about S-tier weapons, character abilities (Thor, Demon King, Rolla, etc.), and resonance systems. But I'm not prepared for that specific question. What would you like to know about weapons or characters?",
+        "🏰 **Good question!** I know about guild requirements (2 daily boss battles + donations), Supreme Arena strategies, and character synergies. However, I don't have specific information about that topic. Could you ask about something I do know?",
+        "💎 **Solid question!** I have comprehensive knowledge about Oracle/Griffin/Dragoon weapons, character resonance slots, and game mechanics. But I'm not sure about that specific question. What aspect of the game interests you?",
+        "🔥 **Excellent question!** I know about Arena heroes (Dragoon/Griffin), character abilities, and weapon tiers. However, I'm not prepared for that specific question. Could you ask about something I can help with?"
     ];
     
     return fallbacks[Math.floor(Math.random() * fallbacks.length)];
@@ -719,13 +721,17 @@ function getBotQuestionHelp() {
 
 // Archero 2 Q&A Database - CORRECTED AND COMPREHENSIVE
 const archeroQA = {
-    // WEAPONS - CORRECTED INFORMATION
-    "best weapon": "**CORRECT WEAPON INFO**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff**, **Griffin Claws**, and **Dragoon Crossbow**. These are the ONLY weapons that can be upgraded beyond Legendary. All other weapons (basic Bow, Staff, Claws) cannot level past Legendary and are inferior.",
-    "strongest weapon": "**CORRECT WEAPON INFO**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff**, **Griffin Claws**, and **Dragoon Crossbow**. These are the ONLY weapons that can be upgraded beyond Legendary. All other weapons (basic Bow, Staff, Claws) cannot level past Legendary and are inferior.",
-    "weapons": "**CORRECT WEAPON INFO**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff**, **Griffin Claws**, and **Dragoon Crossbow**. These are the ONLY weapons that can be upgraded beyond Legendary. All other weapons (basic Bow, Staff, Claws) cannot level past Legendary and are inferior.",
-    "oracle staff": "**Oracle Staff** - One of the 3 S-tier weapons. Best overall weapon with high damage and great range. Perfect for mage builds and general use. Can be upgraded beyond Legendary unlike basic weapons.",
-    "griffin claws": "**Griffin Claws** - One of the 3 S-tier weapons. Excellent for close combat with high attack speed. Perfect for warrior builds and melee combat. Can be upgraded beyond Legendary unlike basic weapons.",
-    "dragoon crossbow": "**Dragoon Crossbow** - One of the 3 S-tier weapons. Powerful ranged weapon, great for PvP and archer builds. Can be upgraded beyond Legendary unlike basic weapons.",
+    // WEAPONS - COMPREHENSIVE S-TIER DATABASE
+    "best weapon": "**S-TIER WEAPONS**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff** (mage), **Griffin Claws** (melee), and **Dragoon Crossbow** (ranged). These are the ONLY weapons that can be upgraded beyond Legendary. Tier progression: Epic → Legendary → Mythic → Chaotic (max).",
+    "strongest weapon": "**S-TIER WEAPONS**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff** (mage), **Griffin Claws** (melee), and **Dragoon Crossbow** (ranged). These are the ONLY weapons that can be upgraded beyond Legendary. Tier progression: Epic → Legendary → Mythic → Chaotic (max).",
+    "weapons": "**S-TIER WEAPONS**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff** (mage), **Griffin Claws** (melee), and **Dragoon Crossbow** (ranged). These are the ONLY weapons that can be upgraded beyond Legendary. Tier progression: Epic → Legendary → Mythic → Chaotic (max).",
+    "oracle staff": "**Oracle Staff** - S-tier weapon (mage type). Tier progression: Epic → Legendary → Mythic → Chaotic (max). Best for mage builds with high damage and great range. Can be upgraded beyond Legendary unlike basic weapons.",
+    "griffin claws": "**Griffin Claws** - S-tier weapon (melee type). Tier progression: Epic → Legendary → Mythic → Chaotic (max). Excellent for close combat with high attack speed. Perfect for warrior builds and melee combat.",
+    "dragoon crossbow": "**Dragoon Crossbow** - S-tier weapon (ranged type). Tier progression: Epic → Legendary → Mythic → Chaotic (max). Powerful ranged weapon, great for PvP and archer builds. Can be upgraded beyond Legendary unlike basic weapons.",
+    "weapon tiers": "**WEAPON TIER SYSTEM**: S-tier weapons (Oracle Staff, Griffin Claws, Dragoon Crossbow) follow this progression: Epic → Legendary → Mythic → Chaotic (max tier). Basic weapons (Bow, Staff, Claws) cannot level past Legendary and are inferior.",
+    "chaotic tier": "**CHAOTIC TIER**: The maximum tier for S-tier weapons. Only Oracle Staff, Griffin Claws, and Dragoon Crossbow can reach Chaotic tier. Provides the highest stats and abilities in the game.",
+    "mythic tier": "**MYTHIC TIER**: Second-highest tier for S-tier weapons. Only Oracle Staff, Griffin Claws, and Dragoon Crossbow can reach Mythic tier. Significant stat boost from Legendary.",
+    "s tier weapons": "**S-TIER WEAPONS**: Oracle Staff (mage), Griffin Claws (melee), Dragoon Crossbow (ranged). These are the ONLY weapons that can be upgraded beyond Legendary. Tier progression: Epic → Legendary → Mythic → Chaotic (max).",
     "best weapon mage": "**CORRECT WEAPON INFO**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff**, **Griffin Claws**, and **Dragoon Crossbow**. For mage builds, use **Oracle Staff** - it's the best overall weapon with high damage and great range. There are also basic weapons (Bow, Staff, Claws) but they cannot level past Legendary.",
     "best weapon warrior": "**CORRECT WEAPON INFO**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff**, **Griffin Claws**, and **Dragoon Crossbow**. For warrior builds, use **Griffin Claws** - excellent for close combat with high attack speed. There are also basic weapons (Bow, Staff, Claws) but they cannot level past Legendary.",
     "best weapon archer": "**CORRECT WEAPON INFO**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff**, **Griffin Claws**, and **Dragoon Crossbow**. For archer builds, use **Dragoon Crossbow** - powerful ranged weapon, great for PvP. There are also basic weapons (Bow, Staff, Claws) but they cannot level past Legendary.",
