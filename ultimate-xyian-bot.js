@@ -345,11 +345,11 @@ function loadAnalytics() {
 loadAnalytics();
 
 // Start API server
-const startApiServer = require('./api-server');
+const startApiServer = require('./services/api-server');
 startApiServer();
 
 // Initialize learning system
-const ArcheroLearningSystem = require('./learning-system');
+const ArcheroLearningSystem = require('./scripts/learning-system');
 const learningSystem = new ArcheroLearningSystem();
 
 // Helper function to add reaction feedback to responses
@@ -2925,10 +2925,11 @@ client.on('guildMemberAdd', async (member) => {
     // Send SINGLE welcome message to GENERAL CHAT - NO AI, NO SPAM
     try {
         const welcomeEmbed = new EmbedBuilder()
-            .setTitle('🎉 Welcome to Arch 2 Addicts!')
-            .setDescription(`Welcome ${member} to the Arch 2 Addicts community - your premier destination for Archero 2 discussion and strategy!`)
+            .setTitle(`🎉 Welcome to Arch 2 Addicts, ${member.user.username}!`)
+            .setDescription(`Welcome ${member} to the Arch 2 Addicts community - your premier destination for Archero 2 discussion and strategy!\n\n**XY Elder here!** As XYIAN's trusted henchman, I'm excited to help you dominate the leaderboards and achieve competitive excellence!`)
             .setColor(0x00ff88)
-            .setThumbnail('https://cdn.discordapp.com/attachments/1268830572743102505/1279024218473758770/archero2-logo.png')
+            .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 256 }))
+            .setImage('https://cdn.discordapp.com/attachments/1268830572743102505/1279024218473758770/archero2-logo.png')
             .addFields(
                 {
                     name: '🏆 Community Features',
@@ -2941,13 +2942,13 @@ client.on('guildMemberAdd', async (member) => {
                     inline: false
                 },
                 {
-                    name: '🏰 Join Our Guild',
-                    value: '**XYIAN OFFICIAL** - Guild ID: **213797**\n• Requirements: 2 daily boss battles + donations\n• Looking for active players with 300k+ power\n• Supreme Arena specialists and PvP experts',
+                    name: '🏰 Join XYIAN OFFICIAL - Quest for #1!',
+                    value: '**XYIAN OFFICIAL** - Guild ID: **213797**\n• **Grand Master**: XYIAN (Guild Commander)\n• **Requirements**: 2 daily boss battles + donations\n• **Goal**: Dominate leaderboards and become #1\n• **Looking for**: Active players with 300k+ power\n• **Specialists**: Supreme Arena and PvP experts\n• **XY Elder**: Your trusted henchman for competitive excellence!',
                     inline: false
                 },
                 {
-                    name: '⚡ What I Can Help With',
-                    value: '• **Character builds** (Thor, Demon King, Rolla, etc.)\n• **Weapon strategies** (Oracle Staff, Griffin Claws, Dragoon Crossbow)\n• **Supreme Arena** team composition and tactics\n• **Runes and upgrades** with exact stats and effects\n• **Events and rewards** with current schedules',
+                    name: '⚡ XY Elder - Your Competitive Excellence Guide',
+                    value: '• **Character builds** (Thor, Demon King, Rolla, etc.) - Optimize for leaderboard dominance\n• **Weapon strategies** (Oracle Staff, Griffin Claws, Dragoon Crossbow) - Wreck the competition\n• **Supreme Arena** team composition and tactics - Achieve #1 status\n• **Runes and upgrades** with exact stats and effects - Maximize performance\n• **Events and rewards** with current schedules - Stay ahead of the competition\n• **XYIAN Knowledge**: 1000+ database entries of real game data and strategies!',
                     inline: false
                 }
             )
