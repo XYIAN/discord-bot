@@ -58,12 +58,18 @@ async function scrapeTheorycraftingPosts() {
     // Clear cache and hard refresh
     console.log('🗑️ Clearing browser cache...');
     await driver.manage().deleteAllCookies();
-    await driver.executeScript('window.localStorage.clear();');
-    await driver.executeScript('window.sessionStorage.clear();');
     
     // Navigate to Discord first
     await driver.get('https://discord.com/app');
     console.log('📱 Opened Discord app');
+    
+    // Clear storage after navigation
+    try {
+      await driver.executeScript('window.localStorage.clear();');
+      await driver.executeScript('window.sessionStorage.clear();');
+    } catch (e) {
+      console.log('⚠️ Could not clear storage (normal for some browsers)');
+    }
     
     // Hard refresh to ensure clean state
     console.log('🔄 Performing hard refresh...');
@@ -106,38 +112,84 @@ async function scrapeTheorycraftingPosts() {
           await driver.executeScript('window.scrollBy(0, arguments[0]);', Math.random() * 500 + 100);
           await driver.sleep(Math.random() * 2000 + 1000);
           
-          // Try to get the main content
+          // Try to get the main content with multiple selectors
           let content = '';
           try {
-            // Look for message content
-            const messageElements = await driver.findElements(By.css('[data-message-id]'));
-            if (messageElements.length > 0) {
-              const messages = [];
-              for (const element of messageElements.slice(0, 10)) { // Limit to first 10 messages
-                try {
-                  const text = await element.getText();
-                  if (text && text.trim()) {
-                    messages.push(text.trim());
+            // Wait for content to load
+            await driver.sleep(3000);
+            
+            // Try multiple selectors for Discord messages
+            const selectors = [
+              '[data-message-id]',
+              '[class*="message"]',
+              '[class*="Message"]',
+              '[class*="content"]',
+              '[class*="markup"]',
+              'div[role="listitem"]',
+              'div[class*="messageContent"]',
+              'div[class*="messageContent-"]',
+              'div[class*="markup-"]',
+              'div[class*="markup"]'
+            ];
+            
+            let messages = [];
+            for (const selector of selectors) {
+              try {
+                const elements = await driver.findElements(By.css(selector));
+                if (elements.length > 0) {
+                  console.log(`📝 Found ${elements.length} elements with selector: ${selector}`);
+                  for (const element of elements.slice(0, 20)) { // Check more messages
+                    try {
+                      const text = await element.getText();
+                      if (text && text.trim() && text.length > 10) {
+                        messages.push(text.trim());
+                      }
+                    } catch (e) {
+                      // Skip if can't get text
+                    }
                   }
-                } catch (e) {
-                  // Skip if can't get text
+                  if (messages.length > 0) break; // Stop if we found content
                 }
+              } catch (e) {
+                // Try next selector
               }
-              content = messages.join('\n\n');
             }
+            
+            // Also try to get all text from the page
+            if (messages.length === 0) {
+              try {
+                const bodyText = await driver.findElement(By.tagName('body')).getText();
+                if (bodyText && bodyText.length > 100) {
+                  messages.push(bodyText);
+                }
+              } catch (e) {
+                console.log('⚠️ Could not get body text');
+              }
+            }
+            
+            content = messages.join('\n\n');
+            console.log(`📊 Extracted ${content.length} characters of content`);
+            
           } catch (e) {
-            console.log('⚠️ Could not extract message content');
+            console.log('⚠️ Could not extract message content:', e.message);
           }
           
-          if (content && content.length > 50) {
+          if (content && content.length > 20) {
             allData.categories[category].posts.push({
               url: url,
               content: content,
               scrapedAt: new Date().toISOString()
             });
-            console.log(`✅ Successfully scraped post ${i + 1}`);
+            console.log(`✅ Successfully scraped post ${i + 1} (${content.length} chars)`);
           } else {
-            console.log(`⚠️ Post ${i + 1} had insufficient content`);
+            console.log(`⚠️ Post ${i + 1} had insufficient content (${content ? content.length : 0} chars)`);
+            // Debug: save the page source for inspection
+            try {
+              const pageSource = await driver.getPageSource();
+              console.log(`🔍 Page source length: ${pageSource.length} characters`);
+            } catch (e) {
+              console.log('⚠️ Could not get page source');
+            }
           }
           
           // Human-like delay between posts
