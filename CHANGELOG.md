@@ -2,6 +2,28 @@
 
 All notable changes to the Arch 2 Addicts Discord Bot project will be documented in this file.
 
+## [1.3.4] - 2025-10-05
+
+### Added
+- **Comprehensive Documentation**: Complete documentation of all development rules and guidelines
+- **Research Tools Documentation**: Detailed README for research-tools directory
+- **Development Rules**: Comprehensive development rules and best practices
+- **Cursor Rules**: AI assistant rules for consistent development practices
+- **Theorycrafting Scraper**: Ready-to-use scraper for 28 theorycrafting posts
+- **Cache Clearing System**: Browser cache clearing and hard refresh capabilities
+- **Auto-Scrape Command**: "begin scrape" command to automatically start theorycrafting scraper
+
+### Enhanced
+- **Documentation Quality**: All documentation updated and comprehensive
+- **Development Process**: Clear guidelines for preventing common mistakes
+- **Research Workflow**: Organized research tools with proper documentation
+- **Version Control**: Proper semantic versioning and changelog management
+
+### Fixed
+- **Documentation Gaps**: All missing documentation now complete
+- **Development Rules**: Clear rules to prevent future mistakes
+- **Research Organization**: Proper organization of all research tools
+
 ## [1.3.3] - 2025-10-05
 
 ### Added
@@ -9,15 +31,21 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 - **Enhanced AI Responses**: Bot now uses real Discord community knowledge for accurate answers
 - **Forum Thread Scraping**: Added support for scraping Discord forum threads and table of contents
 - **Human-like Scraping**: Implemented realistic delays and behavior patterns to avoid detection
+- **Theorycrafting Posts Scraper**: Created comprehensive scraper for 28 theorycrafting posts organized by category
+- **Cache Clearing System**: Added browser cache clearing and hard refresh before scraping to avoid cooldown issues
+- **Category Organization**: Organized theorycrafting posts by General, PVE, PVP, Events, and Other categories
 
 ### Enhanced
 - **Knowledge Base**: Now contains real Discord community discussions, official wiki data, and user-provided accurate information
 - **Data Quality**: Removed all fake/incorrect data, kept only verified accurate information
 - **Scraping Capabilities**: Added comprehensive forum thread scraping with human-like behavior
+- **Research Tools**: Complete research-tools directory with dedicated scrapers and knowledge injectors
+- **Documentation**: Comprehensive documentation of all scraping tools and knowledge integration
 
 ### Fixed
 - **Data Accuracy**: All bot responses now based on real community knowledge instead of fake data
 - **Knowledge Integration**: Properly wired all Discord channels, wiki data, and user information
+- **Scraping Reliability**: Added cache clearing and fresh browser sessions to prevent cooldown issues
 
 ## [1.3.1] - 2024-12-19
 

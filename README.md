@@ -24,7 +24,7 @@
 ### 🤖 **AI-Powered Intelligence**
 - **OpenAI GPT-3.5-turbo Integration** - Context-aware responses with deep game knowledge
 - **Machine Learning System** - Learns from user feedback and improves responses automatically
-- **Expert Knowledge Database** - 800+ curated Q&A entries with advanced game mechanics
+- **Real Community Knowledge Database** - 4.3M+ characters of verified Discord community content
 - **Channel-Aware AI** - Adapts responses based on channel type (general, guild, arena, bot-questions)
 
 ### 🧠 **Advanced Learning System**
@@ -47,14 +47,16 @@
 
 XYIAN Bot is a **sophisticated AI-powered Discord platform** specifically designed for the **Archero 2** gaming community. It combines cutting-edge machine learning, comprehensive game knowledge, and advanced community management to create the ultimate gaming Discord experience.
 
-### 🆕 **Latest Version: 0.1.1** - Major AI & ML Enhancements
+### 🆕 **Latest Version: 1.3.4** - Ultra-Advanced Community Platform
 
-- **🧠 Advanced Machine Learning** - Sophisticated learning system with pattern recognition
-- **📊 Comprehensive Analytics** - Real-time performance monitoring and user engagement tracking
+- **🧠 Comprehensive Knowledge Base** - 4.3M+ characters of real Discord community content
+- **📊 Advanced Analytics** - Real-time performance monitoring and user engagement tracking
 - **🤖 Enhanced AI Integration** - Role-based AI access with channel-specific responses
 - **📈 Learning System** - Automatic response improvement from user feedback
 - **🔧 API Server** - Self-hosted Express.js API with 9 endpoints for data access
-- **📚 Expert Knowledge Database** - 800+ curated entries with advanced game mechanics
+- **📚 Expert Knowledge Database** - Real community knowledge with verified accurate information
+- **🛡️ Crash Prevention** - Comprehensive error handling and duplicate instance prevention
+- **🎉 Supercharged Welcome** - Rich welcome messages with community features and guild info
 
 ---
 
@@ -88,7 +90,7 @@ XYIAN Bot is a **sophisticated AI-powered Discord platform** specifically design
 
 ### **🤖 AI-Powered Q&A System**
 - **Context-Aware Responses** - AI adapts to channel type and user context
-- **Expert Knowledge Integration** - 800+ curated entries with advanced game mechanics
+- **Real Community Knowledge Integration** - 4.3M+ characters of verified Discord community content
 - **Learning from Feedback** - Real-time improvement from user reactions
 - **Confidence Scoring** - Dynamic confidence tracking for response quality
 - **Fallback Systems** - Graceful degradation when AI is unavailable
@@ -222,11 +224,12 @@ API_KEY=your_api_key
 | `!tip` | Daily Archero 2 tip | All users |
 | `!analytics` | Performance metrics | XYIAN OFFICIAL |
 | `!learn` | Learning system report | XYIAN OFFICIAL |
+| `!discord-bot-clean` | Clean duplicate bot processes | XYIAN OFFICIAL |
 
 ### **🧠 AI Q&A System**
 - **Natural Language Processing** - Ask questions in natural language
 - **Context-Aware Responses** - AI adapts to channel and user context
-- **Expert Knowledge** - 800+ curated entries with advanced game mechanics
+- **Real Community Knowledge** - 4.3M+ characters of verified Discord community content
 - **Learning from Feedback** - Real-time improvement from user reactions
 
 ---
@@ -351,17 +354,21 @@ GET  /api/export/analytics         # Export analytics (JSON/CSV)
 ## 🏆 **Achievements & Stats**
 
 ### **Platform Statistics**
-- **800+ Q&A Entries** - Comprehensive game knowledge database
+- **4.3M+ Characters** - Real Discord community knowledge database
+- **12 Discord Channels** - Comprehensive community content integration
 - **9 API Endpoints** - Complete analytics and learning platform
 - **Real-time Learning** - Machine learning from user feedback
 - **Multi-channel AI** - Context-aware responses across channels
 - **Advanced Analytics** - Comprehensive performance monitoring
+- **Crash Prevention** - Robust error handling and duplicate prevention
 
 ### **Technical Achievements**
 - **Dual-Service Architecture** - Discord bot + API server on single instance
 - **Machine Learning Pipeline** - Real-time learning and improvement
-- **Expert Knowledge Integration** - Curated game mechanics database
+- **Real Community Knowledge Integration** - 4.3M+ characters of verified Discord content
 - **Advanced Analytics** - Performance monitoring and user behavior analysis
+- **Crash Prevention System** - Comprehensive error handling and duplicate prevention
+- **Supercharged Welcome System** - Rich community onboarding with guild integration
 
 ---
 

@@ -1,6 +1,6 @@
 {
   "name": "arch2-discord-bot",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "description": "Discord bot for Arch 2 Addicts community with XYIAN guild integration",
   "main": "ultimate-xyian-bot.js",
   "scripts": {

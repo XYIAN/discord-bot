@@ -10,6 +10,7 @@ The XYIAN Bot now includes optional OpenAI API integration for enhanced conversa
 - **Smart Q&A**: AI handles complex questions with context awareness
 - **Natural Language**: Understands conversational questions
 - **Context-Aware**: Adapts responses based on channel type
+- **Real Community Knowledge**: Uses 4.3M+ characters of verified Discord content
 - **Fallback System**: Falls back to database if AI fails
 
 ### 📝 **Dynamic Content Generation**

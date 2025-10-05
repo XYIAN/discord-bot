@@ -10,6 +10,7 @@ The XYIAN Discord Bot is a comprehensive Archero 2 community management system b
 ```
 discord-bot/
 ├── ultimate-xyian-bot.js          # Main bot file (production)
+├── api-server.js                  # Express API server
 ├── src/                           # TypeScript source (development)
 │   ├── commands/                  # Command modules
 │   ├── services/                  # Service layer
@@ -17,7 +18,8 @@ discord-bot/
 │   └── types/                     # TypeScript definitions
 ├── docs/                          # Documentation
 ├── archive/                       # Legacy files
-└── config/                        # Configuration files
+├── config/                        # Configuration files
+└── research-tools/                # Knowledge base integration tools
 ```
 
 ## Working Examples
