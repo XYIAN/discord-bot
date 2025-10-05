@@ -1950,25 +1950,10 @@ client.on('messageCreate', async (message) => {
                 return;
             }
             
-            // Try AI first, then fallback to database
-            let response = null;
-            if (AIService) {
-                try {
-                    response = await generateAIResponse(message.content, message.channel.name);
-                } catch (error) {
-                    console.error('❌ AI response error:', error);
-                }
-            }
+            // Use database only (AI will be handled in main Q&A section to prevent duplicates)
+            const response = handleBotQuestion(message.content);
             
-            // Fallback to database if AI didn't respond
-            if (!response) {
-                response = handleBotQuestion(message.content);
-                
-                // If no database answer, provide a helpful fallback
-                if (!response || response === "I don't have specific information about that topic yet. Could you rephrase your question or ask about orbs, starcores, skins, resonance, sacred halls, or other advanced game mechanics? I'm here to help with the deeper nuances of Archero 2!") {
-                    response = getAdvancedFallbackResponse(message.content);
-                }
-                
+            if (response && response !== "I don't have specific information about that topic yet. Could you rephrase your question or ask about orbs, starcores, skins, resonance, sacred halls, or other advanced game mechanics? I'm here to help with the deeper nuances of Archero 2!") {
                 const embed = new EmbedBuilder()
                     .setTitle('🤖 Advanced Archero 2 Answer')
                     .setDescription(response)
@@ -1979,21 +1964,14 @@ client.on('messageCreate', async (message) => {
                 await message.reply({ embeds: [embed] });
                 return;
             } else {
-                // AI response
-                const startTime = Date.now();
                 const embed = new EmbedBuilder()
-                    .setTitle('🤖 AI-Powered Archero 2 Answer')
-                    .setDescription(response)
+                    .setTitle('🤖 Advanced Archero 2 Answer')
+                    .setDescription(getAdvancedFallbackResponse(message.content))
                     .setColor(0x9b59b6)
                     .setTimestamp()
-                    .setFooter({ text: 'XYIAN Bot - AI Enhanced' });
+                    .setFooter({ text: 'XYIAN Bot - Advanced Game Mechanics' });
                 
-                const reply = await message.reply({ embeds: [embed] });
-                const responseTime = Date.now() - startTime;
-                
-                // Log AI interaction and add feedback
-                logInteraction(message.content, response, message.author.id, message.channel.name, responseTime, true);
-                await addReactionFeedback(reply);
+                await message.reply({ embeds: [embed] });
                 return;
             }
         }
