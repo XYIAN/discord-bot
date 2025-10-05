@@ -86,7 +86,16 @@ function getFallbackResponse(message) {
         "🔥 **Excellent question!** I know about Arena heroes (Dragoon/Griffin), character abilities, and weapon tiers. However, I'm not prepared for that specific question. Could you ask about something I can help with?"
     ];
     
-    return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+    const response = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+    
+    // Log this as a correction opportunity
+    logCorrection(
+        message, 
+        response, 
+        "Fallback response used - bot admitted uncertainty instead of giving wrong information"
+    );
+    
+    return response;
 }
 
 function getAdvancedFallbackResponse(message) {
@@ -1331,12 +1340,42 @@ function trackResponse(message, responseType = 'unknown') {
     
     if (tracker.responseCount >= 1) {
         console.log(`⚠️ DUPLICATE RESPONSE BLOCKED: Already sent ${tracker.responseCount} responses for message ${message.id} (${responseType})`);
+        
+        // Log this as a correction - preventing duplicate responses
+        logCorrection(
+            `Duplicate ${responseType} command from ${message.author.username}`,
+            "Response blocked - duplicate prevention system activated",
+            "Duplicate response prevention - system working correctly"
+        );
+        
         return false;
     }
     
     tracker.responseCount++;
     console.log(`✅ RESPONSE TRACKED: ${responseType} response #${tracker.responseCount} for message ${message.id}`);
     return true;
+}
+
+// Helper function to log corrections to admin webhook
+async function logCorrection(originalMessage, correction, reason) {
+    try {
+        const correctionEmbed = new EmbedBuilder()
+            .setTitle('🔧 Bot Correction Logged')
+            .setColor(0xFF6B35)
+            .addFields(
+                { name: '📝 Original Message', value: originalMessage, inline: false },
+                { name: '✅ Correction Applied', value: correction, inline: false },
+                { name: '📊 Reason', value: reason, inline: false },
+                { name: '⏰ Timestamp', value: new Date().toISOString(), inline: true }
+            )
+            .setTimestamp()
+            .setFooter({ text: 'XYIAN Bot - Correction System' });
+        
+        await sendToAdmin({ embeds: [correctionEmbed] });
+        console.log(`🔧 CORRECTION LOGGED: ${reason} - Original: "${originalMessage}" -> Corrected: "${correction}"`);
+    } catch (error) {
+        console.error('❌ Failed to log correction:', error);
+    }
 }
 
 // Message handling
@@ -2087,8 +2126,16 @@ client.on('messageCreate', async (message) => {
                     answer = "❓ I'd love to help with your Archero 2 question! However, AI-powered responses require the **XYIAN Guild Verified** role or higher. You can still ask basic questions, or use `!menu` to see what I can help with!";
                 }
             }
-            
-            const qaEmbed = new EmbedBuilder()
+        } else if (isAIResponse) {
+            // Log AI response for potential correction tracking
+            logCorrection(
+                message.content,
+                answer,
+                "AI response generated - monitor for accuracy and user feedback"
+            );
+        }
+        
+        const qaEmbed = new EmbedBuilder()
                 .setTitle(isAIResponse ? '🤖 AI-Powered Archero 2 Answer' : '❓ Archero 2 Q&A')
                 .setDescription(answer)
                 .setColor(isAIResponse ? 0x32CD32 : (hasAIAccess ? 0x00BFFF : 0xFF6B35))
