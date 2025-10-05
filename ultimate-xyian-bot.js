@@ -134,9 +134,9 @@ ${databaseSample}
     if (channelName === 'bot-questions' || channelName === 'bot-questions-advanced') {
         return `${baseContext} ${xyianIdentity} ${comprehensiveKnowledge} ${xyianValues} This is the advanced bot questions channel. As XY Elder, XYIAN's henchman, provide detailed technical answers using our comprehensive database. Focus on strategies that help members wreck the leaderboards and achieve competitive excellence. Emphasize that stats are hard to get in this game - that's where your extensive knowledge comes in. Always reference our database knowledge and XYIAN's quest for #1 leaderboard dominance.`;
     } else if (channelName === 'xyian-guild') {
-        return `${baseContext} ${xyianIdentity} ${comprehensiveKnowledge} ${xyianValues} This is the XYIAN OFFICIAL guild channel. As XY Elder, XYIAN's trusted henchman, focus on guild requirements (2 daily boss battles, donations), Supreme Arena strategies, team coordination, and competitive guild management. Emphasize our leaderboard dominance goals, competitive excellence, and helping members develop skills to wreck the leaderboards. Reference our Guild ID: 213797 and your role as XYIAN's henchman.`;
-    } else if (channelName === 'arena' || channelName === 'supreme-arena') {
-        return `${baseContext} ${xyianIdentity} ${comprehensiveKnowledge} ${xyianValues} Focus on Arena and Supreme Arena strategies using our comprehensive database. As XY Elder, XYIAN's henchman, cover runes, builds, positioning, and competitive tactics that help members dominate the leaderboards. Emphasize our quest for #1 status and competitive excellence.`;
+        return `${baseContext} ${xyianIdentity} ${comprehensiveKnowledge} ${xyianValues} This is the XYIAN OFFICIAL guild channel. As XY Elder, XYIAN's trusted henchman, focus on guild requirements (2 daily boss battles, donations), Peak Arena strategies, team coordination, and competitive guild management. Emphasize our leaderboard dominance goals, competitive excellence, and helping members develop skills to wreck the leaderboards. Reference our Guild ID: 213797 and your role as XYIAN's henchman.`;
+    } else if (channelName === 'arena' || channelName === 'peak-arena') {
+        return `${baseContext} ${xyianIdentity} ${comprehensiveKnowledge} ${xyianValues} Focus on Arena and Peak Arena strategies using our comprehensive database. As XY Elder, XYIAN's henchman, cover runes, builds, positioning, and competitive tactics that help members dominate the leaderboards. Emphasize our quest for #1 status and competitive excellence.`;
     } else {
         return `${baseContext} ${xyianIdentity} ${comprehensiveKnowledge} ${xyianValues} This is a general Archero 2 community channel. As XY Elder, XYIAN's henchman, provide helpful advice using our comprehensive database while emphasizing XYIAN's quest for leaderboard dominance and competitive excellence.`;
     }
@@ -147,7 +147,7 @@ function getFallbackResponse(message) {
     const fallbacks = [
         "🎮 **Great question!** I know about the 3 S-tier weapons (Oracle Staff, Griffin Claws, Dragoon Crossbow), character resonance (3-star/6-star slots), and basic game mechanics. However, I'm not sure about that specific question. Could you rephrase it or ask about weapons, characters, or resonance?",
         "⚔️ **Interesting question!** I have detailed info about S-tier weapons, character abilities (Thor, Demon King, Rolla, etc.), and resonance systems. But I'm not prepared for that specific question. What would you like to know about weapons or characters?",
-        "🏰 **Good question!** I know about guild requirements (2 daily boss battles + donations), Supreme Arena strategies, and character synergies. However, I don't have specific information about that topic. Could you ask about something I do know?",
+        "🏰 **Good question!** I know about guild requirements (2 daily boss battles + donations), Peak Arena strategies, and character synergies. However, I don't have specific information about that topic. Could you ask about something I do know?",
         "💎 **Solid question!** I have comprehensive knowledge about Oracle/Griffin/Dragoon weapons, character resonance slots, and game mechanics. But I'm not sure about that specific question. What aspect of the game interests you?",
         "🔥 **Excellent question!** I know about Arena heroes (Dragoon/Griffin), character abilities, and weapon tiers. However, I'm not prepared for that specific question. Could you ask about something I can help with?"
     ];
@@ -168,7 +168,7 @@ function getAdvancedFallbackResponse(message) {
     const advancedFallbacks = [
         "🔬 **Advanced Question Detected!** While I'm analyzing that complex mechanic, here's some advanced Archero 2 knowledge: Orb swapping costs gems but provides massive build flexibility. Fire orbs boost damage, while Ice orbs provide crowd control. What specific advanced mechanic interests you?",
         "⚡ **Technical Question!** For advanced game mechanics like starcores and resonance, the key is understanding character synergies. Thor's lightning abilities pair well with electric orbs, while Demon King's shield benefits from defensive starcores. What advanced topic would you like to explore?",
-        "🎯 **Complex Strategy Question!** Supreme Arena requires 3 different characters with 3 different builds. Each unique item provides bonus health and damage. Dragoon excels with mobility builds, while Griffin dominates with full build optimization. What specific strategy are you working on?",
+        "🎯 **Complex Strategy Question!** Peak Arena requires 3 different characters with 3 different builds. Each unique item provides bonus health and damage. Dragoon excels with mobility builds, while Griffin dominates with full build optimization. What specific strategy are you working on?",
         "💫 **Advanced Mechanics Question!** Skins provide unique abilities beyond just cosmetic changes. Demon King's skins enhance shield capabilities, while Thor's skins improve lightning damage. Resonance between characters creates powerful synergies. What advanced mechanic are you curious about?",
         "🌟 **Expert-Level Question!** Sacred Hall vs Tier Up represent different progression paths. Sacred Hall focuses on character-specific bonuses, while Tier Up improves overall stats. The choice depends on your build strategy. What specific progression path interests you?"
     ];
@@ -474,17 +474,17 @@ async function sendPersonalizedOnboarding(member) {
                 },
                 { 
                     name: '💬 Ask Me Anything!', 
-                    value: 'Just type your question naturally - no commands needed!\n\n**Advanced Examples:**\n• "What\'s the best Supreme Arena team composition?"\n• "How do I optimize my rune workshop?"\n• "Which character resonance should I focus on?"\n• "What are the exact stats for Thor\'s abilities?"\n• "How do I get the best weapon upgrades?"', 
+                    value: 'Just type your question naturally - no commands needed!\n\n**Advanced Examples:**\n• "What\'s the best Peak Arena team composition?"\n• "How do I optimize my rune workshop?"\n• "Which character resonance should I focus on?"\n• "What are the exact stats for Thor\'s abilities?"\n• "How do I get the best weapon upgrades?"', 
                     inline: false 
                 },
                 { 
                     name: '🏰 XYIAN Guild - Elite Competitive Play', 
-                    value: '**Guild ID: 213797**\n• Requirements: 2 daily boss battles + donations\n• Looking for active players with 300k+ power\n• Supreme Arena specialists and PvP experts\n• Exclusive guild strategies and team coordination', 
+                    value: '**Guild ID: 213797**\n• Requirements: 2 daily boss battles + donations\n• Looking for active players with 300k+ power\n• Peak Arena specialists and PvP experts\n• Exclusive guild strategies and team coordination', 
                     inline: false 
                 },
                 { 
                     name: '⚡ What I Know About Archero 2', 
-                    value: '• **ALL Characters** with exact stats, abilities, and resonance\n• **ALL Weapons** with upgrade paths and evolution requirements\n• **ALL Runes** with exact effects and workshop mechanics\n• **Supreme Arena** team composition and positioning\n• **Events** with current schedules and rewards\n• **Gear sets** with bonuses and synergies', 
+                    value: '• **ALL Characters** with exact stats, abilities, and resonance\n• **ALL Weapons** with upgrade paths and evolution requirements\n• **ALL Runes** with exact effects and workshop mechanics\n• **Peak Arena** team composition and positioning\n• **Events** with current schedules and rewards\n• **Gear sets** with bonuses and synergies', 
                     inline: false 
                 },
                 { 
@@ -655,7 +655,7 @@ async function continuePersonalizedSetup(message) {
 async function sendStep3(message, userPrefs) {
     const step3Embed = new EmbedBuilder()
         .setTitle('🎯 Personalized Setup - Step 3/3')
-        .setDescription('**Question 3:** Would you like arena strategy tips?\n\nThese will help you with:\n• Supreme Arena team composition\n• Character resonance strategies\n• Item bonuses and synergies\n• Competitive tactics')
+        .setDescription('**Question 3:** Would you like arena strategy tips?\n\nThese will help you with:\n• Peak Arena team composition\n• Character resonance strategies\n• Item bonuses and synergies\n• Competitive tactics')
         .setColor(0x00BFFF)
         .addFields(
             { name: '💡 Reply with:', value: '**"yes"** or **"no"**', inline: false }
@@ -678,7 +678,7 @@ const advancedArcheroQA = {
     "razor starcore": "Razor Starcore is a late-game enhancement system that provides massive stat bonuses. Each starcore can be upgraded using Razor Shards and provides unique abilities. There are 5 starcore slots: Weapon, Armor, Accessory, Rune, and Special.",
     "starcore upgrades": "Starcore Upgrades: Each starcore has 10 levels. Level 1-3: Basic stat bonuses, Level 4-6: Unlock special abilities, Level 7-9: Enhanced abilities, Level 10: Ultimate ability. Upgrading requires Razor Shards which are obtained from high-level content and events.",
     "starcore combinations": "Starcore Combinations: Weapon + Armor (damage + defense), Accessory + Rune (utility + survivability), Special + Weapon (unique abilities + damage). Some combinations provide synergy bonuses when used together.",
-    "razor shards": "Razor Shards are rare materials used to upgrade starcores. Sources: Supreme Arena rewards, high-level dungeons, special events, guild activities. Save them for your most important starcores as they're extremely rare.",
+    "razor shards": "Razor Shards are rare materials used to upgrade starcores. Sources: Peak Arena rewards, high-level dungeons, special events, guild activities. Save them for your most important starcores as they're extremely rare.",
     
     // Skin System
     "skin effects": "Skin Effects: Each skin provides unique stat bonuses and special abilities. Common skins: +5-10% damage, Rare skins: +10-15% damage + special effect, Epic skins: +15-20% damage + unique ability, Legendary skins: +20-25% damage + ultimate ability.",
@@ -714,7 +714,7 @@ const advancedArcheroQA = {
     "character skins": "Character Skins: Skins provide stat bonuses and special abilities. Demon King skins are particularly useful as they add abilities to his shield. Each character has multiple skins with different effects and bonuses. Focus on skins that complement your playstyle.",
     
     // Character Selection Guide
-    "best characters": "Best Characters by Content: PvP - Thor, Loki, Demon King. PvE - Seraph, Dracoola, Rolla. Supreme Arena - Thor, Demon King, Griffin. Choose based on your preferred content and playstyle.",
+    "best characters": "Best Characters by Content: PvP - Thor, Loki, Demon King. PvE - Seraph, Dracoola, Rolla. Peak Arena - Thor, Demon King, Griffin. Choose based on your preferred content and playstyle.",
     "character leveling": "Character Leveling: Each character gains new abilities and stat bonuses as you level up. Thor unlocks hammer summons and lightning damage, Demon King's shield becomes more powerful, Epic characters get enhanced versions of their base abilities.",
     "character acquisition": "Character Acquisition: Legendary characters from premium sources, Epic characters from various content. Seraph is PvE only, Loki is PvP only. Focus on characters that match your preferred content type.",
     "character builds": "Character Builds: Thor - Lightning and mobility builds, Demon King - Tank and shield builds, Rolla - Freeze and crit builds, Dracoola - Life steal and sustain builds, Seraph - Angel and PvE builds, Loki - Movement and PvP builds.",
@@ -874,11 +874,11 @@ function getBotQuestionHelp() {
 
 // Archero 2 Q&A Database - ULTRA-COMPREHENSIVE DEEP RESEARCH
 const archeroQA = {
-    // SUPREME ARENA - COMPLETE MECHANICS
-    "supreme arena": "**SUPREME ARENA RULES**: No player limit. Weekly rankings: Top 40% maintain rank, 60% demoted. Team composition: 3 characters max with different builds. Unique items provide bonus health/damage. Auto-battler PvP with strategic positioning. Rewards: Daily/weekly based on ranking.",
-    "supreme arena rules": "**SUPREME ARENA MECHANICS**: Unlimited players. Weekly demotion system (top 40% stay, 60% demoted). Team of 3 characters with unique builds. Special items grant bonus health and damage. Strategic positioning crucial. Daily/weekly rewards based on performance.",
-    "supreme arena team": "**SUPREME ARENA TEAM COMPOSITION**: 3 characters max. Balanced team: Tank (absorbs damage), Damage Dealer (high attack), Support (healing/buffs). Strategic positioning key. Unique items provide bonus health/damage. Auto-battler mechanics.",
-    "supreme arena composition": "**SUPREME ARENA TEAM BUILD**: 3-character limit. Essential roles: Tank (high health/defense), DPS (high attack power), Support (healing/buffs). Positioning crucial for success. Unique items grant health/damage bonuses.",
+    // Peak Arena - COMPLETE MECHANICS
+    "Peak Arena": "**Peak Arena RULES**: No player limit. Weekly rankings: Top 40% maintain rank, 60% demoted. Team composition: 3 characters max with different builds. Unique items provide bonus health/damage. Auto-battler PvP with strategic positioning. Rewards: Daily/weekly based on ranking.",
+    "Peak Arena rules": "**Peak Arena MECHANICS**: Unlimited players. Weekly demotion system (top 40% stay, 60% demoted). Team of 3 characters with unique builds. Special items grant bonus health and damage. Strategic positioning crucial. Daily/weekly rewards based on performance.",
+    "Peak Arena team": "**Peak Arena TEAM COMPOSITION**: 3 characters max. Balanced team: Tank (absorbs damage), Damage Dealer (high attack), Support (healing/buffs). Strategic positioning key. Unique items provide bonus health/damage. Auto-battler mechanics.",
+    "Peak Arena composition": "**Peak Arena TEAM BUILD**: 3-character limit. Essential roles: Tank (high health/defense), DPS (high attack power), Support (healing/buffs). Positioning crucial for success. Unique items grant health/damage bonuses.",
     
     // RUNES - COMPLETE DATABASE WITH EXACT STATS
     "runes": "**COMPLETE RUNES DATABASE**: **Blessing Runes**: Revive (ATK+36, HP+144, Epic: 50% revive chance, Mythic: 100% revive), Guardian (ATK+36, HP+144, Epic: -5% damage), Lucky Shadow (ATK+36, HP+144, Epic: +5% luck/+2% dodge, Mythic: +15% luck/+10% dodge). **Enhancement Runes**: Sharp Arrow (ATK+20, Epic: +10% weapon damage, Mythic: +30%), Sprite Multishot (ATK+20, Epic: 30% multi-shot chance, Mythic: +50% sprite speed). **Ability Runes**: Flame Poison Touch (HP+80, Epic: ignite random monster every 2s, Mythic: 1.5s cooldown).",
@@ -934,7 +934,7 @@ const archeroQA = {
     "umbral tempest": "**UMBRAL TEMPEST**: Formidable challenge with unique mechanics. High difficulty. Exclusive gear and runes. Leaderboard rewards. Check Discord channel 1419521725418180618 for strategies.",
     
     // GAME MODES - COMPLETE MECHANICS
-    "game modes": "**COMPLETE GAME MODES**: **Campaign**: Main progression (chapters). **Sky Tower**: Floor climbing (5 stages per level). **Seal Battle**: Boss damage testing. **Gold Cave**: Resource farming. **Rune Ruins**: Rune acquisition. **Monster Invasion**: Guild boss. **Supreme Arena**: Auto-battler PvP (3-character teams). **Hero Duo**: Cooperative play. **PvP**: Player vs Player combat.",
+    "game modes": "**COMPLETE GAME MODES**: **Campaign**: Main progression (chapters). **Sky Tower**: Floor climbing (5 stages per level). **Seal Battle**: Boss damage testing. **Gold Cave**: Resource farming. **Rune Ruins**: Rune acquisition. **Monster Invasion**: Guild boss. **Peak Arena**: Auto-battler PvP (3-character teams). **Hero Duo**: Cooperative play. **PvP**: Player vs Player combat.",
     "campaign": "**CAMPAIGN MODE**: Main progression path. Complete chapters to unlock new content. Essential rewards. Story progression.",
     "pvp": "**PvP MODE**: Player vs Player combat. Test skills against other players. Ranking system. Rewards based on performance.",
     "hero duo": "**HERO DUO**: Cooperative gameplay mode. Team up with other players. Gems and experience rewards. Social gameplay.",
@@ -1004,8 +1004,8 @@ const archeroQA = {
     "character tier list": "**CHARACTER TIER LIST**: S-tier: Thor, Demon King. A-tier: Rolla, Loki, Helix, Hela. B-tier: Dracoola, Seraph, Nyanja. C-tier: Alex (starting hero). Focus on S and A-tier characters for competitive play.",
     "pvp characters": "**PvP CHARACTERS**: Best for PvP: Thor (mobile combat), Loki (movement speed), Rolla (freeze control), Demon King (tank). Avoid Seraph (PvE only). Focus on mobility and control for PvP success.",
     "pve characters": "**PvE CHARACTERS**: Best for PvE: Thor (versatile), Demon King (tank), Seraph (PvE bonuses), Helix (damage scaling). All characters work in PvE, but these excel in different content types.",
-    "guild requirements": "**GUILD REQUIREMENTS**: XYIAN Guild (ID: 213797) requires: 2 daily boss battles + donations to stay active. Inactive players are removed. Focus on daily completion for guild benefits and Supreme Arena participation.",
-    "supreme arena": "**SUPREME ARENA**: Requires 3 different characters with 3 different builds. Each unique item provides bonus health and damage. Best characters: Dragoon, Griffin, Thor. Focus on diverse builds and item variety for maximum bonuses.",
+    "guild requirements": "**GUILD REQUIREMENTS**: XYIAN Guild (ID: 213797) requires: 2 daily boss battles + donations to stay active. Inactive players are removed. Focus on daily completion for guild benefits and Peak Arena participation.",
+    "Peak Arena": "**PEAK ARENA**: Requires 3 different characters with 3 different builds. Each unique item provides bonus health and damage. Best characters: Dragoon, Griffin, Thor. Focus on diverse builds and item variety for maximum bonuses.",
     "arena heroes": "**ARENA HEROES**: Best Arena heroes: Dragoon (preferred), Griffin (if full build). Avoid other heroes for competitive Arena. Focus on mobility and damage for Arena success.",
     "f2p guide": "**F2P GUIDE**: Focus on: 1) Daily boss battles, 2) Save gems for fishing event, 3) Upgrade S-tier weapons only, 4) Join active guild, 5) Complete daily quests. Avoid spending gems on basic weapons or cash-only events.",
     "beginner guide": "**BEGINNER GUIDE**: Start with Alex, focus on Oracle Staff/Griffin Claws/Dragoon Crossbow, complete daily quests, join XYIAN guild (213797), save gems for fishing event, learn resonance system at 3-star characters.",
@@ -1061,16 +1061,16 @@ const archeroQA = {
     "best build": "Best build depends on your class: Warrior - Demon Blade + defensive skills, Mage - Staff of Light + magical skills, Archer - Windforce + mobility skills. Focus on synergy between your weapon and chosen skills.",
     "daily reset": "Daily reset happens at 5:00 PM Pacific Time. Remember to complete your daily quests, boss battles, and guild donations before reset to maximize your rewards!",
     "arena": "Arena is a fully automated PvP mode where you select heroes and gear, then AI handles combat. Winning increases ladder points, losses decrease them. Rewards include gold, scrolls, and Arena Exchange Tickets based on your PvP tier and ranking.",
-    "supreme arena": "Supreme Arena is the ultimate PvP challenge requiring 3 different characters with 3 different builds. Each different item provides bonus health and damage. Top 40% of players remain in Supreme Rank weekly, others are demoted. Only the most skilled players with optimal builds can consistently win.",
-    "arena vs supreme arena": "Both are fully automated PvP modes. Arena is accessible to most players with decent rewards. Supreme Arena requires 3-character team composition with different builds and items for maximum bonuses. Supreme Arena has much higher difficulty but offers the best rewards and exclusive items.",
+    "Peak Arena": "Peak Arena is the ultimate PvP challenge requiring 3 different characters with 3 different builds. Each different item provides bonus health and damage. Top 40% of players remain in Supreme Rank weekly, others are demoted. Only the most skilled players with optimal builds can consistently win.",
+    "arena vs Peak Arena": "Both are fully automated PvP modes. Arena is accessible to most players with decent rewards. Peak Arena requires 3-character team composition with different builds and items for maximum bonuses. Peak Arena has much higher difficulty but offers the best rewards and exclusive items.",
     "arena tips": "**Arena Tips**: 1) Use **Dragoon** as your primary hero, 2) Use **Griffin** only if you have a complete Griffin build, 3) Equip Revive Rune for second chance, 4) Prioritize ranged attack enhancements, 5) Focus on S-tier gear upgrades, 6) Complete daily arena runs, 7) Aim for top 15 in bracket for tier advancement. Dragoon excels with mobility builds, while Griffin dominates with full build optimization.",
-    "supreme arena tips": "**Supreme Arena Tips**: 1) Use **3 different characters** with **3 different builds**, 2) Each different item provides **bonus health and damage**, 3) Dragoon + Griffin + third hero recommended, 4) Revive Rune is essential (50% chance to revive with half HP), 5) Maximize item diversity for stat bonuses, 6) Focus on Multi-shot, Ricochet, Piercing skills, 7) Only top 1% players compete here. Best characters: Dragoon (mobility), Griffin (damage), Thor (lightning), Demon King (defensive).",
-    "supreme arena rules": "Supreme Arena Rules: 1) Must use 3 different characters, 2) Must use 3 different builds (can use same character but different items), 3) Each different item provides bonus health and damage, 4) Top 40% of players remain in Supreme Rank weekly, 5) 60% are demoted each week, 6) No player limit in Supreme Rank.",
-    "team composition": "Supreme Arena Team Composition: 1) Use 3 different characters, 2) Each character needs different build, 3) Maximize item diversity for bonuses, 4) Recommended: Dragoon + Griffin + third hero, 5) Balance damage and survivability, 6) Each unique item type adds health and damage.",
+    "Peak Arena tips": "**Peak Arena Tips**: 1) Use **3 different characters** with **3 different builds**, 2) Each different item provides **bonus health and damage**, 3) Dragoon + Griffin + third hero recommended, 4) Revive Rune is essential (50% chance to revive with half HP), 5) Maximize item diversity for stat bonuses, 6) Focus on Multi-shot, Ricochet, Piercing skills, 7) Only top 1% players compete here. Best characters: Dragoon (mobility), Griffin (damage), Thor (lightning), Demon King (defensive).",
+    "Peak Arena rules": "Peak Arena Rules: 1) Must use 3 different characters, 2) Must use 3 different builds (can use same character but different items), 3) Each different item provides bonus health and damage, 4) Top 40% of players remain in Supreme Rank weekly, 5) 60% are demoted each week, 6) No player limit in Supreme Rank.",
+    "team composition": "Peak Arena Team Composition: 1) Use 3 different characters, 2) Each character needs different build, 3) Maximize item diversity for bonuses, 4) Recommended: Dragoon + Griffin + third hero, 5) Balance damage and survivability, 6) Each unique item type adds health and damage.",
     "item bonuses": "Item Bonus System: 1) Each different item type provides bonus health, 2) Each different item type provides bonus damage, 3) Different item combinations provide additional synergy effects, 4) Mix and match for maximum stat gains, 5) Focus on item diversity over duplicates.",
-    "best arena heroes": "**Top Arena Heroes**: 1) **Dragoon** - The absolute best Arena hero, 2) **Griffin** - Only use if you have a complete Griffin build, 3) Avoid other heroes for competitive Arena. Dragoon is the clear #1 choice for both Arena and Supreme Arena.",
+    "best arena heroes": "**Top Arena Heroes**: 1) **Dragoon** - The absolute best Arena hero, 2) **Griffin** - Only use if you have a complete Griffin build, 3) Avoid other heroes for competitive Arena. Dragoon is the clear #1 choice for both Arena and Peak Arena.",
     "arena runes": "**Best Arena Runes**: 1) **Revive Rune** (essential for second chance), 2) **Guardian Rune** (solid alternative), 3) **Flame Knock Touch Rune** (good backup). Focus on runes that enhance ranged attacks and survivability.",
-    "pvp": "**PvP Strategy**: Focus on mobility, positioning, and timing. Use characters like **Loki** (PvP specialist), **Dragoon** (mobility), or **Griffin** (damage). Learn enemy patterns and save ultimates for key moments. Arena and Supreme Arena are fully automated PvP modes.",
+    "pvp": "**PvP Strategy**: Focus on mobility, positioning, and timing. Use characters like **Loki** (PvP specialist), **Dragoon** (mobility), or **Griffin** (damage). Learn enemy patterns and save ultimates for key moments. Arena and Peak Arena are fully automated PvP modes.",
     "pve": "**PvE Strategy**: Use characters like **Seraph** (PvE bonuses), **Thor** (lightning damage), or **Demon King** (defensive). Focus on area damage skills and survivability for longer runs. Seraph provides extra ability chances when picking health.",
     "best pvp characters": "**Best PvP Characters**: 1) **Loki** - PvP specialist with attack speed boost, 2) **Dragoon** - Mobility and positioning, 3) **Griffin** - High damage output, 4) **Thor** - Lightning abilities and move-while-firing, 5) **Demon King** - Defensive shield abilities.",
     "best pve characters": "**Best PvE Characters**: 1) **Seraph** - PvE bonuses and extra ability chances, 2) **Thor** - Legendary with powerful abilities, 3) **Demon King** - Defensive shield for survivability, 4) **Rolla** - Freeze attacks for crowd control, 5) **Hela** - Healing aura and crowd control cleanse.",
@@ -1104,29 +1104,29 @@ const dailyTips = [
         "🌟 **Arena Daily**: Complete daily arena runs for consistent rewards and seasonal progression!",
         "💎 **Arena Shop**: Use Arena Exchange Tickets in the Arena Shop for exclusive items and upgrades!",
         "🏆 **Arena Seasons**: Rankings reset each season - aim for top 15 in your bracket for tier advancement!",
-        "👑 **Supreme Arena**: Requires 3 different characters with 3 different builds! Each unique item provides bonus health and damage!",
-        "⚔️ **Supreme Team**: Use Dragoon + Griffin + third hero for optimal Supreme Arena team composition!",
-        "🎯 **Item Diversity**: Maximize different item types for maximum stat bonuses in Supreme Arena!",
+        "👑 **Peak Arena**: Requires 3 different characters with 3 different builds! Each unique item provides bonus health and damage!",
+        "⚔️ **Supreme Team**: Use Dragoon + Griffin + third hero for optimal Peak Arena team composition!",
+        "🎯 **Item Diversity**: Maximize different item types for maximum stat bonuses in Peak Arena!",
         "💪 **Supreme Ranking**: Top 40% stay in Supreme Rank weekly - 60% get demoted! Stay competitive!",
-        "🔥 **Revive Rune**: Essential for Supreme Arena - 50% chance to revive with half HP at Epic level!"
+        "🔥 **Revive Rune**: Essential for Peak Arena - 50% chance to revive with half HP at Epic level!"
     ];
 
-// Supreme Arena tips database (research-based)
+// Peak Arena tips database (research-based)
 const supremeArenaTips = [
-    "👑 **Supreme Arena**: The ultimate PvP challenge requiring 3 different characters with 3 different builds!",
+    "👑 **Peak Arena**: The ultimate PvP challenge requiring 3 different characters with 3 different builds!",
     "⚔️ **Supreme Team**: Use Dragoon + Griffin + third hero for optimal team composition!",
     "🎯 **Item Bonuses**: Each different item provides bonus health and damage - maximize item diversity!",
     "💪 **Supreme Rules**: Top 40% stay in Supreme Rank weekly, 60% get demoted - stay competitive!",
-    "🔥 **Revive Rune**: Essential for Supreme Arena - 50% chance to revive with half HP at Epic level!",
+    "🔥 **Revive Rune**: Essential for Peak Arena - 50% chance to revive with half HP at Epic level!",
     "🌟 **Build Diversity**: Each character needs different build - can use same character but different items!",
     "🏆 **Supreme Strategy**: Balance damage and survivability across all 3 characters!",
     "💎 **Item Synergy**: Different item combinations provide additional synergy effects!",
-    "⚡ **Supreme Skills**: Multi-shot, Ricochet, and Piercing are the top skills for Supreme Arena!",
+    "⚡ **Supreme Skills**: Multi-shot, Ricochet, and Piercing are the top skills for Peak Arena!",
     "🛡️ **Supreme Defense**: Focus on survivability - you need to outlast your opponents!",
     "🎮 **Team Building**: Must use 3 different characters - no duplicates allowed!",
     "🔥 **Stat Optimization**: Mix and match items for maximum health and damage bonuses!",
     "💪 **Supreme Ranking**: No player limit in Supreme Rank - compete with the best!",
-    "🌟 **Meta Adaptation**: Stay updated with current Supreme Arena meta strategies!",
+    "🌟 **Meta Adaptation**: Stay updated with current Peak Arena meta strategies!",
     "🏆 **Supreme Rewards**: The best rewards in the game - only top players compete here!"
 ];
 
@@ -1501,8 +1501,8 @@ async function sendArenaTip() {
         key.includes('ranking') || key.includes('rewards') || key.includes('strategy')
     );
     
-    let arenaTip = 'Focus on speed and efficiency in Arena, perfect execution in Supreme Arena!';
-    let supremeTip = 'Supreme Arena offers the best rewards but requires flawless strategy!';
+    let arenaTip = 'Focus on speed and efficiency in Arena, perfect execution in Peak Arena!';
+    let supremeTip = 'Peak Arena offers the best rewards but requires flawless strategy!';
     
     if (arenaKeys.length > 0) {
         const randomKey1 = arenaKeys[Math.floor(Math.random() * arenaKeys.length)];
@@ -1516,7 +1516,7 @@ async function sendArenaTip() {
     
     const embed = new EmbedBuilder()
         .setTitle('🏟️ Daily Arena Tips')
-        .setDescription(`**Arena & Supreme Arena Strategies**\n\n${arenaTip}\n\n${supremeTip}\n\n💪 **Key Differences:**\n• **Arena**: Focus on speed and efficiency\n• **Supreme Arena**: Ultimate challenge requiring perfect execution\n• **Rewards**: Supreme Arena offers the best rewards\n• **Strategy**: Both require high DPS and optimal positioning`)
+        .setDescription(`**Arena & Peak Arena Strategies**\n\n${arenaTip}\n\n${supremeTip}\n\n💪 **Key Differences:**\n• **Arena**: Focus on speed and efficiency\n• **Peak Arena**: Ultimate challenge requiring perfect execution\n• **Rewards**: Peak Arena offers the best rewards\n• **Strategy**: Both require high DPS and optimal positioning`)
         .setColor(0xFF4500) // Orange for arena
         .setTimestamp()
         .setFooter({ text: 'XYIAN OFFICIAL - Arena Tips' });
@@ -1654,7 +1654,7 @@ function hasAdminRole(member) {
 }
 
 function hasSupremeArenaRole(member) {
-    return member.roles.cache.some(role => role.name === 'Supreme Arena');
+    return member.roles.cache.some(role => role.name === 'Peak Arena');
 }
 
 function hasUmbralTempestRole(member) {
@@ -3157,12 +3157,12 @@ client.on('guildMemberAdd', async (member) => {
                 },
                 {
                     name: '🏰 Join XYIAN OFFICIAL - Quest for #1!',
-                    value: '**XYIAN OFFICIAL** - Guild ID: **213797**\n• **Grand Master**: XYIAN (Guild Commander)\n• **Requirements**: 2 daily boss battles + donations\n• **Goal**: Dominate leaderboards and become #1\n• **Looking for**: Active players with 300k+ power\n• **Specialists**: Supreme Arena and PvP experts\n• **XY Elder**: Your trusted henchman for competitive excellence!',
+                    value: '**XYIAN OFFICIAL** - Guild ID: **213797**\n• **Grand Master**: XYIAN (Guild Commander)\n• **Requirements**: 2 daily boss battles + donations\n• **Goal**: Dominate leaderboards and become #1\n• **Looking for**: Active players with 300k+ power\n• **Specialists**: Peak Arena and PvP experts\n• **XY Elder**: Your trusted henchman for competitive excellence!',
                     inline: false
                 },
                 {
                     name: '⚡ XY Elder - Your Competitive Excellence Guide',
-                    value: '• **Character builds** (Thor, Demon King, Rolla, etc.) - Optimize for leaderboard dominance\n• **Weapon strategies** (Oracle Staff, Griffin Claws, Dragoon Crossbow) - Wreck the competition\n• **Supreme Arena** team composition and tactics - Achieve #1 status\n• **Runes and upgrades** with exact stats and effects - Maximize performance\n• **Events and rewards** with current schedules - Stay ahead of the competition\n• **XYIAN Knowledge**: 1000+ database entries of real game data and strategies!',
+                    value: '• **Character builds** (Thor, Demon King, Rolla, etc.) - Optimize for leaderboard dominance\n• **Weapon strategies** (Oracle Staff, Griffin Claws, Dragoon Crossbow) - Wreck the competition\n• **Peak Arena** team composition and tactics - Achieve #1 status\n• **Runes and upgrades** with exact stats and effects - Maximize performance\n• **Events and rewards** with current schedules - Stay ahead of the competition\n• **XYIAN Knowledge**: 1000+ database entries of real game data and strategies!',
                     inline: false
                 }
             )
