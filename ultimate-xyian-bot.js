@@ -2184,6 +2184,16 @@ client.on('messageCreate', async (message) => {
             }
         }
         
+        // CRITICAL: Only respond to plain text in AI channel, commands everywhere else
+        const isAIChannel = message.channel.name === 'bot-questions' || message.channel.name === 'bot-questions-advanced';
+        const isCommand = message.content.startsWith('!') || message.content.startsWith('/');
+        
+        // If it's not the AI channel and not a command, skip Q&A
+        if (!isAIChannel && !isCommand) {
+            console.log(`⏭️ Skipping Q&A - not AI channel and not a command in ${message.channel.name}`);
+            return;
+        }
+        
         // Skip Q&A for recruitment posts in guild channels
         if (message.channel.name === 'guild-recruit-chat' || message.channel.name === 'xyian-guild') {
             if (message.content.toLowerCase().includes('recruit') || 
