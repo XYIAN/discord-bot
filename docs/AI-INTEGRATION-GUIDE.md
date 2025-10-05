@@ -122,7 +122,7 @@ npm start
 
 ### Verification
 1. **Start Bot**: Check for "AI Service loaded successfully"
-2. **Ask Question**: Test in bot-questions channel
+2. **Ask Question**: Test in arch-ai channel
 3. **Check Response**: Look for "AI-Powered" in embed title
 4. **Fallback Test**: Disable API key, test database fallback
 
