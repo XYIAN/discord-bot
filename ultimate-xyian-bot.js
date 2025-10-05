@@ -344,48 +344,59 @@ function loadAnalytics() {
 // Load existing analytics on startup
 loadAnalytics();
 
-// Load comprehensive knowledge database
+// Load high-quality cleaned knowledge database
 let archeroDatabase = {};
 function loadKnowledgeDatabase() {
     try {
-        const knowledgeFile = path.join(__dirname, 'data', 'archero_qa_learned.json');
-        if (fs.existsSync(knowledgeFile)) {
-            const data = JSON.parse(fs.readFileSync(knowledgeFile, 'utf8'));
+        // First try to load cleaned high-quality database
+        const cleanedFile = path.join(__dirname, 'data', 'cleaned-knowledge-database.json');
+        if (fs.existsSync(cleanedFile)) {
+            const data = JSON.parse(fs.readFileSync(cleanedFile, 'utf8'));
             
-            // Flatten the categorized data into a flat key-value structure
+            // Load cleaned entries
             archeroDatabase = {};
-            
-            // Process all categories from the unified knowledge system
-            const categories = ['theorycrafting', 'discordChannels', 'wikiPages', 'forumThreads', 'gameInfo', 'weapons', 'characters', 'mechanics', 'events', 'guild', 'artifacts', 'statistics'];
-            categories.forEach(category => {
-                if (data.categories && data.categories[category]) {
-                    Object.keys(data.categories[category]).forEach(key => {
-                        const entry = data.categories[category][key];
-                        if (entry && entry.content) {
-                            // Create meaningful keys from the content
-                            const keywords = entry.keywords || [];
-                            const source = entry.source || category;
-                            
-                            // Add entries for each keyword
-                            keywords.forEach(keyword => {
-                                const dbKey = `${keyword}_${source}_${key}`;
-                                archeroDatabase[dbKey] = entry.content.substring(0, 500); // Limit content length
-                            });
-                            
-                            // Add a general entry for this data point
-                            const generalKey = `${category}_${key}`;
-                            archeroDatabase[generalKey] = entry.content.substring(0, 500);
-                        }
-                    });
-                }
+            Object.keys(data.entries).forEach(key => {
+                archeroDatabase[key] = data.entries[key].content;
             });
             
-            console.log(`✅ Loaded unified knowledge database with ${Object.keys(archeroDatabase).length} entries`);
-            console.log(`📊 Total sources: ${data.sources ? data.sources.length : 0}`);
-            console.log(`📊 Total entries: ${data.totalEntries || 0}`);
+            console.log(`✅ Loaded high-quality cleaned database with ${Object.keys(archeroDatabase).length} entries`);
+            console.log(`📊 Quality: ${data.metadata.quality}`);
+            console.log(`📊 Source: ${data.metadata.source}`);
+            console.log(`📊 Categories: ${Object.keys(data.categories).join(', ')}`);
         } else {
-            console.log('⚠️ Knowledge database not found, using empty database');
-            archeroDatabase = {};
+            // Fallback to original database if cleaned version not available
+            const knowledgeFile = path.join(__dirname, 'data', 'archero_qa_learned.json');
+            if (fs.existsSync(knowledgeFile)) {
+                const data = JSON.parse(fs.readFileSync(knowledgeFile, 'utf8'));
+                archeroDatabase = {};
+                
+                // Process all categories from the unified knowledge system
+                const categories = ['theorycrafting', 'discordChannels', 'wikiPages', 'forumThreads', 'gameInfo', 'weapons', 'characters', 'mechanics', 'events', 'guild', 'artifacts', 'statistics'];
+                categories.forEach(category => {
+                    if (data.categories && data.categories[category]) {
+                        Object.keys(data.categories[category]).forEach(key => {
+                            const entry = data.categories[category][key];
+                            if (entry && entry.content) {
+                                const keywords = entry.keywords || [];
+                                const source = entry.source || category;
+
+                                keywords.forEach(keyword => {
+                                    const dbKey = `${keyword}_${source}_${key}`;
+                                    archeroDatabase[dbKey] = entry.content.substring(0, 500);
+                                });
+
+                                const generalKey = `${category}_${key}`;
+                                archeroDatabase[generalKey] = entry.content.substring(0, 500);
+                            }
+                        });
+                    }
+                });
+
+                console.log(`✅ Loaded fallback knowledge database with ${Object.keys(archeroDatabase).length} entries`);
+            } else {
+                console.log('⚠️ No knowledge database found, using empty database');
+                archeroDatabase = {};
+            }
         }
     } catch (error) {
         console.error('❌ Failed to load knowledge database:', error);
@@ -1390,19 +1401,41 @@ async function sendGeneralResetMessage() {
     await sendToGeneral({ embeds: [embed] });
 }
 
-// Send daily tip using comprehensive database
+// Send daily tip using high-quality cleaned database
 async function sendDailyTip() {
-    // Get random tip from our comprehensive database
-    const tipKeys = Object.keys(archeroDatabase);
-    const randomKey = tipKeys[Math.floor(Math.random() * tipKeys.length)];
-    const tip = archeroDatabase[randomKey];
+    // Try to load high-quality tips first
+    const tipsFile = path.join(__dirname, 'data', 'high-quality-tips.json');
+    let tip = '';
+    
+    if (fs.existsSync(tipsFile)) {
+        try {
+            const tips = JSON.parse(fs.readFileSync(tipsFile, 'utf8'));
+            if (tips.length > 0) {
+                const randomTip = tips[Math.floor(Math.random() * tips.length)];
+                tip = `**${randomTip.category.toUpperCase()} TIP:** ${randomTip.tip}`;
+            }
+        } catch (error) {
+            console.log('⚠️ Could not load high-quality tips, using fallback');
+        }
+    }
+    
+    // Fallback to database entries if no tips available
+    if (!tip) {
+        const tipKeys = Object.keys(archeroDatabase);
+        if (tipKeys.length > 0) {
+            const randomKey = tipKeys[Math.floor(Math.random() * tipKeys.length)];
+            tip = archeroDatabase[randomKey];
+        } else {
+            tip = 'Focus on upgrading your main weapon first - it provides the most DPS increase!';
+        }
+    }
     
     const embed = new EmbedBuilder()
         .setTitle('💡 Daily Archero 2 Tip')
         .setDescription(tip)
         .setColor(0x00BFFF) // Light blue
         .setTimestamp()
-        .setFooter({ text: 'XYIAN OFFICIAL - Daily Tips' });
+        .setFooter({ text: 'XYIAN OFFICIAL - High-Quality Tips' });
 
     await sendToGeneral({ embeds: [embed] });
 }
