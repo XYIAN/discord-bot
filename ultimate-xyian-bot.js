@@ -1438,12 +1438,20 @@ client.on('messageCreate', async (message) => {
     }
     
     // GENERAL CHAT - Only respond to !help and !menu, direct to AI chat for questions
-    const generalChatChannels = ['general', 'general-chat', 'main-chat'];
+    const generalChatChannels = ['general', 'general-chat', 'main-chat', 'arch-2-addicts'];
     if (generalChatChannels.includes(message.channel.name)) {
         if (message.content.startsWith('!help') || message.content.startsWith('!menu')) {
             // Allow these commands
         } else {
             console.log(`⏭️ IGNORING: General chat - only !help and !menu allowed, direct to AI chat for questions`);
+            return;
+        }
+    }
+    
+    // ADDITIONAL SAFETY: Check if channel contains "general" in the name
+    if (message.channel.name.toLowerCase().includes('general')) {
+        if (!message.content.startsWith('!help') && !message.content.startsWith('!menu')) {
+            console.log(`⏭️ IGNORING: General chat - only !help and !menu allowed`);
             return;
         }
     }
@@ -2390,38 +2398,17 @@ client.on('guildMemberAdd', async (member) => {
     
     console.log(`👋 New member joined: ${member.user.username} (ID: ${memberId})`);
     
-    // Send single AI-enhanced welcome message to GENERAL CHAT
+    // Send SINGLE welcome message to GENERAL CHAT - NO AI, NO SPAM
     try {
-        let welcomeMessage = `Welcome ${member} to the Arch 2 Addicts community - your premier destination for Archero 2 discussion and strategy!`;
-        
-        // Use AI to add unique flavor if available
-        if (AIService) {
-            try {
-                const aiWelcome = await generateAIResponse(`Create a unique, welcoming message for a new member named ${member.user.username} joining the Arch 2 Addicts Discord community. Keep it short, friendly, and mention they can ask questions about Archero 2.`, 'general');
-                if (aiWelcome && aiWelcome.length > 10) {
-                    welcomeMessage = aiWelcome;
-                }
-            } catch (error) {
-                console.error('❌ AI welcome generation failed:', error);
-            }
-        }
-        
         const welcomeEmbed = new EmbedBuilder()
             .setTitle('🎉 Welcome to Arch 2 Addicts!')
-            .setDescription(welcomeMessage)
+            .setDescription(`Welcome ${member} to the Arch 2 Addicts community!`)
             .setColor(0x00ff88)
-            .addFields(
-                { name: 'Community Features', value: '• Daily tips and strategies\n• Guild recruitment opportunities\n• Expert Q&A system\n• Event discussions and guides', inline: false },
-                { name: 'Getting Started', value: 'Use `!help` to view all available commands\nAsk any Archero 2 question for instant answers', inline: false },
-                { name: 'Join Our Guild', value: 'Looking for a guild? Check out XYIAN OFFICIAL!\nGuild ID: 213797', inline: false },
-                { name: '🤖 AI-Powered Help', value: 'Check out the **Archero AI** channel for advanced build analysis and personalized strategies!', inline: false }
-            )
-            .setThumbnail(member.user.displayAvatarURL())
             .setTimestamp()
             .setFooter({ text: 'Arch 2 Addicts Community' });
         
         await sendToGeneral({ embeds: [welcomeEmbed] });
-        console.log(`✅ Welcome message sent for ${member.user.username} (ID: ${memberId})`);
+        console.log(`✅ SINGLE welcome message sent for ${member.user.username} (ID: ${memberId})`);
         
         // Send personalized onboarding DM (only one additional message)
         await sendPersonalizedOnboarding(member);
