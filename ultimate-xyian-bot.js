@@ -63,14 +63,16 @@ function getAIContext(channelName) {
     
     const upgradeSystem = `UPGRADE SYSTEM: Epic +1/+2 (1-2 epics), Legendary +1/+2/+3 (1-2 legendaries), Mythic +1/+2/+3/+4, Chaotic (mythic +4 + 14 epic griffin OR 42 epic OR 38 legendary). Only S-tier weapons can go past Legendary.`;
     
+    const eventSystem = `EVENTS: Umbral Tempest currently active. Fishing event gives etched runes (free/gems). Otherworld summon gives Thor/Demon King (cash-only). Most events cost cash or gems.`;
+    
     if (channelName === 'bot-questions' || channelName === 'bot-questions-advanced') {
-        return `${baseContext} ${characterKnowledge} ${gameMechanics} ${weaponDatabase} ${upgradeSystem} This is the advanced bot questions channel. Provide detailed, technical answers about character abilities, builds, game mechanics, strategies, and competitive play. Include specific numbers, percentages, and optimal combinations. ONLY use information from the database - do not make up weapon names, abilities, or stats.`;
+        return `${baseContext} ${characterKnowledge} ${gameMechanics} ${weaponDatabase} ${upgradeSystem} ${eventSystem} This is the advanced bot questions channel. Provide detailed, technical answers about character abilities, builds, game mechanics, strategies, and competitive play. Include specific numbers, percentages, and optimal combinations. ONLY use information from the database - do not make up weapon names, abilities, or stats.`;
     } else if (channelName === 'xyian-guild') {
-        return `${baseContext} ${characterKnowledge} ${gameMechanics} ${weaponDatabase} ${upgradeSystem} This is the XYIAN guild channel (Guild ID: 213797). Focus on guild requirements (2 daily boss battles, donations), Supreme Arena strategies, team coordination, and competitive guild management. Emphasize teamwork and optimization.`;
+        return `${baseContext} ${characterKnowledge} ${gameMechanics} ${weaponDatabase} ${upgradeSystem} ${eventSystem} This is the XYIAN guild channel (Guild ID: 213797). Focus on guild requirements (2 daily boss battles, donations), Supreme Arena strategies, team coordination, and competitive guild management. Emphasize teamwork and optimization.`;
     } else if (channelName === 'arena' || channelName === 'supreme-arena') {
-        return `${baseContext} ${characterKnowledge} ${weaponDatabase} ${upgradeSystem} Focus on Arena and Supreme Arena strategies. Dragoon and Griffin are top heroes (Dragoon preferred unless full Griffin build). Cover runes, builds, positioning, and competitive tactics.`;
+        return `${baseContext} ${characterKnowledge} ${weaponDatabase} ${upgradeSystem} ${eventSystem} Focus on Arena and Supreme Arena strategies. Dragoon and Griffin are top heroes (Dragoon preferred unless full Griffin build). Cover runes, builds, positioning, and competitive tactics.`;
     } else {
-        return `${baseContext} ${characterKnowledge} ${weaponDatabase} ${upgradeSystem} This is a general Archero 2 community channel. Provide helpful advice about basic game mechanics, character recommendations, and beginner-friendly strategies.`;
+        return `${baseContext} ${characterKnowledge} ${weaponDatabase} ${upgradeSystem} ${eventSystem} This is a general Archero 2 community channel. Provide helpful advice about basic game mechanics, character recommendations, and beginner-friendly strategies.`;
     }
 }
 
@@ -743,6 +745,16 @@ const archeroQA = {
     "chaotic upgrade": "**CHAOTIC UPGRADE**: To make Chaotic Oracle Helmet: need mythic +4 + 14 epic griffin helmets OR 42 epic helmets OR 38 legendary helmets. This system applies to all items (crossbow to mythic needs 43 epic weapons, etc.).",
     "basic weapons": "**BASIC WEAPONS**: Beam Staff, Claw, and Bow are NOT S-tier and can only go to Legendary +3. They cannot go past Legendary tier. Only S-tier weapons (Oracle Staff, Griffin Claws, Dragoon Crossbow) can reach Mythic and Chaotic tiers.",
     "upgrade costs": "**UPGRADE COSTS**: Epic +1 (1 epic), Epic +2 (2 epics), Legendary +1/+2 (1 legendary), Legendary +3 (2 legendaries), Mythic +1/+2/+3/+4 (various legendary costs), Chaotic (mythic +4 + 14 epic griffin OR 42 epic OR 38 legendary).",
+    
+    // EVENTS - CURRENT AND RECURRING
+    "events": "**CURRENT EVENTS**: Umbral Tempest is currently active. Events change regularly and typically cost cash or gems. Some events like fishing give free rewards, others like Thor/Demon King events are cash-only.",
+    "umbral tempest": "**UMBRAL TEMPEST**: Currently active event. Check the Umbral Tempest channel for specific details, rewards, and strategies. Events like this change regularly and may require cash or gems to participate fully.",
+    "fishing event": "**FISHING EVENT**: One of the best events - gives etched runes and can be done for free or with gems. Provides good rewards without requiring cash. Focus on this event when it's available for free progression.",
+    "otherworld summon": "**OTHERWORLD SUMMON**: Event where you can get Thor and Demon King characters. This event is typically cash-only, so requires real money to participate. Thor and Demon King are premium characters from this event.",
+    "etched runes": "**ETCHED RUNES**: Special runes obtained from fishing event and other events. These are valuable upgrade materials that can significantly boost your character's power. Focus on events that give these for free progression.",
+    "event costs": "**EVENT COSTS**: Most events cost cash or gems. Fishing event is one of the best for free players (can use gems). Thor/Demon King events are typically cash-only. Always check event requirements before participating.",
+    "free events": "**FREE EVENTS**: Fishing event is the best free event - gives etched runes and can be done with gems. Most other events require cash. Focus on fishing when available for free progression.",
+    "premium events": "**PREMIUM EVENTS**: Thor and Demon King events are cash-only. These give access to premium characters but require real money. Only participate if you're willing to spend cash.",
     "best weapon mage": "**CORRECT WEAPON INFO**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff**, **Griffin Claws**, and **Dragoon Crossbow**. For mage builds, use **Oracle Staff** - it's the best overall weapon with high damage and great range. There are also basic weapons (Bow, Staff, Claws) but they cannot level past Legendary.",
     "best weapon warrior": "**CORRECT WEAPON INFO**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff**, **Griffin Claws**, and **Dragoon Crossbow**. For warrior builds, use **Griffin Claws** - excellent for close combat with high attack speed. There are also basic weapons (Bow, Staff, Claws) but they cannot level past Legendary.",
     "best weapon archer": "**CORRECT WEAPON INFO**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff**, **Griffin Claws**, and **Dragoon Crossbow**. For archer builds, use **Dragoon Crossbow** - powerful ranged weapon, great for PvP. There are also basic weapons (Bow, Staff, Claws) but they cannot level past Legendary.",
