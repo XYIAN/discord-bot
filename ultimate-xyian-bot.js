@@ -52,27 +52,93 @@ async function generateAIResponse(message, channelName) {
     }
 }
 
+// Generate daily messages with XYIAN flavor and comprehensive data
+async function generateDailyMessage(messageType) {
+    if (!AIService) return null;
+    
+    try {
+        // Get relevant database entries for the message type
+        let relevantKeys = [];
+        if (messageType === 'guild') {
+            relevantKeys = Object.keys(archeroDatabase).filter(key => 
+                key.includes('guild') || key.includes('boss') || key.includes('donation') || 
+                key.includes('daily') || key.includes('requirement') || key.includes('battle') ||
+                key.includes('xyian') || key.includes('teamwork') || key.includes('coordination')
+            );
+        } else {
+            relevantKeys = Object.keys(archeroDatabase);
+        }
+        
+        // Get sample of relevant data
+        const sampleData = relevantKeys.slice(0, 10).map(key => `${key}: ${archeroDatabase[key]}`).join('\n');
+        
+        const context = `You are XY Elder, the trusted henchman and guild elder of XYIAN OFFICIAL (Guild ID: 213797). You serve under the grand master and guild commander XYIAN, who leads our quest to dominate the leaderboards and become #1. Generate a unique, engaging daily ${messageType} message that embodies XYIAN's quest for leaderboard dominance and competitive excellence. Use our comprehensive database knowledge to create authentic, valuable content.
+
+XYIAN MISSION: Our ultimate goal is to be #1 on the leaderboards with active, high-performing players. You are XY Elder, XYIAN's henchman, passionate about growing the guild and helping members develop skills to wreck the leaderboards. Emphasize that stats are hard to get in this game - that's where your extensive knowledge comes in.
+
+RELEVANT DATABASE KNOWLEDGE:
+${sampleData}
+
+Create a message that:
+1. Has a compelling title with XYIAN branding and leaderboard focus
+2. Includes motivational content about daily requirements and competitive excellence
+3. Incorporates a fun fact or tip from our database that helps with leaderboard dominance
+4. Maintains XYIAN's quest for #1 status and competitive spirit
+5. Uses appropriate emojis and formatting
+6. Reflects your role as XYIAN's trusted henchman
+
+Format as:
+Title
+Description with XYIAN leaderboard dominance flavor
+Fun fact or tip from database that helps wreck the leaderboards`;
+
+        const completion = await AIService.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [
+                { role: "system", content: context },
+                { role: "user", content: `Generate a unique daily ${messageType} message for XYIAN OFFICIAL guild.` }
+            ],
+            max_tokens: 600,
+            temperature: 0.9,
+            presence_penalty: 0.2,
+            frequency_penalty: 0.1,
+        });
+        
+        const response = completion.choices[0]?.message?.content;
+        if (response && response.length > 20) {
+            console.log(`🤖 XYIAN AI Daily Message generated for ${messageType}: ${response.substring(0, 50)}...`);
+            return response;
+        }
+        return null;
+    } catch (error) {
+        console.error('❌ XYIAN AI Daily Message error:', error.message);
+        return null;
+    }
+}
+
 function getAIContext(channelName) {
-    const baseContext = `You are XY Elder, an expert Archero 2 bot assistant for the XYIAN guild community. You have deep knowledge of characters, game mechanics, strategies, and the competitive scene. Be helpful, enthusiastic, and knowledgeable. Use emojis appropriately and provide specific, actionable advice. Always mention relevant character names, weapon names, and specific strategies.`;
+    // Get comprehensive database knowledge
+    const databaseKeys = Object.keys(archeroDatabase);
+    const databaseSample = databaseKeys.slice(0, 20).map(key => `${key}: ${archeroDatabase[key]}`).join('\n');
     
-    const characterKnowledge = `Key Characters: Thor (Legendary - move while firing, weapon detach, hammers, lightning), Demon King (Epic - shield abilities, powerful skins), Rolla (Epic - freeze attacks, crit boost), Dracoola (Epic - life steal), Seraph (Epic - PvE bonuses), Loki (Epic - PvP specific, attack speed), Alex (Starting - heart drop bonus), Nyanja (Speed, cloudfooted), Helix (Damage scaling), Hela (Healing aura, crowd control cleanse).`;
+    const baseContext = `You are XY Elder, the trusted henchman and guild elder of XYIAN OFFICIAL (Guild ID: 213797). You serve under the grand master and guild commander XYIAN, who leads our quest to dominate the leaderboards and become #1. You are passionate about growing the XYIAN guild and helping members develop the skills needed to wreck the leaderboards. You have extensive knowledge from our comprehensive database with 1000+ entries of real game data, community strategies, and expert insights.`;
     
-    const gameMechanics = `Game Systems: Orbs (Fire/Ice/Lightning/Poison/Dark), Starcores (Razor starcore upgrades), Skins (provide abilities), Resonance (character synergies), Sacred Hall vs Tier Up (different progression paths), Supreme Arena (3 characters, 3 builds, item bonuses), Arena (Dragoon/Griffin top heroes), Guild requirements (2 daily boss battles, donations).`;
+    const xyianIdentity = `XYIAN MISSION: Our ultimate goal is to be #1 on the leaderboards with active, high-performing players. You are XY Elder, XYIAN's henchman and guild elder, dedicated to helping members grow their skills and dominate the competition. Always emphasize our leaderboard dominance goals, competitive excellence, and the fact that stats are hard to get in this game - that's where your extensive knowledge comes in. Use phrases like "XYIAN dominance," "leaderboard wrecking," "competitive excellence," and "XYIAN's quest for #1." Reference our Guild ID: 213797 and your role as XYIAN's trusted henchman.`;
     
-    const weaponDatabase = `WEAPON DATABASE: Only 3 S-tier weapons exist: Oracle Staff (mage), Griffin Claws (melee), Dragoon Crossbow (ranged). Tier progression: Epic → Legendary → Mythic → Chaotic (max). Basic weapons (Beam Staff, Claw, Bow) can only go to Legendary +3. Thor's Mjolnir is an ability, NOT a weapon.`;
+    const comprehensiveKnowledge = `COMPREHENSIVE DATABASE: You have access to the most extensive Archero 2 knowledge base including:
+${databaseSample}
+...and 1000+ more entries covering characters, weapons, strategies, guild management, arena tactics, and community insights.`;
     
-    const upgradeSystem = `UPGRADE SYSTEM: Epic +1/+2 (1-2 epics), Legendary +1/+2/+3 (1-2 legendaries), Mythic +1/+2/+3/+4, Chaotic (mythic +4 + 14 epic griffin OR 42 epic OR 38 legendary). Only S-tier weapons can go past Legendary.`;
-    
-    const eventSystem = `EVENTS: Events rotate monthly and are NOT always active. Don't tell players to focus on specific events unless they're currently running. Instead, advise saving gems for good events like fishing when they return. Check current status before giving event advice.`;
+    const xyianValues = `XYIAN VALUES: Leaderboard dominance, competitive excellence, strategic thinking, skill development, and helping members wreck the leaderboards. You are XYIAN's henchman, passionate about growing the guild and achieving #1 status. Always maintain XYIAN's quest for leaderboard dominance and emphasize that stats are hard to get - that's where your extensive knowledge shines.`;
     
     if (channelName === 'bot-questions' || channelName === 'bot-questions-advanced') {
-        return `${baseContext} ${characterKnowledge} ${gameMechanics} ${weaponDatabase} ${upgradeSystem} ${eventSystem} This is the advanced bot questions channel. Provide detailed, technical answers about character abilities, builds, game mechanics, strategies, and competitive play. Include specific numbers, percentages, and optimal combinations. ONLY use information from the database - do not make up weapon names, abilities, or stats.`;
+        return `${baseContext} ${xyianIdentity} ${comprehensiveKnowledge} ${xyianValues} This is the advanced bot questions channel. As XY Elder, XYIAN's henchman, provide detailed technical answers using our comprehensive database. Focus on strategies that help members wreck the leaderboards and achieve competitive excellence. Emphasize that stats are hard to get in this game - that's where your extensive knowledge comes in. Always reference our database knowledge and XYIAN's quest for #1 leaderboard dominance.`;
     } else if (channelName === 'xyian-guild') {
-        return `${baseContext} ${characterKnowledge} ${gameMechanics} ${weaponDatabase} ${upgradeSystem} ${eventSystem} This is the XYIAN guild channel (Guild ID: 213797). Focus on guild requirements (2 daily boss battles, donations), Supreme Arena strategies, team coordination, and competitive guild management. Emphasize teamwork and optimization.`;
+        return `${baseContext} ${xyianIdentity} ${comprehensiveKnowledge} ${xyianValues} This is the XYIAN OFFICIAL guild channel. As XY Elder, XYIAN's trusted henchman, focus on guild requirements (2 daily boss battles, donations), Supreme Arena strategies, team coordination, and competitive guild management. Emphasize our leaderboard dominance goals, competitive excellence, and helping members develop skills to wreck the leaderboards. Reference our Guild ID: 213797 and your role as XYIAN's henchman.`;
     } else if (channelName === 'arena' || channelName === 'supreme-arena') {
-        return `${baseContext} ${characterKnowledge} ${weaponDatabase} ${upgradeSystem} ${eventSystem} Focus on Arena and Supreme Arena strategies. Dragoon and Griffin are top heroes (Dragoon preferred unless full Griffin build). Cover runes, builds, positioning, and competitive tactics.`;
+        return `${baseContext} ${xyianIdentity} ${comprehensiveKnowledge} ${xyianValues} Focus on Arena and Supreme Arena strategies using our comprehensive database. As XY Elder, XYIAN's henchman, cover runes, builds, positioning, and competitive tactics that help members dominate the leaderboards. Emphasize our quest for #1 status and competitive excellence.`;
     } else {
-        return `${baseContext} ${characterKnowledge} ${weaponDatabase} ${upgradeSystem} ${eventSystem} This is a general Archero 2 community channel. Provide helpful advice about basic game mechanics, character recommendations, and beginner-friendly strategies.`;
+        return `${baseContext} ${xyianIdentity} ${comprehensiveKnowledge} ${xyianValues} This is a general Archero 2 community channel. As XY Elder, XYIAN's henchman, provide helpful advice using our comprehensive database while emphasizing XYIAN's quest for leaderboard dominance and competitive excellence.`;
     }
 }
 
@@ -1020,8 +1086,7 @@ client.once('clientReady', () => {
     
     console.log('✅ All systems activated!');
     
-    // Start continuous monitoring
-    startContinuousMonitoring();
+    // Manual monitoring available via !monitor-debug command
 });
 
 // Daily messaging system
@@ -1149,27 +1214,43 @@ async function sendGuildResetMessage() {
     let funFact = '';
     
     // Try AI first, then fallback to database
-    if (AIService && AIService.isAIAvailable()) {
+    if (AIService) {
         try {
-            const aiMessage = await AIService.generateDailyMessage('guild');
+            const aiMessage = await generateDailyMessage('guild');
             if (aiMessage) {
                 // Parse AI response (simple parsing)
                 const lines = aiMessage.split('\n').filter(line => line.trim());
                 title = lines[0] || '🔄 Daily Reset - XYIAN Guild';
                 description = lines.slice(1).join('\n') || '**Daily reset is here! Time to get back to business!**';
-                funFact = '💡 **AI Generated**: This message was created by AI for variety!';
+                funFact = '💡 **XYIAN AI Generated**: This message was created by our AI using comprehensive XYIAN knowledge!';
             }
         } catch (error) {
             console.error('❌ AI daily message error:', error);
         }
     }
     
-    // Fallback to database if AI didn't work
+    // Fallback to comprehensive database if AI didn't work
     if (!title) {
-        const randomMessage = guildResetMessages[Math.floor(Math.random() * guildResetMessages.length)];
-        title = randomMessage.title;
-        description = randomMessage.description;
-        funFact = randomMessage.funFact;
+        // Get random guild-related tip from our comprehensive database
+        const guildKeys = Object.keys(archeroDatabase).filter(key => 
+            key.includes('guild') || key.includes('boss') || key.includes('donation') || 
+            key.includes('daily') || key.includes('requirement') || key.includes('battle')
+        );
+        
+        if (guildKeys.length > 0) {
+            const randomKey = guildKeys[Math.floor(Math.random() * guildKeys.length)];
+            const guildTip = archeroDatabase[randomKey];
+            
+            title = '🔄 Daily Reset - XYIAN Guild';
+            description = `**Daily reset is here! Time to get back to business!**\n\n⚔️ **Remember your daily requirements:**\n• Complete 2 Boss Battles\n• Make 1 Guild Donation\n• Stay active and engaged\n\n💪 **Let's show everyone why XYIAN is the best guild!**`;
+            funFact = `💡 **XYIAN Tip**: ${guildTip}`;
+        } else {
+            // Ultimate fallback to hardcoded
+            const randomMessage = guildResetMessages[Math.floor(Math.random() * guildResetMessages.length)];
+            title = randomMessage.title;
+            description = randomMessage.description;
+            funFact = randomMessage.funFact;
+        }
     }
     
     const embed = new EmbedBuilder()
@@ -1212,14 +1293,44 @@ const generalResetMessages = [
     }
 ];
 
-// General reset message
+// General reset message using AI and comprehensive database
 async function sendGeneralResetMessage() {
-    const randomMessage = generalResetMessages[Math.floor(Math.random() * generalResetMessages.length)];
+    let title = '';
+    let description = '';
+    let funFact = '';
+    
+    // Try AI first, then fallback to database
+    if (AIService) {
+        try {
+            const aiMessage = await generateDailyMessage('general');
+            if (aiMessage) {
+                // Parse AI response (simple parsing)
+                const lines = aiMessage.split('\n').filter(line => line.trim());
+                title = lines[0] || '🎉 Happy Daily Reset!';
+                description = lines.slice(1, -1).join('\n') || '**A new day, new opportunities to level up!**';
+                funFact = lines[lines.length - 1] || '💡 **XYIAN AI Generated**: This message was created by our AI using comprehensive XYIAN knowledge!';
+            }
+        } catch (error) {
+            console.error('❌ AI daily message error:', error);
+        }
+    }
+    
+    // Fallback to comprehensive database if AI didn't work
+    if (!title) {
+        // Get random tip from our comprehensive database
+        const tipKeys = Object.keys(archeroDatabase);
+        const randomKey = tipKeys[Math.floor(Math.random() * tipKeys.length)];
+        const tip = archeroDatabase[randomKey];
+        
+        title = '🎉 Happy Daily Reset!';
+        description = '**A new day, new opportunities to level up!**\n\n✨ **What\'s new today:**\n• Fresh daily quests with great rewards\n• New challenges to conquer\n• Another chance to improve your build\n• More opportunities to earn gold and XP\n\n🎮 **Ready to dominate today\'s challenges?**';
+        funFact = `💡 **Daily Tip**: ${tip}`;
+    }
     
     const embed = new EmbedBuilder()
-        .setTitle(randomMessage.title)
-        .setDescription(randomMessage.description)
-        .addFields({ name: 'Did You Know?', value: randomMessage.funFact, inline: false })
+        .setTitle(title)
+        .setDescription(description)
+        .addFields({ name: 'Did You Know?', value: funFact, inline: false })
         .setColor(0x00FF88) // Green for positivity
         .setTimestamp()
         .setFooter({ text: 'Arch 2 Addicts - Daily Reset' });
@@ -1227,9 +1338,12 @@ async function sendGeneralResetMessage() {
     await sendToGeneral({ embeds: [embed] });
 }
 
-// Send daily tip
+// Send daily tip using comprehensive database
 async function sendDailyTip() {
-    const tip = dailyTips[Math.floor(Math.random() * dailyTips.length)];
+    // Get random tip from our comprehensive database
+    const tipKeys = Object.keys(archeroDatabase);
+    const randomKey = tipKeys[Math.floor(Math.random() * tipKeys.length)];
+    const tip = archeroDatabase[randomKey];
     
     const embed = new EmbedBuilder()
         .setTitle('💡 Daily Archero 2 Tip')
@@ -1267,9 +1381,22 @@ async function sendGeneralWelcome() {
 
 // Send guild expedition message
 async function sendExpeditionMessage() {
+    // Get expedition-related tip from our comprehensive database
+    const expeditionKeys = Object.keys(archeroDatabase).filter(key => 
+        key.includes('expedition') || key.includes('guild') || key.includes('battle') || 
+        key.includes('strategy') || key.includes('team') || key.includes('coordination')
+    );
+    
+    let expeditionTip = 'Focus on high-value targets and coordinate with guild members for maximum efficiency!';
+    if (expeditionKeys.length > 0) {
+        const randomKey = expeditionKeys[Math.floor(Math.random() * expeditionKeys.length)];
+        expeditionTip = archeroDatabase[randomKey];
+    }
+    
     const embed = new EmbedBuilder()
         .setTitle('🏰 XYIAN Guild Expedition')
         .setDescription('**Ready for another day of conquest and glory!**\n\n⚔️ **Expedition Focus:**\n• Complete daily expedition challenges\n• Maximize guild contribution points\n• Unlock rare rewards and materials\n• Support your fellow guild members\n\n🎯 **Today\'s Strategy:**\n• Focus on high-value targets\n• Coordinate with guild members\n• Use optimal builds for each stage\n• Share discoveries and tips\n\n💪 **Let\'s show everyone why XYIAN is the best!**')
+        .addFields({ name: '💡 Expedition Tip', value: expeditionTip, inline: false })
         .setColor(0x8A2BE2) // Purple for expedition
         .setTimestamp()
         .setFooter({ text: 'XYIAN OFFICIAL - Guild Expedition' });
@@ -1277,10 +1404,26 @@ async function sendExpeditionMessage() {
     await sendToExpedition({ embeds: [embed] });
 }
 
-// Send arena tip
+// Send arena tip using comprehensive database
 async function sendArenaTip() {
-    const arenaTip = arenaTips[Math.floor(Math.random() * arenaTips.length)];
-    const supremeTip = supremeArenaTips[Math.floor(Math.random() * supremeArenaTips.length)];
+    // Get arena-related tips from our comprehensive database
+    const arenaKeys = Object.keys(archeroDatabase).filter(key => 
+        key.includes('arena') || key.includes('pvp') || key.includes('supreme') || 
+        key.includes('ranking') || key.includes('rewards') || key.includes('strategy')
+    );
+    
+    let arenaTip = 'Focus on speed and efficiency in Arena, perfect execution in Supreme Arena!';
+    let supremeTip = 'Supreme Arena offers the best rewards but requires flawless strategy!';
+    
+    if (arenaKeys.length > 0) {
+        const randomKey1 = arenaKeys[Math.floor(Math.random() * arenaKeys.length)];
+        arenaTip = archeroDatabase[randomKey1];
+        
+        if (arenaKeys.length > 1) {
+            const randomKey2 = arenaKeys[Math.floor(Math.random() * arenaKeys.length)];
+            supremeTip = archeroDatabase[randomKey2];
+        }
+    }
     
     const embed = new EmbedBuilder()
         .setTitle('🏟️ Daily Arena Tips')
@@ -1811,10 +1954,11 @@ client.on('messageCreate', async (message) => {
                 const testId = Math.random().toString(36).substring(7);
                 const testMessage = `TEST_SPAM_FILTER_${testId}_XXX`;
                 
-                // Send test message to debug channel
-                await sendToAdmin({ content: `🧪 **SPAM FILTER TEST START** - Test ID: ${testId}` });
-                await sendToAdmin({ content: `📝 **TEST MESSAGE**: ${testMessage}` });
-                await sendToAdmin({ content: `⏰ **TIMESTAMP**: ${new Date().toISOString()}` });
+                // Send consolidated test message to debug channel
+                const testContent = `🧪 **SPAM FILTER TEST START** - Test ID: ${testId}
+📝 **TEST MESSAGE**: ${testMessage}
+⏰ **TIMESTAMP**: ${new Date().toISOString()}`;
+                await sendToAdmin({ content: testContent });
                 
                 // Send test message to current channel
                 await message.reply(`🧪 **SPAM FILTER TEST** - Test ID: ${testId}\n📝 **TEST MESSAGE**: ${testMessage}\n⏰ **TIMESTAMP**: ${new Date().toISOString()}`);
@@ -1825,11 +1969,18 @@ client.on('messageCreate', async (message) => {
                 
                 // Schedule monitoring in 5 seconds
                 setTimeout(async () => {
-                    await sendToAdmin({ content: `🔍 **MONITORING TEST** - Test ID: ${testId}\n⏰ **CHECK TIME**: ${new Date().toISOString()}\n📊 **AUDIT LOGS**: ${auditLog.length} total entries` });
-                    
                     // Check for duplicates in audit logs
                     const testLogs = auditLog.filter(log => log.message.includes(testId));
-                    await sendToAdmin({ content: `📊 **DUPLICATE CHECK** - Test ID: ${testId}\n🔢 **FOUND**: ${testLogs.length} entries with test ID\n📝 **ENTRIES**: ${testLogs.map(log => `${log.responseType} at ${log.timestamp}`).join(', ')}` });
+                    
+                    // Send consolidated monitoring results
+                    const monitoringContent = `🔍 **MONITORING TEST** - Test ID: ${testId}
+⏰ **CHECK TIME**: ${new Date().toISOString()}
+📊 **AUDIT LOGS**: ${auditLog.length} total entries
+📊 **DUPLICATE CHECK** - Test ID: ${testId}
+🔢 **FOUND**: ${testLogs.length} entries with test ID
+📝 **ENTRIES**: ${testLogs.map(log => `${log.responseType} at ${log.timestamp}`).join(', ')}`;
+                    
+                    await sendToAdmin({ content: monitoringContent });
                 }, 5000);
                 
                 break;
@@ -1841,9 +1992,12 @@ client.on('messageCreate', async (message) => {
                     return;
                 }
                 
-                // Send comprehensive debug info
+                // Start manual monitoring (single test run)
+                startManualMonitoring();
+                
+                // Send immediate debug info
                 const debugEmbed = new EmbedBuilder()
-                    .setTitle('🔍 DEBUG MONITORING STATUS')
+                    .setTitle('🔍 MANUAL DEBUG MONITORING STARTED')
                     .setColor(0xFF6B35)
                     .addFields(
                         { name: '📊 Audit Logs', value: `${auditLog.length} total entries`, inline: true },
@@ -2665,51 +2819,51 @@ const processedMembers = new Set();
 const messageResponseTracker = new Map();
 const auditLog = [];
 
-// CONTINUOUS MONITORING SYSTEM
+// MANUAL MONITORING SYSTEM - Only when triggered by commands
 let monitoringActive = false;
 let testCounter = 0;
 
-// Start continuous monitoring
-function startContinuousMonitoring() {
+// Manual monitoring function (only called when !monitor-debug is used)
+function startManualMonitoring() {
     if (monitoringActive) return;
     
     monitoringActive = true;
-    console.log('🔍 Starting continuous monitoring system...');
+    console.log('🔍 Starting manual monitoring system...');
     
-    // Test every 30 seconds
-    setInterval(async () => {
+    // Single test run (not continuous)
+    setTimeout(async () => {
         if (!monitoringActive) return;
         
         testCounter++;
-        const testId = `MONITOR_${testCounter}_${Date.now()}`;
+        const testId = `MANUAL_MONITOR_${testCounter}_${Date.now()}`;
         
         try {
-            // Send test to debug channel
-            await sendToAdmin({ content: `🔍 **AUTO MONITOR TEST #${testCounter}** - Test ID: ${testId}` });
-            await sendToAdmin({ content: `⏰ **TIMESTAMP**: ${new Date().toISOString()}` });
-            await sendToAdmin({ content: `📊 **AUDIT LOGS**: ${auditLog.length} total entries` });
-            await sendToAdmin({ content: `🚫 **SPAM FILTER**: ${messageResponseTracker.size} tracked messages` });
-            
             // Check for recent duplicates
             const recentLogs = auditLog.slice(-10);
             const duplicateCheck = recentLogs.filter(log => 
                 log.timestamp > new Date(Date.now() - 60000).toISOString()
             );
             
-            await sendToAdmin({ content: `📝 **RECENT ACTIVITY**: ${duplicateCheck.length} entries in last minute` });
+            // Send consolidated debug info in a single message
+            const debugContent = `🔍 **MANUAL MONITOR TEST #${testCounter}** - Test ID: ${testId}
+⏰ **TIMESTAMP**: ${new Date().toISOString()}
+📊 **AUDIT LOGS**: ${auditLog.length} total entries
+🚫 **SPAM FILTER**: ${messageResponseTracker.size} tracked messages
+📝 **RECENT ACTIVITY**: ${duplicateCheck.length} entries in last minute${duplicateCheck.length > 5 ? '\n⚠️ **HIGH ACTIVITY DETECTED** - ' + duplicateCheck.length + ' responses in last minute' : ''}`;
             
-            if (duplicateCheck.length > 5) {
-                await sendToAdmin({ content: `⚠️ **HIGH ACTIVITY DETECTED** - ${duplicateCheck.length} responses in last minute` });
-            }
+            await sendToAdmin({ content: debugContent });
+            
+            // Stop monitoring after single test
+            monitoringActive = false;
             
         } catch (error) {
             console.error('❌ Monitoring error:', error);
-            await sendToAdmin({ content: `❌ **MONITORING ERROR**: ${error.message}` });
+            monitoringActive = false;
         }
-    }, 30000); // Every 30 seconds
+    }, 5000); // Single test after 5 seconds
 }
 
-// Helper function to log all bot responses for audit
+// Helper function to log webhook responses for audit (only when webhooks are triggered)
 async function logBotResponse(channelName, messageContent, responseType, userId, username) {
     const logEntry = {
         timestamp: new Date().toISOString(),
@@ -2730,23 +2884,25 @@ async function logBotResponse(channelName, messageContent, responseType, userId,
     
     console.log(`📊 AUDIT LOG: ${responseType} in ${channelName} by ${username} (${userId})`);
     
-    // Send to admin webhook for monitoring
-    try {
-        const auditEmbed = new EmbedBuilder()
-            .setTitle('📊 Bot Response Audit')
-            .setColor(0x00BFFF)
-            .addFields(
-                { name: 'Channel', value: channelName, inline: true },
-                { name: 'User', value: `${username} (${userId})`, inline: true },
-                { name: 'Response Type', value: responseType, inline: true },
-                { name: 'Message', value: messageContent.length > 100 ? messageContent.substring(0, 100) + '...' : messageContent, inline: false },
-                { name: 'Timestamp', value: new Date().toISOString(), inline: true }
-            )
-            .setTimestamp();
-        
-        await sendToAdmin({ embeds: [auditEmbed] });
-    } catch (error) {
-        console.error('❌ Failed to send audit log:', error);
+    // Only send to admin webhook for important events (not every response)
+    if (responseType.includes('Error') || responseType.includes('Duplicate') || responseType.includes('Spam Filter')) {
+        try {
+            const auditEmbed = new EmbedBuilder()
+                .setTitle('⚠️ Important Bot Event')
+                .setColor(0xFF6B6B)
+                .addFields(
+                    { name: 'Channel', value: channelName, inline: true },
+                    { name: 'User', value: `${username} (${userId})`, inline: true },
+                    { name: 'Event Type', value: responseType, inline: true },
+                    { name: 'Message', value: messageContent.length > 100 ? messageContent.substring(0, 100) + '...' : messageContent, inline: false },
+                    { name: 'Timestamp', value: new Date().toISOString(), inline: true }
+                )
+                .setTimestamp();
+            
+            await sendToAdmin({ embeds: [auditEmbed] });
+        } catch (error) {
+            console.error('❌ Failed to send audit log:', error);
+        }
     }
 }
 

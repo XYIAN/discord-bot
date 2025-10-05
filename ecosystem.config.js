@@ -1,7 +1,7 @@
 module.exports = {
     apps: [{
         name: 'arch2-discord-bot',
-        script: 'index.js',
+        script: 'ultimate-xyian-bot.js',
         instances: 1,
         exec_mode: 'fork',
         env: {
