@@ -1553,6 +1553,77 @@ client.on('messageCreate', async (message) => {
                 await message.reply('📢 Test messages sent to general and XYIAN channels!');
                 break;
                 
+            case 'create-channel':
+                // Only XYIAN OFFICIAL can create channels
+                if (!hasXYIANRole(message.member)) {
+                    await message.reply('❌ This command requires the XYIAN OFFICIAL role.');
+                    return;
+                }
+                
+                const args = message.content.split(' ').slice(1);
+                const channelName = args[0] || 'new-channel';
+                const channelType = args[1] || 'text';
+                
+                try {
+                    const channel = await message.guild.channels.create({
+                        name: channelName,
+                        type: channelType === 'voice' ? 2 : 0, // 0 = text, 2 = voice
+                        permissionOverwrites: [
+                            {
+                                id: message.guild.id, // @everyone
+                                deny: ['ViewChannel'], // Hide by default
+                            },
+                            {
+                                id: message.member.roles.cache.find(role => role.name === 'XYIAN OFFICIAL')?.id,
+                                allow: ['ViewChannel', 'SendMessages', 'ReadMessageHistory'],
+                            }
+                        ]
+                    });
+                    
+                    await message.reply(`✅ Channel created: ${channel.name} (${channel.id})`);
+                } catch (error) {
+                    await message.reply(`❌ Failed to create channel: ${error.message}`);
+                }
+                break;
+                
+            case 'channel-permissions':
+                // Only XYIAN OFFICIAL can manage channel permissions
+                if (!hasXYIANRole(message.member)) {
+                    await message.reply('❌ This command requires the XYIAN OFFICIAL role.');
+                    return;
+                }
+                
+                const channelId = message.content.split(' ')[1];
+                if (!channelId) {
+                    await message.reply('❌ Please provide a channel ID. Usage: `!channel-permissions <channel-id>`');
+                    return;
+                }
+                
+                try {
+                    const channel = message.guild.channels.cache.get(channelId);
+                    if (!channel) {
+                        await message.reply('❌ Channel not found.');
+                        return;
+                    }
+                    
+                    // Set permissions for XYIAN OFFICIAL role
+                    const xyianRole = message.guild.roles.cache.find(role => role.name === 'XYIAN OFFICIAL');
+                    if (xyianRole) {
+                        await channel.permissionOverwrites.edit(xyianRole, {
+                            ViewChannel: true,
+                            SendMessages: true,
+                            ReadMessageHistory: true,
+                            ManageMessages: true
+                        });
+                        await message.reply(`✅ Permissions updated for ${channel.name}`);
+                    } else {
+                        await message.reply('❌ XYIAN OFFICIAL role not found.');
+                    }
+                } catch (error) {
+                    await message.reply(`❌ Failed to update permissions: ${error.message}`);
+                }
+                break;
+                
             case 'reset':
                 // XYIAN Guild Verified or higher can trigger reset messages
                 if (!hasBasicAccess(message.member)) {
@@ -1731,7 +1802,7 @@ client.on('messageCreate', async (message) => {
             case 'help':
                 const generalHelpEmbed = new EmbedBuilder()
                     .setTitle('🤖 XYIAN Ultimate Bot Commands')
-                    .setDescription('**Public Commands:**\n`!ping` - Check bot status\n`!menu` - Show public question menu\n`!help` - This help\n\n**XYIAN OFFICIAL Commands:**\n`!tip` - Send daily tip\n`!recruit` - Send recruitment (guild chat only)\n`!xyian help` - XYIAN command list\n\n**XYIAN Guild Verified Commands:**\n`!expedition` - Send expedition message\n`!arena` - Send arena tips\n`!reset` - Send reset messages\n\n**Admin Commands:**\n`!test` - Send test messages\n\n**Q&A System:**\nAsk any Archero 2 question naturally!\n\n**Role Requirements:**\n- XYIAN OFFICIAL: Full access\n- XYIAN Guild Verified: Basic AI questions\n- Admin: Administrative commands')
+                    .setDescription('**Public Commands:**\n`!ping` - Check bot status\n`!menu` - Show public question menu\n`!help` - This help\n\n**XYIAN OFFICIAL Commands:**\n`!tip` - Send daily tip\n`!recruit` - Send recruitment (guild chat only)\n`!create-channel <name> [type]` - Create new channel\n`!channel-permissions <channel-id>` - Set channel permissions\n`!xyian help` - XYIAN command list\n\n**XYIAN Guild Verified Commands:**\n`!expedition` - Send expedition message\n`!arena` - Send arena tips\n`!reset` - Send reset messages\n\n**Admin Commands:**\n`!test` - Send test messages\n\n**Q&A System:**\nAsk any Archero 2 question naturally!\n\n**Role Requirements:**\n- XYIAN OFFICIAL: Full access + Channel management\n- XYIAN Guild Verified: Basic AI questions\n- Admin: Administrative commands')
                     .setColor(0x00BFFF)
                     .setTimestamp()
                     .setFooter({ text: 'XYIAN OFFICIAL' });
