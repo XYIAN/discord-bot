@@ -2,6 +2,29 @@
 
 All notable changes to the Arch 2 Addicts Discord Bot project will be documented in this file.
 
+## [0.0.9] - 2024-10-05
+
+### Added
+- **SQLite Database Integration**: Persistent analytics storage with comprehensive interaction tracking
+- **Reaction Feedback System**: 👍/👎 reactions on all bot responses for user feedback
+- **Admin Error Reporting**: Dedicated admin webhook for system errors and notifications
+- **Analytics Dashboard**: !analytics command showing performance metrics and popular questions
+- **Comprehensive Logging**: Track response times, AI vs database responses, question frequency
+- **Fallback Error Handling**: No error messages sent to users, all errors go to admin channel
+- **Umbral Tempest Webhook**: Event-specific channel for Umbral Tempest updates
+- **Gear/Rune Loadouts Webhook**: Forum-style channel for gear and rune discussions
+
+### Enhanced
+- **Error Resilience**: Bot continues functioning even if database or external services fail
+- **Performance Tracking**: Monitor response times and identify bottlenecks
+- **User Experience**: Seamless interactions with invisible error handling
+- **Data Collection**: Comprehensive analytics for future learning and improvements
+
+### Fixed
+- **Error Message Exposure**: Users never see technical error messages
+- **Database Reliability**: Graceful fallbacks when database operations fail
+- **System Monitoring**: All errors properly logged and reported to admin
+
 ## [0.0.8] - 2024-10-05
 
 ### Added

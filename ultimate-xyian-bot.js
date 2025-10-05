@@ -266,6 +266,9 @@ function loadAnalytics() {
 // Load existing analytics on startup
 loadAnalytics();
 
+// Start API server
+const apiServer = require('./api-server');
+
 // Helper function to add reaction feedback to responses
 async function addReactionFeedback(response) {
     try {
@@ -1629,6 +1632,11 @@ client.on('messageCreate', async (message) => {
                                 name: '🔥 Popular Questions', 
                                 value: popularQuestions.map((q, i) => `${i + 1}. ${q.question.substring(0, 50)}... (${q.count}x)`).join('\n') || 'No data yet',
                                 inline: false 
+                            },
+                            { 
+                                name: '🌐 API Endpoints', 
+                                value: '`/api/analytics/overview` - Full analytics\n`/api/analytics/questions/popular` - Top questions\n`/api/export/interactions` - Export data\n`/api/health` - System status',
+                                inline: false 
                             }
                         )
                         .setColor(0x00BFFF)
@@ -1641,6 +1649,51 @@ client.on('messageCreate', async (message) => {
                     console.error('❌ Analytics error:', error);
                     await message.reply('📊 Analytics data is being processed. Try again in a moment!');
                     sendToAdmin(`🚨 **Analytics Error**: ${error.message}`);
+                }
+                break;
+                
+            case 'api-test':
+                // Test API endpoints (XYIAN OFFICIAL only)
+                if (!hasXYIANRole(message.member)) {
+                    await message.reply('❌ This command requires the XYIAN OFFICIAL role.');
+                    return;
+                }
+                
+                try {
+                    const axios = require('axios');
+                    const apiKey = process.env.API_KEY || 'xyian-bot-api-2024';
+                    const baseUrl = `http://localhost:${process.env.API_PORT || 3001}`;
+                    
+                    // Test health endpoint
+                    const healthResponse = await axios.get(`${baseUrl}/api/health`);
+                    const statusResponse = await axios.get(`${baseUrl}/api/status`);
+                    const analyticsResponse = await axios.get(`${baseUrl}/api/analytics/overview`, {
+                        headers: { 'x-api-key': apiKey }
+                    });
+                    
+                    const testEmbed = new EmbedBuilder()
+                        .setTitle('🧪 API Test Results')
+                        .setDescription('**API Server Status Check**')
+                        .addFields(
+                            { name: '🏥 Health Check', value: `Status: ${healthResponse.data.status}`, inline: true },
+                            { name: '📊 System Status', value: `Uptime: ${Math.round(statusResponse.data.uptime)}s`, inline: true },
+                            { name: '📈 Analytics', value: `Interactions: ${analyticsResponse.data.totalInteractions}`, inline: true },
+                            { 
+                                name: '✅ All Tests Passed', 
+                                value: 'API server is running and responding correctly!',
+                                inline: false 
+                            }
+                        )
+                        .setColor(0x00FF88)
+                        .setTimestamp()
+                        .setFooter({ text: 'XYIAN Bot - API Test' });
+                    
+                    await message.reply({ embeds: [testEmbed] });
+                    
+                } catch (error) {
+                    console.error('❌ API test error:', error);
+                    await message.reply('❌ API test failed. Check server logs for details.');
+                    sendToAdmin(`🚨 **API Test Error**: ${error.message}`);
                 }
                 break;
                 
