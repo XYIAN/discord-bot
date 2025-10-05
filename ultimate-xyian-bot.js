@@ -1,7 +1,6 @@
 const { Client, GatewayIntentBits, EmbedBuilder, WebhookClient } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
-const Database = require('better-sqlite3');
 require('dotenv').config();
 
 // AI Service (optional - requires OpenAI API key)
@@ -132,40 +131,47 @@ if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
 }
 
-const db = new Database(path.join(dataDir, 'bot_analytics.db'));
+const dataFile = path.join(dataDir, 'bot_analytics.json');
 
-// Initialize database tables
-db.exec(`
-    CREATE TABLE IF NOT EXISTS interactions (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-        user_id TEXT NOT NULL,
-        username TEXT,
-        channel TEXT,
-        question TEXT NOT NULL,
-        response TEXT,
-        response_time_ms INTEGER,
-        ai_generated BOOLEAN DEFAULT 0,
-        feedback_score INTEGER DEFAULT NULL
-    );
-    
-    CREATE TABLE IF NOT EXISTS feedback (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        interaction_id INTEGER,
-        user_id TEXT,
-        rating INTEGER CHECK(rating IN (1, 2, 3, 4, 5)),
-        correction TEXT,
-        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (interaction_id) REFERENCES interactions(id)
-    );
-    
-    CREATE TABLE IF NOT EXISTS analytics (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        metric_name TEXT UNIQUE,
-        metric_value TEXT,
-        last_updated DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-`);
+// Initialize data file if it doesn't exist
+if (!fs.existsSync(dataFile)) {
+    fs.writeFileSync(dataFile, JSON.stringify({
+        interactions: [],
+        feedback: [],
+        analytics: {
+            totalInteractions: 0,
+            aiInteractions: 0,
+            averageResponseTime: 0
+        }
+    }));
+}
+
+// Helper functions for JSON database
+function readData() {
+    try {
+        const data = fs.readFileSync(dataFile, 'utf8');
+        return JSON.parse(data);
+    } catch (error) {
+        console.error('Error reading data file:', error);
+        return {
+            interactions: [],
+            feedback: [],
+            analytics: {
+                totalInteractions: 0,
+                aiInteractions: 0,
+                averageResponseTime: 0
+            }
+        };
+    }
+}
+
+function writeData(data) {
+    try {
+        fs.writeFileSync(dataFile, JSON.stringify(data, null, 2));
+    } catch (error) {
+        console.error('Error writing data file:', error);
+    }
+}
 
 // Analytics system
 const analytics = {
@@ -178,32 +184,23 @@ const analytics = {
 // Analytics helper functions
 function logInteraction(question, response, userId, channel, responseTime, aiGenerated = false) {
     try {
-        // Insert into database
-        const stmt = db.prepare(`
-            INSERT INTO interactions (user_id, channel, question, response, response_time_ms, ai_generated)
-            VALUES (?, ?, ?, ?, ?, ?)
-        `);
-        
-        const result = stmt.run(
-            userId,
-            channel,
-            question,
-            response?.substring(0, 200) || 'embed_response',
-            responseTime,
-            aiGenerated ? 1 : 0
-        );
-        
-        // Also track in memory for quick access
+        // Insert into JSON database
+        const data = readData();
         const interaction = {
-            id: result.lastInsertRowid,
+            id: Date.now().toString(),
             timestamp: new Date().toISOString(),
-            userId: userId,
+            user_id: userId,
+            username: 'unknown', // Will be updated if available
             channel: channel,
             question: question,
             response: response?.substring(0, 200) || 'embed_response',
-            responseTime: responseTime,
-            aiGenerated: aiGenerated
+            response_time_ms: responseTime,
+            ai_generated: aiGenerated,
+            feedback_score: null
         };
+        
+        data.interactions.push(interaction);
+        writeData(data);
         
         analytics.interactions.push(interaction);
         
@@ -1656,27 +1653,33 @@ client.on('messageCreate', async (message) => {
                 }
                 
                 try {
-                    // Get basic analytics from database
-                    const totalInteractions = db.prepare('SELECT COUNT(*) as count FROM interactions').get();
-                    const aiInteractions = db.prepare('SELECT COUNT(*) as count FROM interactions WHERE ai_generated = 1').get();
-                    const avgResponseTime = db.prepare('SELECT AVG(response_time_ms) as avg FROM interactions').get();
+                    // Get basic analytics from JSON database
+                    const data = readData();
+                    const totalInteractions = data.interactions.length;
+                    const aiInteractions = data.interactions.filter(i => i.ai_generated).length;
+                    const avgResponseTime = data.interactions.length > 0 
+                        ? data.interactions.reduce((sum, i) => sum + (i.response_time_ms || 0), 0) / data.interactions.length 
+                        : 0;
                     
                     // Get popular questions
-                    const popularQuestions = db.prepare(`
-                        SELECT question, COUNT(*) as count 
-                        FROM interactions 
-                        GROUP BY LOWER(question) 
-                        ORDER BY count DESC 
-                        LIMIT 5
-                    `).all();
+                    const questionCounts = {};
+                    data.interactions.forEach(i => {
+                        const question = i.question?.toLowerCase() || '';
+                        questionCounts[question] = (questionCounts[question] || 0) + 1;
+                    });
+                    
+                    const popularQuestions = Object.entries(questionCounts)
+                        .sort(([,a], [,b]) => b - a)
+                        .slice(0, 5)
+                        .map(([question, count]) => ({ question, count }));
                     
                     const analyticsEmbed = new EmbedBuilder()
                         .setTitle('📊 Bot Analytics Dashboard')
                         .setDescription('**Current Bot Performance Metrics**')
                         .addFields(
-                            { name: '📈 Total Interactions', value: `${totalInteractions.count}`, inline: true },
-                            { name: '🤖 AI Responses', value: `${aiInteractions.count}`, inline: true },
-                            { name: '⚡ Avg Response Time', value: `${Math.round(avgResponseTime.avg || 0)}ms`, inline: true },
+                            { name: '📈 Total Interactions', value: `${totalInteractions}`, inline: true },
+                            { name: '🤖 AI Responses', value: `${aiInteractions}`, inline: true },
+                            { name: '⚡ Avg Response Time', value: `${Math.round(avgResponseTime)}ms`, inline: true },
                             { 
                                 name: '🔥 Popular Questions', 
                                 value: popularQuestions.map((q, i) => `${i + 1}. ${q.question.substring(0, 50)}... (${q.count}x)`).join('\n') || 'No data yet',
