@@ -885,7 +885,7 @@ const umbralStrategies = [
 ];
 
 // Bot startup
-client.once('ready', () => {
+client.once('clientReady', () => {
     console.log('🏰 XYIAN Ultimate Bot - Initializing...');
     console.log(`✅ XYIAN Ultimate Bot is online as ${client.user.tag}!`);
     console.log(`📊 Managing ${client.guilds.cache.size} guilds`);
@@ -1320,6 +1320,9 @@ function hasBasicAccess(member) {
 client.on('messageCreate', async (message) => {
     if (message.author.bot) return;
     
+    // Debug logging to track duplicate responses
+    console.log(`🔍 Message received: ${message.content} from ${message.author.username} in ${message.channel.name}`);
+    
     // Handle Direct Messages
     if (message.channel.type === 1) { // DM channel
         console.log(`💬 DM from ${message.author.username} (ID: ${message.author.id}): ${message.content}`);
@@ -1412,10 +1415,13 @@ client.on('messageCreate', async (message) => {
         
         switch (commandName) {
             case 'ping':
+                console.log(`🏰 PING COMMAND TRIGGERED by ${message.author.username}`);
                 await message.reply('🏰 XYIAN Ultimate Bot - Online!');
+                console.log(`🏰 PING RESPONSE SENT to ${message.author.username}`);
                 break;
                 
             case 'tip':
+                console.log(`📝 TIP COMMAND TRIGGERED by ${message.author.username}`);
                 // Only XYIAN OFFICIAL can trigger daily tips
                 if (!hasXYIANRole(message.member)) {
                     await message.reply('❌ This command requires the XYIAN OFFICIAL role.');
@@ -1423,6 +1429,7 @@ client.on('messageCreate', async (message) => {
                 }
                 await sendDailyTip();
                 await message.reply('📝 Daily tip sent!');
+                console.log(`📝 TIP RESPONSE SENT to ${message.author.username}`);
                 break;
                 
             case 'recruit':
