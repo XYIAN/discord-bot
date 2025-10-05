@@ -1321,7 +1321,7 @@ client.on('messageCreate', async (message) => {
     if (message.author.bot) return;
     
     // Debug logging to track duplicate responses
-    console.log(`🔍 Message received: ${message.content} from ${message.author.username} in ${message.channel.name}`);
+    console.log(`🔍 Message received: ${message.content} from ${message.author.username} in ${message.channel.name} - VERSION 2.0`);
     
     // Handle Direct Messages
     if (message.channel.type === 1) { // DM channel
