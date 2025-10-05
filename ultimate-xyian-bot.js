@@ -1316,9 +1316,50 @@ function hasBasicAccess(member) {
            hasServerBoosterRole(member);
 }
 
+// Response tracking to prevent duplicates
+const responseTracker = new Map();
+
+// Helper function to track and prevent duplicate responses
+function trackResponse(message, responseType = 'unknown') {
+    const messageKey = `${message.id}_${message.author.id}_${message.channel.id}`;
+    const tracker = responseTracker.get(messageKey);
+    
+    if (!tracker) {
+        console.log(`⚠️ RESPONSE TRACKING ERROR: No tracker found for message ${message.id}`);
+        return false;
+    }
+    
+    if (tracker.responseCount >= 1) {
+        console.log(`⚠️ DUPLICATE RESPONSE BLOCKED: Already sent ${tracker.responseCount} responses for message ${message.id} (${responseType})`);
+        return false;
+    }
+    
+    tracker.responseCount++;
+    console.log(`✅ RESPONSE TRACKED: ${responseType} response #${tracker.responseCount} for message ${message.id}`);
+    return true;
+}
+
 // Message handling
 client.on('messageCreate', async (message) => {
     if (message.author.bot) return;
+    
+    // Create unique key for this message
+    const messageKey = `${message.id}_${message.author.id}_${message.channel.id}`;
+    
+    // Check if we've already responded to this message
+    if (responseTracker.has(messageKey)) {
+        console.log(`⚠️ DUPLICATE RESPONSE PREVENTED for message ${message.id} from ${message.author.username}`);
+        return;
+    }
+    
+    // Mark this message as being processed with response count
+    responseTracker.set(messageKey, { processed: true, responseCount: 0 });
+    
+    // Clean up old entries (keep only last 1000)
+    if (responseTracker.size > 1000) {
+        const firstKey = responseTracker.keys().next().value;
+        responseTracker.delete(firstKey);
+    }
     
     // Debug logging to track duplicate responses
     console.log(`🔍 Message received: ${message.content} from ${message.author.username} in ${message.channel.name} - VERSION 2.0`);
@@ -1415,12 +1456,14 @@ client.on('messageCreate', async (message) => {
         
         switch (commandName) {
             case 'ping':
+                if (!trackResponse(message, 'ping')) return;
                 console.log(`🏰 PING COMMAND TRIGGERED by ${message.author.username}`);
                 await message.reply('🏰 XYIAN Ultimate Bot - Online!');
                 console.log(`🏰 PING RESPONSE SENT to ${message.author.username}`);
                 break;
                 
             case 'tip':
+                if (!trackResponse(message, 'tip')) return;
                 console.log(`📝 TIP COMMAND TRIGGERED by ${message.author.username}`);
                 // Only XYIAN OFFICIAL can trigger daily tips
                 if (!hasXYIANRole(message.member)) {
