@@ -38,10 +38,13 @@ const archeroQA = {
     "best build": "Best build depends on your class: Warrior - Demon Blade + defensive skills, Mage - Staff of Light + magical skills, Archer - Windforce + mobility skills. Focus on synergy between your weapon and chosen skills.",
     "daily reset": "Daily reset happens at 5:00 PM Pacific Time. Remember to complete your daily quests, boss battles, and guild donations before reset to maximize your rewards!",
     "arena": "Arena is a fully automated PvP mode where you select heroes and gear, then AI handles combat. Winning increases ladder points, losses decrease them. Rewards include gold, scrolls, and Arena Exchange Tickets based on your PvP tier and ranking.",
-    "supreme arena": "Supreme Arena is the ultimate PvP challenge requiring perfect hero selection and gear optimization. It's fully automated like regular Arena but with much higher difficulty and better rewards. Only the most skilled players with optimal builds can consistently win.",
-    "arena vs supreme arena": "Both are fully automated PvP modes. Arena is accessible to most players with decent rewards. Supreme Arena is the ultimate challenge with much higher difficulty but offers the best rewards and exclusive items. Both use the same ranking system and seasonal resets.",
+    "supreme arena": "Supreme Arena is the ultimate PvP challenge requiring 3 different characters with 3 different builds. Each different item provides bonus health and damage. Top 40% of players remain in Supreme Rank weekly, others are demoted. Only the most skilled players with optimal builds can consistently win.",
+    "arena vs supreme arena": "Both are fully automated PvP modes. Arena is accessible to most players with decent rewards. Supreme Arena requires 3-character team composition with different builds and items for maximum bonuses. Supreme Arena has much higher difficulty but offers the best rewards and exclusive items.",
     "arena tips": "Arena Tips: 1) Use Dragoon as your primary hero, 2) Use Griffin only if you have a complete Griffin build, 3) Equip Revive Rune for second chance, 4) Prioritize ranged attack enhancements, 5) Focus on S-tier gear upgrades, 6) Complete daily arena runs, 7) Aim for top 15 in bracket for tier advancement.",
-    "supreme arena tips": "Supreme Arena Tips: 1) Use Dragoon as your primary hero, 2) Use Griffin only if you have a complete Griffin build, 3) Revive Rune is essential, 4) Max level hero with best runes, 5) S-tier equipment only, 6) Multi-shot, Ricochet, Piercing skills, 7) Only top 1% players compete here.",
+    "supreme arena tips": "Supreme Arena Tips: 1) Use 3 different characters with 3 different builds, 2) Each different item provides bonus health and damage, 3) Dragoon + Griffin + third hero recommended, 4) Revive Rune is essential (50% chance to revive with half HP), 5) Maximize item diversity for stat bonuses, 6) Focus on Multi-shot, Ricochet, Piercing skills, 7) Only top 1% players compete here.",
+    "supreme arena rules": "Supreme Arena Rules: 1) Must use 3 different characters, 2) Must use 3 different builds (can use same character but different items), 3) Each different item provides bonus health and damage, 4) Top 40% of players remain in Supreme Rank weekly, 5) 60% are demoted each week, 6) No player limit in Supreme Rank.",
+    "team composition": "Supreme Arena Team Composition: 1) Use 3 different characters, 2) Each character needs different build, 3) Maximize item diversity for bonuses, 4) Recommended: Dragoon + Griffin + third hero, 5) Balance damage and survivability, 6) Each unique item type adds health and damage.",
+    "item bonuses": "Item Bonus System: 1) Each different item type provides bonus health, 2) Each different item type provides bonus damage, 3) Different item combinations provide additional synergy effects, 4) Mix and match for maximum stat gains, 5) Focus on item diversity over duplicates.",
     "best arena heroes": "Top Arena Heroes: 1) Dragoon - The absolute best Arena hero, 2) Griffin - Only use if you have a complete Griffin build, 3) Avoid other heroes for competitive Arena. Dragoon is the clear #1 choice for both Arena and Supreme Arena.",
     "arena runes": "Best Arena Runes: 1) Revive Rune (essential for second chance), 2) Guardian Rune (solid alternative), 3) Flame Knock Touch Rune (good backup). Focus on runes that enhance ranged attacks and survivability.",
     "arena rewards": "Arena Rewards: Daily rewards based on PvP tier and ranking include gold, scrolls, and Arena Exchange Tickets. Use Arena Exchange Tickets in the Arena Shop for exclusive items. Rankings reset each season with tier advancement opportunities.",
@@ -63,31 +66,41 @@ const dailyTips = [
 ];
 
 // Arena tips database (research-based)
-const arenaTips = [
-    "🏟️ **Arena Hero Selection**: Dragoon is the top Arena hero! Use Griffin only if you have a complete Griffin build!",
-    "⚔️ **Arena Automation**: Arena battles are fully automated - select your best hero and gear, then let AI handle combat!",
-    "🎯 **Arena Runes**: Equip the Revive Rune for a second chance! Guardian or Flame Knock Touch are solid alternatives!",
-    "💪 **Arena Ranking**: Winning increases ladder points, losses decrease them. Stronger foes yield more points!",
-    "🔥 **Arena Rewards**: Based on PvP tier and ranking - earn gold, scrolls, and Arena Exchange Tickets daily!",
-    "⚡ **Arena Strategy**: Prioritize ranged attack enhancements - projectiles perform best in PvP scenarios!",
-    "🛡️ **Arena Heroes**: Dragoon is #1, Griffin is #2 but only with full build. Avoid other heroes for competitive Arena!",
-    "🌟 **Arena Daily**: Complete daily arena runs for consistent rewards and seasonal progression!",
-    "💎 **Arena Shop**: Use Arena Exchange Tickets in the Arena Shop for exclusive items and upgrades!",
-    "🏆 **Arena Seasons**: Rankings reset each season - aim for top 15 in your bracket for tier advancement!"
-];
+    const arenaTips = [
+        "🏟️ **Arena Hero Selection**: Dragoon is the top Arena hero! Use Griffin only if you have a complete Griffin build!",
+        "⚔️ **Arena Automation**: Arena battles are fully automated - select your best hero and gear, then let AI handle combat!",
+        "🎯 **Arena Runes**: Equip the Revive Rune for a second chance! Guardian or Flame Knock Touch are solid alternatives!",
+        "💪 **Arena Ranking**: Winning increases ladder points, losses decrease them. Stronger foes yield more points!",
+        "🔥 **Arena Rewards**: Based on PvP tier and ranking - earn gold, scrolls, and Arena Exchange Tickets daily!",
+        "⚡ **Arena Strategy**: Prioritize ranged attack enhancements - projectiles perform best in PvP scenarios!",
+        "🛡️ **Arena Heroes**: Dragoon is #1, Griffin is #2 but only with full build. Avoid other heroes for competitive Arena!",
+        "🌟 **Arena Daily**: Complete daily arena runs for consistent rewards and seasonal progression!",
+        "💎 **Arena Shop**: Use Arena Exchange Tickets in the Arena Shop for exclusive items and upgrades!",
+        "🏆 **Arena Seasons**: Rankings reset each season - aim for top 15 in your bracket for tier advancement!",
+        "👑 **Supreme Arena**: Requires 3 different characters with 3 different builds! Each unique item provides bonus health and damage!",
+        "⚔️ **Supreme Team**: Use Dragoon + Griffin + third hero for optimal Supreme Arena team composition!",
+        "🎯 **Item Diversity**: Maximize different item types for maximum stat bonuses in Supreme Arena!",
+        "💪 **Supreme Ranking**: Top 40% stay in Supreme Rank weekly - 60% get demoted! Stay competitive!",
+        "🔥 **Revive Rune**: Essential for Supreme Arena - 50% chance to revive with half HP at Epic level!"
+    ];
 
 // Supreme Arena tips database (research-based)
 const supremeArenaTips = [
-    "👑 **Supreme Arena**: The ultimate PvP challenge requiring perfect hero selection and gear optimization!",
-    "⚔️ **Supreme Heroes**: Dragoon is the absolute best for Supreme Arena! Griffin only if you have complete build!",
-    "🎯 **Supreme Runes**: Revive Rune is essential - gives you a second chance in the most challenging battles!",
-    "💪 **Supreme Gear**: Focus on S-tier equipment upgrades - avoid using them as upgrade material!",
-    "🔥 **Supreme Skills**: Prioritize Multi-shot, Ricochet, and Piercing for maximum projectile efficiency!",
-    "⚡ **Supreme Strategy**: Supreme Arena is fully automated - your preparation and gear selection matter most!",
-    "🛡️ **Supreme Rewards**: Supreme Arena offers the highest tier rewards and exclusive items!",
-    "🌟 **Supreme Ranking**: Only the most skilled players with optimal builds can consistently win!",
-    "💎 **Supreme Preparation**: Ensure your hero is max level with best possible runes and equipment!",
-    "🏆 **Supreme Elite**: This is where the top 1% of players compete - bring your absolute best!"
+    "👑 **Supreme Arena**: The ultimate PvP challenge requiring 3 different characters with 3 different builds!",
+    "⚔️ **Supreme Team**: Use Dragoon + Griffin + third hero for optimal team composition!",
+    "🎯 **Item Bonuses**: Each different item provides bonus health and damage - maximize item diversity!",
+    "💪 **Supreme Rules**: Top 40% stay in Supreme Rank weekly, 60% get demoted - stay competitive!",
+    "🔥 **Revive Rune**: Essential for Supreme Arena - 50% chance to revive with half HP at Epic level!",
+    "🌟 **Build Diversity**: Each character needs different build - can use same character but different items!",
+    "🏆 **Supreme Strategy**: Balance damage and survivability across all 3 characters!",
+    "💎 **Item Synergy**: Different item combinations provide additional synergy effects!",
+    "⚡ **Supreme Skills**: Multi-shot, Ricochet, and Piercing are the top skills for Supreme Arena!",
+    "🛡️ **Supreme Defense**: Focus on survivability - you need to outlast your opponents!",
+    "🎮 **Team Building**: Must use 3 different characters - no duplicates allowed!",
+    "🔥 **Stat Optimization**: Mix and match items for maximum health and damage bonuses!",
+    "💪 **Supreme Ranking**: No player limit in Supreme Rank - compete with the best!",
+    "🌟 **Meta Adaptation**: Stay updated with current Supreme Arena meta strategies!",
+    "🏆 **Supreme Rewards**: The best rewards in the game - only top players compete here!"
 ];
 
 // Umbral Tempest strategies
