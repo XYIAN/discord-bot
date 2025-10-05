@@ -555,9 +555,11 @@ const advancedArcheroQA = {
     "hall materials": "Hall Materials: Sacred Stones (common), Sacred Crystals (rare), Sacred Gems (epic), Sacred Orbs (legendary). Higher tier materials provide more experience. Use them strategically based on your current hall levels.",
     
     // Resonance System - CORRECTED INFORMATION
-    "resonance": "**CORRECT RESONANCE INFO**: Resonance unlocks character abilities from other characters. 3-star resonance slot unlocks at 3 stars, 6-star resonance slot unlocks at 6 stars. You get abilities from other characters based on your resonance setup. This is NOT about equipment elements - it's about character synergies.",
-    "resonance levels": "**CORRECT RESONANCE INFO**: 3-star resonance slot: Unlocks at 3 stars, gives you abilities from other characters. 6-star resonance slot: Unlocks at 6 stars, gives you additional abilities from other characters. The more leveled your characters are, the better the resonance effects.",
-    "resonance vs diversity": "**CORRECT RESONANCE INFO**: Resonance is about character abilities, not equipment. 3-star slot: Rolla, Helix are best. 6-star slot: Loki, Demon King, Otta are best. This is about character synergies and abilities, not equipment matching.",
+    "resonance": "**RESONANCE**: Unlocks using other characters' skills that you own on your current character. Example: Alex 3-star can use Nyanja's cloudfooted skill as resonance. 3-star resonance slot unlocks at 3 stars, 6-star resonance slot unlocks at 6 stars. You get abilities from other characters based on your resonance setup.",
+    "resonance levels": "**RESONANCE LEVELS**: 3-star resonance slot: Unlocks at 3 stars, gives you abilities from other characters. 6-star resonance slot: Unlocks at 6 stars, gives you additional abilities from other characters. The more leveled your characters are, the better the resonance effects.",
+    "resonance vs diversity": "**RESONANCE**: Resonance is about character abilities, not equipment. 3-star slot: Rolla, Helix are best. 6-star slot: Loki, Demon King, Otta are best. This is about character synergies and abilities, not equipment matching.",
+    "what is resonance": "**RESONANCE**: Unlocks using other characters' skills that you own on your current character. Example: Alex 3-star can use Nyanja's cloudfooted skill as resonance. 3-star resonance slot unlocks at 3 stars, 6-star resonance slot unlocks at 6 stars.",
+    "how does resonance work": "**RESONANCE**: Unlocks using other characters' skills that you own on your current character. Example: Alex 3-star can use Nyanja's cloudfooted skill as resonance. 3-star resonance slot unlocks at 3 stars, 6-star resonance slot unlocks at 6 stars.",
     
     // Character System - Detailed Character Information
     "thor": "Thor (Legendary): Unique ability to move while firing arrows and weapon detach ability. As you level up, you can summon hammers and increase lightning damage. Excellent for mobile combat and lightning-based builds. Perfect for players who prefer active movement during combat.",
@@ -2096,43 +2098,49 @@ client.on('messageCreate', async (message) => {
             }
         }
         
-        // Q&A System with role-based access
+        // Q&A System with role-based access - PRIORITIZE DATABASE OVER AI
         let answer = null;
         let isAIResponse = false;
         
         // Check if user has access to AI features
         const hasAIAccess = hasBasicAccess(message.member);
         
-        if (AIService && hasAIAccess) {
+        // FIRST: Try database for direct answers
+        answer = getAnswer(message.content);
+        
+        // If we have a good database answer, use it (no AI needed)
+        if (answer && answer.length > 10) {
+            console.log(`📚 DATABASE ANSWER USED for: "${message.content}"`);
+            logCorrection(
+                message.content,
+                answer,
+                "Database answer used - direct factual information available"
+            );
+        } else if (AIService && hasAIAccess) {
+            // Only use AI if we don't have a good database answer
             try {
                 answer = await generateAIResponse(message.content, message.channel.name);
                 if (answer && answer.length > 10) {
                     isAIResponse = true;
+                    console.log(`🤖 AI ANSWER USED for: "${message.content}"`);
+                    logCorrection(
+                        message.content,
+                        answer,
+                        "AI response generated - no direct database answer available"
+                    );
                 }
             } catch (error) {
                 console.error('❌ AI response error:', error);
             }
         }
         
-        // Fallback to database if AI didn't respond or user doesn't have access
-        if (!answer || !isAIResponse) {
-            answer = getAnswer(message.content);
-            
-            // If no database answer, provide a helpful fallback
-            if (!answer) {
-                if (hasAIAccess) {
-                    answer = getFallbackResponse(message.content);
-                } else {
-                    answer = "❓ I'd love to help with your Archero 2 question! However, AI-powered responses require the **XYIAN Guild Verified** role or higher. You can still ask basic questions, or use `!menu` to see what I can help with!";
-                }
+        // Final fallback if no answer found
+        if (!answer) {
+            if (hasAIAccess) {
+                answer = getFallbackResponse(message.content);
+            } else {
+                answer = "❓ I'd love to help with your Archero 2 question! However, AI-powered responses require the **XYIAN Guild Verified** role or higher. You can still ask basic questions, or use `!menu` to see what I can help with!";
             }
-        } else if (isAIResponse) {
-            // Log AI response for potential correction tracking
-            logCorrection(
-                message.content,
-                answer,
-                "AI response generated - monitor for accuracy and user feedback"
-            );
         }
         
         const qaEmbed = new EmbedBuilder()
