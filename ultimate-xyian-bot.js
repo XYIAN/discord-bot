@@ -59,16 +59,18 @@ function getAIContext(channelName) {
     
     const gameMechanics = `Game Systems: Orbs (Fire/Ice/Lightning/Poison/Dark), Starcores (Razor starcore upgrades), Skins (provide abilities), Resonance (character synergies), Sacred Hall vs Tier Up (different progression paths), Supreme Arena (3 characters, 3 builds, item bonuses), Arena (Dragoon/Griffin top heroes), Guild requirements (2 daily boss battles, donations).`;
     
-    const weaponDatabase = `WEAPON DATABASE: Only 3 S-tier weapons exist: Oracle Staff (mage), Griffin Claws (melee), Dragoon Crossbow (ranged). Tier progression: Epic → Legendary → Mythic → Chaotic (max). Basic weapons (Bow, Staff, Claws) cannot level past Legendary. Thor's Mjolnir is an ability, NOT a weapon.`;
+    const weaponDatabase = `WEAPON DATABASE: Only 3 S-tier weapons exist: Oracle Staff (mage), Griffin Claws (melee), Dragoon Crossbow (ranged). Tier progression: Epic → Legendary → Mythic → Chaotic (max). Basic weapons (Beam Staff, Claw, Bow) can only go to Legendary +3. Thor's Mjolnir is an ability, NOT a weapon.`;
+    
+    const upgradeSystem = `UPGRADE SYSTEM: Epic +1/+2 (1-2 epics), Legendary +1/+2/+3 (1-2 legendaries), Mythic +1/+2/+3/+4, Chaotic (mythic +4 + 14 epic griffin OR 42 epic OR 38 legendary). Only S-tier weapons can go past Legendary.`;
     
     if (channelName === 'bot-questions' || channelName === 'bot-questions-advanced') {
-        return `${baseContext} ${characterKnowledge} ${gameMechanics} ${weaponDatabase} This is the advanced bot questions channel. Provide detailed, technical answers about character abilities, builds, game mechanics, strategies, and competitive play. Include specific numbers, percentages, and optimal combinations. ONLY use information from the database - do not make up weapon names, abilities, or stats.`;
+        return `${baseContext} ${characterKnowledge} ${gameMechanics} ${weaponDatabase} ${upgradeSystem} This is the advanced bot questions channel. Provide detailed, technical answers about character abilities, builds, game mechanics, strategies, and competitive play. Include specific numbers, percentages, and optimal combinations. ONLY use information from the database - do not make up weapon names, abilities, or stats.`;
     } else if (channelName === 'xyian-guild') {
-        return `${baseContext} ${characterKnowledge} ${gameMechanics} ${weaponDatabase} This is the XYIAN guild channel (Guild ID: 213797). Focus on guild requirements (2 daily boss battles, donations), Supreme Arena strategies, team coordination, and competitive guild management. Emphasize teamwork and optimization.`;
+        return `${baseContext} ${characterKnowledge} ${gameMechanics} ${weaponDatabase} ${upgradeSystem} This is the XYIAN guild channel (Guild ID: 213797). Focus on guild requirements (2 daily boss battles, donations), Supreme Arena strategies, team coordination, and competitive guild management. Emphasize teamwork and optimization.`;
     } else if (channelName === 'arena' || channelName === 'supreme-arena') {
-        return `${baseContext} ${characterKnowledge} ${weaponDatabase} Focus on Arena and Supreme Arena strategies. Dragoon and Griffin are top heroes (Dragoon preferred unless full Griffin build). Cover runes, builds, positioning, and competitive tactics.`;
+        return `${baseContext} ${characterKnowledge} ${weaponDatabase} ${upgradeSystem} Focus on Arena and Supreme Arena strategies. Dragoon and Griffin are top heroes (Dragoon preferred unless full Griffin build). Cover runes, builds, positioning, and competitive tactics.`;
     } else {
-        return `${baseContext} ${characterKnowledge} ${weaponDatabase} This is a general Archero 2 community channel. Provide helpful advice about basic game mechanics, character recommendations, and beginner-friendly strategies.`;
+        return `${baseContext} ${characterKnowledge} ${weaponDatabase} ${upgradeSystem} This is a general Archero 2 community channel. Provide helpful advice about basic game mechanics, character recommendations, and beginner-friendly strategies.`;
     }
 }
 
@@ -732,6 +734,15 @@ const archeroQA = {
     "chaotic tier": "**CHAOTIC TIER**: The maximum tier for S-tier weapons. Only Oracle Staff, Griffin Claws, and Dragoon Crossbow can reach Chaotic tier. Provides the highest stats and abilities in the game.",
     "mythic tier": "**MYTHIC TIER**: Second-highest tier for S-tier weapons. Only Oracle Staff, Griffin Claws, and Dragoon Crossbow can reach Mythic tier. Significant stat boost from Legendary.",
     "s tier weapons": "**S-TIER WEAPONS**: Oracle Staff (mage), Griffin Claws (melee), Dragoon Crossbow (ranged). These are the ONLY weapons that can be upgraded beyond Legendary. Tier progression: Epic → Legendary → Mythic → Chaotic (max).",
+    
+    // UPGRADE SYSTEM - COMPREHENSIVE DATABASE
+    "upgrade system": "**UPGRADE SYSTEM**: Epic has +1 and +2 levels. +1 takes 1 other epic, +2 takes 2 other epics. To make Legendary: need another epic +2 of same type. Legendary has +1, +2, +3 levels. +1 and +2 need 1 other legendary, +3 needs 2 legendaries. To make Mythic: need two legendary +3. Mythic has +1, +2, +3, +4 levels. To make Chaotic: need mythic +4 + 14 epic griffin helmets OR 42 epic helmets OR 38 legendary helmets.",
+    "epic upgrade": "**EPIC UPGRADE**: Epic items have +1 and +2 levels. +1 requires 1 other epic of same type, +2 requires 2 other epics. To upgrade to Legendary: need another epic +2 of the same type.",
+    "legendary upgrade": "**LEGENDARY UPGRADE**: Legendary items have +1, +2, +3 levels. +1 and +2 require 1 other legendary, +3 requires 2 legendaries. To upgrade to Mythic: need two legendary +3 of the same type.",
+    "mythic upgrade": "**MYTHIC UPGRADE**: Mythic items have +1, +2, +3, +4 levels. To upgrade to Chaotic: need mythic +4 + 14 epic griffin helmets OR 42 epic helmets OR 38 legendary helmets.",
+    "chaotic upgrade": "**CHAOTIC UPGRADE**: To make Chaotic Oracle Helmet: need mythic +4 + 14 epic griffin helmets OR 42 epic helmets OR 38 legendary helmets. This system applies to all items (crossbow to mythic needs 43 epic weapons, etc.).",
+    "basic weapons": "**BASIC WEAPONS**: Beam Staff, Claw, and Bow are NOT S-tier and can only go to Legendary +3. They cannot go past Legendary tier. Only S-tier weapons (Oracle Staff, Griffin Claws, Dragoon Crossbow) can reach Mythic and Chaotic tiers.",
+    "upgrade costs": "**UPGRADE COSTS**: Epic +1 (1 epic), Epic +2 (2 epics), Legendary +1/+2 (1 legendary), Legendary +3 (2 legendaries), Mythic +1/+2/+3/+4 (various legendary costs), Chaotic (mythic +4 + 14 epic griffin OR 42 epic OR 38 legendary).",
     "best weapon mage": "**CORRECT WEAPON INFO**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff**, **Griffin Claws**, and **Dragoon Crossbow**. For mage builds, use **Oracle Staff** - it's the best overall weapon with high damage and great range. There are also basic weapons (Bow, Staff, Claws) but they cannot level past Legendary.",
     "best weapon warrior": "**CORRECT WEAPON INFO**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff**, **Griffin Claws**, and **Dragoon Crossbow**. For warrior builds, use **Griffin Claws** - excellent for close combat with high attack speed. There are also basic weapons (Bow, Staff, Claws) but they cannot level past Legendary.",
     "best weapon archer": "**CORRECT WEAPON INFO**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff**, **Griffin Claws**, and **Dragoon Crossbow**. For archer builds, use **Dragoon Crossbow** - powerful ranged weapon, great for PvP. There are also basic weapons (Bow, Staff, Claws) but they cannot level past Legendary.",
