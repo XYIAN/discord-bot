@@ -1419,6 +1419,13 @@ client.on('messageCreate', async (message) => {
     // Debug logging to track duplicate responses
     console.log(`🔍 Message received: ${message.content} from ${message.author.username} in ${message.channel.name} - VERSION 2.0`);
     
+    // SPAM FILTER - Check if we've already responded to this message
+    const spamKey = `${message.id}_${message.channel.id}`;
+    if (messageResponseTracker.has(spamKey)) {
+        console.log(`🚫 SPAM FILTER: Already responded to message ${message.id} in ${message.channel.name} - BLOCKING`);
+        return;
+    }
+    
     // ==================== CRITICAL GATE: ONLY AI CHANNELS GET LIVE RESPONSES ====================
     const isCommand = message.content.startsWith('!') || message.content.startsWith('/');
     const isDM = message.channel.type === 1;
@@ -1483,6 +1490,8 @@ client.on('messageCreate', async (message) => {
                     if (!trackResponse(message, 'ping-dm')) return;
                     await message.reply('🏰 XYIAN Ultimate Bot - Online! (DM Mode)');
                     console.log(`✅ DM ping response sent to ${message.author.username}`);
+                    messageResponseTracker.set(spamKey, true);
+                    await logBotResponse('DM', message.content, 'Ping Command', message.author.id, message.author.username);
                     break;
                     
                 case 'help':
@@ -1595,6 +1604,38 @@ client.on('messageCreate', async (message) => {
                 await sendToGeneral({ content: '🧪 **Test Message** - Bot is working correctly!' });
                 await sendToXYIAN({ content: '🧪 **Test Message** - XYIAN guild channel test successful!' });
                 await message.reply('📢 Test messages sent to general and XYIAN channels!');
+                messageResponseTracker.set(spamKey, true);
+                await logBotResponse(message.channel.name, message.content, 'Test Command', message.author.id, message.author.username);
+                break;
+                
+            case 'audit-logs':
+                // Only XYIAN OFFICIAL can view audit logs
+                if (!hasXYIANRole(message.member)) {
+                    await message.reply('❌ This command requires the XYIAN OFFICIAL role.');
+                    return;
+                }
+                
+                const recentLogs = auditLog.slice(-10); // Last 10 entries
+                const auditEmbed = new EmbedBuilder()
+                    .setTitle('📊 Bot Response Audit Logs (Last 10)')
+                    .setColor(0x00BFFF)
+                    .setTimestamp();
+                
+                if (recentLogs.length === 0) {
+                    auditEmbed.setDescription('No audit logs available.');
+                } else {
+                    const logText = recentLogs.map(log => 
+                        `**${log.timestamp}** - ${log.responseType} in ${log.channel}\n` +
+                        `User: ${log.username} (${log.userId})\n` +
+                        `Message: ${log.message.substring(0, 50)}...`
+                    ).join('\n\n');
+                    
+                    auditEmbed.setDescription(logText);
+                }
+                
+                await message.reply({ embeds: [auditEmbed] });
+                messageResponseTracker.set(spamKey, true);
+                await logBotResponse(message.channel.name, message.content, 'Audit Logs Command', message.author.id, message.author.username);
                 break;
                 
             case 'create-channel':
@@ -2377,11 +2418,60 @@ client.on('messageCreate', async (message) => {
                 .setFooter({ text: 'XYIAN Bot' });
         
         await message.reply({ embeds: [qaEmbed] });
+        
+        // Mark message as processed and log response
+        messageResponseTracker.set(spamKey, true);
+        await logBotResponse(message.channel.name, message.content, 'Q&A Response', message.author.id, message.author.username);
     }
 });
 
 // Track processed members to prevent duplicates
 const processedMembers = new Set();
+
+// SPAM FILTER - Track message responses to prevent multiple responses
+const messageResponseTracker = new Map();
+const auditLog = [];
+
+// Helper function to log all bot responses for audit
+async function logBotResponse(channelName, messageContent, responseType, userId, username) {
+    const logEntry = {
+        timestamp: new Date().toISOString(),
+        channel: channelName,
+        message: messageContent,
+        responseType: responseType,
+        userId: userId,
+        username: username,
+        botResponse: true
+    };
+    
+    auditLog.push(logEntry);
+    
+    // Keep only last 1000 entries to prevent memory leaks
+    if (auditLog.length > 1000) {
+        auditLog.shift();
+    }
+    
+    console.log(`📊 AUDIT LOG: ${responseType} in ${channelName} by ${username} (${userId})`);
+    
+    // Send to admin webhook for monitoring
+    try {
+        const auditEmbed = new EmbedBuilder()
+            .setTitle('📊 Bot Response Audit')
+            .setColor(0x00BFFF)
+            .addFields(
+                { name: 'Channel', value: channelName, inline: true },
+                { name: 'User', value: `${username} (${userId})`, inline: true },
+                { name: 'Response Type', value: responseType, inline: true },
+                { name: 'Message', value: messageContent.length > 100 ? messageContent.substring(0, 100) + '...' : messageContent, inline: false },
+                { name: 'Timestamp', value: new Date().toISOString(), inline: true }
+            )
+            .setTimestamp();
+        
+        await sendToAdmin({ embeds: [auditEmbed] });
+    } catch (error) {
+        console.error('❌ Failed to send audit log:', error);
+    }
+}
 
 // Welcome new members
 client.on('guildMemberAdd', async (member) => {
