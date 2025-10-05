@@ -2,6 +2,27 @@
 
 All notable changes to the Arch 2 Addicts Discord Bot project will be documented in this file.
 
+## [0.1.1] - 2024-10-05
+
+### Fixed
+- **Weapon Database**: Corrected all weapon information to reflect Archero 2 S-tier weapons only
+- **Welcome Messages**: Reduced to single AI-enhanced welcome message to prevent spam
+- **Character Data**: Added comprehensive character information and resonance system
+- **Arena Tips**: Enhanced with correct hero recommendations (Dragoon/Griffin)
+- **Game Mechanics**: Added detailed orbs, starcores, skins, and sacred hall information
+
+### Added
+- **Character Resonance System**: 3-star and 6-star resonance recommendations
+- **PvP/PvE Character Guide**: Best characters for different game modes
+- **Advanced Game Mechanics**: Orb swapping, starcore upgrades, skin abilities
+- **Corrected Weapon Info**: Only Oracle Staff, Griffin Claws, Dragoon Crossbow are S-tier
+- **AI-Enhanced Welcome**: Unique welcome messages using OpenAI API
+
+### Enhanced
+- **Q&A Database**: 25+ new accurate entries with corrected information
+- **Fallback Responses**: Better responses when AI fails or data not found
+- **User Experience**: Single welcome message instead of multiple spam messages
+
 ## [0.1.0] - 2024-10-05
 
 ### Added
