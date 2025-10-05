@@ -1424,6 +1424,13 @@ client.on('messageCreate', async (message) => {
     const isDM = message.channel.type === 1;
     const isAIChannel = ['bot-questions', 'bot-questions-advanced', 'archero-ai'].includes(message.channel.name);
     
+    // IGNORE these channels completely (no responses at all)
+    const ignoreChannels = ['guild-recruit-chat', 'xyian-guild', 'guild-chat', 'recruit'];
+    if (ignoreChannels.includes(message.channel.name)) {
+        console.log(`⏭️ IGNORING: Channel ${message.channel.name} is in ignore list`);
+        return;
+    }
+    
     // If it's NOT a command, NOT a DM, and NOT in AI channel -> IGNORE
     if (!isCommand && !isDM && !isAIChannel) {
         console.log(`⏭️ IGNORING: Not a command, not DM, not AI channel (${message.channel.name})`);
