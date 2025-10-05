@@ -73,7 +73,32 @@ const advancedArcheroQA = {
     "best characters": "Best Characters by Content: PvP - Thor, Loki, Demon King. PvE - Seraph, Dracoola, Rolla. Supreme Arena - Thor, Demon King, Griffin. Choose based on your preferred content and playstyle.",
     "character leveling": "Character Leveling: Each character gains new abilities and stat bonuses as you level up. Thor unlocks hammer summons and lightning damage, Demon King's shield becomes more powerful, Epic characters get enhanced versions of their base abilities.",
     "character acquisition": "Character Acquisition: Legendary characters from premium sources, Epic characters from various content. Seraph is PvE only, Loki is PvP only. Focus on characters that match your preferred content type.",
-    "character builds": "Character Builds: Thor - Lightning and mobility builds, Demon King - Tank and shield builds, Rolla - Freeze and crit builds, Dracoola - Life steal and sustain builds, Seraph - Angel and PvE builds, Loki - Movement and PvP builds."
+    "character builds": "Character Builds: Thor - Lightning and mobility builds, Demon King - Tank and shield builds, Rolla - Freeze and crit builds, Dracoola - Life steal and sustain builds, Seraph - Angel and PvE builds, Loki - Movement and PvP builds.",
+    
+    // Lower Tier Characters - Starting and Basic Characters
+    "alex": "Alex (Starting Hero): Good basic abilities and red heart drop increase. Perfect for beginners with solid foundation stats. His heart drop bonus helps with survivability in early game. Great starting character for learning the game mechanics.",
+    "nyanja": "Nyanja (Basic): Little ninja cat with increased speed and Cloudfooted ability that damages and pushes enemies away. Excellent for mobility-based gameplay and crowd control. Great for players who prefer fast, agile combat styles.",
+    "helix": "Helix (Basic): Gets more damage as he gets damaged - damage increases with lower health. High-risk, high-reward character perfect for aggressive players. His damage scaling makes him incredibly powerful when played correctly.",
+    "hela": "Hela (Basic): Really good character with healing aura and damage boost. At max stars, she provides really important crowd control cleanse. Essential for team support and removing debuffs. Excellent for players who prefer support roles.",
+    
+    // Character Tier Overview
+    "basic characters": "Basic Characters: Alex (starting hero, heart drop bonus), Nyanja (speed, cloudfooted push), Helix (damage scaling with health loss), Hela (healing aura, damage boost, crowd control cleanse). These are the foundation characters every player should know.",
+    "starting characters": "Starting Characters: Alex is the default starting hero with good basic abilities and red heart drop increase. Perfect for learning the game and provides solid foundation for new players.",
+    "low tier characters": "Low Tier Characters: Alex (heart drops), Nyanja (speed/cloudfooted), Helix (damage scaling), Hela (healing/cleanse). These characters are accessible early and provide unique abilities that remain useful throughout the game.",
+    "character progression": "Character Progression: Start with Alex for basics, unlock Nyanja for speed, Helix for damage scaling, Hela for support. These characters teach different playstyles before moving to Epic and Legendary characters.",
+    
+    // Character Abilities and Mechanics
+    "cloudfooted": "Cloudfooted Ability (Nyanja): Damages and pushes enemies away. Great for crowd control and creating space. Perfect for hit-and-run tactics and managing enemy positioning.",
+    "damage scaling": "Damage Scaling (Helix): Damage increases as health decreases. High-risk, high-reward mechanic. Players must balance staying alive with maximizing damage output.",
+    "healing aura": "Healing Aura (Hela): Provides healing to nearby allies. Essential for team support and survivability. Great for group content and supporting other players.",
+    "crowd control cleanse": "Crowd Control Cleanse (Hela): At max stars, removes debuffs and crowd control effects. Extremely important for high-level content where debuffs can be deadly.",
+    "heart drop bonus": "Heart Drop Bonus (Alex): Increases red heart drop rate. Helps with survivability and reduces reliance on health potions. Great for new players learning resource management.",
+    
+    // Character Selection by Playstyle
+    "aggressive characters": "Aggressive Characters: Helix (damage scaling), Thor (lightning/mobility), Loki (PvP movement). For players who prefer high-risk, high-reward gameplay.",
+    "defensive characters": "Defensive Characters: Demon King (shield), Hela (healing/cleanse), Dracoola (life steal). For players who prefer survivability and support roles.",
+    "mobile characters": "Mobile Characters: Nyanja (speed/cloudfooted), Thor (move while firing), Loki (movement bonuses). For players who prefer agile, hit-and-run combat.",
+    "support characters": "Support Characters: Hela (healing/cleanse), Seraph (angel bonuses). For players who prefer helping teammates and providing utility."
 };
 
 function handleBotQuestion(question) {
@@ -111,11 +136,26 @@ function handleBotQuestion(question) {
         'dracoola': 'dracoola',
         'seraph': 'seraph',
         'loki': 'loki',
+        'alex': 'alex',
+        'nyanja': 'nyanja',
+        'helix': 'helix',
+        'hela': 'hela',
         'character': 'best characters',
         'legendary': 'legendary characters',
         'epic': 'epic characters',
+        'basic': 'basic characters',
+        'starting': 'starting characters',
         'ability': 'character abilities',
-        'leveling': 'character leveling'
+        'leveling': 'character leveling',
+        'aggressive': 'aggressive characters',
+        'defensive': 'defensive characters',
+        'mobile': 'mobile characters',
+        'support': 'support characters',
+        'cloudfooted': 'cloudfooted',
+        'damage scaling': 'damage scaling',
+        'healing aura': 'healing aura',
+        'crowd control': 'crowd control cleanse',
+        'heart drop': 'heart drop bonus'
     };
     
     for (const [keyword, topic] of Object.entries(keywords)) {
@@ -159,18 +199,28 @@ function getBotQuestionHelp() {
                 inline: true
             },
             {
-                name: '🎮 **Characters**',
-                value: '• `thor` - Legendary lightning character\n• `demon king` - Legendary tank character\n• `rolla` - Epic freeze character\n• `dracoola` - Epic life steal character',
+                name: '🏆 **Legendary Characters**',
+                value: '• `thor` - Lightning/mobility character\n• `demon king` - Tank with shield\n• `legendary characters` - Top tier overview',
                 inline: true
             },
             {
-                name: '⚔️ **Character Types**',
-                value: '• `seraph` - PvE only character\n• `loki` - PvP only character\n• `legendary characters` - Top tier characters\n• `epic characters` - Purple tier characters',
+                name: '💜 **Epic Characters**',
+                value: '• `rolla` - Freeze/crit character\n• `dracoola` - Life steal character\n• `seraph` - PvE only character\n• `loki` - PvP only character',
+                inline: true
+            },
+            {
+                name: '⭐ **Basic Characters**',
+                value: '• `alex` - Starting hero\n• `nyanja` - Speed/ninja cat\n• `helix` - Damage scaling\n• `hela` - Healing/support',
                 inline: true
             },
             {
                 name: '🎯 **Character Guide**',
-                value: '• `best characters` - Character recommendations\n• `character abilities` - Ability descriptions\n• `character builds` - Build strategies\n• `character leveling` - Leveling guide',
+                value: '• `best characters` - Recommendations\n• `character abilities` - Ability descriptions\n• `character builds` - Build strategies\n• `character progression` - Leveling guide',
+                inline: true
+            },
+            {
+                name: '🎮 **Playstyles**',
+                value: '• `aggressive characters` - High-risk builds\n• `defensive characters` - Tank/support\n• `mobile characters` - Speed builds\n• `support characters` - Team utility',
                 inline: true
             }
         )
