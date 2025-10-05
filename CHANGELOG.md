@@ -2,6 +2,29 @@
 
 All notable changes to the Arch 2 Addicts Discord Bot project will be documented in this file.
 
+## [0.1.0] - 2024-10-05
+
+### Added
+- **Self-Hosted Express.js API**: Comprehensive REST API running alongside Discord bot
+- **9 API Endpoints**: Analytics, learning, export, and system monitoring endpoints
+- **Rate Limiting**: 100 requests per 15 minutes per IP to prevent abuse
+- **API Key Authentication**: Secure access to protected endpoints
+- **Data Export**: JSON and CSV export formats for analytics and interactions
+- **Learning System**: Feedback submission and improvement suggestions
+- **Performance Monitoring**: Real-time system health and performance metrics
+- **!api-test Command**: Test API functionality directly from Discord
+
+### Enhanced
+- **API Integration**: Bot and API run on same Railway instance (no additional hosting costs)
+- **Data Access**: Programmatic access to all bot analytics and interaction data
+- **System Monitoring**: Real-time health checks and uptime tracking
+- **Export Capabilities**: Easy data export for analysis and reporting
+
+### Fixed
+- **API Reliability**: Comprehensive error handling and fallback responses
+- **Data Security**: API key protection for sensitive endpoints
+- **Performance**: Optimized database queries and response times
+
 ## [0.0.9] - 2024-10-05
 
 ### Added

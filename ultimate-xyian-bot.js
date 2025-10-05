@@ -686,12 +686,56 @@ function getBotQuestionHelp() {
         .setTimestamp();
 }
 
-// Archero 2 Q&A Database
+// Archero 2 Q&A Database - CORRECTED AND COMPREHENSIVE
 const archeroQA = {
-    "best etched rune": "The main hand etched rune is considered the best for DPS. It provides the highest damage output and is essential for maximizing your character's potential. Focus on upgrading your main hand rune first!",
-    "best weapon mage": "For mage class, the Staff of Light is highly recommended. It provides excellent magical damage and synergizes well with mage abilities. The Staff of Light offers great range and area damage, perfect for clearing waves of enemies.",
-    "best weapon warrior": "For warrior class, the Demon Blade is the top choice. It offers exceptional melee damage and critical hit potential. The Demon Blade's special ability can devastate groups of enemies and bosses alike.",
-    "best weapon archer": "For archer class, the Windforce Bow is highly recommended. It provides excellent range, piercing damage, and special abilities that can hit multiple enemies. Perfect for kiting and area control.",
+    // WEAPONS - CORRECTED INFORMATION
+    "best weapon": "**CORRECT WEAPON INFO**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff**, **Griffin Claws**, and **Dragoon Crossbow**. These are the ONLY weapons that can be upgraded beyond Legendary. All other weapons (basic Bow, Staff, Claws) cannot level past Legendary and are inferior.",
+    "strongest weapon": "**CORRECT WEAPON INFO**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff**, **Griffin Claws**, and **Dragoon Crossbow**. These are the ONLY weapons that can be upgraded beyond Legendary. All other weapons (basic Bow, Staff, Claws) cannot level past Legendary and are inferior.",
+    "weapons": "**CORRECT WEAPON INFO**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff**, **Griffin Claws**, and **Dragoon Crossbow**. These are the ONLY weapons that can be upgraded beyond Legendary. All other weapons (basic Bow, Staff, Claws) cannot level past Legendary and are inferior.",
+    "oracle staff": "**Oracle Staff** - One of the 3 S-tier weapons. Best overall weapon with high damage and great range. Perfect for mage builds and general use. Can be upgraded beyond Legendary unlike basic weapons.",
+    "griffin claws": "**Griffin Claws** - One of the 3 S-tier weapons. Excellent for close combat with high attack speed. Perfect for warrior builds and melee combat. Can be upgraded beyond Legendary unlike basic weapons.",
+    "dragoon crossbow": "**Dragoon Crossbow** - One of the 3 S-tier weapons. Powerful ranged weapon, great for PvP and archer builds. Can be upgraded beyond Legendary unlike basic weapons.",
+    "best weapon mage": "**CORRECT WEAPON INFO**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff**, **Griffin Claws**, and **Dragoon Crossbow**. For mage builds, use **Oracle Staff** - it's the best overall weapon with high damage and great range. There are also basic weapons (Bow, Staff, Claws) but they cannot level past Legendary.",
+    "best weapon warrior": "**CORRECT WEAPON INFO**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff**, **Griffin Claws**, and **Dragoon Crossbow**. For warrior builds, use **Griffin Claws** - excellent for close combat with high attack speed. There are also basic weapons (Bow, Staff, Claws) but they cannot level past Legendary.",
+    "best weapon archer": "**CORRECT WEAPON INFO**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff**, **Griffin Claws**, and **Dragoon Crossbow**. For archer builds, use **Dragoon Crossbow** - powerful ranged weapon, great for PvP. There are also basic weapons (Bow, Staff, Claws) but they cannot level past Legendary.",
+    "thor hammer": "**IMPORTANT**: Thor's Mjolnir is NOT a weapon - it's Thor's unique ability! Thor is a character, not a weapon. The 3 S-tier weapons are Oracle Staff, Griffin Claws, and Dragoon Crossbow.",
+    "what is the strongest weapon": "**CORRECT WEAPON INFO**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff**, **Griffin Claws**, and **Dragoon Crossbow**. These are the ONLY weapons that can be upgraded beyond Legendary. All other weapons (basic Bow, Staff, Claws) cannot level past Legendary and are inferior.",
+    "mjolnir": "**IMPORTANT**: Mjolnir is NOT a weapon - it's Thor's unique ability! Thor is a character, not a weapon. The 3 S-tier weapons are Oracle Staff, Griffin Claws, and Dragoon Crossbow.",
+    "scythe": "**FALSE INFORMATION**: There are NO scythes in Archero 2. This is incorrect information from fake guides. The only weapons are the 3 S-tier weapons: Oracle Staff, Griffin Claws, and Dragoon Crossbow, plus basic weapons that can't level past Legendary.",
+    "sword": "**FALSE INFORMATION**: There are NO swords in Archero 2. This is incorrect information from fake guides. The only weapons are the 3 S-tier weapons: Oracle Staff, Griffin Claws, and Dragoon Crossbow, plus basic weapons that can't level past Legendary.",
+    "windforce": "**FALSE INFORMATION**: Windforce Bow does NOT exist in Archero 2. This is incorrect information from fake guides. The only weapons are the 3 S-tier weapons: Oracle Staff, Griffin Claws, and Dragoon Crossbow, plus basic weapons that can't level past Legendary.",
+    "demon blade": "**FALSE INFORMATION**: Demon Blade does NOT exist in Archero 2. This is incorrect information from fake guides. The only weapons are the 3 S-tier weapons: Oracle Staff, Griffin Claws, and Dragoon Crossbow, plus basic weapons that can't level past Legendary.",
+    "staff of light": "**FALSE INFORMATION**: Staff of Light does NOT exist in Archero 2. This is incorrect information from fake guides. The only weapons are the 3 S-tier weapons: Oracle Staff, Griffin Claws, and Dragoon Crossbow, plus basic weapons that can't level past Legendary.",
+    
+    // RUNES AND EQUIPMENT
+    "runes": "**Rune System**: Main hand etched rune is best for DPS. Focus on upgrading your main hand rune first as it provides the highest damage output. Other runes provide different bonuses but main hand is priority.",
+    
+    // CHARACTERS - CORRECTED INFORMATION
+    "thor": "**Thor** - Legendary character with unique abilities: move while firing, weapon detach ability, summon hammers, and lightning damage. Thor's Mjolnir is his ability, NOT a weapon. One of the best characters for high-level play.",
+    "demon king": "**Demon King** - Epic character with shield abilities. As you level up, the shield gets more powerful. His skins are really useful because they add abilities to his shield. Great for defensive builds.",
+    "rolla": "**Rolla** - Epic character with freeze attacks and crit damage boost. One of the best characters for resonance (3-star slot). Freeze is vital for PvP and makes Rolla essential for competitive play.",
+    "dracoola": "**Dracoola** - Epic character with life steal on hit chance. Good for survivability builds and sustained combat.",
+    "seraph": "**Seraph** - Epic character for PvE only. Has good bonuses like getting extra ability chance when picking health for angels. Not recommended for PvP.",
+    "loki": "**Loki** - Epic character, PvP specific. Acquired from PvP and has attack speed boost when he moves (chance). One of the best for 6-star resonance slot.",
+    "alex": "**Alex** - Starting hero with good basic abilities and red heart drop increase. Solid beginner character but outclassed by higher tier characters.",
+    "nyanja": "**Nyanja** - Little ninja cat with increased speed and cloudfooted ability which damages and pushes enemies away. Good for mobility builds.",
+    "helix": "**Helix** - Gets more damage as he gets damaged. Strong DPS character, good for 3-star resonance slot.",
+    "hela": "**Hela** - Really good character with healing aura and damage boost. At max stars has really important crowd control cleanse. Excellent support character.",
+    "otta": "**Otta** - High-level character option for 6-star resonance slot. Powerful but requires significant investment.",
+    
+    // RESONANCE SYSTEM
+    "resonance": "**Resonance System**: 3-star unlocks first resonance slot, 6-star unlocks second resonance slot. Higher character levels = stronger resonance effects. Best 3-star: Rolla (freeze is vital), Helix (strong DPS), Thor (legendary option). Best 6-star: Loki (top choice), Demon King (shield specialist), Otta (high-level option).",
+    "3 star resonance": "**3-Star Resonance (First Slot)**: Rolla ⭐⭐⭐ - BEST (freeze is vital), Helix ⭐⭐⭐ - Strong DPS, Thor ⭐⭐⭐ - Legendary option. Use highest star character as primary.",
+    "6 star resonance": "**6-Star Resonance (Second Slot)**: Loki ⭐⭐⭐⭐⭐⭐ - TOP CHOICE (PvP specialist), Demon King ⭐⭐⭐⭐⭐⭐ - Shield specialist, Otta ⭐⭐⭐⭐⭐⭐ - High-level option.",
+    "character levels": "**Character Levels**: Higher character levels = stronger resonance effects. Level 7 Rolla >> 3-star Rolla for resonance power. Focus on leveling your main characters for maximum effectiveness.",
+    
+    // GAME MECHANICS
+    "orbs": "**Orb System**: Orbs provide elemental bonuses and can be swapped for different effects. Fire orbs boost damage, Ice orbs provide slow effects, Lightning orbs chain damage, Poison orbs add DoT, Dark orbs increase critical chance. Swapping costs gems but provides massive build flexibility.",
+    "starcores": "**Starcore System**: Razor starcore upgrades provide significant stat boosts. Focus on upgrading starcores that match your build type and character abilities for maximum effectiveness.",
+    "skins": "**Skin System**: Skins provide unique abilities beyond cosmetic changes. Demon King's skins enhance shield capabilities, Thor's skins improve lightning damage. Skins can significantly impact character performance.",
+    "sacred hall": "**Sacred Hall vs Tier Up**: Sacred Hall focuses on character-specific bonuses and abilities, while Tier Up improves overall stats and progression. Choose based on your build strategy and character focus.",
+    "tier up": "**Tier Up vs Sacred Hall**: Tier Up improves overall character stats and progression, while Sacred Hall provides character-specific bonuses and abilities. Both are important for character development.",
+    
     "how to get more power": "To increase your power level: 1) Upgrade your weapons and armor, 2) Level up your character, 3) Enhance your runes, 4) Complete daily quests, 5) Join a guild for bonuses, 6) Participate in events for rewards.",
     "best skills": "Top skills to prioritize: 1) Multi-shot (increases projectiles), 2) Ricochet (bounces between enemies), 3) Piercing (passes through enemies), 4) Bouncy Wall (bounces off walls), 5) Side Arrow (additional projectiles).",
     "guild requirements": "Daily guild requirements: • Complete 2 Boss Battles • Make 1 Guild Donation • Maintain active participation. Use !boss and !donate to record your progress.",
@@ -702,13 +746,17 @@ const archeroQA = {
     "arena": "Arena is a fully automated PvP mode where you select heroes and gear, then AI handles combat. Winning increases ladder points, losses decrease them. Rewards include gold, scrolls, and Arena Exchange Tickets based on your PvP tier and ranking.",
     "supreme arena": "Supreme Arena is the ultimate PvP challenge requiring 3 different characters with 3 different builds. Each different item provides bonus health and damage. Top 40% of players remain in Supreme Rank weekly, others are demoted. Only the most skilled players with optimal builds can consistently win.",
     "arena vs supreme arena": "Both are fully automated PvP modes. Arena is accessible to most players with decent rewards. Supreme Arena requires 3-character team composition with different builds and items for maximum bonuses. Supreme Arena has much higher difficulty but offers the best rewards and exclusive items.",
-    "arena tips": "Arena Tips: 1) Use Dragoon as your primary hero, 2) Use Griffin only if you have a complete Griffin build, 3) Equip Revive Rune for second chance, 4) Prioritize ranged attack enhancements, 5) Focus on S-tier gear upgrades, 6) Complete daily arena runs, 7) Aim for top 15 in bracket for tier advancement.",
-    "supreme arena tips": "Supreme Arena Tips: 1) Use 3 different characters with 3 different builds, 2) Each different item provides bonus health and damage, 3) Dragoon + Griffin + third hero recommended, 4) Revive Rune is essential (50% chance to revive with half HP), 5) Maximize item diversity for stat bonuses, 6) Focus on Multi-shot, Ricochet, Piercing skills, 7) Only top 1% players compete here.",
+    "arena tips": "**Arena Tips**: 1) Use **Dragoon** as your primary hero, 2) Use **Griffin** only if you have a complete Griffin build, 3) Equip Revive Rune for second chance, 4) Prioritize ranged attack enhancements, 5) Focus on S-tier gear upgrades, 6) Complete daily arena runs, 7) Aim for top 15 in bracket for tier advancement. Dragoon excels with mobility builds, while Griffin dominates with full build optimization.",
+    "supreme arena tips": "**Supreme Arena Tips**: 1) Use **3 different characters** with **3 different builds**, 2) Each different item provides **bonus health and damage**, 3) Dragoon + Griffin + third hero recommended, 4) Revive Rune is essential (50% chance to revive with half HP), 5) Maximize item diversity for stat bonuses, 6) Focus on Multi-shot, Ricochet, Piercing skills, 7) Only top 1% players compete here. Best characters: Dragoon (mobility), Griffin (damage), Thor (lightning), Demon King (defensive).",
     "supreme arena rules": "Supreme Arena Rules: 1) Must use 3 different characters, 2) Must use 3 different builds (can use same character but different items), 3) Each different item provides bonus health and damage, 4) Top 40% of players remain in Supreme Rank weekly, 5) 60% are demoted each week, 6) No player limit in Supreme Rank.",
     "team composition": "Supreme Arena Team Composition: 1) Use 3 different characters, 2) Each character needs different build, 3) Maximize item diversity for bonuses, 4) Recommended: Dragoon + Griffin + third hero, 5) Balance damage and survivability, 6) Each unique item type adds health and damage.",
     "item bonuses": "Item Bonus System: 1) Each different item type provides bonus health, 2) Each different item type provides bonus damage, 3) Different item combinations provide additional synergy effects, 4) Mix and match for maximum stat gains, 5) Focus on item diversity over duplicates.",
-    "best arena heroes": "Top Arena Heroes: 1) Dragoon - The absolute best Arena hero, 2) Griffin - Only use if you have a complete Griffin build, 3) Avoid other heroes for competitive Arena. Dragoon is the clear #1 choice for both Arena and Supreme Arena.",
-    "arena runes": "Best Arena Runes: 1) Revive Rune (essential for second chance), 2) Guardian Rune (solid alternative), 3) Flame Knock Touch Rune (good backup). Focus on runes that enhance ranged attacks and survivability.",
+    "best arena heroes": "**Top Arena Heroes**: 1) **Dragoon** - The absolute best Arena hero, 2) **Griffin** - Only use if you have a complete Griffin build, 3) Avoid other heroes for competitive Arena. Dragoon is the clear #1 choice for both Arena and Supreme Arena.",
+    "arena runes": "**Best Arena Runes**: 1) **Revive Rune** (essential for second chance), 2) **Guardian Rune** (solid alternative), 3) **Flame Knock Touch Rune** (good backup). Focus on runes that enhance ranged attacks and survivability.",
+    "pvp": "**PvP Strategy**: Focus on mobility, positioning, and timing. Use characters like **Loki** (PvP specialist), **Dragoon** (mobility), or **Griffin** (damage). Learn enemy patterns and save ultimates for key moments. Arena and Supreme Arena are fully automated PvP modes.",
+    "pve": "**PvE Strategy**: Use characters like **Seraph** (PvE bonuses), **Thor** (lightning damage), or **Demon King** (defensive). Focus on area damage skills and survivability for longer runs. Seraph provides extra ability chances when picking health.",
+    "best pvp characters": "**Best PvP Characters**: 1) **Loki** - PvP specialist with attack speed boost, 2) **Dragoon** - Mobility and positioning, 3) **Griffin** - High damage output, 4) **Thor** - Lightning abilities and move-while-firing, 5) **Demon King** - Defensive shield abilities.",
+    "best pve characters": "**Best PvE Characters**: 1) **Seraph** - PvE bonuses and extra ability chances, 2) **Thor** - Legendary with powerful abilities, 3) **Demon King** - Defensive shield for survivability, 4) **Rolla** - Freeze attacks for crowd control, 5) **Hela** - Healing aura and crowd control cleanse.",
     "arena rewards": "Arena Rewards: Daily rewards based on PvP tier and ranking include gold, scrolls, and Arena Exchange Tickets. Use Arena Exchange Tickets in the Arena Shop for exclusive items. Rankings reset each season with tier advancement opportunities.",
     "arena ranking": "Arena Ranking: Winning matches increases ladder points, losses decrease them. Stronger opponents yield more points. Aim for top 15 in your bracket by season's end for tier advancement. Rankings reset each season."
 };
@@ -1853,25 +1901,39 @@ client.on('guildMemberAdd', async (member) => {
     
     console.log(`👋 New member joined: ${member.user.username} (ID: ${memberId})`);
     
-    // Send welcome message to GENERAL CHAT (not guild chat)
-    const welcomeEmbed = new EmbedBuilder()
-        .setTitle('🎉 Welcome to Arch 2 Addicts!')
-        .setDescription(`Welcome ${member} to the Arch 2 Addicts community - your premier destination for Archero 2 discussion and strategy!`)
-        .setColor(0x00ff88)
-        .addFields(
-            { name: 'Community Features', value: '• Daily tips and strategies\n• Guild recruitment opportunities\n• Expert Q&A system\n• Event discussions and guides', inline: false },
-            { name: 'Getting Started', value: 'Use `!help` to view all available commands\nAsk any Archero 2 question for instant answers', inline: false },
-            { name: 'Join Our Guild', value: 'Looking for a guild? Check out XYIAN OFFICIAL!\nGuild ID: 213797', inline: false }
-        )
-        .setThumbnail(member.user.displayAvatarURL())
-        .setTimestamp()
-        .setFooter({ text: 'Arch 2 Addicts Community' });
-    
+    // Send single AI-enhanced welcome message to GENERAL CHAT
     try {
+        let welcomeMessage = `Welcome ${member} to the Arch 2 Addicts community - your premier destination for Archero 2 discussion and strategy!`;
+        
+        // Use AI to add unique flavor if available
+        if (AIService) {
+            try {
+                const aiWelcome = await generateAIResponse(`Create a unique, welcoming message for a new member named ${member.user.username} joining the Arch 2 Addicts Discord community. Keep it short, friendly, and mention they can ask questions about Archero 2.`, 'general');
+                if (aiWelcome && aiWelcome.length > 10) {
+                    welcomeMessage = aiWelcome;
+                }
+            } catch (error) {
+                console.error('❌ AI welcome generation failed:', error);
+            }
+        }
+        
+        const welcomeEmbed = new EmbedBuilder()
+            .setTitle('🎉 Welcome to Arch 2 Addicts!')
+            .setDescription(welcomeMessage)
+            .setColor(0x00ff88)
+            .addFields(
+                { name: 'Community Features', value: '• Daily tips and strategies\n• Guild recruitment opportunities\n• Expert Q&A system\n• Event discussions and guides', inline: false },
+                { name: 'Getting Started', value: 'Use `!help` to view all available commands\nAsk any Archero 2 question for instant answers', inline: false },
+                { name: 'Join Our Guild', value: 'Looking for a guild? Check out XYIAN OFFICIAL!\nGuild ID: 213797', inline: false }
+            )
+            .setThumbnail(member.user.displayAvatarURL())
+            .setTimestamp()
+            .setFooter({ text: 'Arch 2 Addicts Community' });
+        
         await sendToGeneral({ embeds: [welcomeEmbed] });
         console.log(`✅ Welcome message sent for ${member.user.username} (ID: ${memberId})`);
         
-        // Send personalized onboarding DM
+        // Send personalized onboarding DM (only one additional message)
         await sendPersonalizedOnboarding(member);
         
     } catch (error) {
