@@ -344,6 +344,28 @@ function loadAnalytics() {
 // Load existing analytics on startup
 loadAnalytics();
 
+// Load comprehensive knowledge database
+let archeroDatabase = {};
+function loadKnowledgeDatabase() {
+    try {
+        const knowledgeFile = path.join(__dirname, 'data', 'archero_qa_learned.json');
+        if (fs.existsSync(knowledgeFile)) {
+            const data = JSON.parse(fs.readFileSync(knowledgeFile, 'utf8'));
+            archeroDatabase = data;
+            console.log(`✅ Loaded knowledge database with ${Object.keys(archeroDatabase).length} entries`);
+        } else {
+            console.log('⚠️ Knowledge database not found, using empty database');
+            archeroDatabase = {};
+        }
+    } catch (error) {
+        console.error('❌ Failed to load knowledge database:', error);
+        archeroDatabase = {};
+    }
+}
+
+// Load knowledge database on startup
+loadKnowledgeDatabase();
+
 // Start API server
 const startApiServer = require('./services/api-server');
 startApiServer();
@@ -2632,7 +2654,7 @@ client.on('messageCreate', async (message) => {
                 const scrapingMsg = await message.reply({ embeds: [scrapeEmbed] });
                 
                 try {
-                    const Archero2DataScraper = require('./archero2-data-scraper');
+                    const Archero2DataScraper = require('./scripts/archero2-data-scraper');
                     const scraper = new Archero2DataScraper();
                     
                     const scrapedData = await scraper.scrapeAllData();
