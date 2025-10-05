@@ -1424,10 +1424,10 @@ client.on('messageCreate', async (message) => {
     const isDM = message.channel.type === 1;
     const isAIChannel = ['bot-questions', 'bot-questions-advanced', 'archero-ai'].includes(message.channel.name);
     
-    // IGNORE these channels completely (no responses at all)
-    const ignoreChannels = ['guild-recruit-chat', 'xyian-guild', 'guild-chat', 'recruit'];
+    // IGNORE these channels completely (no responses at all) - ONLY CRON JOBS ALLOWED
+    const ignoreChannels = ['guild-recruit-chat', 'xyian-guild', 'guild-chat', 'recruit', 'guild-recruit'];
     if (ignoreChannels.includes(message.channel.name)) {
-        console.log(`⏭️ IGNORING: Channel ${message.channel.name} is in ignore list`);
+        console.log(`⏭️ IGNORING: Channel ${message.channel.name} is in ignore list - ONLY CRON JOBS ALLOWED`);
         return;
     }
     
@@ -2213,16 +2213,7 @@ client.on('messageCreate', async (message) => {
             return;
         }
         
-        // Skip Q&A for recruitment posts in guild channels
-        if (message.channel.name === 'guild-recruit-chat' || message.channel.name === 'xyian-guild') {
-            if (message.content.toLowerCase().includes('recruit') || 
-                message.content.toLowerCase().includes('guild') || 
-                message.content.toLowerCase().includes('apply') ||
-                message.content.toLowerCase().includes('join')) {
-                console.log(`⏭️ Skipping Q&A for recruitment post in ${message.channel.name}`);
-                return;
-            }
-        }
+        // This code should never be reached for guild recruit channels due to the gate above
         
         // Q&A System with role-based access - PRIORITIZE DATABASE OVER AI
         let answer = null;
