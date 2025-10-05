@@ -1291,7 +1291,13 @@ client.on('messageCreate', async (message) => {
     
     // Handle Direct Messages
     if (message.channel.type === 1) { // DM channel
-        console.log(`💬 DM from ${message.author.username}: ${message.content}`);
+        console.log(`💬 DM from ${message.author.username} (ID: ${message.author.id}): ${message.content}`);
+        console.log(`💬 Channel type: ${message.channel.type}, Channel ID: ${message.channel.id}`);
+        
+        // Special test for XYIAN user
+        if (message.author.id === '528059607826825226') {
+            console.log(`🎯 Special DM from XYIAN detected!`);
+        }
         
         // Handle DM commands
         if (message.content.startsWith('!')) {
@@ -1301,6 +1307,7 @@ client.on('messageCreate', async (message) => {
             switch (commandName) {
                 case 'ping':
                     await message.reply('🏰 XYIAN Ultimate Bot - Online! (DM Mode)');
+                    console.log(`✅ DM ping response sent to ${message.author.username}`);
                     break;
                     
                 case 'help':
