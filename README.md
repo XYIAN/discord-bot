@@ -63,6 +63,41 @@ XYIAN Bot is a comprehensive Discord bot designed specifically for the **Archero
    npm start
    ```
 
+### **Working Examples**
+
+**Test Bot Functionality:**
+```bash
+# Test syntax and environment
+node -c ultimate-xyian-bot.js
+node -e "require('dotenv').config(); console.log('✅ Environment loaded')"
+
+# Test webhook (replace with your webhook URL)
+node -e "
+const { WebhookClient } = require('discord.js');
+require('dotenv').config();
+const webhook = new WebhookClient({ url: process.env.XYIAN_GUILD_WEBHOOK });
+webhook.send('🧪 Test message from deployment script');
+"
+```
+
+**Expected Bot Commands:**
+```
+!ping → "🏰 XYIAN Ultimate Bot is online! Latency: XXXms"
+!help → Complete command list with descriptions
+!tip → Sends daily Archero 2 tip to general chat
+!xyian info → Guild information (requires XYIAN OFFICIAL role)
+!xyian weapon staff of light → Detailed weapon stats and builds
+```
+
+**AI-Enhanced Q&A:**
+```
+User: "What's the best character for Supreme Arena?"
+Bot: "For Supreme Arena, you need 3 different characters with 3 different builds. Dragoon is the top choice for mobility builds, while Griffin dominates with full build optimization..."
+
+User: "How do orbs work?"
+Bot: "Orb swapping allows you to change your character's elemental affinity. Each orb provides different bonuses: Fire (damage boost), Ice (slow effects), Lightning (chain damage)..."
+```
+
 ### **Invite to Your Server**
 
 [![Invite Bot](https://img.shields.io/badge/Invite%20XYIAN%20Bot-Add%20to%20Server-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/api/oauth2/authorize?client_id=1424152001670938695&permissions=8&scope=bot%20applications.commands)
