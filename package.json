@@ -31,14 +31,15 @@
   "author": "Kyle",
   "license": "MIT",
   "dependencies": {
+    "axios": "^1.6.2",
     "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
-    "axios": "^1.6.2",
+    "openai": "^6.1.0",
     "winston": "^3.11.0"
   },
   "devDependencies": {
-    "@types/node": "^20.10.0",
     "@types/jest": "^29.5.8",
+    "@types/node": "^20.10.0",
     "@typescript-eslint/eslint-plugin": "^6.13.0",
     "@typescript-eslint/parser": "^6.13.0",
     "eslint": "^8.55.0",
