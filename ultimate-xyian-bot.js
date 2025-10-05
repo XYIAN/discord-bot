@@ -2113,6 +2113,17 @@ client.on('messageCreate', async (message) => {
             }
         }
         
+        // Skip Q&A for recruitment posts in guild channels
+        if (message.channel.name === 'guild-recruit-chat' || message.channel.name === 'xyian-guild') {
+            if (message.content.toLowerCase().includes('recruit') || 
+                message.content.toLowerCase().includes('guild') || 
+                message.content.toLowerCase().includes('apply') ||
+                message.content.toLowerCase().includes('join')) {
+                console.log(`⏭️ Skipping Q&A for recruitment post in ${message.channel.name}`);
+                return;
+            }
+        }
+        
         // Q&A System with role-based access - PRIORITIZE DATABASE OVER AI
         let answer = null;
         let isAIResponse = false;
@@ -2159,11 +2170,11 @@ client.on('messageCreate', async (message) => {
         }
         
         const qaEmbed = new EmbedBuilder()
-                .setTitle(isAIResponse ? '🤖 AI-Powered Archero 2 Answer' : '❓ Archero 2 Q&A')
+                .setTitle('❓ Archero 2 Q&A')
                 .setDescription(answer)
-                .setColor(isAIResponse ? 0x32CD32 : (hasAIAccess ? 0x00BFFF : 0xFF6B35))
+                .setColor(0x00BFFF)
                 .setTimestamp()
-                .setFooter({ text: isAIResponse ? 'XYIAN Bot - AI Enhanced' : (hasAIAccess ? 'XYIAN OFFICIAL' : 'Basic Access') });
+                .setFooter({ text: 'XYIAN Bot' });
         
         await message.reply({ embeds: [qaEmbed] });
     }
