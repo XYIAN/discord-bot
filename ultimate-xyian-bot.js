@@ -1616,6 +1616,92 @@ client.on('messageCreate', async (message) => {
                 }
                 break;
                 
+            case 'create-admin-channels':
+                // Only XYIAN OFFICIAL can create admin channels
+                if (!hasXYIANRole(message.member)) {
+                    await message.reply('❌ This command requires the XYIAN OFFICIAL role.');
+                    return;
+                }
+                
+                try {
+                    const categoryId = '1424467813803757638';
+                    const adminRole = message.guild.roles.cache.find(role => role.name === 'Admin');
+                    const xyianRole = message.guild.roles.cache.find(role => role.name === 'XYIAN OFFICIAL');
+                    
+                    // Create Guild Requirements channel
+                    const guildRequirementsChannel = await message.guild.channels.create({
+                        name: 'guild-requirements',
+                        type: 0, // Text channel
+                        parent: categoryId,
+                        permissionOverwrites: [
+                            {
+                                id: message.guild.id, // @everyone
+                                deny: ['ViewChannel'], // Hide from everyone
+                            },
+                            {
+                                id: adminRole?.id || xyianRole?.id,
+                                allow: ['ViewChannel', 'ReadMessageHistory'],
+                                deny: ['SendMessages'], // Read-only
+                            }
+                        ]
+                    });
+                    
+                    // Create General Rules channel
+                    const generalRulesChannel = await message.guild.channels.create({
+                        name: 'general-rules',
+                        type: 0, // Text channel
+                        parent: categoryId,
+                        permissionOverwrites: [
+                            {
+                                id: message.guild.id, // @everyone
+                                deny: ['ViewChannel'], // Hide from everyone
+                            },
+                            {
+                                id: adminRole?.id || xyianRole?.id,
+                                allow: ['ViewChannel', 'ReadMessageHistory'],
+                                deny: ['SendMessages'], // Read-only
+                            }
+                        ]
+                    });
+                    
+                    // Send initial content to Guild Requirements
+                    const guildRequirementsEmbed = new EmbedBuilder()
+                        .setTitle('🏰 XYIAN Guild Requirements')
+                        .setDescription('**Daily Requirements for Active Members:**')
+                        .addFields(
+                            { name: '⚔️ Daily Boss Battles', value: '**2 Boss Battles per day**\n• Required for active status\n• Must be completed daily\n• Tracked automatically', inline: false },
+                            { name: '💰 Guild Donations', value: '**1 Guild Donation per day**\n• Required for active status\n• Must be completed daily\n• Tracked automatically', inline: false },
+                            { name: '🚀 Expedition Sign-up', value: '**Expedition Participation**\n• Sign up for guild expeditions\n• Participate in guild events\n• Active in Discord community', inline: false },
+                            { name: '📊 Activity Tracking', value: '**Inactive players will be removed or replaced**\n• 3+ days inactive = warning\n• 7+ days inactive = removal\n• Exceptions for valid reasons', inline: false }
+                        )
+                        .setColor(0xFFD700)
+                        .setTimestamp()
+                        .setFooter({ text: 'XYIAN OFFICIAL - Guild Management' });
+                    
+                    await guildRequirementsChannel.send({ embeds: [guildRequirementsEmbed] });
+                    
+                    // Send initial content to General Rules
+                    const generalRulesEmbed = new EmbedBuilder()
+                        .setTitle('📋 Discord Server Rules')
+                        .setDescription('**General Rules and Guidelines:**')
+                        .addFields(
+                            { name: '🚫 Prohibited Content', value: '• Spam, harassment, or toxic behavior\n• NSFW content or inappropriate language\n• Sharing personal information\n• Advertising other servers', inline: false },
+                            { name: '⚖️ Moderation Actions', value: '• **Warning**: First offense\n• **Timeout**: 1-24 hours\n• **Kick**: Temporary removal\n• **Ban**: Permanent removal', inline: false },
+                            { name: '📝 Channel Guidelines', value: '• Use appropriate channels for topics\n• No spoilers without warnings\n• Respect other members\n• Follow Discord ToS', inline: false },
+                            { name: '🆘 Appeals Process', value: '• Contact Admin for appeals\n• Explain your situation\n• Show understanding of rules\n• Demonstrate improvement', inline: false }
+                        )
+                        .setColor(0xFF6B35)
+                        .setTimestamp()
+                        .setFooter({ text: 'Arch 2 Addicts - Community Rules' });
+                    
+                    await generalRulesChannel.send({ embeds: [generalRulesEmbed] });
+                    
+                    await message.reply(`✅ Admin channels created:\n• Guild Requirements: ${guildRequirementsChannel.name} (${guildRequirementsChannel.id})\n• General Rules: ${generalRulesChannel.name} (${generalRulesChannel.id})`);
+                } catch (error) {
+                    await message.reply(`❌ Failed to create admin channels: ${error.message}`);
+                }
+                break;
+                
             case 'channel-permissions':
                 // Only XYIAN OFFICIAL can manage channel permissions
                 if (!hasXYIANRole(message.member)) {
