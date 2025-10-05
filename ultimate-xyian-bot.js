@@ -1431,6 +1431,17 @@ client.on('messageCreate', async (message) => {
         return;
     }
     
+    // GENERAL CHAT - Only respond to !help and !menu, direct to AI chat for questions
+    const generalChatChannels = ['general', 'general-chat', 'main-chat'];
+    if (generalChatChannels.includes(message.channel.name)) {
+        if (message.content.startsWith('!help') || message.content.startsWith('!menu')) {
+            // Allow these commands
+        } else {
+            console.log(`⏭️ IGNORING: General chat - only !help and !menu allowed, direct to AI chat for questions`);
+            return;
+        }
+    }
+    
     // If it's NOT a command, NOT a DM, and NOT in AI channel -> IGNORE
     if (!isCommand && !isDM && !isAIChannel) {
         console.log(`⏭️ IGNORING: Not a command, not DM, not AI channel (${message.channel.name})`);
@@ -1821,7 +1832,7 @@ client.on('messageCreate', async (message) => {
             case 'help':
                 const generalHelpEmbed = new EmbedBuilder()
                     .setTitle('🤖 XYIAN Ultimate Bot Commands')
-                    .setDescription('**Public Commands:**\n`!ping` - Check bot status\n`!menu` - Show public question menu\n`!help` - This help\n\n**XYIAN OFFICIAL Commands:**\n`!tip` - Send daily tip\n`!recruit` - Send recruitment (guild chat only)\n`!create-channel <name> [type]` - Create new channel\n`!channel-permissions <channel-id>` - Set channel permissions\n`!xyian help` - XYIAN command list\n\n**XYIAN Guild Verified Commands:**\n`!expedition` - Send expedition message\n`!arena` - Send arena tips\n`!reset` - Send reset messages\n\n**Admin Commands:**\n`!test` - Send test messages\n\n**Q&A System:**\nAsk any Archero 2 question naturally!\n\n**Role Requirements:**\n- XYIAN OFFICIAL: Full access + Channel management\n- XYIAN Guild Verified: Basic AI questions\n- Admin: Administrative commands')
+                    .setDescription('**Basic Commands:**\n`!ping` - Check bot status\n`!help` - This help\n`!menu` - Show question menu\n\n**For Archero 2 Questions:**\n🔹 **Go to the AI chat channels** for detailed answers!\n🔹 Use `#bot-questions` or `#archero-ai` for Q&A\n🔹 This channel is for general discussion only\n\n**Role-Based Commands:**\n• XYIAN OFFICIAL: Full access + Channel management\n• XYIAN Guild Verified: Basic AI questions\n• Admin: Administrative commands')
                     .setColor(0x00BFFF)
                     .setTimestamp()
                     .setFooter({ text: 'XYIAN OFFICIAL' });
@@ -1830,10 +1841,10 @@ client.on('messageCreate', async (message) => {
                 
             case 'menu':
                 const menuEmbed = new EmbedBuilder()
-                    .setTitle('🎮 Public Archero 2 Question Menu')
-                    .setDescription('**Ask me anything about Archero 2!**\n\n**Popular Questions:**\n• "What\'s the best weapon?"\n• "Which character should I use?"\n• "Is Dragon Helmet + Oracle good?"\n• "What\'s the best set for PvP?"\n• "How do orbs work?"\n• "What\'s the difference between Sacred Hall and Tier Up?"\n\n**Just type your question naturally!**\nExample: "I have dragon helmet and oracle spear, is this a good combo?"')
+                    .setTitle('🎮 Archero 2 Question Menu')
+                    .setDescription('**For Archero 2 Questions:**\n\n🔹 **Go to the AI chat channels!**\n• `#bot-questions` - General questions\n• `#archero-ai` - Advanced questions\n\n**Popular Questions:**\n• "What\'s the best weapon?"\n• "Which character should I use?"\n• "Is Dragon Helmet + Oracle good?"\n• "What\'s the best set for PvP?"\n• "How do orbs work?"\n\n**This channel is for general discussion only!**')
                     .addFields(
-                        { name: '💡 Pro Tip', value: 'Be specific! The more details you give, the better I can help you.', inline: false },
+                        { name: '💡 Pro Tip', value: 'Use the AI chat channels for detailed Archero 2 help!', inline: false },
                         { name: '🏰 Guild Questions', value: 'For XYIAN guild-specific questions, use `!xyian help` (requires XYIAN Guild Verified role)', inline: false }
                     )
                     .setColor(0x9b59b6)
