@@ -330,7 +330,8 @@ GET  /api/export/analytics         # Export analytics (JSON/CSV)
 - **AI Access**: Enhanced AI features for guild members
 
 ### **Support & Feedback**
-- **Discord Server**: [Join our community](https://discord.gg/archero2)
+- **XYIAN Discord Server**: [Join our community](https://discord.gg/archero2)
+- **Official Archero 2 Discord**: [Join the official server](https://discord.com/invite/archero2) - 175,000+ members, 19,500+ online
 - **Issues**: [Report bugs or request features](https://github.com/yourusername/arch2-discord-bot/issues)
 - **Discussions**: [Community discussions](https://github.com/yourusername/arch2-discord-bot/discussions)
 
