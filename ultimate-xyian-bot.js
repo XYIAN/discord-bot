@@ -32,26 +32,65 @@ async function generateAIResponse(message, channelName) {
                 { role: "system", content: context },
                 { role: "user", content: message }
             ],
-            max_tokens: 500,
-            temperature: 0.7,
+            max_tokens: 800,
+            temperature: 0.8,
+            presence_penalty: 0.1,
+            frequency_penalty: 0.1,
         });
-        return completion.choices[0]?.message?.content || null;
+        
+        const response = completion.choices[0]?.message?.content;
+        if (response && response.length > 10) {
+            console.log(`🤖 AI Response generated for ${channelName}: ${response.substring(0, 50)}...`);
+            return response;
+        }
+        return null;
     } catch (error) {
-        console.error('❌ OpenAI API error:', error);
+        console.error('❌ OpenAI API error:', error.message);
         return null;
     }
 }
 
 function getAIContext(channelName) {
-    const baseContext = `You are an expert Archero 2 bot assistant for the XYIAN guild community. You have deep knowledge of characters, game mechanics, and strategies. Be helpful, enthusiastic, and knowledgeable. Use emojis appropriately and provide specific, actionable advice.`;
+    const baseContext = `You are XY Elder, an expert Archero 2 bot assistant for the XYIAN guild community. You have deep knowledge of characters, game mechanics, strategies, and the competitive scene. Be helpful, enthusiastic, and knowledgeable. Use emojis appropriately and provide specific, actionable advice. Always mention relevant character names, weapon names, and specific strategies.`;
+    
+    const characterKnowledge = `Key Characters: Thor (Legendary - move while firing, weapon detach, hammers, lightning), Demon King (Epic - shield abilities, powerful skins), Rolla (Epic - freeze attacks, crit boost), Dracoola (Epic - life steal), Seraph (Epic - PvE bonuses), Loki (Epic - PvP specific, attack speed), Alex (Starting - heart drop bonus), Nyanja (Speed, cloudfooted), Helix (Damage scaling), Hela (Healing aura, crowd control cleanse).`;
+    
+    const gameMechanics = `Game Systems: Orbs (Fire/Ice/Lightning/Poison/Dark), Starcores (Razor starcore upgrades), Skins (provide abilities), Resonance (character synergies), Sacred Hall vs Tier Up (different progression paths), Supreme Arena (3 characters, 3 builds, item bonuses), Arena (Dragoon/Griffin top heroes), Guild requirements (2 daily boss battles, donations).`;
     
     if (channelName === 'bot-questions' || channelName === 'bot-questions-advanced') {
-        return `${baseContext} This is the advanced bot questions channel. Provide detailed, technical answers about character abilities, builds, game mechanics, and strategies.`;
+        return `${baseContext} ${characterKnowledge} ${gameMechanics} This is the advanced bot questions channel. Provide detailed, technical answers about character abilities, builds, game mechanics, strategies, and competitive play. Include specific numbers, percentages, and optimal combinations.`;
     } else if (channelName === 'xyian-guild') {
-        return `${baseContext} This is the XYIAN guild channel. Focus on guild requirements, Supreme Arena strategies, and team coordination. Guild ID: 213797.`;
+        return `${baseContext} ${characterKnowledge} ${gameMechanics} This is the XYIAN guild channel (Guild ID: 213797). Focus on guild requirements (2 daily boss battles, donations), Supreme Arena strategies, team coordination, and competitive guild management. Emphasize teamwork and optimization.`;
+    } else if (channelName === 'arena' || channelName === 'supreme-arena') {
+        return `${baseContext} ${characterKnowledge} Focus on Arena and Supreme Arena strategies. Dragoon and Griffin are top heroes (Dragoon preferred unless full Griffin build). Cover runes, builds, positioning, and competitive tactics.`;
     } else {
-        return `${baseContext} This is a general Archero 2 community channel. Provide helpful advice about basic game mechanics and character recommendations.`;
+        return `${baseContext} ${characterKnowledge} This is a general Archero 2 community channel. Provide helpful advice about basic game mechanics, character recommendations, and beginner-friendly strategies.`;
     }
+}
+
+// Fallback response functions for when AI fails
+function getFallbackResponse(message) {
+    const fallbacks = [
+        "🎮 **Great question!** While I'm processing that, here's some general Archero 2 advice: Focus on upgrading your main weapon and character abilities. The Staff of Light and Demon Blade are excellent choices for most builds!",
+        "⚔️ **Interesting question!** For now, I'd recommend checking out our XYIAN guild strategies. We focus on Supreme Arena optimization and daily boss battles. Feel free to ask about specific characters or weapons!",
+        "🏰 **Good question!** As a XYIAN guild member, I'd suggest focusing on your daily requirements (2 boss battles + donations) and optimizing your character builds. What specific aspect would you like to know more about?",
+        "💎 **Solid question!** The key to Archero 2 success is understanding character synergies and weapon combinations. Thor and Demon King are particularly powerful for different playstyles. What's your current setup?",
+        "🔥 **Excellent question!** For competitive play, focus on Dragoon or Griffin for Arena, and make sure to complete your daily guild requirements. Need help with a specific character or strategy?"
+    ];
+    
+    return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+}
+
+function getAdvancedFallbackResponse(message) {
+    const advancedFallbacks = [
+        "🔬 **Advanced Question Detected!** While I'm analyzing that complex mechanic, here's some advanced Archero 2 knowledge: Orb swapping costs gems but provides massive build flexibility. Fire orbs boost damage, while Ice orbs provide crowd control. What specific advanced mechanic interests you?",
+        "⚡ **Technical Question!** For advanced game mechanics like starcores and resonance, the key is understanding character synergies. Thor's lightning abilities pair well with electric orbs, while Demon King's shield benefits from defensive starcores. What advanced topic would you like to explore?",
+        "🎯 **Complex Strategy Question!** Supreme Arena requires 3 different characters with 3 different builds. Each unique item provides bonus health and damage. Dragoon excels with mobility builds, while Griffin dominates with full build optimization. What specific strategy are you working on?",
+        "💫 **Advanced Mechanics Question!** Skins provide unique abilities beyond just cosmetic changes. Demon King's skins enhance shield capabilities, while Thor's skins improve lightning damage. Resonance between characters creates powerful synergies. What advanced mechanic are you curious about?",
+        "🌟 **Expert-Level Question!** Sacred Hall vs Tier Up represent different progression paths. Sacred Hall focuses on character-specific bonuses, while Tier Up improves overall stats. The choice depends on your build strategy. What specific progression path interests you?"
+    ];
+    
+    return advancedFallbacks[Math.floor(Math.random() * advancedFallbacks.length)];
 }
 
 // Initialize Discord client with all necessary intents
@@ -388,10 +427,7 @@ client.once('ready', () => {
 function setupDailyMessaging() {
     console.log('📅 Starting daily messaging system...');
     
-    // Send initial messages
-    sendInitialMessages();
-    
-    // Set up daily schedule (every 24 hours)
+    // Set up daily schedule (every 24 hours) - NO initial messages on startup
     const dailyInterval = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
     setInterval(() => {
         sendDailyMessages();
@@ -428,18 +464,7 @@ function setupDailyResetMessaging() {
     console.log(`✅ Daily reset messaging set for 5pm Pacific!`);
 }
 
-// Send initial messages
-async function sendInitialMessages() {
-    console.log('📢 Sending initial messages...');
-    
-    // Send guild recruitment
-    await sendGuildRecruitment();
-    
-    // Send general welcome
-    await sendGeneralWelcome();
-    
-    console.log('✅ Initial messages sent!');
-}
+// Removed sendInitialMessages function - no longer sending messages on startup
 
 // Send daily messages
 async function sendDailyMessages() {
@@ -751,8 +776,10 @@ client.on('messageCreate', async (message) => {
                 break;
                 
             case 'test':
-                await sendInitialMessages();
-                await message.reply('📢 Test messages sent!');
+                // Send individual test messages instead of all initial messages
+                await sendToGeneral({ content: '🧪 **Test Message** - Bot is working correctly!' });
+                await sendToXYIAN({ content: '🧪 **Test Message** - XYIAN guild channel test successful!' });
+                await message.reply('📢 Test messages sent to general and XYIAN channels!');
                 break;
                 
             case 'reset':
@@ -963,17 +990,21 @@ client.on('messageCreate', async (message) => {
             // Fallback to database if AI didn't respond
             if (!response) {
                 response = handleBotQuestion(message.content);
-                if (response && response !== "I don't have specific information about that topic yet. Could you rephrase your question or ask about orbs, starcores, skins, resonance, sacred halls, or other advanced game mechanics? I'm here to help with the deeper nuances of Archero 2!") {
-                    const embed = new EmbedBuilder()
-                        .setTitle('🤖 Advanced Archero 2 Answer')
-                        .setDescription(response)
-                        .setColor(0x9b59b6)
-                        .setTimestamp()
-                        .setFooter({ text: 'XYIAN Bot - Advanced Game Mechanics' });
-                    
-                    await message.reply({ embeds: [embed] });
-                    return;
+                
+                // If no database answer, provide a helpful fallback
+                if (!response || response === "I don't have specific information about that topic yet. Could you rephrase your question or ask about orbs, starcores, skins, resonance, sacred halls, or other advanced game mechanics? I'm here to help with the deeper nuances of Archero 2!") {
+                    response = getAdvancedFallbackResponse(message.content);
                 }
+                
+                const embed = new EmbedBuilder()
+                    .setTitle('🤖 Advanced Archero 2 Answer')
+                    .setDescription(response)
+                    .setColor(0x9b59b6)
+                    .setTimestamp()
+                    .setFooter({ text: 'XYIAN Bot - Advanced Game Mechanics' });
+                
+                await message.reply({ embeds: [embed] });
+                return;
             } else {
                 // AI response
                 const embed = new EmbedBuilder()
@@ -990,26 +1021,35 @@ client.on('messageCreate', async (message) => {
         
         // Try AI for general questions, then fallback to database
         let answer = null;
+        let isAIResponse = false;
+        
         if (AIService) {
             try {
                 answer = await generateAIResponse(message.content, message.channel.name);
+                if (answer && answer.length > 10) {
+                    isAIResponse = true;
+                }
             } catch (error) {
                 console.error('❌ AI response error:', error);
             }
         }
         
         // Fallback to database if AI didn't respond
-        if (!answer) {
+        if (!answer || !isAIResponse) {
             answer = getAnswer(message.content);
-            if (answer) {
-                const qaEmbed = new EmbedBuilder()
-                    .setTitle('❓ Archero 2 Q&A')
-                    .setDescription(answer)
-                    .setColor(0x32CD32)
-                    .setTimestamp()
-                    .setFooter({ text: 'XYIAN OFFICIAL' });
-                await message.reply({ embeds: [qaEmbed] });
+            
+            // If no database answer, provide a helpful fallback
+            if (!answer) {
+                answer = getFallbackResponse(message.content);
             }
+            
+            const qaEmbed = new EmbedBuilder()
+                .setTitle(isAIResponse ? '🤖 AI-Powered Archero 2 Answer' : '❓ Archero 2 Q&A')
+                .setDescription(answer)
+                .setColor(isAIResponse ? 0x32CD32 : 0x00BFFF)
+                .setTimestamp()
+                .setFooter({ text: isAIResponse ? 'XYIAN Bot - AI Enhanced' : 'XYIAN OFFICIAL' });
+            await message.reply({ embeds: [qaEmbed] });
         } else {
             // AI response
             const qaEmbed = new EmbedBuilder()
