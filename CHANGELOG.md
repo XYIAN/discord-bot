@@ -2,6 +2,27 @@
 
 All notable changes to the Arch 2 Addicts Discord Bot project will be documented in this file.
 
+## [1.2.4] - 2024-10-05
+
+### Fixed
+- **CRITICAL: Channel Response Logic**: Only AI channels can have live responses without commands
+- **Guild Recruit Spam**: Completely blocked bot responses in guild recruit channel (cron jobs only)
+- **General Chat Spam**: Only responds to !help and !menu in general chat, directs to AI channels
+- **Duplicate Message Prevention**: Added multiple safety checks to prevent duplicate responses
+- **Message Gate System**: Proper separation of concerns with clear channel filtering
+
+### Added
+- **Triple Safety System**: Multiple checks to ensure only AI channels get live responses
+- **Channel Ignore Lists**: Guild recruit and general chat properly filtered
+- **Safety Logging**: Clear logs for ignored channels and failed safety checks
+- **Command-Only Channels**: General chat only responds to specific commands
+
+### Enhanced
+- **Message Handler**: Completely refactored with proper separation of concerns
+- **Channel Management**: Clear rules for which channels can have live responses
+- **Error Prevention**: Multiple safety checks to prevent unwanted responses
+- **User Experience**: Clean channel separation - AI channels for questions, others for commands only
+
 ## [0.1.1] - 2024-10-05
 
 ### Fixed
