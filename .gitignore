@@ -11,35 +11,28 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-# Build output
-dist/
-build/
-
 # Logs
-logs/
+logs
 *.log
 
 # Runtime data
-pids/
+pids
 *.pid
 *.seed
 *.pid.lock
 
 # Coverage directory used by tools like istanbul
 coverage/
-*.lcov
 
 # nyc test coverage
 .nyc_output
 
 # Dependency directories
+node_modules/
 jspm_packages/
 
 # Optional npm cache directory
 .npm
-
-# Optional eslint cache
-.eslintcache
 
 # Optional REPL history
 .node_repl_history
@@ -78,23 +71,22 @@ jspm_packages/
 # TernJS port file
 .tern-port
 
-# Stores VSCode versions used for testing VSCode extensions
-.vscode-test
+# Research tools (separate from main deployment)
+research-tools/node_modules/
+research-tools/*.json
+research-tools/*.log
 
-# PM2
-.pm2/
+# Scraped data files
+*.json
+archero2-*
+discord-*
+scraped-*
 
-# Database
-*.db
-*.sqlite
-*.sqlite3
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
+# OS generated files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
