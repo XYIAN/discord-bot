@@ -539,10 +539,10 @@ const advancedArcheroQA = {
     "hall leveling priority": "Hall Leveling Priority: 1) Attack Hall (damage is king), 2) Critical Hall (crit chance/damage), 3) Defense Hall (survivability), 4) Speed Hall (quality of life). Focus on one hall at a time for maximum efficiency.",
     "hall materials": "Hall Materials: Sacred Stones (common), Sacred Crystals (rare), Sacred Gems (epic), Sacred Orbs (legendary). Higher tier materials provide more experience. Use them strategically based on your current hall levels.",
     
-    // Resonance System
-    "resonance": "Resonance is a system where matching equipment pieces provide bonus effects. Same weapon type: +10% damage, Same armor set: +15% defense, Same accessory type: +20% special ability cooldown. Mix and match for optimal bonuses.",
-    "resonance levels": "Resonance Levels: Level 1 (2 pieces): Basic bonus, Level 2 (3 pieces): Enhanced bonus, Level 3 (4 pieces): Maximum bonus + special effect. Higher levels require rarer equipment but provide significantly better bonuses.",
-    "resonance vs diversity": "Resonance vs Diversity: Resonance provides better individual bonuses, Diversity provides more overall stats. For Supreme Arena, diversity is better due to item bonus system. For regular content, resonance can be more effective.",
+    // Resonance System - CORRECTED INFORMATION
+    "resonance": "**CORRECT RESONANCE INFO**: Resonance unlocks character abilities from other characters. 3-star resonance slot unlocks at 3 stars, 6-star resonance slot unlocks at 6 stars. You get abilities from other characters based on your resonance setup. This is NOT about equipment elements - it's about character synergies.",
+    "resonance levels": "**CORRECT RESONANCE INFO**: 3-star resonance slot: Unlocks at 3 stars, gives you abilities from other characters. 6-star resonance slot: Unlocks at 6 stars, gives you additional abilities from other characters. The more leveled your characters are, the better the resonance effects.",
+    "resonance vs diversity": "**CORRECT RESONANCE INFO**: Resonance is about character abilities, not equipment. 3-star slot: Rolla, Helix are best. 6-star slot: Loki, Demon King, Otta are best. This is about character synergies and abilities, not equipment matching.",
     
     // Character System - Detailed Character Information
     "thor": "Thor (Legendary): Unique ability to move while firing arrows and weapon detach ability. As you level up, you can summon hammers and increase lightning damage. Excellent for mobile combat and lightning-based builds. Perfect for players who prefer active movement during combat.",
