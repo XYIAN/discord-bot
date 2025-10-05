@@ -1,163 +1,293 @@
-# XYIAN Discord Bot - Development Rules & Guidelines
+# Development Rules and Guidelines
 
-## 🚨 CRITICAL DEVELOPMENT RULES
+This document outlines critical development rules and guidelines for the Arch 2 Addicts Discord Bot project to prevent common mistakes and ensure quality development.
 
-### 1. VERSION MANAGEMENT (MANDATORY)
-- **EVERY COMMIT** must update version in `package.json`
-- **EVERY COMMIT** must update `CHANGELOG.md`
-- Use semantic versioning: patch (1.2.4 → 1.2.5), minor (1.2.4 → 1.3.0), major (1.2.4 → 2.0.0)
-- **NEVER** commit without version update
+## Core Principles
 
-### 2. CHANNEL RESPONSE LOGIC (CRITICAL)
-- **ONLY AI CHANNELS** get live responses: `bot-questions`, `bot-questions-advanced`, `archero-ai`
-- **GENERAL CHAT**: Only `!help` and `!menu` - direct to AI channels
-- **GUILD RECRUIT**: Completely ignored - cron jobs only
-- **ALL OTHERS**: Commands only
+### 0. Auto-Scrape Command
+- **When user says "begin scrape"**: Automatically run `cd research-tools && node theorycrafting-posts-scraper.js`
+- **Fresh system setup**: This command should be the first thing to run after system reset
+- **Purpose**: Start scraping 28 theorycrafting posts with cache clearing and manual login
+- **Expected behavior**: 3-minute manual login timer, then automated scraping of all categories
 
-### 3. MESSAGE HANDLER STRUCTURE
-```javascript
-// GATE FIRST - Check channel type before processing
-const isCommand = message.content.startsWith('!') || message.content.startsWith('/');
-const isDM = message.channel.type === 1;
-const isAIChannel = ['bot-questions', 'bot-questions-advanced', 'archero-ai'].includes(message.channel.name);
+### 0.1. Bot Commands Reference
+- **Basic Commands**: `!ping`, `!help`, `!menu`, `!tip`
+- **XYIAN Commands**: `!xyian info`, `!xyian members`, `!xyian stats`, `!xyian events`, `!xyian weapon <name>`, `!xyian skill <name>`, `!xyian build <class>`
+- **Admin Commands**: `!discord-bot-clean`, `!audit-logs`, `!test-spam-filter`, `!monitor-debug`, `!create-admin-channels`, `!analytics`, `!api-test`, `!learn`, `!scrape`
+- **Guild Commands**: `!recruit`, `!reset`, `!expedition`, `!arena`
+- **AI Commands**: `!ai-menu`, `!send-ai-menu`
+- **Test Commands**: `!test`
 
-// IGNORE LISTS
-const ignoreChannels = ['guild-recruit-chat', 'xyian-guild', 'guild-chat', 'recruit', 'guild-recruit'];
-if (ignoreChannels.includes(message.channel.name)) {
-    return; // IGNORE
-}
+### 1. Deep Research First
+- **ALWAYS** research thoroughly before implementing features
+- Use multiple sources: Discord channels, wikis, community discussions
+- Verify information accuracy before adding to knowledge base
+- Test with real game data and community feedback
 
-// SAFETY CHECKS
-if (!isCommand && !isDM && !isAIChannel) {
-    return; // IGNORE
-}
-```
+### 2. No Duplicate Messages
+- Implement proper message tracking to prevent duplicate responses
+- Use unique message keys for each response
+- Check if bot has already responded to a message
+- Log all responses for debugging
 
-### 4. COMMIT WORKFLOW (MANDATORY)
-1. Make changes
-2. Test: `node -c ultimate-xyian-bot.js`
-3. Update version in `package.json`
-4. Update `CHANGELOG.md`
-5. Commit: `git add . && git commit -m "VERSION X.X.X: Description"`
-6. Push: `git push`
+### 3. Channel-Specific Logic
+- **AI Channels**: Only respond to plain text (no commands needed)
+- **General Chat**: Only respond to `!help` and `!menu` commands
+- **Guild Recruit**: Only cron jobs, no live responses
+- **Other Channels**: Only respond to `!` or `/` commands
 
-### 5. TESTING REQUIREMENTS
-- **ALWAYS** run syntax check before committing
-- **ALWAYS** test locally if possible
-- **NEVER** push broken code
-- **ALWAYS** verify channel behavior
+### 4. Test Before Pushing
+- **ALWAYS** test builds locally before pushing to production
+- Verify all commands work correctly
+- Check for syntax errors and runtime issues
+- Test channel filtering and response logic
+- **NEVER** push broken code to production
 
-## 📋 CHANNEL BEHAVIOR MATRIX
+### 5. Documentation and Versioning
+- Update changelog after every completed task
+- Use semantic versioning (e.g., 1.3.3)
+- Document all new features and fixes
+- Update README files with new information
 
-| Channel Type | Live Responses | Commands | AI Q&A | Notes |
-|-------------|----------------|----------|---------|-------|
-| **AI Channels** | ✅ Yes | ✅ Yes | ✅ Yes | bot-questions, archero-ai |
-| **General Chat** | ❌ No | ✅ !help, !menu only | ❌ No | Direct to AI channels |
-| **Guild Recruit** | ❌ No | ❌ No | ❌ No | Cron jobs only |
-| **DMs** | ✅ Yes | ✅ Yes | ✅ Yes | Full functionality |
-| **All Others** | ❌ No | ✅ Yes | ❌ No | Commands only |
+## Channel Behavior Matrix
 
-## 🚨 CRITICAL SAFETY CHECKS
+| Channel Type | Live Responses | Commands | AI Responses | Notes |
+|--------------|----------------|----------|--------------|-------|
+| AI Channels | ✅ Yes | ✅ Yes | ✅ Yes | Full AI support |
+| General Chat | ❌ No | ✅ Limited | ❌ No | Only !help, !menu |
+| Guild Recruit | ❌ No | ❌ No | ❌ No | Cron jobs only |
+| Other Channels | ❌ No | ✅ Yes | ❌ No | Commands only |
 
-### Message Handler Gate
-```javascript
-// CRITICAL GATE: ONLY AI CHANNELS GET LIVE RESPONSES
-const isCommand = message.content.startsWith('!') || message.content.startsWith('/');
-const isDM = message.channel.type === 1;
-const isAIChannel = ['bot-questions', 'bot-questions-advanced', 'archero-ai'].includes(message.channel.name);
+## Webhook Rules
 
-// IGNORE these channels completely
-const ignoreChannels = ['guild-recruit-chat', 'xyian-guild', 'guild-chat', 'recruit', 'guild-recruit'];
-if (ignoreChannels.includes(message.channel.name)) {
-    console.log(`⏭️ IGNORING: Channel ${message.channel.name} is in ignore list`);
-    return;
-}
+### General Chat Webhook
+- **Purpose**: General community announcements
+- **Allowed**: Welcome messages, daily tips, general info
+- **Blocked**: AI responses, duplicate messages
 
-// GENERAL CHAT - Only respond to !help and !menu
-const generalChatChannels = ['general', 'general-chat', 'main-chat'];
-if (generalChatChannels.includes(message.channel.name)) {
-    if (message.content.startsWith('!help') || message.content.startsWith('!menu')) {
-        // Allow these commands
-    } else {
-        console.log(`⏭️ IGNORING: General chat - only !help and !menu allowed`);
-        return;
-    }
-}
+### Guild Chat Webhook
+- **Purpose**: XYIAN guild-specific content
+- **Allowed**: Guild announcements, requirements, events
+- **Blocked**: General AI responses
 
-// FINAL SAFETY CHECK
-if (!isCommand && !isDM && !isAIChannel) {
-    console.log(`⏭️ IGNORING: Not a command, not DM, not AI channel`);
-    return;
-}
-```
+### AI Questions Webhook
+- **Purpose**: AI-powered question answering
+- **Allowed**: All AI responses, complex questions
+- **Blocked**: None (full AI support)
 
-## 🔧 DEVELOPMENT CHECKLIST
+### Admin Webhook
+- **Purpose**: Error logging and system monitoring
+- **Allowed**: Error messages, debug info, system status
+- **Blocked**: User-facing content
 
-### Before Every Commit:
-- [ ] Syntax check: `node -c ultimate-xyian-bot.js`
-- [ ] Update version in `package.json`
-- [ ] Update `CHANGELOG.md` with changes
+## Development Checklist
+
+### Before Starting Work
+- [ ] Research the feature thoroughly
+- [ ] Check existing code for similar functionality
+- [ ] Plan the implementation approach
+- [ ] Identify potential issues and solutions
+
+### During Development
+- [ ] Implement proper error handling
+- [ ] Add logging for debugging
+- [ ] Test each function individually
+- [ ] Verify channel filtering logic
+- [ ] Check for duplicate response prevention
+
+### Before Pushing
+- [ ] Test build locally
+- [ ] Verify all commands work
+- [ ] Check for syntax errors
 - [ ] Test channel behavior
-- [ ] Verify no duplicate responses
-- [ ] Check ignore lists are working
+- [ ] Update documentation
+- [ ] Update changelog
+- [ ] Update version number
 
-### Commit Message Format:
-```
-VERSION X.X.X: Brief description of changes
+### After Pushing
+- [ ] Monitor deployment logs
+- [ ] Test in production environment
+- [ ] Check for any issues
+- [ ] Monitor user feedback
+- [ ] Update documentation if needed
 
-### Fixed
-- What was broken and how it was fixed
+## Common Mistakes to Avoid
 
-### Added  
-- New features or functionality
+### 1. Duplicate Messages
+- **Problem**: Bot sends multiple responses to same message
+- **Solution**: Implement message tracking and unique response keys
+- **Prevention**: Always check if response already sent
 
-### Enhanced
-- Improvements to existing features
-```
+### 2. Wrong Channel Responses
+- **Problem**: Bot responds in channels where it shouldn't
+- **Solution**: Implement proper channel filtering logic
+- **Prevention**: Use channel-specific response rules
 
-## 🚨 NEVER DO THESE
-- ❌ Respond to casual conversation in non-AI channels
-- ❌ Ignore version updates
-- ❌ Commit without testing
-- ❌ Break channel response logic
-- ❌ Create duplicate responses
-- ❌ Forget to update changelog
-- ❌ Push broken code
+### 3. Broken Builds
+- **Problem**: Pushing code with syntax errors
+- **Solution**: Test builds locally before pushing
+- **Prevention**: Always test before pushing
 
-## ✅ ALWAYS DO THESE
-- ✅ Update version and changelog with every commit
-- ✅ Test syntax before pushing
-- ✅ Use proper commit message format
-- ✅ Respect channel-specific behavior
-- ✅ Add safety checks for critical features
-- ✅ Log ignored channels clearly
-- ✅ Follow the gate-first approach
+### 4. Missing Documentation
+- **Problem**: Features not documented
+- **Solution**: Update documentation after each change
+- **Prevention**: Make documentation part of the workflow
 
-## 📝 CHANGELOG TEMPLATE
-```markdown
-## [X.X.X] - YYYY-MM-DD
+### 5. Version Control Issues
+- **Problem**: Not updating version numbers
+- **Solution**: Use semantic versioning consistently
+- **Prevention**: Update version with each change
 
-### Fixed
-- **CRITICAL: Issue Name**: Description of what was broken and how it was fixed
-- **Channel Response Logic**: Specific channel behavior fixes
-- **Duplicate Prevention**: How duplicate responses were prevented
+## Testing Procedures
 
-### Added
-- **Feature Name**: Description of new functionality
-- **Safety Checks**: New validation or safety measures
-- **Channel Management**: New channel-specific features
+### Local Testing
+1. Run bot locally with test environment
+2. Test all commands and responses
+3. Verify channel filtering works
+4. Check for duplicate message prevention
+5. Test error handling and fallbacks
 
-### Enhanced
-- **System Name**: Improvements to existing functionality
-- **User Experience**: Better user interaction
-- **Error Prevention**: Better error handling
-```
+### Production Testing
+1. Deploy to staging environment first
+2. Test with real Discord server
+3. Monitor logs for errors
+4. Test all webhook integrations
+5. Verify AI responses work correctly
 
-## 🎯 SUCCESS CRITERIA
-- ✅ No responses to casual conversation in non-AI channels
-- ✅ Only AI channels get live responses without commands
-- ✅ Version and changelog updated with every commit
-- ✅ All syntax checks pass before pushing
-- ✅ Clear logging for all ignored channels
-- ✅ No duplicate responses anywhere
-- ✅ Proper separation of concerns in message handler
+### User Acceptance Testing
+1. Test with real users
+2. Gather feedback on responses
+3. Check for accuracy of information
+4. Monitor for any issues
+5. Update based on feedback
+
+## Error Handling
+
+### Bot Errors
+- All errors go to admin webhook
+- Users never see technical error messages
+- Implement graceful fallbacks
+- Log all errors for debugging
+
+### API Errors
+- Handle OpenAI API failures gracefully
+- Provide fallback responses
+- Log API errors for monitoring
+- Implement retry logic where appropriate
+
+### Database Errors
+- Handle database connection failures
+- Provide fallback data when possible
+- Log database errors for debugging
+- Implement graceful degradation
+
+## Security Guidelines
+
+### Token Protection
+- Never commit tokens to repository
+- Use environment variables for all secrets
+- Rotate tokens regularly
+- Monitor for token exposure
+
+### Input Validation
+- Validate all user inputs
+- Sanitize data before processing
+- Implement rate limiting
+- Check for malicious content
+
+### Permission Management
+- Use role-based access control
+- Implement proper permission checks
+- Monitor for permission escalation
+- Regular permission audits
+
+## Performance Guidelines
+
+### Response Time
+- Keep response times under 3 seconds
+- Implement caching where appropriate
+- Optimize database queries
+- Monitor performance metrics
+
+### Resource Usage
+- Monitor memory usage
+- Implement proper cleanup
+- Avoid memory leaks
+- Optimize for efficiency
+
+### Scalability
+- Design for multiple servers
+- Implement proper load balancing
+- Monitor for bottlenecks
+- Plan for growth
+
+## Maintenance
+
+### Regular Updates
+- Update dependencies regularly
+- Monitor for security updates
+- Test after each update
+- Document changes
+
+### Monitoring
+- Monitor bot performance
+- Check for errors regularly
+- Monitor user feedback
+- Update based on usage patterns
+
+### Documentation
+- Keep documentation current
+- Update README files
+- Document new features
+- Maintain changelog
+
+## Emergency Procedures
+
+### Bot Down
+1. Check deployment logs
+2. Restart bot if needed
+3. Check for configuration issues
+4. Notify users of status
+
+### Data Loss
+1. Check database backups
+2. Restore from backup if needed
+3. Investigate cause
+4. Implement prevention measures
+
+### Security Breach
+1. Rotate all tokens immediately
+2. Check for unauthorized access
+3. Review logs for suspicious activity
+4. Implement additional security measures
+
+## Quality Assurance
+
+### Code Quality
+- Follow consistent coding standards
+- Use proper error handling
+- Implement comprehensive logging
+- Write maintainable code
+
+### User Experience
+- Provide clear, helpful responses
+- Use proper formatting and emojis
+- Implement user-friendly error messages
+- Gather and act on user feedback
+
+### Performance
+- Optimize for speed and efficiency
+- Monitor resource usage
+- Implement proper caching
+- Regular performance reviews
+
+## Conclusion
+
+Following these rules and guidelines will help ensure:
+- High-quality, reliable bot functionality
+- Proper error handling and user experience
+- Maintainable and scalable code
+- Effective team collaboration
+- Successful project outcomes
+
+Remember: **Quality over speed, testing over assumptions, documentation over memory.**

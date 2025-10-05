@@ -28,6 +28,9 @@ This repository contains documentation and implementation for the Arch 2 Addicts
 - Guild-specific channels (XYIAN OFFICIAL role required)
 - Bot automation and moderation
 - Webhook integrations
+- AI-powered Q&A system with real community knowledge
+- Comprehensive analytics and learning system
+- Crash prevention and duplicate instance management
 
 ## Getting Started
 
