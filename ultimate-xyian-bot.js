@@ -2309,15 +2309,45 @@ client.on('messageCreate', async (message) => {
                             return;
                         }
                         
+                        // Search unified knowledge database for weapon information
+                        const weaponKeys = Object.keys(archeroDatabase).filter(key => 
+                            key.toLowerCase().includes('weapon') || 
+                            key.toLowerCase().includes(weaponName) ||
+                            archeroDatabase[key].toLowerCase().includes(weaponName) ||
+                            archeroDatabase[key].toLowerCase().includes('weapon')
+                        );
+                        
                         let weaponInfo = '';
-                        if (weaponName.includes('staff') || weaponName.includes('light')) {
-                            weaponInfo = '**Staff of Light** - Best for Mage class. High magical damage, great range, and excellent area damage. Special ability can clear waves of enemies effectively.';
-                        } else if (weaponName.includes('demon') || weaponName.includes('blade')) {
-                            weaponInfo = '**Demon Blade** - Best for Warrior class. Exceptional melee damage with high critical hit potential. Special ability devastates groups of enemies.';
-                        } else if (weaponName.includes('windforce') || weaponName.includes('bow')) {
-                            weaponInfo = '**Windforce Bow** - Best for Archer class. Excellent range with piercing damage. Special abilities hit multiple enemies and provide great area control.';
+                        if (weaponKeys.length > 0) {
+                            // Get the most relevant weapon information
+                            const relevantWeapon = weaponKeys.find(key => 
+                                archeroDatabase[key].toLowerCase().includes(weaponName) ||
+                                key.toLowerCase().includes(weaponName)
+                            );
+                            
+                            if (relevantWeapon) {
+                                weaponInfo = archeroDatabase[relevantWeapon];
+                            } else {
+                                // Use first weapon-related entry
+                                weaponInfo = archeroDatabase[weaponKeys[0]];
+                            }
+                            
+                            // Add source information
+                            weaponInfo += `\n\n*Source: XYIAN Knowledge Database*`;
                         } else {
-                            weaponInfo = `**${weaponName}** - Weapon information not found. Try: Staff of Light, Demon Blade, or Windforce Bow.`;
+                            // Fallback to basic weapon search
+                            const allKeys = Object.keys(archeroDatabase);
+                            const weaponRelated = allKeys.filter(key => 
+                                archeroDatabase[key].toLowerCase().includes('weapon') ||
+                                archeroDatabase[key].toLowerCase().includes('damage') ||
+                                archeroDatabase[key].toLowerCase().includes('attack')
+                            );
+                            
+                            if (weaponRelated.length > 0) {
+                                weaponInfo = `**${weaponName}** - General weapon information:\n\n${archeroDatabase[weaponRelated[0]]}\n\n*Source: XYIAN Knowledge Database*`;
+                            } else {
+                                weaponInfo = `**${weaponName}** - Weapon information not found in our database. Try asking about specific weapons like Staff of Light, Demon Blade, or Windforce Bow.`;
+                            }
                         }
                         
                         const weaponEmbed = new EmbedBuilder()
@@ -2325,7 +2355,7 @@ client.on('messageCreate', async (message) => {
                             .setDescription(weaponInfo)
                             .setColor(0xFF4500)
                             .setTimestamp()
-                            .setFooter({ text: 'XYIAN OFFICIAL' });
+                            .setFooter({ text: 'XYIAN OFFICIAL - Unified Knowledge Database' });
                         await message.reply({ embeds: [weaponEmbed] });
                         break;
                         
@@ -2336,15 +2366,46 @@ client.on('messageCreate', async (message) => {
                             return;
                         }
                         
+                        // Search unified knowledge database for skill information
+                        const skillKeys = Object.keys(archeroDatabase).filter(key => 
+                            key.toLowerCase().includes('skill') || 
+                            key.toLowerCase().includes(skillName) ||
+                            archeroDatabase[key].toLowerCase().includes(skillName) ||
+                            archeroDatabase[key].toLowerCase().includes('skill') ||
+                            archeroDatabase[key].toLowerCase().includes('ability')
+                        );
+                        
                         let skillInfo = '';
-                        if (skillName.includes('multi') || skillName.includes('shot')) {
-                            skillInfo = '**Multi-shot** - Increases the number of projectiles fired. Essential for DPS builds and clearing multiple enemies.';
-                        } else if (skillName.includes('ricochet')) {
-                            skillInfo = '**Ricochet** - Projectiles bounce between enemies. Excellent for crowd control and maximizing damage output.';
-                        } else if (skillName.includes('piercing')) {
-                            skillInfo = '**Piercing** - Projectiles pass through enemies. Great for line formations and area damage.';
+                        if (skillKeys.length > 0) {
+                            // Get the most relevant skill information
+                            const relevantSkill = skillKeys.find(key => 
+                                archeroDatabase[key].toLowerCase().includes(skillName) ||
+                                key.toLowerCase().includes(skillName)
+                            );
+                            
+                            if (relevantSkill) {
+                                skillInfo = archeroDatabase[relevantSkill];
+                            } else {
+                                // Use first skill-related entry
+                                skillInfo = archeroDatabase[skillKeys[0]];
+                            }
+                            
+                            // Add source information
+                            skillInfo += `\n\n*Source: XYIAN Knowledge Database*`;
                         } else {
-                            skillInfo = `**${skillName}** - Skill information not found. Try: Multi-shot, Ricochet, or Piercing.`;
+                            // Fallback to basic skill search
+                            const allKeys = Object.keys(archeroDatabase);
+                            const skillRelated = allKeys.filter(key => 
+                                archeroDatabase[key].toLowerCase().includes('skill') ||
+                                archeroDatabase[key].toLowerCase().includes('ability') ||
+                                archeroDatabase[key].toLowerCase().includes('power')
+                            );
+                            
+                            if (skillRelated.length > 0) {
+                                skillInfo = `**${skillName}** - General skill information:\n\n${archeroDatabase[skillRelated[0]]}\n\n*Source: XYIAN Knowledge Database*`;
+                            } else {
+                                skillInfo = `**${skillName}** - Skill information not found in our database. Try asking about specific skills like Multi-shot, Ricochet, or Piercing.`;
+                            }
                         }
                         
                         const skillEmbed = new EmbedBuilder()
@@ -2352,7 +2413,7 @@ client.on('messageCreate', async (message) => {
                             .setDescription(skillInfo)
                             .setColor(0x9370DB)
                             .setTimestamp()
-                            .setFooter({ text: 'XYIAN OFFICIAL' });
+                            .setFooter({ text: 'XYIAN OFFICIAL - Unified Knowledge Database' });
                         await message.reply({ embeds: [skillEmbed] });
                         break;
                         
@@ -2363,15 +2424,48 @@ client.on('messageCreate', async (message) => {
                             return;
                         }
                         
+                        // Search unified knowledge database for build information
+                        const buildKeys = Object.keys(archeroDatabase).filter(key => 
+                            key.toLowerCase().includes('build') || 
+                            key.toLowerCase().includes(className) ||
+                            archeroDatabase[key].toLowerCase().includes(className) ||
+                            archeroDatabase[key].toLowerCase().includes('build') ||
+                            archeroDatabase[key].toLowerCase().includes('strategy') ||
+                            archeroDatabase[key].toLowerCase().includes('guide')
+                        );
+                        
                         let buildInfo = '';
-                        if (className.includes('mage')) {
-                            buildInfo = '**Mage Build:**\n• Weapon: Staff of Light\n• Skills: Multi-shot, Ricochet, Piercing\n• Focus: Magical damage and area control\n• Strategy: Keep distance, use environment';
-                        } else if (className.includes('warrior')) {
-                            buildInfo = '**Warrior Build:**\n• Weapon: Demon Blade\n• Skills: Multi-shot, Side Arrow, Bouncy Wall\n• Focus: High DPS and critical hits\n• Strategy: Aggressive play, target elites first';
-                        } else if (className.includes('archer')) {
-                            buildInfo = '**Archer Build:**\n• Weapon: Windforce Bow\n• Skills: Multi-shot, Ricochet, Piercing\n• Focus: Range and mobility\n• Strategy: Kite enemies, use walls for cover';
+                        if (buildKeys.length > 0) {
+                            // Get the most relevant build information
+                            const relevantBuild = buildKeys.find(key => 
+                                archeroDatabase[key].toLowerCase().includes(className) ||
+                                key.toLowerCase().includes(className)
+                            );
+                            
+                            if (relevantBuild) {
+                                buildInfo = archeroDatabase[relevantBuild];
+                            } else {
+                                // Use first build-related entry
+                                buildInfo = archeroDatabase[buildKeys[0]];
+                            }
+                            
+                            // Add source information
+                            buildInfo += `\n\n*Source: XYIAN Knowledge Database*`;
                         } else {
-                            buildInfo = `**${className}** - Class information not found. Try: Mage, Warrior, or Archer.`;
+                            // Fallback to basic build search
+                            const allKeys = Object.keys(archeroDatabase);
+                            const buildRelated = allKeys.filter(key => 
+                                archeroDatabase[key].toLowerCase().includes('build') ||
+                                archeroDatabase[key].toLowerCase().includes('strategy') ||
+                                archeroDatabase[key].toLowerCase().includes('guide') ||
+                                archeroDatabase[key].toLowerCase().includes('recommendation')
+                            );
+                            
+                            if (buildRelated.length > 0) {
+                                buildInfo = `**${className}** - General build information:\n\n${archeroDatabase[buildRelated[0]]}\n\n*Source: XYIAN Knowledge Database*`;
+                            } else {
+                                buildInfo = `**${className}** - Build information not found in our database. Try asking about specific classes like Mage, Warrior, or Archer.`;
+                            }
                         }
                         
                         const buildEmbed = new EmbedBuilder()
@@ -2379,7 +2473,7 @@ client.on('messageCreate', async (message) => {
                             .setDescription(buildInfo)
                             .setColor(0x20B2AA)
                             .setTimestamp()
-                            .setFooter({ text: 'XYIAN OFFICIAL' });
+                            .setFooter({ text: 'XYIAN OFFICIAL - Unified Knowledge Database' });
                         await message.reply({ embeds: [buildEmbed] });
                         break;
                         
