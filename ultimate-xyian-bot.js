@@ -2185,12 +2185,12 @@ client.on('messageCreate', async (message) => {
         }
         
         // CRITICAL: Only respond to plain text in AI channel, commands everywhere else
-        const isAIChannel = message.channel.name === 'bot-questions' || message.channel.name === 'bot-questions-advanced';
         const isCommand = message.content.startsWith('!') || message.content.startsWith('/');
+        const isAIChannel = message.channel.name === 'bot-questions' || message.channel.name === 'bot-questions-advanced' || message.channel.name === 'archero-ai';
         
-        // If it's not the AI channel and not a command, skip Q&A
-        if (!isAIChannel && !isCommand) {
-            console.log(`⏭️ Skipping Q&A - not AI channel and not a command in ${message.channel.name}`);
+        // If it's not a command AND not in AI channel, skip Q&A
+        if (!isCommand && !isAIChannel) {
+            console.log(`⏭️ Skipping Q&A - not a command and not in AI channel (${message.channel.name})`);
             return;
         }
         
