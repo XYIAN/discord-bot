@@ -192,7 +192,7 @@
 ### **Growth Metrics**
 - **Discord Members**: 175,000+ (Official), Active (XYIAN)
 - **Bot Interactions**: Real-time Q&A and learning
-- **Knowledge Base**: 800+ curated entries
+- **Knowledge Base**: 4.3M+ characters of real Discord community content
 - **Learning System**: Continuous improvement from feedback
 - **Analytics**: Comprehensive performance monitoring
 
@@ -247,7 +247,7 @@
 - **175,000+ Members**: Official Archero 2 Discord
 - **Active Guild**: XYIAN guild with dedicated members
 - **Advanced Bot**: AI-powered Discord bot with machine learning
-- **Comprehensive Knowledge**: 800+ curated game entries
+- **Comprehensive Knowledge**: 4.3M+ characters of real Discord community content
 - **Real-time Learning**: Continuous improvement from user feedback
 
 ### **Technical Achievements**
