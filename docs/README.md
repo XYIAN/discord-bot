@@ -11,7 +11,8 @@ This documentation covers everything you need to know about Discord applications
 5. [Community Management](./community-management.md) - Server setup and role management
 6. [Security Best Practices](./security.md) - Keeping your bot and server secure
 7. [Arch 2 Addicts Project](./arch2-project.md) - Specific implementation for your community
-8. [Examples & Tutorials](./examples.md) - Code examples and tutorials
+8. [Learning & Analytics Roadmap](./LEARNING-AND-ANALYTICS-ROADMAP.md) - Bot learning and data collection plan
+9. [Examples & Tutorials](./examples.md) - Code examples and tutorials
 
 ## Quick Links
 

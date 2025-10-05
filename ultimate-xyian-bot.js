@@ -1,4 +1,7 @@
 const { Client, GatewayIntentBits, EmbedBuilder, WebhookClient } = require('discord.js');
+const fs = require('fs');
+const path = require('path');
+const Database = require('better-sqlite3');
 require('dotenv').config();
 
 // AI Service (optional - requires OpenAI API key)
@@ -111,7 +114,10 @@ const webhooks = {
     recruit: process.env.GUILD_RECRUIT_WEBHOOK,
     expedition: process.env.GUILD_EXPEDITION_WEBHOOK,
     arena: process.env.GUILD_ARENA_WEBHOOK,
-    aiQuestions: 'https://discord.com/api/webhooks/REDACTED'
+    aiQuestions: 'https://discord.com/api/webhooks/REDACTED',
+    umbralTempest: 'https://discord.com/api/webhooks/REDACTED',
+    gearRuneLoadouts: 'https://discord.com/api/webhooks/REDACTED',
+    admin: 'https://discord.com/api/webhooks/REDACTED'
 };
 
 // Member activity tracking
@@ -120,21 +126,189 @@ const memberActivity = new Map();
 // User preferences for personalized messages
 const userPreferences = new Map();
 
+// Database initialization
+const dataDir = path.join(__dirname, 'data');
+if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+}
+
+const db = new Database(path.join(dataDir, 'bot_analytics.db'));
+
+// Initialize database tables
+db.exec(`
+    CREATE TABLE IF NOT EXISTS interactions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+        user_id TEXT NOT NULL,
+        username TEXT,
+        channel TEXT,
+        question TEXT NOT NULL,
+        response TEXT,
+        response_time_ms INTEGER,
+        ai_generated BOOLEAN DEFAULT 0,
+        feedback_score INTEGER DEFAULT NULL
+    );
+    
+    CREATE TABLE IF NOT EXISTS feedback (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        interaction_id INTEGER,
+        user_id TEXT,
+        rating INTEGER CHECK(rating IN (1, 2, 3, 4, 5)),
+        correction TEXT,
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (interaction_id) REFERENCES interactions(id)
+    );
+    
+    CREATE TABLE IF NOT EXISTS analytics (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        metric_name TEXT UNIQUE,
+        metric_value TEXT,
+        last_updated DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+`);
+
+// Analytics system
+const analytics = {
+    interactions: [],
+    questionCounts: new Map(),
+    responseTimes: [],
+    feedbackScores: []
+};
+
+// Analytics helper functions
+function logInteraction(question, response, userId, channel, responseTime, aiGenerated = false) {
+    try {
+        // Insert into database
+        const stmt = db.prepare(`
+            INSERT INTO interactions (user_id, channel, question, response, response_time_ms, ai_generated)
+            VALUES (?, ?, ?, ?, ?, ?)
+        `);
+        
+        const result = stmt.run(
+            userId,
+            channel,
+            question,
+            response?.substring(0, 200) || 'embed_response',
+            responseTime,
+            aiGenerated ? 1 : 0
+        );
+        
+        // Also track in memory for quick access
+        const interaction = {
+            id: result.lastInsertRowid,
+            timestamp: new Date().toISOString(),
+            userId: userId,
+            channel: channel,
+            question: question,
+            response: response?.substring(0, 200) || 'embed_response',
+            responseTime: responseTime,
+            aiGenerated: aiGenerated
+        };
+        
+        analytics.interactions.push(interaction);
+        
+        // Track question frequency
+        const key = question.toLowerCase().trim();
+        analytics.questionCounts.set(key, (analytics.questionCounts.get(key) || 0) + 1);
+        
+        console.log(`📊 Logged interaction: ${question.substring(0, 50)}... (${responseTime}ms)`);
+        
+    } catch (error) {
+        console.error('❌ Failed to log interaction:', error);
+        // Send error to admin channel instead of user
+        sendToAdmin(`🚨 **Database Error**: Failed to log interaction\n**Question**: ${question.substring(0, 100)}\n**Error**: ${error.message}`);
+        
+        // Fallback: still track in memory
+        const interaction = {
+            id: Date.now(), // Fallback ID
+            timestamp: new Date().toISOString(),
+            userId: userId,
+            channel: channel,
+            question: question,
+            response: response?.substring(0, 200) || 'embed_response',
+            responseTime: responseTime,
+            aiGenerated: aiGenerated
+        };
+        
+        analytics.interactions.push(interaction);
+        
+        // Track question frequency
+        const key = question.toLowerCase().trim();
+        analytics.questionCounts.set(key, (analytics.questionCounts.get(key) || 0) + 1);
+    }
+}
+
+function saveAnalytics() {
+    const dataDir = path.join(__dirname, 'data');
+    if (!fs.existsSync(dataDir)) {
+        fs.mkdirSync(dataDir, { recursive: true });
+    }
+    
+    const analyticsFile = path.join(dataDir, 'analytics.json');
+    fs.writeFileSync(analyticsFile, JSON.stringify(analytics, null, 2));
+}
+
+function loadAnalytics() {
+    const analyticsFile = path.join(__dirname, 'data', 'analytics.json');
+    if (fs.existsSync(analyticsFile)) {
+        try {
+            const data = JSON.parse(fs.readFileSync(analyticsFile, 'utf8'));
+            analytics.interactions = data.interactions || [];
+            analytics.questionCounts = new Map(data.questionCounts || []);
+            analytics.responseTimes = data.responseTimes || [];
+            analytics.feedbackScores = data.feedbackScores || [];
+        } catch (error) {
+            console.error('❌ Failed to load analytics:', error);
+        }
+    }
+}
+
+// Load existing analytics on startup
+loadAnalytics();
+
+// Helper function to add reaction feedback to responses
+async function addReactionFeedback(response) {
+    try {
+        await response.react('👍');
+        await response.react('👎');
+    } catch (error) {
+        console.error('❌ Failed to add reaction feedback:', error);
+    }
+}
+
 // Personalized onboarding system
 async function sendPersonalizedOnboarding(member) {
     try {
         // Send DM to new member
         const onboardingEmbed = new EmbedBuilder()
             .setTitle('🎉 Welcome to Arch 2 Addicts!')
-            .setDescription(`Hi ${member.user.username}! I'm XY Elder, your personal Archero 2 assistant.\n\nWould you like to receive **personalized messages** to help you improve your gameplay?`)
+            .setDescription(`Hi ${member.user.username}! Welcome to our awesome Archero 2 community!\n\nI'm **XY Elder**, your personal bot assistant. I can help you with game strategies, builds, and guild information.`)
             .setColor(0x9b59b6)
             .addFields(
-                { name: '🤖 What I can help with:', value: '• Daily reset reminders\n• Build optimization tips\n• Arena strategies\n• Character recommendations\n• Item synergy advice', inline: false },
-                { name: '⚡ Quick Setup', value: 'Just reply with **"yes"** to get started with personalized tips!', inline: false }
+                { 
+                    name: '🎮 Available Commands', 
+                    value: '• `!ping` - Check if I\'m online\n• `!help` - See all commands\n• `!menu` - Public question menu\n• `!xyian info` - Guild information (requires role)\n• `!tip` - Daily Archero 2 tips (requires role)', 
+                    inline: false 
+                },
+                { 
+                    name: '💬 Ask Me Anything!', 
+                    value: 'Just type your question naturally - no commands needed!\n\n**Examples:**\n• "What\'s the best weapon for beginners?"\n• "How do I get better at Arena?"\n• "What characters should I focus on?"\n• "Is Dragon Helmet + Oracle Spear good?"', 
+                    inline: false 
+                },
+                { 
+                    name: '🏰 XYIAN Guild', 
+                    value: 'Guild ID: **213797**\nRequirements: 2 daily boss battles + donations\nLooking for active players with 300k+ power!', 
+                    inline: false 
+                },
+                { 
+                    name: '⚡ Personalized Setup', 
+                    value: 'Want **personalized tips**? Reply with **"yes"** to set up custom daily reminders, build advice, and arena strategies!', 
+                    inline: false 
+                }
             )
             .setThumbnail(member.user.displayAvatarURL())
             .setTimestamp()
-            .setFooter({ text: 'XYIAN Bot - Personalized Assistant' });
+            .setFooter({ text: 'XYIAN Bot - Your Archero 2 Assistant' });
         
         await member.send({ embeds: [onboardingEmbed] });
         console.log(`📩 Sent onboarding DM to ${member.user.username}`);
@@ -947,6 +1121,42 @@ async function sendToAIQuestions(content) {
     }
 }
 
+// Send message to Umbral Tempest channel
+async function sendToUmbralTempest(content) {
+    if (!webhooks.umbralTempest) return;
+    
+    try {
+        const webhook = new WebhookClient({ url: webhooks.umbralTempest });
+        await webhook.send(content);
+    } catch (error) {
+        console.error('❌ Failed to send Umbral Tempest message:', error.message);
+    }
+}
+
+// Send message to Gear and Rune Loadouts channel
+async function sendToGearRuneLoadouts(content) {
+    if (!webhooks.gearRuneLoadouts) return;
+    
+    try {
+        const webhook = new WebhookClient({ url: webhooks.gearRuneLoadouts });
+        await webhook.send(content);
+    } catch (error) {
+        console.error('❌ Failed to send Gear and Rune Loadouts message:', error.message);
+    }
+}
+
+// Send message to Admin channel (for errors and system messages)
+async function sendToAdmin(content) {
+    if (!webhooks.admin) return;
+    
+    try {
+        const webhook = new WebhookClient({ url: webhooks.admin });
+        await webhook.send(content);
+    } catch (error) {
+        console.error('❌ Failed to send admin message:', error.message);
+    }
+}
+
 // Q&A function
 function getAnswer(question) {
     const lowerQuestion = question.toLowerCase();
@@ -1351,17 +1561,107 @@ client.on('messageCreate', async (message) => {
                 await message.reply('📤 Advanced analysis menu sent to AI questions channel!');
                 break;
                 
+            case 'send-ai-menu':
+                // Manual command to send AI menu (for testing)
+                const manualAiMenuEmbed = new EmbedBuilder()
+                    .setTitle('🤖 Advanced Archero 2 Analysis Channel')
+                    .setDescription('**Welcome to the AI-Powered Build Analysis Channel!**\n\nAsk complex questions about builds, item synergies, and character optimization.')
+                    .addFields(
+                        { 
+                            name: '📊 Build Analysis Examples', 
+                            value: '• "I have 3 Griffin items, 3 Oracle, and 2 Dragon - what\'s the best build?"\n• "My highest character is 4-star Helix, should I use him or 2-star Thor?"\n• "What\'s the best resonance combo for PvP with my current items?"\n• "Is Dragon Helmet + Oracle Spear + Griffin Boots a good combo?"', 
+                            inline: false 
+                        },
+                        { 
+                            name: '🎯 Character Resonance Guide', 
+                            value: '**3-Star Resonance (First Slot):**\n• Rolla ⭐⭐⭐ - BEST (freeze is vital)\n• Helix ⭐⭐⭐ - Strong DPS\n• Thor ⭐⭐⭐ - Legendary option\n\n**6-Star Resonance (Second Slot):**\n• Loki ⭐⭐⭐⭐⭐⭐ - TOP CHOICE\n• Demon King ⭐⭐⭐⭐⭐⭐ - Shield specialist\n• Otta ⭐⭐⭐⭐⭐⭐ - High-level option', 
+                            inline: false 
+                        },
+                        { 
+                            name: '⚡ Build Type Recommendations', 
+                            value: '**Dragon Builds:** High damage, tanky - Use Thor/Demon King + Rolla + Loki\n**Oracle Builds:** Balanced, versatile - Use Helix/Alex + Rolla + Demon King\n**Griffin Builds:** Speed, mobility - Use Nyanja/Griffin + Nyanja + Loki', 
+                            inline: false 
+                        },
+                        { 
+                            name: '💡 Pro Tips', 
+                            value: '• Higher character levels = stronger resonance effects\n• Level 7 Rolla >> 3-star Rolla for resonance\n• Use highest star character as primary (3+ stars for resonance)\n• Freeze attacks provide major advantage in PvP', 
+                            inline: false 
+                        }
+                    )
+                    .setColor(0x9b59b6)
+                    .setTimestamp()
+                    .setFooter({ text: 'XYIAN Bot - AI Analysis Channel' });
+                
+                await sendToAIQuestions({ embeds: [manualAiMenuEmbed] });
+                await message.reply('📤 AI analysis menu sent to AI questions channel!');
+                break;
+                
+            case 'analytics':
+                // Analytics command (XYIAN OFFICIAL only)
+                if (!hasXYIANRole(message.member)) {
+                    await message.reply('❌ This command requires the XYIAN OFFICIAL role.');
+                    return;
+                }
+                
+                try {
+                    // Get basic analytics from database
+                    const totalInteractions = db.prepare('SELECT COUNT(*) as count FROM interactions').get();
+                    const aiInteractions = db.prepare('SELECT COUNT(*) as count FROM interactions WHERE ai_generated = 1').get();
+                    const avgResponseTime = db.prepare('SELECT AVG(response_time_ms) as avg FROM interactions').get();
+                    
+                    // Get popular questions
+                    const popularQuestions = db.prepare(`
+                        SELECT question, COUNT(*) as count 
+                        FROM interactions 
+                        GROUP BY LOWER(question) 
+                        ORDER BY count DESC 
+                        LIMIT 5
+                    `).all();
+                    
+                    const analyticsEmbed = new EmbedBuilder()
+                        .setTitle('📊 Bot Analytics Dashboard')
+                        .setDescription('**Current Bot Performance Metrics**')
+                        .addFields(
+                            { name: '📈 Total Interactions', value: `${totalInteractions.count}`, inline: true },
+                            { name: '🤖 AI Responses', value: `${aiInteractions.count}`, inline: true },
+                            { name: '⚡ Avg Response Time', value: `${Math.round(avgResponseTime.avg || 0)}ms`, inline: true },
+                            { 
+                                name: '🔥 Popular Questions', 
+                                value: popularQuestions.map((q, i) => `${i + 1}. ${q.question.substring(0, 50)}... (${q.count}x)`).join('\n') || 'No data yet',
+                                inline: false 
+                            }
+                        )
+                        .setColor(0x00BFFF)
+                        .setTimestamp()
+                        .setFooter({ text: 'XYIAN Bot - Analytics' });
+                    
+                    await message.reply({ embeds: [analyticsEmbed] });
+                    
+                } catch (error) {
+                    console.error('❌ Analytics error:', error);
+                    await message.reply('📊 Analytics data is being processed. Try again in a moment!');
+                    sendToAdmin(`🚨 **Analytics Error**: ${error.message}`);
+                }
+                break;
+                
             default:
                 // Try Q&A system
                 const answer = getAnswer(message.content);
                 if (answer) {
+                    const startTime = Date.now();
                     const qaEmbed = new EmbedBuilder()
                         .setTitle('❓ Archero 2 Q&A')
                         .setDescription(answer)
                         .setColor(0x32CD32)
                         .setTimestamp()
                         .setFooter({ text: 'XYIAN OFFICIAL' });
-                    await message.reply({ embeds: [qaEmbed] });
+                    
+                    const response = await message.reply({ embeds: [qaEmbed] });
+                    const responseTime = Date.now() - startTime;
+                    
+                    // Log interaction and add feedback
+                    logInteraction(message.content, answer, message.author.id, message.channel.name, responseTime, false);
+                    await addReactionFeedback(response);
                 } else {
                     await message.reply('❓ I didn\'t understand that. Try asking an Archero 2 question or use `!help` for commands.');
                 }
@@ -1406,6 +1706,7 @@ client.on('messageCreate', async (message) => {
                 return;
             } else {
                 // AI response
+                const startTime = Date.now();
                 const embed = new EmbedBuilder()
                     .setTitle('🤖 AI-Powered Archero 2 Answer')
                     .setDescription(response)
@@ -1413,7 +1714,12 @@ client.on('messageCreate', async (message) => {
                     .setTimestamp()
                     .setFooter({ text: 'XYIAN Bot - AI Enhanced' });
                 
-                await message.reply({ embeds: [embed] });
+                const reply = await message.reply({ embeds: [embed] });
+                const responseTime = Date.now() - startTime;
+                
+                // Log AI interaction and add feedback
+                logInteraction(message.content, response, message.author.id, message.channel.name, responseTime, true);
+                await addReactionFeedback(reply);
                 return;
             }
         }
@@ -1458,13 +1764,20 @@ client.on('messageCreate', async (message) => {
             await message.reply({ embeds: [qaEmbed] });
         } else {
             // AI response
+            const startTime = Date.now();
             const qaEmbed = new EmbedBuilder()
                 .setTitle('🤖 AI-Powered Archero 2 Answer')
                 .setDescription(answer)
                 .setColor(0x32CD32)
                 .setTimestamp()
                 .setFooter({ text: 'XYIAN Bot - AI Enhanced' });
-            await message.reply({ embeds: [qaEmbed] });
+            
+            const response = await message.reply({ embeds: [qaEmbed] });
+            const responseTime = Date.now() - startTime;
+            
+            // Log AI interaction and add feedback
+            logInteraction(message.content, answer, message.author.id, message.channel.name, responseTime, true);
+            await addReactionFeedback(response);
         }
     }
 });
