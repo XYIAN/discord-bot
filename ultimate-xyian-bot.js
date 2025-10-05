@@ -2149,24 +2149,8 @@ client.on('messageCreate', async (message) => {
                 .setColor(isAIResponse ? 0x32CD32 : (hasAIAccess ? 0x00BFFF : 0xFF6B35))
                 .setTimestamp()
                 .setFooter({ text: isAIResponse ? 'XYIAN Bot - AI Enhanced' : (hasAIAccess ? 'XYIAN OFFICIAL' : 'Basic Access') });
-            await message.reply({ embeds: [qaEmbed] });
-        } else {
-            // AI response
-            const startTime = Date.now();
-            const qaEmbed = new EmbedBuilder()
-                .setTitle('🤖 AI-Powered Archero 2 Answer')
-                .setDescription(answer)
-                .setColor(0x32CD32)
-                .setTimestamp()
-                .setFooter({ text: 'XYIAN Bot - AI Enhanced' });
-            
-            const response = await message.reply({ embeds: [qaEmbed] });
-            const responseTime = Date.now() - startTime;
-            
-            // Log AI interaction and add feedback
-            logInteraction(message.content, answer, message.author.id, message.channel.name, responseTime, true);
-            await addReactionFeedback(response);
-        }
+        
+        await message.reply({ embeds: [qaEmbed] });
     }
 });
 
