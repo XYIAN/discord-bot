@@ -267,11 +267,44 @@ loadAnalytics();
 const startApiServer = require('./api-server');
 startApiServer();
 
+// Initialize learning system
+const ArcheroLearningSystem = require('./learning-system');
+const learningSystem = new ArcheroLearningSystem();
+
 // Helper function to add reaction feedback to responses
 async function addReactionFeedback(response) {
     try {
         await response.react('👍');
         await response.react('👎');
+        
+        // Set up reaction collectors for learning
+        const filter = (reaction, user) => {
+            return ['👍', '👎'].includes(reaction.emoji.name) && !user.bot;
+        };
+        
+        const collector = response.createReactionCollector({ filter, time: 300000 }); // 5 minutes
+        
+        collector.on('collect', async (reaction, user) => {
+            try {
+                const rating = reaction.emoji.name === '👍' ? 5 : 1;
+                const question = response.content || 'Embed response';
+                
+                // Process feedback through learning system
+                await learningSystem.processFeedback(
+                    response.id,
+                    user.id,
+                    rating,
+                    null, // No correction provided
+                    question,
+                    response.content || 'Embed response'
+                );
+                
+                console.log(`📚 Learned from feedback: ${user.username} rated ${rating}/5`);
+            } catch (error) {
+                console.error('❌ Error processing reaction feedback:', error);
+            }
+        });
+        
     } catch (error) {
         console.error('❌ Failed to add reaction feedback:', error);
     }
@@ -1746,6 +1779,135 @@ client.on('messageCreate', async (message) => {
                     console.error('❌ API test error:', error);
                     await message.reply('❌ API test failed. Check server logs for details.');
                     sendToAdmin(`🚨 **API Test Error**: ${error.message}`);
+                }
+                break;
+                
+            case 'learn':
+                // Trigger learning system and data scraping (XYIAN OFFICIAL only)
+                if (!hasXYIANRole(message.member)) {
+                    await message.reply('❌ This command requires the XYIAN OFFICIAL role.');
+                    return;
+                }
+                
+                const learnEmbed = new EmbedBuilder()
+                    .setTitle('🧠 Learning System')
+                    .setDescription('**Bot Learning and Data Collection**')
+                    .addFields(
+                        { 
+                            name: '📊 Learning Report', 
+                            value: 'Generating learning report...', 
+                            inline: false 
+                        }
+                    )
+                    .setColor(0x9b59b6)
+                    .setTimestamp();
+                
+                const learningMsg = await message.reply({ embeds: [learnEmbed] });
+                
+                try {
+                    // Generate learning report
+                    const report = learningSystem.generateLearningReport();
+                    
+                    // Update Q&A database with learned data
+                    const updated = learningSystem.updateMainQADatabase();
+                    
+                    const updatedEmbed = new EmbedBuilder()
+                        .setTitle('🧠 Learning System Report')
+                        .setDescription('**Current Learning Status**')
+                        .addFields(
+                            { name: '📝 Total Corrections', value: report.totalCorrections.toString(), inline: true },
+                            { name: '🆕 New Questions', value: report.totalNewQuestions.toString(), inline: true },
+                            { name: '📚 Learned Answers', value: report.totalLearnedAnswers.toString(), inline: true },
+                            { name: '⭐ Avg Confidence', value: report.averageConfidence.toFixed(2), inline: true },
+                            { name: '🔄 Database Updated', value: updated ? '✅ Yes' : '❌ No', inline: true },
+                            { name: '📅 Last Updated', value: new Date(report.lastUpdated).toLocaleString(), inline: true },
+                            { 
+                                name: '🔥 Recent Corrections', 
+                                value: report.topCorrections.length > 0 
+                                    ? report.topCorrections.map(c => `• ${c.originalQuestion.substring(0, 40)}... (${c.rating}/5)`).join('\n')
+                                    : 'No corrections yet',
+                                inline: false 
+                            },
+                            { 
+                                name: '🆕 Recent New Questions', 
+                                value: report.recentNewQuestions.length > 0 
+                                    ? report.recentNewQuestions.map(q => `• ${q.question.substring(0, 40)}...`).join('\n')
+                                    : 'No new questions yet',
+                                inline: false 
+                            }
+                        )
+                        .setColor(0x00FF88)
+                        .setTimestamp()
+                        .setFooter({ text: 'XYIAN Bot - Learning System' });
+                    
+                    await learningMsg.edit({ embeds: [updatedEmbed] });
+                    
+                } catch (error) {
+                    console.error('❌ Learning system error:', error);
+                    await learningMsg.edit({ 
+                        embeds: [new EmbedBuilder()
+                            .setTitle('❌ Learning System Error')
+                            .setDescription('Failed to generate learning report. Check logs for details.')
+                            .setColor(0xFF0000)
+                        ]
+                    });
+                }
+                break;
+                
+            case 'scrape':
+                // Trigger comprehensive data scraping (XYIAN OFFICIAL only)
+                if (!hasXYIANRole(message.member)) {
+                    await message.reply('❌ This command requires the XYIAN OFFICIAL role.');
+                    return;
+                }
+                
+                const scrapeEmbed = new EmbedBuilder()
+                    .setTitle('🔍 Data Scraping')
+                    .setDescription('**Starting comprehensive Archero 2 data scraping...**\nThis may take a few minutes.')
+                    .setColor(0xFFA500)
+                    .setTimestamp();
+                
+                const scrapingMsg = await message.reply({ embeds: [scrapeEmbed] });
+                
+                try {
+                    const Archero2DataScraper = require('./archero2-data-scraper');
+                    const scraper = new Archero2DataScraper();
+                    
+                    const scrapedData = await scraper.scrapeAllData();
+                    
+                    if (scrapedData) {
+                        const successEmbed = new EmbedBuilder()
+                            .setTitle('✅ Data Scraping Complete')
+                            .setDescription('**Comprehensive Archero 2 data has been collected!**')
+                            .addFields(
+                                { name: '👥 Characters', value: Object.keys(scrapedData.characters).length.toString(), inline: true },
+                                { name: '⚔️ Weapons', value: Object.keys(scrapedData.weapons).length.toString(), inline: true },
+                                { name: '🎯 Skills', value: Object.keys(scrapedData.skills).length.toString(), inline: true },
+                                { name: '💎 Runes', value: Object.keys(scrapedData.runes).length.toString(), inline: true },
+                                { name: '🎉 Events', value: Object.keys(scrapedData.events).length.toString(), inline: true },
+                                { name: '📚 Strategies', value: Object.keys(scrapedData.strategies).length.toString(), inline: true },
+                                { name: '💰 F2P Guides', value: Object.keys(scrapedData.f2pGuides).length.toString(), inline: true },
+                                { name: '⚔️ PvP Guides', value: Object.keys(scrapedData.pvpGuides).length.toString(), inline: true },
+                                { name: '📅 Last Updated', value: new Date(scrapedData.lastUpdated).toLocaleString(), inline: false }
+                            )
+                            .setColor(0x00FF88)
+                            .setTimestamp()
+                            .setFooter({ text: 'XYIAN Bot - Data Scraping' });
+                        
+                        await scrapingMsg.edit({ embeds: [successEmbed] });
+                    } else {
+                        throw new Error('Scraping failed');
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Data scraping error:', error);
+                    await scrapingMsg.edit({ 
+                        embeds: [new EmbedBuilder()
+                            .setTitle('❌ Data Scraping Error')
+                            .setDescription('Failed to scrape data. Check logs for details.')
+                            .setColor(0xFF0000)
+                        ]
+                    });
                 }
                 break;
                 
