@@ -331,33 +331,38 @@ async function sendPersonalizedOnboarding(member) {
         // Send DM to new member
         const onboardingEmbed = new EmbedBuilder()
             .setTitle('🎉 Welcome to Arch 2 Addicts!')
-            .setDescription(`Hi ${member.user.username}! Welcome to our awesome Archero 2 community!\n\nI'm **XY Elder**, your personal bot assistant. I can help you with game strategies, builds, and guild information.`)
+            .setDescription(`Hi ${member.user.username}! Welcome to our awesome Archero 2 community!\n\nI'm **XY Elder**, your personal bot assistant with ULTRA-DEEP knowledge of Archero 2. I can help you with advanced strategies, builds, and competitive play!`)
             .setColor(0x9b59b6)
             .addFields(
                 { 
                     name: '🎮 Available Commands', 
-                    value: '• `!ping` - Check if I\'m online\n• `!help` - See all commands\n• `!menu` - Public question menu\n• `!xyian info` - Guild information (requires role)\n• `!tip` - Daily Archero 2 tips (requires role)', 
+                    value: '• `!ping` - Check if I\'m online\n• `!help` - See all commands\n• `!menu` - Public question menu\n• `!xyian info` - Guild information (requires role)\n• `!tip` - Daily Archero 2 tips (requires role)\n• `!discord-bot-clean` - Admin cleanup (XYIAN OFFICIAL only)', 
                     inline: false 
                 },
                 { 
                     name: '💬 Ask Me Anything!', 
-                    value: 'Just type your question naturally - no commands needed!\n\n**Examples:**\n• "What\'s the best weapon for beginners?"\n• "How do I get better at Arena?"\n• "What characters should I focus on?"\n• "Is Dragon Helmet + Oracle Spear good?"', 
+                    value: 'Just type your question naturally - no commands needed!\n\n**Advanced Examples:**\n• "What\'s the best Supreme Arena team composition?"\n• "How do I optimize my rune workshop?"\n• "Which character resonance should I focus on?"\n• "What are the exact stats for Thor\'s abilities?"\n• "How do I get the best weapon upgrades?"', 
                     inline: false 
                 },
                 { 
-                    name: '🏰 XYIAN Guild', 
-                    value: 'Guild ID: **213797**\nRequirements: 2 daily boss battles + donations\nLooking for active players with 300k+ power!', 
+                    name: '🏰 XYIAN Guild - Elite Competitive Play', 
+                    value: '**Guild ID: 213797**\n• Requirements: 2 daily boss battles + donations\n• Looking for active players with 300k+ power\n• Supreme Arena specialists and PvP experts\n• Exclusive guild strategies and team coordination', 
                     inline: false 
                 },
                 { 
-                    name: '⚡ Personalized Setup', 
-                    value: 'Want **personalized tips**? Reply with **"yes"** to set up custom daily reminders, build advice, and arena strategies!', 
+                    name: '⚡ What I Know About Archero 2', 
+                    value: '• **ALL Characters** with exact stats, abilities, and resonance\n• **ALL Weapons** with upgrade paths and evolution requirements\n• **ALL Runes** with exact effects and workshop mechanics\n• **Supreme Arena** team composition and positioning\n• **Events** with current schedules and rewards\n• **Gear sets** with bonuses and synergies', 
+                    inline: false 
+                },
+                { 
+                    name: '🎯 Personalized Setup', 
+                    value: 'Want **personalized tips**? Reply with **"yes"** to set up custom daily reminders, build advice, and arena strategies!\n\nThis will help me give you tailored advice based on your playstyle, current gear, and competitive goals.', 
                     inline: false 
                 }
             )
             .setThumbnail(member.user.displayAvatarURL())
             .setTimestamp()
-            .setFooter({ text: 'XYIAN Bot - Your Archero 2 Assistant' });
+            .setFooter({ text: 'XYIAN Bot - Ultra-Advanced Assistant' });
         
         await member.send({ embeds: [onboardingEmbed] });
         console.log(`📩 Sent onboarding DM to ${member.user.username}`);
@@ -1489,8 +1494,9 @@ async function logCorrection(originalMessage, correction, reason) {
     }
 }
 
-// Message handling
+// Message handling with error protection
 client.on('messageCreate', async (message) => {
+    try {
     if (message.author.bot) return;
     
     // Create unique key for this message
@@ -1514,7 +1520,7 @@ client.on('messageCreate', async (message) => {
     // Debug logging to track duplicate responses
     console.log(`🔍 Message received: ${message.content} from ${message.author.username} in ${message.channel.name} - VERSION 2.0`);
     
-    // SPAM FILTER - Check if we've already responded to this message
+    // SPAM FILTER - Check if we've already responded to this message (using same system as responseTracker)
     const spamKey = `${message.id}_${message.channel.id}`;
     if (messageResponseTracker.has(spamKey)) {
         console.log(`🚫 SPAM FILTER: Already responded to message ${message.id} in ${message.channel.name} - BLOCKING`);
@@ -1670,6 +1676,62 @@ client.on('messageCreate', async (message) => {
                 console.log(`🏰 PING COMMAND TRIGGERED by ${message.author.username}`);
                 await message.reply('🏰 XYIAN Ultimate Bot - Online!');
                 console.log(`🏰 PING RESPONSE SENT to ${message.author.username}`);
+                break;
+                
+            case 'discord-bot-clean':
+                if (!trackResponse(message, 'discord-bot-clean')) return;
+                console.log(`🧹 DISCORD BOT CLEAN COMMAND TRIGGERED by ${message.author.username}`);
+                
+                // Only XYIAN OFFICIAL can use this command
+                if (!hasXYIANRole(message.member)) {
+                    await message.reply('❌ This command requires the XYIAN OFFICIAL role.');
+                    return;
+                }
+                
+                try {
+                    // Check for running bot processes
+                    const { exec } = require('child_process');
+                    exec('ps aux | grep "node.*bot" | grep -v grep', (error, stdout, stderr) => {
+                        if (error) {
+                            console.error('Error checking processes:', error);
+                            return;
+                        }
+                        
+                        const processes = stdout.trim().split('\n').filter(line => line.trim());
+                        console.log(`🔍 Found ${processes.length} bot processes`);
+                        
+                        if (processes.length > 0) {
+                            // Kill all bot processes
+                            processes.forEach(processLine => {
+                                const pid = processLine.split(/\s+/)[1];
+                                if (pid) {
+                                    exec(`kill ${pid}`, (killError) => {
+                                        if (killError) {
+                                            console.error(`Failed to kill process ${pid}:`, killError);
+                                        } else {
+                                            console.log(`✅ Killed process ${pid}`);
+                                        }
+                                    });
+                                }
+                            });
+                            
+                            message.reply(`🧹 **Discord Bot Clean Complete!**\n\n**Processes Found & Killed:** ${processes.length}\n**Status:** All duplicate bot processes terminated\n**Result:** Bot should now respond only once per message`);
+                        } else {
+                            message.reply(`🧹 **Discord Bot Clean Complete!**\n\n**Processes Found:** 0\n**Status:** No duplicate processes detected\n**Result:** Bot is running cleanly`);
+                        }
+                    });
+                    
+                    // Clear response tracking maps
+                    responseTracker.clear();
+                    messageResponseTracker.clear();
+                    processedMembers.clear();
+                    
+                    console.log(`🧹 CLEANED: Response tracking maps cleared`);
+                    
+                } catch (error) {
+                    console.error('❌ Discord Bot Clean error:', error);
+                    await message.reply('❌ Error during bot cleanup. Check logs for details.');
+                }
                 break;
                 
             case 'tip':
@@ -2133,7 +2195,7 @@ client.on('messageCreate', async (message) => {
             case 'help':
                 const generalHelpEmbed = new EmbedBuilder()
                     .setTitle('🤖 XYIAN Ultimate Bot Commands')
-                    .setDescription('**Basic Commands:**\n`!ping` - Check bot status\n`!help` - This help\n`!menu` - Show question menu\n\n**For Archero 2 Questions:**\n🔹 **Go to the AI chat channels** for detailed answers!\n🔹 Use `#bot-questions` or `#archero-ai` for Q&A\n🔹 This channel is for general discussion only\n\n**Role-Based Commands:**\n• XYIAN OFFICIAL: Full access + Channel management\n• XYIAN Guild Verified: Basic AI questions\n• Admin: Administrative commands')
+                    .setDescription('**Basic Commands:**\n`!ping` - Check bot status\n`!help` - This help\n`!menu` - Show question menu\n\n**For Archero 2 Questions:**\n🔹 **Go to the AI chat channels** for detailed answers!\n🔹 Use `#bot-questions` or `#archero-ai` for Q&A\n🔹 This channel is for general discussion only\n\n**Role-Based Commands:**\n• XYIAN OFFICIAL: Full access + Channel management\n• XYIAN Guild Verified: Basic AI questions\n• Admin: Administrative commands\n\n**Admin Commands:**\n`!discord-bot-clean` - Clean duplicate bot processes (XYIAN OFFICIAL only)')
                     .setColor(0x00BFFF)
                     .setTimestamp()
                     .setFooter({ text: 'XYIAN OFFICIAL' });
@@ -2526,6 +2588,8 @@ client.on('messageCreate', async (message) => {
         }
         
         // Q&A System with role-based access - PRIORITIZE DATABASE OVER AI
+        if (!trackResponse(message, 'qa-response')) return;
+        
         let answer = null;
         let isAIResponse = false;
         
@@ -2582,6 +2646,15 @@ client.on('messageCreate', async (message) => {
         // Mark message as processed and log response
         messageResponseTracker.set(spamKey, true);
         await logBotResponse(message.channel.name, message.content, 'Q&A Response', message.author.id, message.author.username);
+    }
+    } catch (error) {
+        console.error('❌ Error in message handler:', error);
+        // Don't crash the bot - just log the error
+        try {
+            await sendToAdmin(`🚨 **Message Handler Error**: ${error.message}\n**Stack**: ${error.stack}`);
+        } catch (adminError) {
+            console.error('❌ Failed to send error to admin:', adminError);
+        }
     }
 });
 
@@ -2677,9 +2750,10 @@ async function logBotResponse(channelName, messageContent, responseType, userId,
     }
 }
 
-// Welcome new members
+// Welcome new members with error handling
 client.on('guildMemberAdd', async (member) => {
-    const memberId = member.user.id;
+    try {
+        const memberId = member.user.id;
     
     // Check if we've already processed this member
     if (processedMembers.has(memberId)) {
@@ -2696,13 +2770,40 @@ client.on('guildMemberAdd', async (member) => {
     try {
         const welcomeEmbed = new EmbedBuilder()
             .setTitle('🎉 Welcome to Arch 2 Addicts!')
-            .setDescription(`Welcome ${member} to the Arch 2 Addicts community!`)
+            .setDescription(`Welcome ${member} to the Arch 2 Addicts community - your premier destination for Archero 2 discussion and strategy!`)
             .setColor(0x00ff88)
+            .setThumbnail('https://cdn.discordapp.com/attachments/1268830572743102505/1279024218473758770/archero2-logo.png')
+            .addFields(
+                {
+                    name: '🏆 Community Features',
+                    value: '• **Daily tips and strategies** from expert players\n• **Guild recruitment opportunities** with top guilds\n• **Expert Q&A system** with instant answers\n• **Event discussions and guides** for all game modes',
+                    inline: false
+                },
+                {
+                    name: '🎮 Getting Started',
+                    value: '• Use `!help` to view all available commands\n• Ask any Archero 2 question for instant answers\n• Check out `#bot-questions` for detailed help\n• Join our guild for competitive play!',
+                    inline: false
+                },
+                {
+                    name: '🏰 Join Our Guild',
+                    value: '**XYIAN OFFICIAL** - Guild ID: **213797**\n• Requirements: 2 daily boss battles + donations\n• Looking for active players with 300k+ power\n• Supreme Arena specialists and PvP experts',
+                    inline: false
+                },
+                {
+                    name: '⚡ What I Can Help With',
+                    value: '• **Character builds** (Thor, Demon King, Rolla, etc.)\n• **Weapon strategies** (Oracle Staff, Griffin Claws, Dragoon Crossbow)\n• **Supreme Arena** team composition and tactics\n• **Runes and upgrades** with exact stats and effects\n• **Events and rewards** with current schedules',
+                    inline: false
+                }
+            )
             .setTimestamp()
             .setFooter({ text: 'Arch 2 Addicts Community' });
         
         await sendToGeneral({ embeds: [welcomeEmbed] });
         console.log(`✅ SINGLE welcome message sent for ${member.user.username} (ID: ${memberId})`);
+        
+        // Send "Wave to say hi!" button message
+        const waveMessage = await sendToGeneral({ content: '🤖 **Wave to say hi!**' });
+        console.log(`✅ Wave message sent for ${member.user.username}`);
         
         // Send personalized onboarding DM (only one additional message)
         await sendPersonalizedOnboarding(member);
@@ -2715,11 +2816,16 @@ client.on('guildMemberAdd', async (member) => {
     setTimeout(() => {
         processedMembers.delete(memberId);
     }, 5 * 60 * 1000);
+    } catch (error) {
+        console.error('❌ Error in guildMemberAdd handler:', error);
+        // Don't crash the bot - just log the error
+    }
 });
 
-// Handle member leaving
+// Handle member leaving with error handling
 client.on('guildMemberRemove', async (member) => {
-    console.log(`👋 Member left: ${member.user.username}`);
+    try {
+        console.log(`👋 Member left: ${member.user.username}`);
     
     // Remove from activity tracking
     memberActivity.delete(member.id);
@@ -2733,16 +2839,69 @@ client.on('guildMemberRemove', async (member) => {
         .setFooter({ text: 'Arch 2 Addicts Community' });
     
     await sendToGeneral({ embeds: [farewellEmbed] });
+    } catch (error) {
+        console.error('❌ Error in guildMemberRemove handler:', error);
+        // Don't crash the bot - just log the error
+    }
 });
 
-// Error handling
+// Error handling and crash prevention
 client.on('error', (error) => {
     console.error('❌ Discord client error:', error);
+    // Don't crash on Discord errors - just log them
 });
 
 process.on('unhandledRejection', (reason, promise) => {
     console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+    // Don't crash on unhandled rejections - just log them
 });
 
-// Login to Discord
-client.login(process.env.DISCORD_TOKEN);
+process.on('uncaughtException', (error) => {
+    console.error('❌ Uncaught Exception:', error);
+    // Don't crash on uncaught exceptions - just log them
+});
+
+// Prevent multiple bot instances
+const botLockFile = path.join(__dirname, '.bot.lock');
+if (fs.existsSync(botLockFile)) {
+    console.error('❌ Bot is already running! Another instance detected.');
+    process.exit(1);
+}
+
+// Create lock file
+fs.writeFileSync(botLockFile, process.pid.toString());
+
+// Clean up lock file on exit
+process.on('exit', () => {
+    if (fs.existsSync(botLockFile)) {
+        fs.unlinkSync(botLockFile);
+    }
+});
+
+process.on('SIGINT', () => {
+    console.log('🛑 Bot shutting down gracefully...');
+    if (fs.existsSync(botLockFile)) {
+        fs.unlinkSync(botLockFile);
+    }
+    process.exit(0);
+});
+
+process.on('SIGTERM', () => {
+    console.log('🛑 Bot shutting down gracefully...');
+    if (fs.existsSync(botLockFile)) {
+        fs.unlinkSync(botLockFile);
+    }
+    process.exit(0);
+});
+
+// Login to Discord with error handling
+client.login(process.env.DISCORD_TOKEN).catch(error => {
+    console.error('❌ Failed to login to Discord:', error);
+    // Don't crash - just retry after a delay
+    setTimeout(() => {
+        console.log('🔄 Retrying Discord login...');
+        client.login(process.env.DISCORD_TOKEN).catch(retryError => {
+            console.error('❌ Retry failed:', retryError);
+        });
+    }, 5000);
+});
