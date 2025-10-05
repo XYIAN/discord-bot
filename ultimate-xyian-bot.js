@@ -351,7 +351,35 @@ function loadKnowledgeDatabase() {
         const knowledgeFile = path.join(__dirname, 'data', 'archero_qa_learned.json');
         if (fs.existsSync(knowledgeFile)) {
             const data = JSON.parse(fs.readFileSync(knowledgeFile, 'utf8'));
-            archeroDatabase = data;
+            
+            // Flatten the categorized data into a flat key-value structure
+            archeroDatabase = {};
+            
+            // Process each category and flatten the data
+            const categories = ['gameInfo', 'weapons', 'characters', 'mechanics', 'events', 'guild', 'artifacts', 'statistics'];
+            categories.forEach(category => {
+                if (data[category]) {
+                    Object.keys(data[category]).forEach(key => {
+                        const entry = data[category][key];
+                        if (entry && entry.content) {
+                            // Create meaningful keys from the content
+                            const keywords = entry.keywords || [];
+                            const source = entry.source || category;
+                            
+                            // Add entries for each keyword
+                            keywords.forEach(keyword => {
+                                const dbKey = `${keyword}_${source}_${key}`;
+                                archeroDatabase[dbKey] = entry.content.substring(0, 500); // Limit content length
+                            });
+                            
+                            // Add a general entry for this data point
+                            const generalKey = `${category}_${key}`;
+                            archeroDatabase[generalKey] = entry.content.substring(0, 500);
+                        }
+                    });
+                }
+            });
+            
             console.log(`✅ Loaded knowledge database with ${Object.keys(archeroDatabase).length} entries`);
         } else {
             console.log('⚠️ Knowledge database not found, using empty database');
