@@ -1,5 +1,53 @@
 # Archero 2 Game Integration
 
+## Working Examples
+
+### Bot Commands in Action
+
+**XYIAN Guild Commands:**
+```
+!xyian info
+→ Returns: Guild information, member count, requirements, and Guild ID (213797)
+
+!xyian weapon staff of light
+→ Returns: Detailed weapon stats, best builds, and usage tips
+
+!xyian skill multi-shot
+→ Returns: Skill description, damage multipliers, and synergy recommendations
+
+!xyian build mage
+→ Returns: Complete mage build with weapons, skills, and character recommendations
+```
+
+**General Commands:**
+```
+!tip
+→ Sends randomized daily Archero 2 tips to general chat
+
+!recruit
+→ Sends guild recruitment message with requirements and Guild ID
+
+!arena
+→ Sends Arena/Supreme Arena strategy tips
+
+!help
+→ Shows complete command list and Q&A system information
+```
+
+**AI-Enhanced Q&A:**
+```
+User: "What's the best character for Supreme Arena?"
+Bot: "For Supreme Arena, you need 3 different characters with 3 different builds. Dragoon is the top choice for mobility builds, while Griffin dominates with full build optimization. Each unique item provides bonus health and damage. Consider Thor for lightning builds or Demon King for shield-based strategies."
+
+User: "How do orbs work?"
+Bot: "Orb swapping allows you to change your character's elemental affinity. Each orb provides different bonuses: Fire (damage boost), Ice (slow effects), Lightning (chain damage), Poison (DoT), Dark (critical chance). Swapping costs gems but provides massive build flexibility."
+```
+
+**Fallback System Example:**
+```
+When AI fails: "🎮 Great question! While I'm processing that, here's some general Archero 2 advice: Focus on upgrading your main weapon and character abilities. The Staff of Light and Demon Blade are excellent choices for most builds!"
+```
+
 ## Game Overview
 
 Archero 2 is a legendary roguelike mobile game where players must master skills to save the world from the Demon King's forces. The game features:

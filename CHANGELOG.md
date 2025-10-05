@@ -2,6 +2,27 @@
 
 All notable changes to the Arch 2 Addicts Discord Bot project will be documented in this file.
 
+## [0.0.7] - 2024-10-05
+
+### Added
+- **AI Integration**: OpenAI API integration for dynamic, intelligent responses
+- **Enhanced Fallback System**: Robust fallback responses when AI API fails
+- **Context-Aware AI**: Channel-specific AI responses (general, xyian, bot-questions, arena)
+- **Advanced Game Knowledge**: Comprehensive character, orb, and starcore documentation
+- **Professional Messaging**: Polished bot responses with emojis and proper formatting
+
+### Fixed
+- **Startup Optimization**: Removed automatic message sending on startup
+- **Test Command**: Updated !test to send minimal test messages only
+- **AI Error Handling**: Graceful fallback when OpenAI API is unavailable
+- **Message Routing**: Improved message routing and response handling
+
+### Enhanced
+- **Character Database**: Detailed information for all character tiers (Legendary, Epic, Regular)
+- **Game Mechanics**: Advanced knowledge of orbs, starcores, skins, resonance, sacred hall
+- **Arena Strategies**: Comprehensive Arena and Supreme Arena documentation
+- **Guild Management**: Enhanced XYIAN guild features and requirements tracking
+
 ## [0.0.6] - 2024-10-04
 
 ### Fixed
