@@ -1,0 +1,169 @@
+# XYIAN Discord Bot - Critical Development Rules
+
+## 🚨 CRITICAL RULES - NEVER BREAK THESE
+
+### 1. VERSION & CHANGELOG MANAGEMENT (MANDATORY)
+- **ALWAYS** update version in package.json with every commit
+- **ALWAYS** update CHANGELOG.md with every commit
+- Use semantic versioning: patch (1.2.4 → 1.2.5), minor (1.2.4 → 1.3.0), major (1.2.4 → 2.0.0)
+- **NEVER** commit without updating both version and changelog
+- **COMMIT FORMAT**: `"VERSION X.X.X: Description of changes"`
+
+### 2. CHANNEL RESPONSE LOGIC - CRITICAL
+- **ONLY AI CHANNELS** can have live responses without commands: `bot-questions`, `bot-questions-advanced`, `archero-ai`
+- **GENERAL CHAT**: Only responds to `!help` and `!menu` - directs to AI channels for questions
+- **GUILD RECRUIT**: Completely ignored - only cron jobs allowed
+- **ALL OTHER CHANNELS**: Commands only (`!ping`, `!help`, etc.)
+
+### 3. WEBHOOK RULES - SPECIFIC CHANNEL BEHAVIOR
+- **Guild Recruit Webhook** (`1424160069024481462`): ONLY cron jobs, NO AI responses, NO Q&A
+- **General Chat Webhook** (`1424136765496758335`): ONLY `!help` and `!menu`, direct to AI channels
+- **AI Questions Webhook** (`1424322423901392957`): Full AI responses and Q&A
+- **Admin Webhook** (`1424329654738882647`): Error logging and admin notifications
+- **All Other Webhooks**: Commands only, no live responses
+
+### 4. MESSAGE HANDLER STRUCTURE - GATE FIRST
+```javascript
+// CRITICAL GATE: ONLY AI CHANNELS GET LIVE RESPONSES
+const isCommand = message.content.startsWith('!') || message.content.startsWith('/');
+const isDM = message.channel.type === 1;
+const isAIChannel = ['bot-questions', 'bot-questions-advanced', 'archero-ai'].includes(message.channel.name);
+
+// IGNORE these channels completely - ONLY CRON JOBS ALLOWED
+const ignoreChannels = ['guild-recruit-chat', 'xyian-guild', 'guild-chat', 'recruit', 'guild-recruit'];
+if (ignoreChannels.includes(message.channel.name)) {
+    console.log(`⏭️ IGNORING: Channel ${message.channel.name} is in ignore list - ONLY CRON JOBS ALLOWED`);
+    return;
+}
+
+// GENERAL CHAT - Only respond to !help and !menu, direct to AI chat for questions
+const generalChatChannels = ['general', 'general-chat', 'main-chat'];
+if (generalChatChannels.includes(message.channel.name)) {
+    if (message.content.startsWith('!help') || message.content.startsWith('!menu')) {
+        // Allow these commands
+    } else {
+        console.log(`⏭️ IGNORING: General chat - only !help and !menu allowed, direct to AI chat for questions`);
+        return;
+    }
+}
+
+// FINAL SAFETY CHECK: ONLY AI CHANNELS CAN HAVE LIVE RESPONSES
+if (!isCommand && !isDM && !isAIChannel) {
+    console.log(`⏭️ IGNORING: Not a command, not DM, not AI channel (${message.channel.name}) - ONLY AI CHANNELS GET LIVE RESPONSES`);
+    return;
+}
+```
+
+### 5. DUPLICATE MESSAGE PREVENTION
+- **Response Tracking System**: Use `responseTracker` Map to prevent duplicate responses
+- **Unique Message Keys**: `${message.id}_${message.author.id}_${message.channel.id}`
+- **Safety Checks**: Multiple validation layers to prevent multiple responses
+- **Clean Separation**: Different handlers for different message types
+
+### 6. TESTING BEFORE PUSHING (MANDATORY)
+- **ALWAYS** run `node -c ultimate-xyian-bot.js` before committing
+- **ALWAYS** test locally if possible
+- **NEVER** push broken code to production
+- **ALWAYS** verify channel behavior works correctly
+- **ALWAYS** check for syntax errors before pushing
+
+### 7. DEEP RESEARCH REQUIREMENTS
+- **ALWAYS** research Archero 2 Discord and wikis thoroughly
+- **ALWAYS** verify game mechanics and weapon information
+- **ALWAYS** check for accurate character data and resonance info
+- **ALWAYS** validate event information and rotation schedules
+- **ALWAYS** ensure database accuracy before adding new entries
+
+### 8. DOCUMENTATION REQUIREMENTS
+- **ALWAYS** update CHANGELOG.md with detailed changes
+- **ALWAYS** document new features and fixes
+- **ALWAYS** include version numbers in commit messages
+- **ALWAYS** maintain comprehensive development rules
+- **ALWAYS** document webhook behavior and channel rules
+
+### 9. ERROR PREVENTION & LOGGING
+- **Multiple Safety Checks**: Gate, ignore lists, final validation
+- **Clear Logging**: Log all ignored channels and failed checks
+- **Admin Webhook**: Send all errors to admin webhook instead of users
+- **No Assumptions**: Always verify channel permissions and behavior
+- **Clean Separation**: Different handlers for different message types
+
+### 10. COMMIT WORKFLOW (MANDATORY)
+1. **Make Changes**
+2. **Test Syntax**: `node -c ultimate-xyian-bot.js`
+3. **Update Version**: package.json
+4. **Update Changelog**: CHANGELOG.md
+5. **Commit**: `git add . && git commit -m "VERSION X.X.X: Description"`
+6. **Push**: `git push`
+
+## 📋 CHANNEL BEHAVIOR MATRIX
+
+| Channel Type | Live Responses | Commands | AI Q&A | Webhook | Notes |
+|-------------|----------------|----------|---------|---------|-------|
+| **AI Channels** | ✅ Yes | ✅ Yes | ✅ Yes | AI Questions | bot-questions, archero-ai |
+| **General Chat** | ❌ No | ✅ !help, !menu only | ❌ No | General Chat | Direct to AI channels |
+| **Guild Recruit** | ❌ No | ❌ No | ❌ No | Guild Recruit | Cron jobs only |
+| **DMs** | ✅ Yes | ✅ Yes | ✅ Yes | N/A | Full functionality |
+| **All Others** | ❌ No | ✅ Yes | ❌ No | Various | Commands only |
+
+## 🚨 NEVER DO THESE
+- ❌ Respond to casual conversation in non-AI channels
+- ❌ Ignore version updates
+- ❌ Commit without testing
+- ❌ Break the channel response logic
+- ❌ Create duplicate responses
+- ❌ Forget to update changelog
+- ❌ Push broken code
+- ❌ Make up game information
+- ❌ Ignore webhook-specific rules
+- ❌ Skip deep research
+
+## ✅ ALWAYS DO THESE
+- ✅ Update version and changelog with every commit
+- ✅ Test syntax before pushing
+- ✅ Use proper commit message format
+- ✅ Respect channel-specific behavior
+- ✅ Add safety checks for critical features
+- ✅ Log ignored channels clearly
+- ✅ Research game information thoroughly
+- ✅ Follow webhook-specific rules
+- ✅ Prevent duplicate responses
+- ✅ Document all changes properly
+
+## 🔧 DEVELOPMENT CHECKLIST
+
+### Before Every Commit:
+- [ ] Syntax check: `node -c ultimate-xyian-bot.js`
+- [ ] Update version in `package.json`
+- [ ] Update `CHANGELOG.md` with detailed changes
+- [ ] Test channel behavior
+- [ ] Verify no duplicate responses
+- [ ] Check ignore lists are working
+- [ ] Verify webhook behavior
+- [ ] Research game information accuracy
+
+### Commit Message Format:
+```
+VERSION X.X.X: Brief description of changes
+
+### Fixed
+- What was broken and how it was fixed
+
+### Added  
+- New features or functionality
+
+### Enhanced
+- Improvements to existing features
+```
+
+## 🎯 SUCCESS CRITERIA
+- ✅ No responses to casual conversation in non-AI channels
+- ✅ Only AI channels get live responses without commands
+- ✅ Version and changelog updated with every commit
+- ✅ All syntax checks pass before pushing
+- ✅ Clear logging for all ignored channels
+- ✅ No duplicate responses anywhere
+- ✅ Proper separation of concerns in message handler
+- ✅ Accurate game information in database
+- ✅ Webhook-specific behavior followed
+- ✅ Comprehensive documentation maintained
