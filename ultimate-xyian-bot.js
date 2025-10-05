@@ -1425,9 +1425,15 @@ client.on('messageCreate', async (message) => {
     const isAIChannel = ['bot-questions', 'bot-questions-advanced', 'archero-ai'].includes(message.channel.name);
     
     // IGNORE these channels completely (no responses at all) - ONLY CRON JOBS ALLOWED
-    const ignoreChannels = ['guild-recruit-chat', 'xyian-guild', 'guild-chat', 'recruit', 'guild-recruit'];
+    const ignoreChannels = ['guild-recruit-chat', 'xyian-guild', 'guild-chat', 'recruit', 'guild-recruit', 'guild-recruit-chat'];
     if (ignoreChannels.includes(message.channel.name)) {
         console.log(`⏭️ IGNORING: Channel ${message.channel.name} is in ignore list - ONLY CRON JOBS ALLOWED`);
+        return;
+    }
+    
+    // ADDITIONAL SAFETY: Check if channel contains "recruit" in the name
+    if (message.channel.name.toLowerCase().includes('recruit')) {
+        console.log(`⏭️ IGNORING: Channel ${message.channel.name} contains 'recruit' - ONLY CRON JOBS ALLOWED`);
         return;
     }
     
