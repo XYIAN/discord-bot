@@ -131,8 +131,8 @@ ${databaseSample}
     
     const xyianValues = `XYIAN VALUES: Leaderboard dominance, competitive excellence, strategic thinking, skill development, and helping members wreck the leaderboards. You are XYIAN's henchman, passionate about growing the guild and achieving #1 status. Always maintain XYIAN's quest for leaderboard dominance and emphasize that stats are hard to get - that's where your extensive knowledge shines.`;
     
-    if (channelName === 'bot-questions' || channelName === 'bot-questions-advanced') {
-        return `${baseContext} ${xyianIdentity} ${comprehensiveKnowledge} ${xyianValues} This is the advanced bot questions channel. As XY Elder, XYIAN's henchman, provide detailed technical answers using our comprehensive database. Focus on strategies that help members wreck the leaderboards and achieve competitive excellence. Emphasize that stats are hard to get in this game - that's where your extensive knowledge comes in. Always reference our database knowledge and XYIAN's quest for #1 leaderboard dominance.`;
+    if (channelName === 'arch-ai') {
+        return `${baseContext} ${xyianIdentity} ${comprehensiveKnowledge} ${xyianValues} This is the AI-powered Archero 2 questions channel. As XY Elder, XYIAN's henchman, provide detailed technical answers using our comprehensive database. Focus on strategies that help members wreck the leaderboards and achieve competitive excellence. Emphasize that stats are hard to get in this game - that's where your extensive knowledge comes in. Always reference our database knowledge and XYIAN's quest for #1 leaderboard dominance.`;
     } else if (channelName === 'xyian-guild') {
         return `${baseContext} ${xyianIdentity} ${comprehensiveKnowledge} ${xyianValues} This is the XYIAN OFFICIAL guild channel. As XY Elder, XYIAN's trusted henchman, focus on guild requirements (2 daily boss battles, donations), Peak Arena strategies, team coordination, and competitive guild management. Emphasize our leaderboard dominance goals, competitive excellence, and helping members develop skills to wreck the leaderboards. Reference our Guild ID: 213797 and your role as XYIAN's henchman.`;
     } else if (channelName === 'arena' || channelName === 'peak-arena') {
@@ -2910,8 +2910,8 @@ client.on('messageCreate', async (message) => {
                 }
         }
     } else {
-        // Check if this is a bot questions channel
-        if (message.channel.name === 'bot-questions' || message.channel.name === 'bot-questions-advanced') {
+        // Check if this is the AI questions channel
+        if (message.channel.name === 'arch-ai') {
             // Check for help command
             if (message.content.toLowerCase().includes('!bothelp') || message.content.toLowerCase().includes('!bot help')) {
                 const helpEmbed = getBotQuestionHelp();
@@ -3152,7 +3152,7 @@ client.on('guildMemberAdd', async (member) => {
                 },
                 {
                     name: '🎮 Getting Started',
-                    value: '• Use `!help` to view all available commands\n• Ask any Archero 2 question for instant answers\n• Check out `#bot-questions` for detailed help\n• Join our guild for competitive play!',
+                    value: '• Use `!help` to view all available commands\n• Ask any Archero 2 question for instant answers\n• Check out `#arch-ai` for detailed help\n• Join our guild for competitive play!',
                     inline: false
                 },
                 {
