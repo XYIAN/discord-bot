@@ -1422,6 +1422,7 @@ client.on('messageCreate', async (message) => {
             
             switch (commandName) {
                 case 'ping':
+                    if (!trackResponse(message, 'ping-dm')) return;
                     await message.reply('🏰 XYIAN Ultimate Bot - Online! (DM Mode)');
                     console.log(`✅ DM ping response sent to ${message.author.username}`);
                     break;
