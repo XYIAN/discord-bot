@@ -734,18 +734,110 @@ function getBotQuestionHelp() {
         .setTimestamp();
 }
 
-// Archero 2 Q&A Database - CORRECTED AND COMPREHENSIVE
+// Archero 2 Q&A Database - ULTRA-COMPREHENSIVE DEEP RESEARCH
 const archeroQA = {
-    // WEAPONS - COMPREHENSIVE S-TIER DATABASE
-    "best weapon": "**S-TIER WEAPONS**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff** (mage), **Griffin Claws** (melee), and **Dragoon Crossbow** (ranged). These are the ONLY weapons that can be upgraded beyond Legendary. Tier progression: Epic → Legendary → Mythic → Chaotic (max).",
-    "strongest weapon": "**S-TIER WEAPONS**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff** (mage), **Griffin Claws** (melee), and **Dragoon Crossbow** (ranged). These are the ONLY weapons that can be upgraded beyond Legendary. Tier progression: Epic → Legendary → Mythic → Chaotic (max).",
-    "weapons": "**S-TIER WEAPONS**: There are only 3 S-tier weapons in Archero 2: **Oracle Staff** (mage), **Griffin Claws** (melee), and **Dragoon Crossbow** (ranged). These are the ONLY weapons that can be upgraded beyond Legendary. Tier progression: Epic → Legendary → Mythic → Chaotic (max).",
-    "oracle staff": "**Oracle Staff** - S-tier weapon (mage type). Tier progression: Epic → Legendary → Mythic → Chaotic (max). Best for mage builds with high damage and great range. Can be upgraded beyond Legendary unlike basic weapons.",
-    "griffin claws": "**Griffin Claws** - S-tier weapon (melee type). Tier progression: Epic → Legendary → Mythic → Chaotic (max). Excellent for close combat with high attack speed. Perfect for warrior builds and melee combat.",
-    "dragoon crossbow": "**Dragoon Crossbow** - S-tier weapon (ranged type). Tier progression: Epic → Legendary → Mythic → Chaotic (max). Powerful ranged weapon, great for PvP and archer builds. Can be upgraded beyond Legendary unlike basic weapons.",
-    "weapon tiers": "**WEAPON TIER SYSTEM**: S-tier weapons (Oracle Staff, Griffin Claws, Dragoon Crossbow) follow this progression: Epic → Legendary → Mythic → Chaotic (max tier). Basic weapons (Bow, Staff, Claws) cannot level past Legendary and are inferior.",
-    "chaotic tier": "**CHAOTIC TIER**: The maximum tier for S-tier weapons. Only Oracle Staff, Griffin Claws, and Dragoon Crossbow can reach Chaotic tier. Provides the highest stats and abilities in the game.",
-    "mythic tier": "**MYTHIC TIER**: Second-highest tier for S-tier weapons. Only Oracle Staff, Griffin Claws, and Dragoon Crossbow can reach Mythic tier. Significant stat boost from Legendary.",
+    // SUPREME ARENA - COMPLETE MECHANICS
+    "supreme arena": "**SUPREME ARENA RULES**: No player limit. Weekly rankings: Top 40% maintain rank, 60% demoted. Team composition: 3 characters max with different builds. Unique items provide bonus health/damage. Auto-battler PvP with strategic positioning. Rewards: Daily/weekly based on ranking.",
+    "supreme arena rules": "**SUPREME ARENA MECHANICS**: Unlimited players. Weekly demotion system (top 40% stay, 60% demoted). Team of 3 characters with unique builds. Special items grant bonus health and damage. Strategic positioning crucial. Daily/weekly rewards based on performance.",
+    "supreme arena team": "**SUPREME ARENA TEAM COMPOSITION**: 3 characters max. Balanced team: Tank (absorbs damage), Damage Dealer (high attack), Support (healing/buffs). Strategic positioning key. Unique items provide bonus health/damage. Auto-battler mechanics.",
+    "supreme arena composition": "**SUPREME ARENA TEAM BUILD**: 3-character limit. Essential roles: Tank (high health/defense), DPS (high attack power), Support (healing/buffs). Positioning crucial for success. Unique items grant health/damage bonuses.",
+    
+    // RUNES - COMPLETE DATABASE WITH EXACT STATS
+    "runes": "**COMPLETE RUNES DATABASE**: **Blessing Runes**: Revive (ATK+36, HP+144, Epic: 50% revive chance, Mythic: 100% revive), Guardian (ATK+36, HP+144, Epic: -5% damage), Lucky Shadow (ATK+36, HP+144, Epic: +5% luck/+2% dodge, Mythic: +15% luck/+10% dodge). **Enhancement Runes**: Sharp Arrow (ATK+20, Epic: +10% weapon damage, Mythic: +30%), Sprite Multishot (ATK+20, Epic: 30% multi-shot chance, Mythic: +50% sprite speed). **Ability Runes**: Flame Poison Touch (HP+80, Epic: ignite random monster every 2s, Mythic: 1.5s cooldown).",
+    "revive rune": "**REVIVE RUNE** (Blessing): Base: ATK+36, HP+144. Epic: 50% chance to revive with half HP. Legendary: +20% ATK after revival. Mythic: 100% revive chance with half HP + 20% ATK boost.",
+    "guardian rune": "**GUARDIAN RUNE** (Blessing): Base: ATK+36, HP+144. Epic: -5% damage taken. Legendary: Additional damage reduction. Mythic: Maximum damage reduction.",
+    "lucky shadow rune": "**LUCKY SHADOW RUNE** (Blessing): Base: ATK+36, HP+144. Epic: +5% luck, +2% dodge. Legendary: +10% luck, +5% dodge. Mythic: +15% luck, +10% dodge.",
+    "sharp arrow rune": "**SHARP ARROW RUNE** (Enhancement): Base: ATK+20. Normal: +5 weapon damage. Fine: +10 weapon damage. Rare: +50 ATK. Epic: +10% weapon damage. Legendary: +20% weapon damage. Mythic: +30% weapon damage.",
+    "sprite multishot rune": "**SPRITE MULTISHOT RUNE** (Enhancement): Base: ATK+20. Normal: +5 sprite damage. Fine: +10 sprite damage. Rare: +50 ATK. Epic: 30% multi-shot chance. Legendary: +25% sprite speed. Mythic: +50% sprite speed.",
+    "flame poison touch rune": "**FLAME POISON TOUCH RUNE** (Ability): Base: HP+80. Normal: +10 poison damage. Fine: +10 fire damage. Rare: +200 HP. Epic: Ignite random monster every 2s. Legendary: Poison random monster every 2s. Mythic: 1.5s cooldown.",
+    "rune workshop": "**RUNE WORKSHOP**: Unlocked at Chapter 5. Merge duplicate runes to increase rarity. Progression: Normal → Fine → Rare → Epic → Legendary → Mythic. Higher rarities provide better stats and effects.",
+    "rune merging": "**RUNE MERGING**: Combine duplicate runes in workshop to upgrade rarity. Required materials increase with tier. Epic+ runes provide significant stat boosts and special effects.",
+    
+    // CHARACTERS - COMPLETE DATABASE
+    "characters": "**COMPLETE CHARACTERS DATABASE**: **S-Tier**: Thor (lightning attacks), Loki (illusions/trickery), Hela (dark magic/summoning). **A-Tier**: Axe Master (crowd control), Assassin (high damage/evasion), Guardian (tank). **B-Tier**: Demon King Atreus (dark magic), Otta (balanced warrior), Rolla (ranged specialist), Dracoola (vampiric/life steal), Seraph (holy powers), Nyanja (agile/dodging), Helix (spinning attacks).",
+    "thor": "**THOR** - S-tier character. Lightning-based attacks. High damage output. Best for aggressive playstyles. Unlock: Premium/events.",
+    "loki": "**LOKI** - S-tier character. Illusions and trickery. Deceptive tactics. High skill ceiling. Unlock: Premium/events.",
+    "hela": "**HELA** - S-tier character. Dark magic specialist. Summoning abilities. Undead minions. Unlock: Premium/events.",
+    "axe master": "**AXE MASTER** - A-tier character. Multi-directional axe throws. Excellent crowd control. High damage output.",
+    "assassin": "**ASSASSIN** - A-tier character. Quick, high-damage attacks. High evasion. Glass cannon playstyle.",
+    "guardian": "**GUARDIAN** - A-tier character. Tank role. High health and defense. Protective abilities.",
+    "character resonance": "**CHARACTER RESONANCE**: 3-star and 6-star upgrades unlock resonance bonuses. Higher stars = better stats and abilities. Use character shards from events to upgrade.",
+    "character shards": "**CHARACTER SHARDS**: Obtain from events, shop, or gameplay. Required for character upgrades. Higher star levels unlock resonance bonuses and improved abilities.",
+    
+    // WEAPONS - COMPLETE TIER SYSTEM
+    "weapons": "**COMPLETE WEAPONS DATABASE**: **S-Tier**: Staff (range/AoE damage), Spear (single-target damage/reach). **A-Tier**: Crossbow (burst damage), Longbow (range/decent damage). **B-Tier**: Claw (swift attacks), Knuckles (close-range speed). **Sets**: Echo Set (Beam Staff - combo damage), Destruction Set (Heroic Longbow - AoE explosions).",
+    "staff": "**STAFF** - S-tier weapon. Exceptional range and area-of-effect damage. Ideal for crowd control. Best for mage builds.",
+    "spear": "**SPEAR** - S-tier weapon. High single-target damage with impressive reach. Excellent for boss fights and precision combat.",
+    "crossbow": "**CROSSBOW** - A-tier weapon. High burst damage with faster projectile speed. Good for quick eliminations.",
+    "longbow": "**LONGBOW** - A-tier weapon. Excellent range with decent damage. Balanced ranged option.",
+    "claw": "**CLAW** - B-tier weapon. Swift attacks with decent close-range damage. Fast attack speed.",
+    "knuckles": "**KNUCKLES** - B-tier weapon. High attack speed for close-range combat. Melee specialist.",
+    "echo set": "**ECHO SET** (Beam Staff): Combo-based damage increases. Effective for PvE. Combo damage up to 10% at Epic rarity.",
+    "destruction set": "**DESTRUCTION SET** (Heroic Longbow): AoE explosion effects. 30% chance to trigger AoE explosion on hit at Epic rarity. Good for PvP.",
+    
+    // ARMOR - COMPLETE SET SYSTEM
+    "armor": "**COMPLETE ARMOR DATABASE**: **S-Tier**: Oracle Set (balanced offense/defense). **A-Tier**: Dragoon Set (high attack/critical damage), Griffin Set (balanced stats). **B-Tier**: Echo Set (magic/ranged damage). **C-Tier**: Destruction Set (burst damage), Decisiveness Set (situational).",
+    "oracle set": "**ORACLE SET** - S-tier armor. Balanced offense and defense. Exceptional versatility. Best overall choice.",
+    "dragoon set": "**DRAGOON SET** - A-tier armor. High attack power. Amplified critical hit damage. Crossbow synergy. Best for DPS builds.",
+    "griffin set": "**GRIFFIN SET** - A-tier armor. Balanced offense and defense. Adaptable to various scenarios. Versatile choice.",
+    "echo armor": "**ECHO ARMOR** - B-tier. Amplifies magic and ranged damage. Strong in niche builds. Combo-based bonuses.",
+    "armor of destruction": "**ARMOR OF DESTRUCTION** - C-tier. High burst damage potential. AoE damage focus. Flame Shield at Legendary (10s duration, explodes when damaged).",
+    "armor sets": "**ARMOR SET BONUSES**: Complete sets provide additional bonuses. Mixing sets reduces effectiveness. Focus on one complete set for maximum benefits.",
+    
+    // EVENTS - COMPLETE DATABASE
+    "events": "**COMPLETE EVENTS DATABASE**: **Campaign**: Main progression path. **Sky Tower**: Climb floors for Gold/Scrolls/Gems (3 free tickets daily). **Seal Battle**: Boss fights for Gems/Wishes. **Gold Cave**: Farm Gold/Scrolls (roulette system). **Rune Ruins**: Use Shovels for runes. **Monster Invasion**: Daily guild boss (damage-based rewards). **Carnival Event**: New player roadmap (Dragon Knight gear). **Demon Clash**: Time-limited (Demon King Atreus). **Up-Close Dangers**: Close-range combat (gold rewards). **Hero Duo**: Cooperative play (gems/experience). **Monster Treasure**: Daily clan event.",
+    "sky tower": "**SKY TOWER**: Climb floors for Gold, Scrolls, Gems. Each level has 5 stages. 3 free tickets daily + ads. Progressive difficulty. Essential for progression.",
+    "seal battle": "**SEAL BATTLE**: Boss fights testing damage output. Rewards: Gems and Wishes. Daily attempts. Damage-based rewards.",
+    "gold cave": "**GOLD CAVE**: Quick 2-3 minute mini-chapters. Farm Gold and Scrolls. Roulette system. Use all daily attempts. Essential for resource farming.",
+    "rune ruins": "**RUNE RUINS**: Use Shovels to obtain runes. Smart early-game investment. Runes crucial for character enhancement. Daily attempts.",
+    "monster invasion": "**MONSTER INVASION**: Daily guild boss. Rewards scale based on damage dealt. Guild coins and ranking rewards. Join guild early for access.",
+    "carnival event": "**CARNIVAL EVENT**: New player roadmap event. Big rewards including Dragon Knight gear. Time-limited. Essential for new players.",
+    "demon clash": "**DEMON CLASH**: Time-limited event. Earn Demon King Atreus through luck-based system. Premium character unlock opportunity.",
+    "umbral tempest": "**UMBRAL TEMPEST**: Formidable challenge with unique mechanics. High difficulty. Exclusive gear and runes. Leaderboard rewards. Check Discord channel 1419521725418180618 for strategies.",
+    
+    // GAME MODES - COMPLETE MECHANICS
+    "game modes": "**COMPLETE GAME MODES**: **Campaign**: Main progression (chapters). **Sky Tower**: Floor climbing (5 stages per level). **Seal Battle**: Boss damage testing. **Gold Cave**: Resource farming. **Rune Ruins**: Rune acquisition. **Monster Invasion**: Guild boss. **Supreme Arena**: Auto-battler PvP (3-character teams). **Hero Duo**: Cooperative play. **PvP**: Player vs Player combat.",
+    "campaign": "**CAMPAIGN MODE**: Main progression path. Complete chapters to unlock new content. Essential rewards. Story progression.",
+    "pvp": "**PvP MODE**: Player vs Player combat. Test skills against other players. Ranking system. Rewards based on performance.",
+    "hero duo": "**HERO DUO**: Cooperative gameplay mode. Team up with other players. Gems and experience rewards. Social gameplay.",
+    
+    // ABILITIES - COMPLETE DATABASE
+    "abilities": "**COMPLETE ABILITIES DATABASE**: **Rare Abilities**: Sprite Enhancement (sprite attack), Fountain of Life (max HP + full heal), Angel's Protection (invincibility on damage), Invincibility Potion (brief invincibility), Lucky Heart (HP boost chance), Flying Sword Assault (5 swords per wave), Freeze (bullet freeze), Swift Shadow Arrow (speed + spread), Bounce Arrow (+1 bounce), Hell Warrior (ATK boost + demon spawn), Wind Step (wind bursts + speed), Abundance Potion (more potions), Front Arrow (+1 arrow), Split Arrow (bullet split), Bomb Sprite (bomb sprite), Critical Frenzy (low HP boost), Lightning (electrocute), Fire (ignite), Poison (poison damage), Demon Slayer Warrior (ATK after kill), Rotating Orb Enhancement (orb damage), Standing Strong (stationary boost).",
+    "sprite enhancement": "**SPRITE ENHANCEMENT** (Rare): Significantly increases sprite attack power. Essential for sprite builds.",
+    "fountain of life": "**FOUNTAIN OF LIFE** (Rare): Increases max HP and fully recovers HP. Survival ability.",
+    "angel's protection": "**ANGEL'S PROTECTION** (Rare): Brief invincibility when taking damage. Defensive ability.",
+    "flying sword assault": "**FLYING SWORD ASSAULT** (Rare): Summons 5 flying swords each wave. Offensive ability.",
+    "freeze": "**FREEZE** (Rare): Bullets freeze monsters. Crowd control ability.",
+    "bounce arrow": "**BOUNCE ARROW** (Rare): Bullets can bounce between monsters with +1 bounce count. Multi-target ability.",
+    "critical frenzy": "**CRITICAL FRENZY** (Rare): When HP below 50%, significantly increases attack power and speed. Low HP boost.",
+    "lightning": "**LIGHTNING** (Rare): Bullets electrocute monsters. Elemental damage.",
+    "fire": "**FIRE** (Rare): Bullets ignite monsters. Burn damage over time.",
+    "poison": "**POISON** (Rare): Bullets poison monsters. Damage over time.",
+    "standing strong": "**STANDING STILL** (Rare): Longer you stand still, higher attack speed and damage. Stationary boost.",
+    
+    // PROGRESSION TIPS
+    "progression": "**PROGRESSION TIPS**: **Currency**: Gold for gear upgrades, Gems for Mythstone Chests/Rune Ruins. **Daily Routine**: Complete all daily events, maximize resource gains, participate in guild activities. **Gear**: Prioritize S-tier gear, avoid upgrading non-S gear beyond Legendary+Z. **Guild**: Join early for Monster Invasion and Guild Shop access. **Shop**: Check daily for free Silver Chest draws, ad rewards, time-limited deals. **Premium**: Permanent Supply Card (3,900 gems + 800 daily), Permanent Ad-Free Card (all ad rewards free).",
+    "currency": "**CURRENCY GUIDE**: **Gold**: Primary for gear upgrades and Talent Cards. **Gems**: Premium currency, best for Mythstone Chests or Rune Ruins. Avoid Silver/Obsidian chests. **Character Shards**: From events/shop for character upgrades.",
+    "daily routine": "**DAILY ROUTINE**: Complete all daily events, maximize resource gains, participate in guild activities, check shop for deals, use all limited-time mode attempts, watch ads for bonuses.",
+    "gear upgrade": "**GEAR UPGRADE PRIORITY**: Focus on S-tier gear only. Avoid upgrading non-S gear beyond Legendary+Z. Never use S gear as material. Equipment upgrades require scrolls from chapters, gold cave, shops.",
+    "guild benefits": "**GUILD BENEFITS**: Join early for Monster Invasion access, Guild Shop items, collaborative rewards, ranking benefits, character shard access.",
+    
+    // DISCORD CHANNELS FOR RESEARCH
+    "discord channels": "**OFFICIAL ARCHERO 2 DISCORD CHANNELS**: Server ID: 1268830572743102505. **Game Updates**: 1268897602645000235 (major goldmine for new answers/events). **Announcements**: 1279024218473758770 (community giveaways). **Gift Codes**: 1301516076445732915 (codes with expiration dates). **Bug Reports**: 1268897760728449064 (known issues). **General Chat**: 1268830572743102508 (community insights). **Q&A**: 1268835262159654932 (giant Q&A resource). **Bot Commands**: 1291056257716977715 (official bot functions). **Umbral Tempest**: 1419521725418180618 (specific content).",
+    "game updates channel": "**GAME UPDATES CHANNEL** (1268897602645000235): Major goldmine for new answers, events, updates. Primary focus for research. Contains latest game information.",
+    "gift codes": "**GIFT CODES CHANNEL** (1301516076445732915): Excellent for scraping codes with expiration dates. Example: 'free777 exp december20204'. Daily updated codes.",
+    "qa channel": "**Q&A CHANNEL** (1268835262159654932): Giant Q&A resource for rich answers and questions. Community knowledge base.",
+    "umbral tempest channel": "**UMBRAL TEMPEST CHANNEL** (1419521725418180618): Specific content for Umbral Tempest event. Strategies and information.",
+    
+    // LEGACY WEAPONS (for backward compatibility)
+    "best weapon": "**S-TIER WEAPONS**: Staff (range/AoE), Spear (single-target/reach), Crossbow (burst damage). These are the top-tier weapons with best stats and upgrade potential.",
+    "strongest weapon": "**S-TIER WEAPONS**: Staff (range/AoE), Spear (single-target/reach), Crossbow (burst damage). These are the top-tier weapons with best stats and upgrade potential.",
+    "oracle staff": "**ORACLE STAFF** - S-tier weapon (mage type). Exceptional range and area-of-effect damage. Best for mage builds and crowd control.",
+    "griffin claws": "**GRIFFIN CLAWS** - S-tier weapon (melee type). High attack speed and close combat effectiveness. Perfect for warrior builds.",
+    "dragoon crossbow": "**DRAGOON CROSSBOW** - S-tier weapon (ranged type). High burst damage with fast projectile speed. Excellent for PvP and archer builds.",
+    "weapon tiers": "**WEAPON TIER SYSTEM**: S-tier weapons (Staff, Spear, Crossbow) have the best stats and upgrade potential. A-tier and B-tier weapons are viable but inferior to S-tier.",
+    "chaotic tier": "**CHAOTIC TIER**: Maximum tier for S-tier weapons. Provides highest stats and abilities in the game.",
+    "mythic tier": "**MYTHIC TIER**: Second-highest tier for S-tier weapons. Significant stat boost from Legendary.",
     "s tier weapons": "**S-TIER WEAPONS**: Oracle Staff (mage), Griffin Claws (melee), Dragoon Crossbow (ranged). These are the ONLY weapons that can be upgraded beyond Legendary. Tier progression: Epic → Legendary → Mythic → Chaotic (max).",
     
     // UPGRADE SYSTEM - COMPREHENSIVE DATABASE
@@ -1435,7 +1527,7 @@ client.on('messageCreate', async (message) => {
     const isAIChannel = ['bot-questions', 'bot-questions-advanced', 'archero-ai'].includes(message.channel.name);
     
     // IGNORE these channels completely (no responses at all) - ONLY CRON JOBS ALLOWED
-    const ignoreChannels = ['guild-recruit-chat', 'xyian-guild', 'guild-chat', 'recruit', 'guild-recruit', 'guild-recruit-chat'];
+    const ignoreChannels = ['guild-recruit-chat', 'xyian-guild', 'guild-chat', 'recruit', 'guild-recruit', 'guild-recruit-chat', 'guild-recruit'];
     if (ignoreChannels.includes(message.channel.name)) {
         console.log(`⏭️ IGNORING: Channel ${message.channel.name} is in ignore list - ONLY CRON JOBS ALLOWED`);
         return;
@@ -1444,6 +1536,12 @@ client.on('messageCreate', async (message) => {
     // ADDITIONAL SAFETY: Check if channel contains "recruit" in the name
     if (message.channel.name.toLowerCase().includes('recruit')) {
         console.log(`⏭️ IGNORING: Channel ${message.channel.name} contains 'recruit' - ONLY CRON JOBS ALLOWED`);
+        return;
+    }
+    
+    // CRITICAL: Check channel ID for guild recruit channel
+    if (message.channel.id === '1419944464608268410') {
+        console.log(`⏭️ IGNORING: Guild recruit channel by ID - ONLY CRON JOBS ALLOWED`);
         return;
     }
     
