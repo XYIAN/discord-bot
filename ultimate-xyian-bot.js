@@ -53,7 +53,27 @@ const advancedArcheroQA = {
     // Resonance System
     "resonance": "Resonance is a system where matching equipment pieces provide bonus effects. Same weapon type: +10% damage, Same armor set: +15% defense, Same accessory type: +20% special ability cooldown. Mix and match for optimal bonuses.",
     "resonance levels": "Resonance Levels: Level 1 (2 pieces): Basic bonus, Level 2 (3 pieces): Enhanced bonus, Level 3 (4 pieces): Maximum bonus + special effect. Higher levels require rarer equipment but provide significantly better bonuses.",
-    "resonance vs diversity": "Resonance vs Diversity: Resonance provides better individual bonuses, Diversity provides more overall stats. For Supreme Arena, diversity is better due to item bonus system. For regular content, resonance can be more effective."
+    "resonance vs diversity": "Resonance vs Diversity: Resonance provides better individual bonuses, Diversity provides more overall stats. For Supreme Arena, diversity is better due to item bonus system. For regular content, resonance can be more effective.",
+    
+    // Character System - Detailed Character Information
+    "thor": "Thor (Legendary): Unique ability to move while firing arrows and weapon detach ability. As you level up, you can summon hammers and increase lightning damage. Excellent for mobile combat and lightning-based builds. Perfect for players who prefer active movement during combat.",
+    "demon king": "Demon King (Legendary): Has a powerful shield that gets stronger as you level up. His skins are extremely useful because they add abilities to his shield, making him incredibly tanky. Best for defensive builds and players who prefer survivability over pure damage.",
+    "rolla": "Rolla (Epic/Purple): Freeze attacks and critical damage boost. Great for crowd control and burst damage builds. Her freeze abilities can lock down enemies while her crit boost maximizes damage output. Excellent for players who like control-based gameplay.",
+    "dracoola": "Dracoola (Epic/Purple): Life steal on hit chance. Provides excellent sustainability in long battles. Perfect for players who want to stay alive longer without relying on health potions. Great for solo content and extended farming sessions.",
+    "seraph": "Seraph (Epic/Purple): PvE only character with excellent bonuses. Gets extra ability chance when picking health for angels. Designed specifically for PvE content with unique angel-based mechanics. Best for players who focus on PvE progression and farming.",
+    "loki": "Loki (Epic/Purple): PvP specific character acquired from PvP rewards. Has attack speed boost when moving (chance-based). Perfect for PvP combat where movement and speed are crucial. His mobility-based bonuses make him ideal for hit-and-run tactics.",
+    
+    // Character Tier Information
+    "legendary characters": "Legendary Characters: Thor (move while firing, weapon detach, summon hammers, lightning damage), Demon King (powerful shield, shield abilities from skins). These are the highest tier characters with unique abilities and powerful scaling.",
+    "epic characters": "Epic Characters: Rolla (freeze attacks, crit damage boost), Dracoola (life steal on hit), Seraph (PvE only, angel bonuses), Loki (PvP only, movement attack speed boost). Purple tier characters with specialized abilities for different content types.",
+    "character abilities": "Character Abilities: Each character has unique abilities that scale with level. Thor gets hammer summons and lightning damage, Demon King's shield gets stronger, Rolla freezes enemies and boosts crit damage, Dracoola steals life, Seraph gets angel bonuses, Loki gets movement-based attack speed.",
+    "character skins": "Character Skins: Skins provide stat bonuses and special abilities. Demon King skins are particularly useful as they add abilities to his shield. Each character has multiple skins with different effects and bonuses. Focus on skins that complement your playstyle.",
+    
+    // Character Selection Guide
+    "best characters": "Best Characters by Content: PvP - Thor, Loki, Demon King. PvE - Seraph, Dracoola, Rolla. Supreme Arena - Thor, Demon King, Griffin. Choose based on your preferred content and playstyle.",
+    "character leveling": "Character Leveling: Each character gains new abilities and stat bonuses as you level up. Thor unlocks hammer summons and lightning damage, Demon King's shield becomes more powerful, Epic characters get enhanced versions of their base abilities.",
+    "character acquisition": "Character Acquisition: Legendary characters from premium sources, Epic characters from various content. Seraph is PvE only, Loki is PvP only. Focus on characters that match your preferred content type.",
+    "character builds": "Character Builds: Thor - Lightning and mobility builds, Demon King - Tank and shield builds, Rolla - Freeze and crit builds, Dracoola - Life steal and sustain builds, Seraph - Angel and PvE builds, Loki - Movement and PvP builds."
 };
 
 function handleBotQuestion(question) {
@@ -84,7 +104,18 @@ function handleBotQuestion(question) {
         'guild': 'guild wars',
         'event': 'event optimization',
         'build': 'build theory',
-        'resource': 'resource priority'
+        'resource': 'resource priority',
+        'thor': 'thor',
+        'demon king': 'demon king',
+        'rolla': 'rolla',
+        'dracoola': 'dracoola',
+        'seraph': 'seraph',
+        'loki': 'loki',
+        'character': 'best characters',
+        'legendary': 'legendary characters',
+        'epic': 'epic characters',
+        'ability': 'character abilities',
+        'leveling': 'character leveling'
     };
     
     for (const [keyword, topic] of Object.entries(keywords)) {
@@ -128,8 +159,18 @@ function getBotQuestionHelp() {
                 inline: true
             },
             {
-                name: '🎮 **Advanced**',
-                value: '• `meta shifts` - Current meta\n• `endgame progression` - Late game tips\n• `build theory` - Build optimization',
+                name: '🎮 **Characters**',
+                value: '• `thor` - Legendary lightning character\n• `demon king` - Legendary tank character\n• `rolla` - Epic freeze character\n• `dracoola` - Epic life steal character',
+                inline: true
+            },
+            {
+                name: '⚔️ **Character Types**',
+                value: '• `seraph` - PvE only character\n• `loki` - PvP only character\n• `legendary characters` - Top tier characters\n• `epic characters` - Purple tier characters',
+                inline: true
+            },
+            {
+                name: '🎯 **Character Guide**',
+                value: '• `best characters` - Character recommendations\n• `character abilities` - Ability descriptions\n• `character builds` - Build strategies\n• `character leveling` - Leveling guide',
                 inline: true
             }
         )
