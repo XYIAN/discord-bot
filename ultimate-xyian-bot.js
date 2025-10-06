@@ -590,13 +590,26 @@ function loadKnowledgeDatabase() {
                                 const keywords = entry.keywords || [];
                                 const source = entry.source || category;
 
+                                // Add entry with keywords
                                 keywords.forEach(keyword => {
                                     const dbKey = `${keyword}_${source}_${key}`;
-                                    archeroDatabase[dbKey] = entry.content.substring(0, 500);
+                                    archeroDatabase[dbKey] = entry.content.substring(0, 1000);
                                 });
 
+                                // Add general entry
                                 const generalKey = `${category}_${key}`;
-                                archeroDatabase[generalKey] = entry.content.substring(0, 500);
+                                archeroDatabase[generalKey] = entry.content.substring(0, 1000);
+                                
+                                // Add content-based entries for better searchability
+                                const contentWords = entry.content.toLowerCase().match(/\b\w{4,}\b/g) || [];
+                                const gameTerms = ['weapon', 'character', 'damage', 'pvp', 'arena', 'rune', 'gear', 'build', 'dragoon', 'oracle', 'griffin', 'thor', 'demon', 'king', 'crossbow', 'staff', 'meteor', 'sprite'];
+                                
+                                contentWords.forEach(word => {
+                                    if (gameTerms.includes(word)) {
+                                        const contentKey = `${word}_content_${key}`;
+                                        archeroDatabase[contentKey] = entry.content.substring(0, 1000);
+                                    }
+                                });
                             }
                         });
                     }
@@ -616,12 +629,20 @@ function loadKnowledgeDatabase() {
 
 // Initialize cognitive AI system on startup
 initializeCognitiveAI().then(success => {
-    if (success) {
-        console.log('🎉 Cognitive AI System ready!');
+    if (success && cognitiveAI && cognitiveAI.knowledgeGraph) {
+        const stats = cognitiveAI.knowledgeGraph.getStats();
+        if (stats.entities > 0) {
+            console.log('🎉 Cognitive AI System ready with knowledge!');
+            return;
+        } else {
+            console.log('⚠️ Cognitive AI loaded but has no knowledge data');
+        }
     } else {
-        console.log('⚠️ Falling back to traditional knowledge database');
-        loadKnowledgeDatabase();
+        console.log('⚠️ Cognitive AI failed to initialize');
     }
+    
+    console.log('🔄 Falling back to traditional knowledge database');
+    loadKnowledgeDatabase();
 });
 
 // AI Response Toggle - Controls whether bot responds to AI questions
@@ -3782,7 +3803,7 @@ client.on('guildMemberAdd', async (member) => {
                 },
                 {
                     name: '⚡ XY Elder - Your Competitive Excellence Guide',
-                    value: '• **Character builds** (Thor, Demon King, Rolla, etc.) - Optimize for leaderboard dominance\n• **Weapon strategies** (Oracle Staff, Griffin Claws, Dragoon Crossbow) - Wreck the competition\n• **Peak Arena** team composition and tactics - Achieve #1 status\n• **Runes and upgrades** with exact stats and effects - Maximize performance\n• **Events and rewards** with current schedules - Stay ahead of the competition\n• **XYIAN Knowledge**: 1000+ database entries of real game data and strategies!',
+                    value: `• **Character builds** (Thor, Demon King, Rolla, etc.) - Optimize for leaderboard dominance\n• **Weapon strategies** (Oracle Staff, Griffin Claws, Dragoon Crossbow) - Wreck the competition\n• **Peak Arena** team composition and tactics - Achieve #1 status\n• **Runes and upgrades** with exact stats and effects - Maximize performance\n• **Events and rewards** with current schedules - Stay ahead of the competition\n• **XYIAN Knowledge**: ${Object.keys(archeroDatabase).length} database entries of real game data and strategies!`,
                     inline: false
                 }
             )
