@@ -463,13 +463,31 @@ function loadKnowledgeDatabase() {
             // Load cleaned entries
             archeroDatabase = {};
             Object.keys(data.entries).forEach(key => {
-                archeroDatabase[key] = data.entries[key].content;
+                const entry = data.entries[key];
+                if (typeof entry === 'string') {
+                    archeroDatabase[key] = entry;
+                } else if (entry && typeof entry === 'object' && entry.content) {
+                    archeroDatabase[key] = entry.content;
+                } else if (entry && typeof entry === 'object') {
+                    archeroDatabase[key] = JSON.stringify(entry);
+                }
             });
             
             console.log(`✅ Loaded high-quality cleaned database with ${Object.keys(archeroDatabase).length} entries`);
             console.log(`📊 Quality: ${data.metadata.quality}`);
             console.log(`📊 Source: ${data.metadata.source}`);
             console.log(`📊 Categories: ${Object.keys(data.categories).join(', ')}`);
+            
+            // Debug: Check for Dragoon and Oracle content
+            const dragoonCount = Object.entries(archeroDatabase).filter(([key, content]) => 
+                key.toLowerCase().includes('dragoon') || content.toLowerCase().includes('dragoon')
+            ).length;
+            
+            const oracleCount = Object.entries(archeroDatabase).filter(([key, content]) => 
+                key.toLowerCase().includes('oracle') || content.toLowerCase().includes('oracle')
+            ).length;
+            
+            console.log(`🎯 Found ${dragoonCount} Dragoon entries and ${oracleCount} Oracle entries`);
         } else {
             // Fallback to original database if cleaned version not available
             const knowledgeFile = path.join(__dirname, 'data', 'archero_qa_learned.json');
@@ -3438,8 +3456,18 @@ client.on('messageCreate', async (message) => {
         // Final fallback if no answer found
         if (!answer) {
             if (hasAIAccess) {
-                // Only use fallback if AI completely failed
-                answer = "🤔 I'm not sure about that specific question. Could you ask about weapons, characters, runes, or game mechanics? I'm here to help with Archero 2!";
+                // Try to find relevant knowledge directly from database
+                const relevantKnowledge = getRelevantKnowledge(message.content);
+                if (relevantKnowledge.length > 0) {
+                    // Use the most relevant knowledge entry directly
+                    const bestMatch = relevantKnowledge[0];
+                    answer = `Hey ${message.author.username}! Based on my knowledge:\n\n**${bestMatch.key}:**\n${bestMatch.content}\n\n*This is from my knowledge base - let me know if you need more specific info!*`;
+                    isAIResponse = true;
+                    console.log(`✅ DIRECT KNOWLEDGE USED for: "${message.content}" - Key: ${bestMatch.key}`);
+                } else {
+                    // Only use fallback if no knowledge found
+                    answer = "🤔 I don't know the answer to that specific question yet, but I've logged it for learning!\n\n**What you can do:**\n• Use `!teach \"your question\" \"the answer\"` to teach me\n• Contact XYIAN for complex questions\n• Ask about weapons, characters, runes, or game mechanics I do know\n\n**I'm always learning!** 🧠";
+                }
             } else {
                 answer = "❓ I'd love to help with your Archero 2 question! However, AI-powered responses require the **XYIAN Guild Verified** role or higher. You can still ask basic questions, or use `!menu` to see what I can help with!";
             }
