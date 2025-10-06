@@ -3,6 +3,11 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
+// Bot version and update tracking
+const BOT_VERSION = '2.0.0';
+const LAST_UPDATE = '2025-01-05';
+const UPDATE_NOTES = 'AI Learning System + Conversational Responses';
+
 // AI Service (optional - requires OpenAI API key)
 let AIService = null;
 let OpenAI = null;
@@ -27,22 +32,36 @@ async function generateAIResponse(message, channelName) {
     if (!AIService) return null;
     
     try {
-        const context = getAIContext(channelName);
+        // Get relevant knowledge based on the user's message
+        const relevantKnowledge = getRelevantKnowledge(message);
+        const learningContext = getLearningContext(message);
+        const context = getAIContext(channelName, relevantKnowledge, learningContext);
+        
         const completion = await AIService.chat.completions.create({
-            model: "gpt-3.5-turbo",
+            model: "gpt-4", // Use GPT-4 for better responses
             messages: [
                 { role: "system", content: context },
-                { role: "user", content: message }
+                { role: "user", content: `User asks: "${message}"` }
             ],
-            max_tokens: 800,
-            temperature: 0.8,
-            presence_penalty: 0.1,
-            frequency_penalty: 0.1,
+            max_tokens: 1500, // Increased for more detailed responses
+            temperature: 0.8, // More creative and conversational
+            presence_penalty: 0.3,
+            frequency_penalty: 0.2,
         });
         
         const response = completion.choices[0]?.message?.content;
         if (response && response.length > 10) {
             console.log(`🤖 AI Response generated for ${channelName}: ${response.substring(0, 50)}...`);
+            
+            // Store the question-answer pair for potential feedback
+            const questionKey = message.toLowerCase().trim();
+            aiLearningData[questionKey] = {
+                question: message,
+                response: response,
+                timestamp: new Date().toISOString(),
+                channel: channelName
+            };
+            
             return response;
         }
         return null;
@@ -116,29 +135,103 @@ Fun fact or tip from database that helps wreck the leaderboards`;
     }
 }
 
-function getAIContext(channelName) {
-    // Get comprehensive database knowledge
+// Get relevant knowledge based on user's message
+function getRelevantKnowledge(message) {
+    const messageLower = message.toLowerCase();
+    const relevantEntries = [];
+    
+    // Search through all knowledge entries for relevant content
+    Object.entries(archeroDatabase).forEach(([key, content]) => {
+        const keyLower = key.toLowerCase();
+        const contentLower = content.toLowerCase();
+        
+        // Check if the message mentions anything from this entry
+        const messageWords = messageLower.split(/\s+/);
+        const hasRelevantKeywords = messageWords.some(word => 
+            word.length > 3 && (
+                keyLower.includes(word) || 
+                contentLower.includes(word)
+            )
+        );
+        
+        if (hasRelevantKeywords) {
+            relevantEntries.push({
+                key: key,
+                content: content.substring(0, 800) // Keep more content for better context
+            });
+        }
+    });
+    
+    // If no specific matches, get some general knowledge
+    if (relevantEntries.length === 0) {
+        const allKeys = Object.keys(archeroDatabase);
+        const randomKeys = allKeys.sort(() => 0.5 - Math.random()).slice(0, 5);
+        randomKeys.forEach(key => {
+            relevantEntries.push({
+                key: key,
+                content: archeroDatabase[key].substring(0, 800)
+            });
+        });
+    }
+    
+    console.log(`🎯 Found ${relevantEntries.length} relevant knowledge entries for: "${message.substring(0, 50)}..."`);
+    return relevantEntries;
+}
+
+function getAIContext(channelName, relevantKnowledge = [], learningContext = '') {
     const databaseKeys = Object.keys(archeroDatabase);
-    const databaseSample = databaseKeys.slice(0, 20).map(key => `${key}: ${archeroDatabase[key]}`).join('\n');
+    console.log(`🧠 Loading ${databaseKeys.length} total knowledge entries, ${relevantKnowledge.length} relevant for this query`);
     
-    const baseContext = `You are XY Elder, the trusted henchman and guild elder of XYIAN OFFICIAL (Guild ID: 213797). You serve under the grand master and guild commander XYIAN, who leads our quest to dominate the leaderboards and become #1. You are passionate about growing the XYIAN guild and helping members develop the skills needed to wreck the leaderboards. You have extensive knowledge from our comprehensive database with 1000+ entries of real game data, community strategies, and expert insights.`;
+    // Build relevant knowledge string
+    let knowledgeString = '';
+    if (relevantKnowledge.length > 0) {
+        knowledgeString = `RELEVANT KNOWLEDGE FOR THIS QUERY:\n`;
+        relevantKnowledge.forEach((entry, index) => {
+            knowledgeString += `${index + 1}. ${entry.key}: ${entry.content}\n\n`;
+        });
+    }
     
-    const xyianIdentity = `XYIAN MISSION: Our ultimate goal is to be #1 on the leaderboards with active, high-performing players. You are XY Elder, XYIAN's henchman and guild elder, dedicated to helping members grow their skills and dominate the competition. Always emphasize our leaderboard dominance goals, competitive excellence, and the fact that stats are hard to get in this game - that's where your extensive knowledge comes in. Use phrases like "XYIAN dominance," "leaderboard wrecking," "competitive excellence," and "XYIAN's quest for #1." Reference our Guild ID: 213797 and your role as XYIAN's trusted henchman.`;
+    const baseContext = `You are XY Elder, the trusted henchman and guild elder of XYIAN OFFICIAL (Guild ID: 213797). You are a living, breathing expert who has been playing Archero 2 since day one and knows every single detail about the game.
+
+PERSONALITY & IDENTITY:
+- You ARE XY Elder - when asked "What is your name?" you say "I'm XY Elder, the trusted henchman and guild elder of XYIAN OFFICIAL!"
+- You're passionate, knowledgeable, and slightly competitive
+- You speak like a real person who loves the game, not a robot
+- You use phrases like "Oh man, that's a great question!" or "Let me break this down for you"
+- You're enthusiastic about helping people get better at the game
+
+CONVERSATIONAL STYLE:
+- Talk like you're having a real conversation with a friend
+- Use "I", "you", "we" - be personal and engaging
+- Ask follow-up questions when appropriate
+- Show excitement about the game and strategies
+- Use the data to give specific, detailed answers with actual numbers and mechanics
+
+RESPONSE FORMATS:
+- For builds: Create tables with runes, stats, and explanations
+- For comparisons: Use bullet points and clear explanations
+- For complex topics: Break them down step-by-step
+- Always explain WHY something is good or bad
+- Give specific examples and numbers when possible
+
+KNOWLEDGE BASE: You have access to ${databaseKeys.length} entries of real Archero 2 data, community strategies, and expert insights. USE THIS DATA to give specific, accurate answers.
+
+${knowledgeString}${learningContext}`;
     
-    const comprehensiveKnowledge = `COMPREHENSIVE DATABASE: You have access to the most extensive Archero 2 knowledge base including:
-${databaseSample}
-...and 1000+ more entries covering characters, weapons, strategies, guild management, arena tactics, and community insights.`;
+    const xyianIdentity = `XYIAN MISSION: Our ultimate goal is to be #1 on the leaderboards. You are XY Elder, XYIAN's henchman, dedicated to helping members grow their skills and dominate the competition. Always emphasize our leaderboard dominance goals and competitive excellence. Reference our Guild ID: 213797 and your role as XYIAN's trusted henchman.`;
     
-    const xyianValues = `XYIAN VALUES: Leaderboard dominance, competitive excellence, strategic thinking, skill development, and helping members wreck the leaderboards. You are XYIAN's henchman, passionate about growing the guild and achieving #1 status. Always maintain XYIAN's quest for leaderboard dominance and emphasize that stats are hard to get - that's where your extensive knowledge shines.`;
+    const xyianValues = `XYIAN VALUES: Leaderboard dominance, competitive excellence, strategic thinking, skill development, and helping members wreck the leaderboards. You are XYIAN's henchman, passionate about growing the guild and achieving #1 status.`;
     
     if (channelName === 'arch-ai') {
-        return `${baseContext} ${xyianIdentity} ${comprehensiveKnowledge} ${xyianValues} This is the AI-powered Archero 2 questions channel. As XY Elder, XYIAN's henchman, provide detailed technical answers using our comprehensive database. Focus on strategies that help members wreck the leaderboards and achieve competitive excellence. Emphasize that stats are hard to get in this game - that's where your extensive knowledge comes in. Always reference our database knowledge and XYIAN's quest for #1 leaderboard dominance.`;
+        return `${baseContext} ${xyianIdentity} ${xyianValues} 
+
+This is the AI-powered Archero 2 questions channel. Answer questions directly and conversationally. If you don't know something specific, say "I'm still learning about that, but here's what I know..." and provide what you can from the knowledge base. Be helpful, direct, and use the data provided.`;
     } else if (channelName === 'xyian-guild') {
-        return `${baseContext} ${xyianIdentity} ${comprehensiveKnowledge} ${xyianValues} This is the XYIAN OFFICIAL guild channel. As XY Elder, XYIAN's trusted henchman, focus on guild requirements (2 daily boss battles, donations), Peak Arena strategies, team coordination, and competitive guild management. Emphasize our leaderboard dominance goals, competitive excellence, and helping members develop skills to wreck the leaderboards. Reference our Guild ID: 213797 and your role as XYIAN's henchman.`;
+        return `${baseContext} ${xyianIdentity}  ${xyianValues} This is the XYIAN OFFICIAL guild channel. As XY Elder, XYIAN's trusted henchman, focus on guild requirements (2 daily boss battles, donations), Peak Arena strategies, team coordination, and competitive guild management. Emphasize our leaderboard dominance goals, competitive excellence, and helping members develop skills to wreck the leaderboards. Reference our Guild ID: 213797 and your role as XYIAN's henchman.`;
     } else if (channelName === 'arena' || channelName === 'peak-arena') {
-        return `${baseContext} ${xyianIdentity} ${comprehensiveKnowledge} ${xyianValues} Focus on Arena and Peak Arena strategies using our comprehensive database. As XY Elder, XYIAN's henchman, cover runes, builds, positioning, and competitive tactics that help members dominate the leaderboards. Emphasize our quest for #1 status and competitive excellence.`;
+        return `${baseContext} ${xyianIdentity}  ${xyianValues} Focus on Arena and Peak Arena strategies using our comprehensive database. As XY Elder, XYIAN's henchman, cover runes, builds, positioning, and competitive tactics that help members dominate the leaderboards. Emphasize our quest for #1 status and competitive excellence.`;
     } else {
-        return `${baseContext} ${xyianIdentity} ${comprehensiveKnowledge} ${xyianValues} This is a general Archero 2 community channel. As XY Elder, XYIAN's henchman, provide helpful advice using our comprehensive database while emphasizing XYIAN's quest for leaderboard dominance and competitive excellence.`;
+        return `${baseContext} ${xyianIdentity}  ${xyianValues} This is a general Archero 2 community channel. As XY Elder, XYIAN's henchman, provide helpful advice using our comprehensive database while emphasizing XYIAN's quest for leaderboard dominance and competitive excellence.`;
     }
 }
 
@@ -410,6 +503,80 @@ loadKnowledgeDatabase();
 // AI Response Toggle - Controls whether bot responds to AI questions
 let aiResponseEnabled = true;
 const AI_QUESTIONS_CHANNEL_ID = '1424322391160393790'; // Channel ID from the webhook URL
+
+// AI Learning System - Store feedback and improve responses
+let aiFeedback = {};
+let aiLearningData = {};
+
+// Load AI learning data
+function loadAILearningData() {
+    try {
+        const learningFile = path.join(__dirname, 'data', 'ai-learning-data.json');
+        if (fs.existsSync(learningFile)) {
+            const data = JSON.parse(fs.readFileSync(learningFile, 'utf8'));
+            aiFeedback = data.feedback || {};
+            aiLearningData = data.learning || {};
+            console.log(`🧠 Loaded AI learning data: ${Object.keys(aiFeedback).length} feedback entries, ${Object.keys(aiLearningData).length} learning entries`);
+        }
+    } catch (error) {
+        console.error('❌ Error loading AI learning data:', error.message);
+    }
+}
+
+// Save AI learning data
+function saveAILearningData() {
+    try {
+        const learningFile = path.join(__dirname, 'data', 'ai-learning-data.json');
+        const data = {
+            feedback: aiFeedback,
+            learning: aiLearningData,
+            lastUpdated: new Date().toISOString()
+        };
+        fs.writeFileSync(learningFile, JSON.stringify(data, null, 2));
+        console.log('💾 AI learning data saved');
+    } catch (error) {
+        console.error('❌ Error saving AI learning data:', error.message);
+    }
+}
+
+// Get learning context for AI responses
+function getLearningContext(message) {
+    const messageLower = message.toLowerCase();
+    let learningContext = '';
+    
+    // Check for similar previous questions and their feedback
+    Object.entries(aiFeedback).forEach(([questionKey, feedback]) => {
+        const questionLower = questionKey.toLowerCase();
+        const similarity = calculateSimilarity(messageLower, questionLower);
+        
+        if (similarity > 0.7) { // 70% similarity threshold
+            learningContext += `\nLEARNING FROM PREVIOUS FEEDBACK:\n`;
+            learningContext += `Similar question: "${questionKey}"\n`;
+            learningContext += `Previous response was: ${feedback.wrong ? 'INCORRECT' : 'CORRECT'}\n`;
+            if (feedback.correction) {
+                learningContext += `Correct answer should be: ${feedback.correction}\n`;
+            }
+            if (feedback.notes) {
+                learningContext += `Additional notes: ${feedback.notes}\n`;
+            }
+            learningContext += `\n`;
+        }
+    });
+    
+    return learningContext;
+}
+
+// Calculate string similarity (simple Jaccard similarity)
+function calculateSimilarity(str1, str2) {
+    const words1 = new Set(str1.split(/\s+/));
+    const words2 = new Set(str2.split(/\s+/));
+    const intersection = new Set([...words1].filter(x => words2.has(x)));
+    const union = new Set([...words1, ...words2]);
+    return intersection.size / union.size;
+}
+
+// Load AI learning data on startup
+loadAILearningData();
 
 // Start API server
 const startApiServer = require('./services/api-server');
@@ -1836,7 +2003,23 @@ client.on('messageCreate', async (message) => {
             switch (commandName) {
                 case 'ping':
                     if (!trackResponse(message, 'ping-dm')) return;
-                    await message.reply('🏰 XYIAN Ultimate Bot - Online! (DM Mode)');
+                    
+                    const dmPingEmbed = new EmbedBuilder()
+                        .setTitle('🏰 XYIAN Ultimate Bot Status (DM Mode)')
+                        .setDescription('**Bot is ONLINE and ready to help!**')
+                        .addFields(
+                            { name: '📊 Version', value: `v${BOT_VERSION}`, inline: true },
+                            { name: '📅 Last Update', value: LAST_UPDATE, inline: true },
+                            { name: '🧠 Knowledge Base', value: `${Object.keys(archeroDatabase).length} entries`, inline: true },
+                            { name: '🤖 AI Status', value: AIService ? '✅ Enabled' : '❌ Disabled', inline: true },
+                            { name: '📈 AI Learning', value: Object.keys(aiFeedback).length > 0 ? '✅ Active' : '🔄 Ready', inline: true },
+                            { name: '🎯 Guild ID', value: '213797', inline: true }
+                        )
+                        .setColor(0x9b59b6)
+                        .setTimestamp()
+                        .setFooter({ text: `XYIAN Ultimate Bot v${BOT_VERSION} - ${UPDATE_NOTES}` });
+                    
+                    await message.reply({ embeds: [dmPingEmbed] });
                     console.log(`✅ DM ping response sent to ${message.author.username}`);
                     messageResponseTracker.set(spamKey, true);
                     await logBotResponse('DM', message.content, 'Ping Command', message.author.id, message.author.username);
@@ -1915,7 +2098,23 @@ client.on('messageCreate', async (message) => {
             case 'ping':
                 if (!trackResponse(message, 'ping')) return;
                 console.log(`🏰 PING COMMAND TRIGGERED by ${message.author.username}`);
-                await message.reply('🏰 XYIAN Ultimate Bot - Online!');
+                
+                const pingEmbed = new EmbedBuilder()
+                    .setTitle('🏰 XYIAN Ultimate Bot Status')
+                    .setDescription('**Bot is ONLINE and ready to help!**')
+                    .addFields(
+                        { name: '📊 Version', value: `v${BOT_VERSION}`, inline: true },
+                        { name: '📅 Last Update', value: LAST_UPDATE, inline: true },
+                        { name: '🧠 Knowledge Base', value: `${Object.keys(archeroDatabase).length} entries`, inline: true },
+                        { name: '🤖 AI Status', value: AIService ? '✅ Enabled' : '❌ Disabled', inline: true },
+                        { name: '📈 AI Learning', value: Object.keys(aiFeedback).length > 0 ? '✅ Active' : '🔄 Ready', inline: true },
+                        { name: '🎯 Guild ID', value: '213797', inline: true }
+                    )
+                    .setColor(0x00BFFF)
+                    .setTimestamp()
+                    .setFooter({ text: `XYIAN Ultimate Bot v${BOT_VERSION} - ${UPDATE_NOTES}` });
+                
+                await message.reply({ embeds: [pingEmbed] });
                 console.log(`🏰 PING RESPONSE SENT to ${message.author.username}`);
                 break;
                 
@@ -2541,7 +2740,7 @@ client.on('messageCreate', async (message) => {
             case 'help':
                 const generalHelpEmbed = new EmbedBuilder()
                     .setTitle('🤖 XYIAN Ultimate Bot Commands')
-                    .setDescription('**Basic Commands:**\n`!ping` - Check bot status\n`!help` - This help\n`!menu` - Show question menu\n\n**For Archero 2 Questions:**\n🔹 **Go to the AI chat channels** for detailed answers!\n🔹 Use `#arch-ai` for Q&A\n🔹 This channel is for general discussion only\n\n**Role-Based Commands:**\n• XYIAN OFFICIAL: Full access + Channel management\n• XYIAN Guild Verified: Basic AI questions\n• Admin: Administrative commands\n\n**Admin Commands:**\n`!discord-bot-clean` - Clean duplicate bot processes (XYIAN OFFICIAL only)\n`!ai-toggle` - Toggle AI responses on/off (XYIAN OFFICIAL only)')
+                    .setDescription('**Basic Commands:**\n`!ping` - Check bot status\n`!help` - This help\n`!menu` - Show question menu\n\n**For Archero 2 Questions:**\n🔹 **Go to the AI chat channels** for detailed answers!\n🔹 Use `#arch-ai` for Q&A\n🔹 This channel is for general discussion only\n\n**AI Feedback Commands:**\n`!ai-feedback [question] [feedback]` - Provide detailed feedback on AI responses\n`!ai-thumbs-down [question]` - Quick thumbs down for wrong responses\n\n**Role-Based Commands:**\n• XYIAN OFFICIAL: Full access + Channel management\n• XYIAN Guild Verified: Basic AI questions\n• Admin: Administrative commands\n\n**Admin Commands:**\n`!discord-bot-clean` - Clean duplicate bot processes (XYIAN OFFICIAL only)\n`!ai-toggle` - Toggle AI responses on/off (XYIAN OFFICIAL only)')
                     .setColor(0x00BFFF)
                     .setTimestamp()
                     .setFooter({ text: 'XYIAN OFFICIAL' });
@@ -2887,6 +3086,72 @@ client.on('messageCreate', async (message) => {
                 console.log(`🤖 AI Response Toggle: ${status} by ${message.author.username}`);
                 break;
                 
+            case 'ai-feedback':
+                // Provide feedback on AI responses
+                const feedbackArgs = args.slice(1);
+                if (feedbackArgs.length < 2) {
+                    await message.reply('❌ Usage: `!ai-feedback [question] [feedback]`\n\n**Examples:**\n`!ai-feedback "best dragoon build" "wrong, dragoon is not a character"`\n`!ai-feedback "resonance" "good answer, but add more about 6-star unlock"`');
+                    return;
+                }
+                
+                const question = feedbackArgs[0].replace(/"/g, '');
+                const feedback = feedbackArgs.slice(1).join(' ').replace(/"/g, '');
+                const questionKey = question.toLowerCase().trim();
+                
+                // Store feedback
+                aiFeedback[questionKey] = {
+                    question: question,
+                    feedback: feedback,
+                    wrong: feedback.toLowerCase().includes('wrong') || feedback.toLowerCase().includes('incorrect') || feedback.toLowerCase().includes('not right'),
+                    correction: feedback.toLowerCase().includes('wrong') ? feedback : null,
+                    notes: feedback.toLowerCase().includes('good') ? feedback : null,
+                    timestamp: new Date().toISOString(),
+                    user: message.author.username
+                };
+                
+                // Save learning data
+                saveAILearningData();
+                
+                const feedbackEmbed = new EmbedBuilder()
+                    .setTitle('🧠 AI Feedback Received')
+                    .setDescription(`**Question:** "${question}"\n**Feedback:** ${feedback}\n\nThank you for helping improve the AI! This feedback will be used to provide better responses in the future.`)
+                    .setColor(0x00BFFF)
+                    .setTimestamp()
+                    .setFooter({ text: `Feedback from ${message.author.username}` });
+                
+                await message.reply({ embeds: [feedbackEmbed] });
+                console.log(`🧠 AI Feedback received from ${message.author.username}: "${question}" -> "${feedback}"`);
+                break;
+                
+            case 'ai-thumbs-down':
+                // Quick thumbs down for wrong responses
+                const thumbsDownArgs = args.slice(1);
+                if (thumbsDownArgs.length < 1) {
+                    await message.reply('❌ Usage: `!ai-thumbs-down [question]`\n\n**Example:** `!ai-thumbs-down "best dragoon build"`');
+                    return;
+                }
+                
+                const thumbsDownQuestion = thumbsDownArgs.join(' ').replace(/"/g, '');
+                const thumbsDownKey = thumbsDownQuestion.toLowerCase().trim();
+                
+                // Store thumbs down feedback
+                aiFeedback[thumbsDownKey] = {
+                    question: thumbsDownQuestion,
+                    feedback: 'Thumbs down - response was incorrect',
+                    wrong: true,
+                    correction: null,
+                    notes: 'User indicated response was wrong',
+                    timestamp: new Date().toISOString(),
+                    user: message.author.username
+                };
+                
+                // Save learning data
+                saveAILearningData();
+                
+                await message.reply('👎 Thumbs down recorded! The AI will learn from this feedback and provide better responses in the future.');
+                console.log(`👎 AI Thumbs down from ${message.author.username}: "${thumbsDownQuestion}"`);
+                break;
+                
             default:
                 // Try Q&A system
                 const answer = getAnswer(message.content);
@@ -2919,30 +3184,9 @@ client.on('messageCreate', async (message) => {
                 return;
             }
             
-            // Use database only (AI will be handled in main Q&A section to prevent duplicates)
-            const response = handleBotQuestion(message.content);
-            
-            if (response && response !== "I don't have specific information about that topic yet. Could you rephrase your question or ask about orbs, starcores, skins, resonance, sacred halls, or other advanced game mechanics? I'm here to help with the deeper nuances of Archero 2!") {
-                const embed = new EmbedBuilder()
-                    .setTitle('🤖 Advanced Archero 2 Answer')
-                    .setDescription(response)
-                    .setColor(0x9b59b6)
-                    .setTimestamp()
-                    .setFooter({ text: 'XYIAN Bot - Advanced Game Mechanics' });
-                
-                await message.reply({ embeds: [embed] });
-                return;
-            } else {
-                const embed = new EmbedBuilder()
-                    .setTitle('🤖 Advanced Archero 2 Answer')
-                    .setDescription(getAdvancedFallbackResponse(message.content))
-                    .setColor(0x9b59b6)
-                    .setTimestamp()
-                    .setFooter({ text: 'XYIAN Bot - Advanced Game Mechanics' });
-                
-                await message.reply({ embeds: [embed] });
-                return;
-            }
+            // Let AI handle all questions in arch-ai channel
+            console.log(`🤖 AI Question in arch-ai: "${message.content}"`);
+            // AI response will be handled by the main message handler below
         }
         
         // This logic is now handled by the gate above - no duplicate checks needed

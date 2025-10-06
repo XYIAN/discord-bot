@@ -372,9 +372,12 @@ GET  /api/export/analytics         # Export analytics (JSON/CSV)
 
 ---
 
-## 📄 **License**
+## 📄 **License & Legal**
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+- **License**: This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+- **Owner**: XYIAN (@xyian) - All rights reserved
+- **Privacy Policy**: [PRIVACY-POLICY.md](PRIVACY-POLICY.md) - How we handle your data
+- **Terms of Service**: [TERMS-OF-SERVICE.md](TERMS-OF-SERVICE.md) - Usage terms and conditions
 
 ---
 
