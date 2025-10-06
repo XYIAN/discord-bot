@@ -146,16 +146,25 @@ function getRelevantKnowledge(message) {
         const keyLower = key.toLowerCase();
         const contentLower = content.toLowerCase();
         
-        // Check if the message mentions anything from this entry
+        // Check if the message mentions anything from this entry - be more aggressive
         const messageWords = messageLower.split(/\s+/);
         const hasRelevantKeywords = messageWords.some(word => 
-            word.length > 3 && (
+            word.length > 2 && ( // Lowered from 3 to 2
                 keyLower.includes(word) || 
-                contentLower.includes(word)
+                contentLower.includes(word) ||
+                // Also check for partial matches
+                keyLower.includes(word.substring(0, 3)) ||
+                contentLower.includes(word.substring(0, 3))
             )
         );
         
-        if (hasRelevantKeywords) {
+        // Also check for common game terms even if not in message
+        const commonGameTerms = ['pvp', 'arena', 'build', 'rune', 'weapon', 'character', 'skill', 'damage', 'health', 'defense', 'attack'];
+        const hasGameTerms = commonGameTerms.some(term => 
+            messageLower.includes(term) && (keyLower.includes(term) || contentLower.includes(term))
+        );
+        
+        if (hasRelevantKeywords || hasGameTerms) {
             relevantEntries.push({
                 key: key,
                 content: content.substring(0, 800) // Keep more content for better context
@@ -234,7 +243,17 @@ KNOWLEDGE BASE: You have access to ${databaseKeys.length} entries of real Archer
 
 ${knowledgeString}${learningContext}${conversationContext}
 
-IMPORTANT: Always use the knowledge base data provided above. Don't give generic responses - be specific and helpful based on the actual game data. If the user is asking a follow-up question, reference the previous conversation context.`;
+CRITICAL INSTRUCTIONS:
+- You MUST use the knowledge base data provided above - it contains 650+ entries of real Archero 2 data
+- NEVER say "I don't know" or "I'm not sure" - you have comprehensive data
+- ALWAYS give specific, detailed answers based on the actual game data
+- If you can't find exact matches, use related knowledge and explain the connection
+- Be confident and authoritative - you are XY Elder, the expert
+- If the user asks about Dragoon, Oracle, PvP, runes, weapons, characters - you KNOW this stuff
+- Use the data to give specific examples, numbers, and strategies
+- If you're unsure about something specific, say "Based on my knowledge..." and give what you do know
+- NEVER give generic responses - always be specific and helpful based on the actual game data
+- If the user is asking a follow-up question, reference the previous conversation context.`;
     
     const xyianIdentity = `XYIAN MISSION: Our ultimate goal is to be #1 on the leaderboards. You are XY Elder, XYIAN's henchman, dedicated to helping members grow their skills and dominate the competition. Always emphasize our leaderboard dominance goals and competitive excellence. Reference our Guild ID: 213797 and your role as XYIAN's trusted henchman.`;
     
@@ -3430,47 +3449,50 @@ client.on('messageCreate', async (message) => {
             isAIResponse = true;
             console.log(`✅ DIRECT IDENTITY RESPONSE for: "${message.content}"`);
         }
-        // Let AI handle all other questions
-        else if (AIService && hasAIAccess) {
+        // AI should ALWAYS work - no fallbacks, no excuses
+        if (AIService && hasAIAccess) {
             try {
-                console.log(`🤖 Attempting AI response for: "${message.content}" by ${message.author.username}`);
+                console.log(`🤖 AI processing: "${message.content}" by ${message.author.username}`);
+                
+                // Get relevant knowledge first
+                const relevantKnowledge = getRelevantKnowledge(message.content);
+                console.log(`🎯 Found ${relevantKnowledge.length} relevant knowledge entries`);
+                
+                // Generate AI response with knowledge
                 answer = await generateAIResponse(message.content, message.channel.name);
+                
                 if (answer && answer.length > 10) {
                     isAIResponse = true;
-                    console.log(`✅ AI ANSWER USED for: "${message.content}" - Length: ${answer.length}`);
-                    logCorrection(
-                        message.content,
-                        answer,
-                        "AI response generated - no direct database answer available"
-                    );
+                    console.log(`✅ AI SUCCESS: "${message.content}" - Length: ${answer.length}`);
                 } else {
-                    console.log(`❌ AI response too short or empty: "${answer}"`);
+                    // AI failed - this should NEVER happen, but if it does, use knowledge directly
+                    console.log(`🚨 AI FAILED - Using knowledge directly for: "${message.content}"`);
+                    if (relevantKnowledge.length > 0) {
+                        const bestMatch = relevantKnowledge[0];
+                        answer = `Hey ${message.author.username}! Based on my knowledge:\n\n**${bestMatch.key}:**\n${bestMatch.content}\n\n*This is from my knowledge base - let me know if you need more specific info!*`;
+                        isAIResponse = true;
+                        console.log(`✅ DIRECT KNOWLEDGE USED: ${bestMatch.key}`);
+                    } else {
+                        // This should NEVER happen with 650+ entries
+                        console.log(`🚨 CRITICAL: No knowledge found for "${message.content}" - This is a bug!`);
+                        answer = `Hey ${message.author.username}! I'm having trouble accessing my knowledge base right now. Please try rephrasing your question or contact XYIAN if this persists.`;
+                    }
                 }
             } catch (error) {
-                console.error('❌ AI response error:', error);
-            }
-        } else {
-            console.log(`❌ AI not available - AIService: ${!!AIService}, hasAIAccess: ${hasAIAccess}, user: ${message.author.username}`);
-        }
-        
-        // Final fallback if no answer found
-        if (!answer) {
-            if (hasAIAccess) {
-                // Try to find relevant knowledge directly from database
+                console.error('🚨 AI ERROR:', error);
+                // Even on error, try to use knowledge
                 const relevantKnowledge = getRelevantKnowledge(message.content);
                 if (relevantKnowledge.length > 0) {
-                    // Use the most relevant knowledge entry directly
                     const bestMatch = relevantKnowledge[0];
                     answer = `Hey ${message.author.username}! Based on my knowledge:\n\n**${bestMatch.key}:**\n${bestMatch.content}\n\n*This is from my knowledge base - let me know if you need more specific info!*`;
                     isAIResponse = true;
-                    console.log(`✅ DIRECT KNOWLEDGE USED for: "${message.content}" - Key: ${bestMatch.key}`);
                 } else {
-                    // Only use fallback if no knowledge found
-                    answer = "🤔 I don't know the answer to that specific question yet, but I've logged it for learning!\n\n**What you can do:**\n• Use `!teach \"your question\" \"the answer\"` to teach me\n• Contact XYIAN for complex questions\n• Ask about weapons, characters, runes, or game mechanics I do know\n\n**I'm always learning!** 🧠";
+                    answer = `Hey ${message.author.username}! I'm experiencing technical difficulties. Please try again or contact XYIAN.`;
                 }
-            } else {
-                answer = "❓ I'd love to help with your Archero 2 question! However, AI-powered responses require the **XYIAN Guild Verified** role or higher. You can still ask basic questions, or use `!menu` to see what I can help with!";
             }
+        } else {
+            console.log(`❌ AI not available - AIService: ${!!AIService}, hasAIAccess: ${hasAIAccess}, user: ${message.author.username}`);
+            answer = "❓ I'd love to help with your Archero 2 question! However, AI-powered responses require the **XYIAN Guild Verified** role or higher. You can still ask basic questions, or use `!menu` to see what I can help with!";
         }
         
         // Add feedback instructions to every response
