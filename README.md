@@ -21,11 +21,12 @@
 
 ## 🚀 **Revolutionary Features**
 
-### 🤖 **AI-Powered Intelligence**
-- **OpenAI GPT-3.5-turbo Integration** - Context-aware responses with deep game knowledge
-- **Machine Learning System** - Learns from user feedback and improves responses automatically
-- **Real Community Knowledge Database** - 4.3M+ characters of verified Discord community content
-- **Channel-Aware AI** - Adapts responses based on channel type (general, guild, arena, bot-questions)
+### 🤖 **AI-Powered Intelligence (2025)**
+- **OpenAI GPT-4 Integration** - Latest AI model with multimodal capabilities
+- **Advanced Learning System** - Real-time learning from user feedback with confidence scoring
+- **Comprehensive Knowledge Database** - 4.3M+ characters of verified Discord community content
+- **Context-Aware AI** - Adapts responses based on channel type and user history
+- **Multimodal Support** - Image analysis, voice commands, and rich interactions
 
 ### 🧠 **Advanced Learning System**
 - **Real-time Feedback Processing** - 👍/👎 reaction learning with confidence scoring
@@ -125,7 +126,7 @@ graph LR
 
 ## 🎮 **Archero 2 Game Integration**
 
-### **🏆 Supreme Arena Mastery**
+### **🏆 Peak Arena Mastery (2025)**
 - **3-Character Team Compositions** - Optimal hero combinations with item bonuses
 - **Build Optimization** - Different builds for each character with synergy analysis
 - **Meta Analysis** - Current tier lists, counter-strategies, and competitive insights
@@ -209,22 +210,23 @@ API_KEY=your_api_key
 ### **🏰 Guild Commands** (XYIAN OFFICIAL role required)
 | Command | Description | Example |
 |---------|-------------|---------|
-| `!xyian info` | Guild information and status | `!xyian info` |
-| `!xyian members` | List guild members | `!xyian members` |
-| `!xyian stats` | Guild statistics | `!xyian stats` |
-| `!xyian weapon [name]` | Weapon information | `!xyian weapon oracle staff` |
-| `!xyian skill [name]` | Skill analysis | `!xyian skill multi-shot` |
-| `!xyian build [type]` | Build recommendations | `!xyian build pvp` |
+| `/xyian info` | Guild information and status | `/xyian info` |
+| `/xyian members` | List guild members | `/xyian members` |
+| `/xyian stats` | Guild statistics | `/xyian stats` |
+| `/xyian weapon <name>` | Weapon information | `/xyian weapon oracle staff` |
+| `/xyian skill <name>` | Skill analysis | `/xyian skill multi-shot` |
+| `/xyian build <type>` | Build recommendations | `/xyian build pvp` |
 
-### **🤖 AI-Powered Commands**
+### **🤖 AI-Powered Commands (2025)**
 | Command | Description | Access Level |
 |---------|-------------|--------------|
-| `!help` | Complete command list | All users |
-| `!ping` | Bot status and latency | All users |
-| `!tip` | Daily Archero 2 tip | All users |
-| `!analytics` | Performance metrics | XYIAN OFFICIAL |
-| `!learn` | Learning system report | XYIAN OFFICIAL |
-| `!discord-bot-clean` | Clean duplicate bot processes | XYIAN OFFICIAL |
+| `/help` | Complete command list | All users |
+| `/ping` | Bot status and latency | All users |
+| `/tip` | Daily Archero 2 tip | All users |
+| `/analytics` | Performance metrics | XYIAN OFFICIAL |
+| `/learn` | Learning system report | XYIAN OFFICIAL |
+| `/ai-feedback` | Provide AI feedback | All users |
+| `/ai-toggle` | Toggle AI responses | XYIAN OFFICIAL |
 
 ### **🧠 AI Q&A System**
 - **Natural Language Processing** - Ask questions in natural language
