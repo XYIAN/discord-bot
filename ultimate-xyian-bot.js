@@ -3198,6 +3198,24 @@ client.on('messageCreate', async (message) => {
             }
         }
         
+        // Add feedback instructions to every response
+        if (answer && isAIResponse) {
+            answer += "\n\n💡 **Help me improve!** If this answer is wrong or needs tweaking, use:\n• `!ai-feedback \"your question\" \"what's wrong\"`\n• `!ai-thumbs-down \"your question\"`";
+            
+            // Automatically learn from every AI interaction
+            const questionKey = message.content.toLowerCase().trim();
+            aiLearningData[questionKey] = {
+                question: message.content,
+                response: answer,
+                timestamp: new Date().toISOString(),
+                channel: message.channel.name,
+                user: message.author.username
+            };
+            
+            // Save learning data
+            saveAILearningData();
+        }
+        
         const qaEmbed = new EmbedBuilder()
                 .setTitle('❓ Archero 2 Q&A')
                 .setDescription(answer)
@@ -3205,7 +3223,41 @@ client.on('messageCreate', async (message) => {
                 .setTimestamp()
                 .setFooter({ text: 'XYIAN Bot' });
         
-        await message.reply({ embeds: [qaEmbed] });
+        const response = await message.reply({ embeds: [qaEmbed] });
+        
+        // Add reaction feedback for AI responses
+        if (isAIResponse) {
+            await response.react('👍');
+            await response.react('👎');
+            
+            // Set up reaction collector for automatic feedback
+            const filter = (reaction, user) => {
+                return ['👍', '👎'].includes(reaction.emoji.name) && !user.bot;
+            };
+            
+            const collector = response.createReactionCollector({ filter, time: 300000 }); // 5 minutes
+            
+            collector.on('collect', async (reaction, user) => {
+                const questionKey = message.content.toLowerCase().trim();
+                const isGood = reaction.emoji.name === '👍';
+                
+                // Store feedback
+                aiFeedback[questionKey] = {
+                    question: message.content,
+                    feedback: isGood ? 'Thumbs up - response was helpful' : 'Thumbs down - response was incorrect',
+                    wrong: !isGood,
+                    correction: null,
+                    notes: isGood ? 'User indicated response was helpful' : 'User indicated response was wrong',
+                    timestamp: new Date().toISOString(),
+                    user: user.username
+                };
+                
+                // Save learning data
+                saveAILearningData();
+                
+                console.log(`👆 ${isGood ? 'Thumbs up' : 'Thumbs down'} from ${user.username} for: "${message.content}"`);
+            });
+        }
         
         // Mark message as processed and log response
         messageResponseTracker.set(spamKey, true);
