@@ -11,7 +11,7 @@
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
 [![Invite Bot](https://img.shields.io/badge/Invite%20Bot-Add%20to%20Server-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/api/oauth2/authorize?client_id=1424152001670938695&permissions=8&scope=bot%20applications.commands)
-[![Support Server](https://img.shields.io/badge/Support%20Server-Join%20XYIAN-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/archero2)
+[![Support Server](https://img.shields.io/badge/Support%20Server-Join%20XYIAN-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/33y46cJPnm)
 
 **🧠 The most advanced AI-powered Discord bot for Archero 2 communities with machine learning, comprehensive analytics, and expert game knowledge!**
 
@@ -333,7 +333,7 @@ GET  /api/export/analytics         # Export analytics (JSON/CSV)
 - **AI Access**: Enhanced AI features for guild members
 
 ### **Support & Feedback**
-- **XYIAN Discord Server**: [Join our community](https://discord.gg/archero2)
+- **XYIAN Discord Server**: [Join our community](https://discord.gg/33y46cJPnm)
 - **Official Archero 2 Discord**: [Join the official server](https://discord.com/invite/archero2) - 175,000+ members, 19,500+ online
 - **Issues**: [Report bugs or request features](https://github.com/yourusername/arch2-discord-bot/issues)
 - **Discussions**: [Community discussions](https://github.com/yourusername/arch2-discord-bot/discussions)
@@ -393,7 +393,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **🧠 Made with AI, Machine Learning, and ❤️ for the Archero 2 Community**
 
 [![GitHub](https://img.shields.io/badge/GitHub-View%20Source-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/yourusername/arch2-discord-bot)
-[![Discord](https://img.shields.io/badge/Discord-Join%20Community-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/archero2)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Community-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/33y46cJPnm)
 [![API](https://img.shields.io/badge/API-Documentation-2ECC71?style=for-the-badge&logo=server&logoColor=white)](docs/discord-api.md)
 
 </div>
