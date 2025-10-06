@@ -1895,7 +1895,6 @@ async function logCorrection(originalMessage, correction, reason) {
 
 // Message handling with error protection
 client.on('messageCreate', async (message) => {
-    try {
     if (message.author.bot) return;
     
     // Create unique key for this message
@@ -2063,12 +2062,13 @@ client.on('messageCreate', async (message) => {
                     .setColor(0x9b59b6)
                     .setTimestamp()
                     .setFooter({ text: 'XYIAN Bot - DM Support' });
-                await message.reply({ embeds: [dmEmbed] });
-            }
+            await message.reply({ embeds: [dmEmbed] });
         }
         return;
     }
     
+    // Main message handling with error protection
+    try {
     // Handle commands
     if (message.content.startsWith('!')) {
         const args = message.content.slice(1).trim().split(/ +/);
@@ -3262,8 +3262,7 @@ client.on('messageCreate', async (message) => {
         // Mark message as processed and log response
         messageResponseTracker.set(spamKey, true);
         await logBotResponse(message.channel.name, message.content, 'Q&A Response', message.author.id, message.author.username);
-    }
-    } catch (error) {
+    }    } catch (error) {
         console.error('❌ Error in message handler:', error);
         // Don't crash the bot - just log the error
         try {
