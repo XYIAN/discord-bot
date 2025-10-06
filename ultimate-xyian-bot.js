@@ -35,7 +35,8 @@ async function generateAIResponse(message, channelName) {
         // Get relevant knowledge based on the user's message
         const relevantKnowledge = getRelevantKnowledge(message);
         const learningContext = getLearningContext(message);
-        const context = getAIContext(channelName, relevantKnowledge, learningContext, message.author?.username || '');
+        const conversationContext = getConversationContext(message.author?.id || '');
+        const context = getAIContext(channelName, relevantKnowledge, learningContext, message.author?.username || '', conversationContext);
         
         const completion = await AIService.chat.completions.create({
             model: "gpt-4", // Use GPT-4 for better responses
@@ -178,7 +179,7 @@ function getRelevantKnowledge(message) {
     return relevantEntries;
 }
 
-function getAIContext(channelName, relevantKnowledge = [], learningContext = '', username = '') {
+function getAIContext(channelName, relevantKnowledge = [], learningContext = '', username = '', conversationContext = '') {
     const databaseKeys = Object.keys(archeroDatabase);
     console.log(`🧠 Loading ${databaseKeys.length} total knowledge entries, ${relevantKnowledge.length} relevant for this query`);
     
@@ -212,6 +213,7 @@ PERSONALITY & IDENTITY:
 - ALWAYS start responses with a personalized greeting using the username provided
 - For XYIAN, say "Hey Commander XYIAN!" 
 - For others, say "Hey [username]!"
+- When asked about your identity, be direct and proud - don't give generic responses
 
 CONVERSATIONAL STYLE:
 - Talk like you're having a real conversation with a friend
@@ -230,9 +232,9 @@ RESPONSE FORMATS:
 
 KNOWLEDGE BASE: You have access to ${databaseKeys.length} entries of real Archero 2 data, community strategies, and expert insights. USE THIS DATA to give specific, accurate answers.
 
-${knowledgeString}${learningContext}
+${knowledgeString}${learningContext}${conversationContext}
 
-IMPORTANT: Always use the knowledge base data provided above. Don't give generic responses - be specific and helpful based on the actual game data.`;
+IMPORTANT: Always use the knowledge base data provided above. Don't give generic responses - be specific and helpful based on the actual game data. If the user is asking a follow-up question, reference the previous conversation context.`;
     
     const xyianIdentity = `XYIAN MISSION: Our ultimate goal is to be #1 on the leaderboards. You are XY Elder, XYIAN's henchman, dedicated to helping members grow their skills and dominate the competition. Always emphasize our leaderboard dominance goals and competitive excellence. Reference our Guild ID: 213797 and your role as XYIAN's trusted henchman.`;
     
@@ -524,6 +526,10 @@ const AI_QUESTIONS_CHANNEL_ID = '1424322391160393790'; // Channel ID from the we
 let aiFeedback = {};
 let aiLearningData = {};
 
+// Conversation Memory - Store recent conversation context
+let conversationMemory = new Map(); // userId -> recent messages
+const MAX_CONVERSATION_HISTORY = 10; // Keep last 10 messages per user
+
 // Load AI learning data
 function loadAILearningData() {
     try {
@@ -580,6 +586,50 @@ function getLearningContext(message) {
     });
     
     return learningContext;
+}
+
+// Add message to conversation memory
+function addToConversationMemory(userId, message, response = null) {
+    if (!conversationMemory.has(userId)) {
+        conversationMemory.set(userId, []);
+    }
+    
+    const userHistory = conversationMemory.get(userId);
+    userHistory.push({
+        message: message,
+        response: response,
+        timestamp: new Date().toISOString()
+    });
+    
+    // Keep only the last MAX_CONVERSATION_HISTORY messages
+    if (userHistory.length > MAX_CONVERSATION_HISTORY) {
+        userHistory.shift(); // Remove oldest message
+    }
+    
+    conversationMemory.set(userId, userHistory);
+}
+
+// Get conversation context for a user
+function getConversationContext(userId) {
+    if (!conversationMemory.has(userId)) {
+        return '';
+    }
+    
+    const userHistory = conversationMemory.get(userId);
+    if (userHistory.length === 0) {
+        return '';
+    }
+    
+    let context = '\nRECENT CONVERSATION CONTEXT:\n';
+    userHistory.slice(-5).forEach((entry, index) => { // Last 5 messages
+        context += `${index + 1}. User: "${entry.message}"\n`;
+        if (entry.response) {
+            context += `   Bot: "${entry.response.substring(0, 100)}..."\n`;
+        }
+    });
+    context += '\nUse this context to understand what the user is referring to. If they ask follow-up questions, reference the previous conversation.\n';
+    
+    return context;
 }
 
 // Enhanced learning from specific corrections
@@ -2794,7 +2844,7 @@ client.on('messageCreate', async (message) => {
             case 'help':
                 const generalHelpEmbed = new EmbedBuilder()
                     .setTitle('🤖 XYIAN Ultimate Bot Commands')
-                    .setDescription('**Basic Commands:**\n`!ping` - Check bot status\n`!help` - This help\n`!menu` - Show question menu\n\n**For Archero 2 Questions:**\n🔹 **Go to the AI chat channels** for detailed answers!\n🔹 Use `#arch-ai` for Q&A\n🔹 This channel is for general discussion only\n\n**AI Feedback Commands:**\n`!ai-feedback [question] [feedback]` - Provide detailed feedback on AI responses\n`!ai-thumbs-down [question]` - Quick thumbs down for wrong responses\n\n**Role-Based Commands:**\n• XYIAN OFFICIAL: Full access + Channel management\n• XYIAN Guild Verified: Basic AI questions\n• Admin: Administrative commands\n\n**Admin Commands:**\n`!discord-bot-clean` - Clean duplicate bot processes (XYIAN OFFICIAL only)\n`!ai-toggle` - Toggle AI responses on/off (XYIAN OFFICIAL only)')
+                    .setDescription('**Basic Commands:**\n`!ping` - Check bot status\n`!help` - This help\n`!menu` - Show question menu\n\n**For Archero 2 Questions:**\n🔹 **Go to the AI chat channels** for detailed answers!\n🔹 Use `#arch-ai` for Q&A\n🔹 This channel is for general discussion only\n\n**AI Feedback Commands:**\n`!ai-feedback [question] [feedback]` - Provide detailed feedback on AI responses\n`!ai-thumbs-down [question]` - Quick thumbs down for wrong responses\n`!memory` - Show your conversation memory with the bot\n\n**Role-Based Commands:**\n• XYIAN OFFICIAL: Full access + Channel management\n• XYIAN Guild Verified: Basic AI questions\n• Admin: Administrative commands\n\n**Admin Commands:**\n`!discord-bot-clean` - Clean duplicate bot processes (XYIAN OFFICIAL only)\n`!ai-toggle` - Toggle AI responses on/off (XYIAN OFFICIAL only)')
                     .setColor(0x00BFFF)
                     .setTimestamp()
                     .setFooter({ text: 'XYIAN OFFICIAL' });
@@ -3181,6 +3231,25 @@ client.on('messageCreate', async (message) => {
                 console.log(`🧠 AI Feedback received from ${message.author.username}: "${question}" -> "${feedback}"`);
                 break;
                 
+            case 'memory':
+                // Show conversation memory for the user
+                const userId = message.author.id;
+                const context = getConversationContext(userId);
+                
+                if (context) {
+                    const memoryEmbed = new EmbedBuilder()
+                        .setTitle('🧠 Your Conversation Memory')
+                        .setDescription(`\`\`\`${context}\`\`\``)
+                        .setColor(0x00BFFF)
+                        .setTimestamp()
+                        .setFooter({ text: 'XYIAN Bot - Memory System' });
+                    
+                    await message.reply({ embeds: [memoryEmbed] });
+                } else {
+                    await message.reply('❌ No conversation memory found. Start a conversation and I\'ll remember it!');
+                }
+                break;
+                
             case 'ai-thumbs-down':
                 // Quick thumbs down for wrong responses
                 const thumbsDownArgs = args.slice(1);
@@ -3249,8 +3318,15 @@ client.on('messageCreate', async (message) => {
         // Check if user has access to AI features
         const hasAIAccess = hasBasicAccess(message.member);
         
-        // Let AI handle all questions - no hardcoded responses
-        if (AIService && hasAIAccess) {
+        // Special handling for identity questions
+        const messageLower = message.content.toLowerCase().trim();
+        if (messageLower.includes('what is your name') || messageLower.includes('who are you') || messageLower.includes('your name')) {
+            answer = "I'm XY Elder, the trusted henchman and guild elder of XYIAN OFFICIAL! I'm here to help you dominate the leaderboards and master Archero 2!";
+            isAIResponse = true;
+            console.log(`✅ DIRECT IDENTITY RESPONSE for: "${message.content}"`);
+        }
+        // Let AI handle all other questions
+        else if (AIService && hasAIAccess) {
             try {
                 console.log(`🤖 Attempting AI response for: "${message.content}" by ${message.author.username}`);
                 answer = await generateAIResponse(message.content, message.channel.name);
@@ -3275,7 +3351,8 @@ client.on('messageCreate', async (message) => {
         // Final fallback if no answer found
         if (!answer) {
             if (hasAIAccess) {
-                answer = getFallbackResponse(message.content);
+                // Only use fallback if AI completely failed
+                answer = "🤔 I'm not sure about that specific question. Could you ask about weapons, characters, runes, or game mechanics? I'm here to help with Archero 2!";
             } else {
                 answer = "❓ I'd love to help with your Archero 2 question! However, AI-powered responses require the **XYIAN Guild Verified** role or higher. You can still ask basic questions, or use `!menu` to see what I can help with!";
             }
@@ -3307,6 +3384,9 @@ client.on('messageCreate', async (message) => {
                 .setFooter({ text: 'XYIAN Bot' });
         
         const response = await message.reply({ embeds: [qaEmbed] });
+        
+        // Store conversation memory for all messages (not just AI responses)
+        addToConversationMemory(message.author.id, message.content, answer || null);
         
         // Add reaction feedback for AI responses
         if (isAIResponse) {
