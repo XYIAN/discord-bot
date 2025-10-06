@@ -530,7 +530,7 @@ function loadKnowledgeDatabase() {
             // Load cleaned entries
             archeroDatabase = {};
             Object.keys(data.entries).forEach(key => {
-                archeroDatabase[key] = data.entries[key].content;
+                archeroDatabase[key] = data.entries[key]; // Direct assignment - entries are already strings
             });
             
             console.log(`✅ Loaded high-quality cleaned database with ${Object.keys(archeroDatabase).length} entries`);
