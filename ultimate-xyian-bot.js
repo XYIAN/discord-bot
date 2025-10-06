@@ -253,26 +253,22 @@ This is the AI-powered Archero 2 questions channel. Answer questions directly an
     }
 }
 
-// Fallback response functions for when AI fails
+// Enhanced fallback with learning system
 function getFallbackResponse(message) {
-    const fallbacks = [
-        "🎮 **Great question!** I know about the 3 S-tier weapons (Oracle Staff, Griffin Claws, Dragoon Crossbow), character resonance (3-star/6-star slots), and basic game mechanics. However, I'm not sure about that specific question. Could you rephrase it or ask about weapons, characters, or resonance?",
-        "⚔️ **Interesting question!** I have detailed info about S-tier weapons, character abilities (Thor, Demon King, Rolla, etc.), and resonance systems. But I'm not prepared for that specific question. What would you like to know about weapons or characters?",
-        "🏰 **Good question!** I know about guild requirements (2 daily boss battles + donations), Peak Arena strategies, and character synergies. However, I don't have specific information about that topic. Could you ask about something I do know?",
-        "💎 **Solid question!** I have comprehensive knowledge about Oracle/Griffin/Dragoon weapons, character resonance slots, and game mechanics. But I'm not sure about that specific question. What aspect of the game interests you?",
-        "🔥 **Excellent question!** I know about Arena heroes (Dragoon/Griffin), character abilities, and weapon tiers. However, I'm not prepared for that specific question. Could you ask about something I can help with?"
-    ];
+    // Log the unknown question with timestamp and user info
+    const unknownQuestion = {
+        question: message,
+        timestamp: new Date().toISOString(),
+        status: 'unknown',
+        needsAnswer: true
+    };
     
-    const response = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+    // Save to unknown questions file
+    saveUnknownQuestion(unknownQuestion);
     
-    // Log this as a correction opportunity
-    logCorrection(
-        message, 
-        response, 
-        "Fallback response used - bot admitted uncertainty instead of giving wrong information"
-    );
+    console.log(`📝 UNKNOWN QUESTION LOGGED: "${message}" - Added to training queue`);
     
-    return response;
+    return `🤔 I don't know the answer to that specific question yet, but I've logged it for learning!\n\n**What you can do:**\n• Use \`!teach "your question" "the answer"\` to teach me\n• Contact XYIAN for complex questions\n• Ask about weapons, characters, runes, or game mechanics I do know\n\n**I'm always learning!** 🧠`;
 }
 
 function getAdvancedFallbackResponse(message) {
@@ -526,6 +522,9 @@ const AI_QUESTIONS_CHANNEL_ID = '1424322391160393790'; // Channel ID from the we
 let aiFeedback = {};
 let aiLearningData = {};
 
+// Unknown Questions System - Track questions that need answers
+let unknownQuestions = [];
+
 // Conversation Memory - Store recent conversation context
 let conversationMemory = new Map(); // userId -> recent messages
 const MAX_CONVERSATION_HISTORY = 10; // Keep last 10 messages per user
@@ -538,7 +537,8 @@ function loadAILearningData() {
             const data = JSON.parse(fs.readFileSync(learningFile, 'utf8'));
             aiFeedback = data.feedback || {};
             aiLearningData = data.learning || {};
-            console.log(`🧠 Loaded AI learning data: ${Object.keys(aiFeedback).length} feedback entries, ${Object.keys(aiLearningData).length} learning entries`);
+            unknownQuestions = data.unknownQuestions || [];
+            console.log(`🧠 Loaded AI learning data: ${Object.keys(aiFeedback).length} feedback entries, ${Object.keys(aiLearningData).length} learning entries, ${unknownQuestions.length} unknown questions`);
         }
     } catch (error) {
         console.error('❌ Error loading AI learning data:', error.message);
@@ -552,13 +552,47 @@ function saveAILearningData() {
         const data = {
             feedback: aiFeedback,
             learning: aiLearningData,
+            unknownQuestions: unknownQuestions,
             lastUpdated: new Date().toISOString()
         };
         fs.writeFileSync(learningFile, JSON.stringify(data, null, 2));
-        console.log('💾 AI learning data saved');
+        console.log(`💾 Saved AI learning data: ${Object.keys(aiFeedback).length} feedback entries, ${Object.keys(aiLearningData).length} learning entries, ${unknownQuestions.length} unknown questions`);
     } catch (error) {
         console.error('❌ Error saving AI learning data:', error.message);
     }
+}
+
+// Save unknown question for training
+function saveUnknownQuestion(questionData) {
+    unknownQuestions.push(questionData);
+    
+    // Keep only last 100 unknown questions
+    if (unknownQuestions.length > 100) {
+        unknownQuestions = unknownQuestions.slice(-100);
+    }
+    
+    saveAILearningData();
+}
+
+// Teach the bot a new answer
+function teachBot(question, answer, user) {
+    // Add to learning data
+    const questionKey = question.toLowerCase().trim();
+    aiLearningData[questionKey] = {
+        question: question,
+        response: answer,
+        timestamp: new Date().toISOString(),
+        taughtBy: user,
+        source: 'user_teaching'
+    };
+    
+    // Remove from unknown questions if it was there
+    unknownQuestions = unknownQuestions.filter(q => q.question.toLowerCase() !== questionKey);
+    
+    // Save the updated data
+    saveAILearningData();
+    
+    console.log(`🎓 Bot taught new answer by ${user}: "${question}" -> "${answer.substring(0, 50)}..."`);
 }
 
 // Get learning context for AI responses
@@ -2844,7 +2878,7 @@ client.on('messageCreate', async (message) => {
             case 'help':
                 const generalHelpEmbed = new EmbedBuilder()
                     .setTitle('🤖 XYIAN Ultimate Bot Commands')
-                    .setDescription('**Basic Commands:**\n`!ping` - Check bot status\n`!help` - This help\n`!menu` - Show question menu\n\n**For Archero 2 Questions:**\n🔹 **Go to the AI chat channels** for detailed answers!\n🔹 Use `#arch-ai` for Q&A\n🔹 This channel is for general discussion only\n\n**AI Feedback Commands:**\n`!ai-feedback [question] [feedback]` - Provide detailed feedback on AI responses\n`!ai-thumbs-down [question]` - Quick thumbs down for wrong responses\n`!memory` - Show your conversation memory with the bot\n\n**Role-Based Commands:**\n• XYIAN OFFICIAL: Full access + Channel management\n• XYIAN Guild Verified: Basic AI questions\n• Admin: Administrative commands\n\n**Admin Commands:**\n`!discord-bot-clean` - Clean duplicate bot processes (XYIAN OFFICIAL only)\n`!ai-toggle` - Toggle AI responses on/off (XYIAN OFFICIAL only)')
+                    .setDescription('**Basic Commands:**\n`!ping` - Check bot status\n`!help` - This help\n`!menu` - Show question menu\n\n**For Archero 2 Questions:**\n🔹 **Go to the AI chat channels** for detailed answers!\n🔹 Use `#arch-ai` for Q&A\n🔹 This channel is for general discussion only\n\n**AI Learning Commands:**\n`!ai-feedback [question] [feedback]` - Provide detailed feedback on AI responses\n`!ai-thumbs-down [question]` - Quick thumbs down for wrong responses\n`!teach "question" "answer"` - Teach the bot a new answer\n`!memory` - Show your conversation memory with the bot\n`!unknown` - View unknown questions (XYIAN OFFICIAL only)\n\n**Role-Based Commands:**\n• XYIAN OFFICIAL: Full access + Channel management\n• XYIAN Guild Verified: Basic AI questions\n• Admin: Administrative commands\n\n**Admin Commands:**\n`!discord-bot-clean` - Clean duplicate bot processes (XYIAN OFFICIAL only)\n`!ai-toggle` - Toggle AI responses on/off (XYIAN OFFICIAL only)')
                     .setColor(0x00BFFF)
                     .setTimestamp()
                     .setFooter({ text: 'XYIAN OFFICIAL' });
@@ -3248,6 +3282,59 @@ client.on('messageCreate', async (message) => {
                 } else {
                     await message.reply('❌ No conversation memory found. Start a conversation and I\'ll remember it!');
                 }
+                break;
+                
+            case 'teach':
+                // Teach the bot a new answer
+                const teachArgs = args.slice(1);
+                if (teachArgs.length < 2) {
+                    await message.reply('❌ Usage: `!teach "question" "answer"`\n\n**Example:** `!teach "what is resonance" "Resonance allows using another character\'s skill at 3-star and 6-star"`');
+                    return;
+                }
+                
+                const teachQuestion = teachArgs[0].replace(/"/g, '');
+                const teachAnswer = teachArgs.slice(1).join(' ').replace(/"/g, '');
+                
+                // Teach the bot
+                teachBot(teachQuestion, teachAnswer, message.author.username);
+                
+                const teachEmbed = new EmbedBuilder()
+                    .setTitle('🎓 Bot Taught Successfully!')
+                    .setDescription(`**Question:** "${teachQuestion}"\n**Answer:** ${teachAnswer}\n\nI've learned this and will remember it for future questions!`)
+                    .setColor(0x00FF00)
+                    .setTimestamp()
+                    .setFooter({ text: `Taught by ${message.author.username}` });
+                
+                await message.reply({ embeds: [teachEmbed] });
+                break;
+                
+            case 'unknown':
+                // Show unknown questions that need answers (XYIAN OFFICIAL only)
+                if (!hasXYIANOfficialAccess(message.member)) {
+                    await message.reply('❌ This command requires XYIAN OFFICIAL role or higher.');
+                    return;
+                }
+                
+                const recentUnknown = unknownQuestions.slice(-10); // Last 10 unknown questions
+                
+                if (recentUnknown.length === 0) {
+                    await message.reply('✅ No unknown questions! The bot knows everything asked recently.');
+                    return;
+                }
+                
+                let unknownList = '**Recent Unknown Questions:**\n\n';
+                recentUnknown.forEach((q, index) => {
+                    unknownList += `${index + 1}. "${q.question}"\n   *${q.timestamp}*\n\n`;
+                });
+                
+                const unknownEmbed = new EmbedBuilder()
+                    .setTitle('❓ Unknown Questions Log')
+                    .setDescription(unknownList)
+                    .setColor(0xFFA500)
+                    .setTimestamp()
+                    .setFooter({ text: `Total unknown: ${unknownQuestions.length}` });
+                
+                await message.reply({ embeds: [unknownEmbed] });
                 break;
                 
             case 'ai-thumbs-down':
