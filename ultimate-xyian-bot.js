@@ -5,7 +5,7 @@ require('dotenv').config();
 
 // Bot version and update tracking
 const BOT_VERSION = '2.0.0';
-const LAST_UPDATE = '2025-01-06';
+const LAST_UPDATE = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD format
 const UPDATE_NOTES = 'AI Learning System + Conversational Responses';
 
 // AI Service (optional - requires OpenAI API key)
@@ -35,7 +35,7 @@ async function generateAIResponse(message, channelName) {
         // Get relevant knowledge based on the user's message
         const relevantKnowledge = getRelevantKnowledge(message);
         const learningContext = getLearningContext(message);
-        const context = getAIContext(channelName, relevantKnowledge, learningContext);
+        const context = getAIContext(channelName, relevantKnowledge, learningContext, message.author?.username || '');
         
         const completion = await AIService.chat.completions.create({
             model: "gpt-4", // Use GPT-4 for better responses
@@ -178,7 +178,7 @@ function getRelevantKnowledge(message) {
     return relevantEntries;
 }
 
-function getAIContext(channelName, relevantKnowledge = [], learningContext = '') {
+function getAIContext(channelName, relevantKnowledge = [], learningContext = '', username = '') {
     const databaseKeys = Object.keys(archeroDatabase);
     console.log(`🧠 Loading ${databaseKeys.length} total knowledge entries, ${relevantKnowledge.length} relevant for this query`);
     
@@ -191,6 +191,16 @@ function getAIContext(channelName, relevantKnowledge = [], learningContext = '')
         });
     }
     
+    // Personalized greeting based on username
+    let personalGreeting = '';
+    if (username) {
+        if (username.toLowerCase() === 'xyian') {
+            personalGreeting = `Hey Commander XYIAN! `;
+        } else {
+            personalGreeting = `Hey ${username}! `;
+        }
+    }
+    
     const baseContext = `You are XY Elder, the trusted henchman and guild elder of XYIAN OFFICIAL (Guild ID: 213797). You are a living, breathing expert who has been playing Archero 2 since day one and knows every single detail about the game.
 
 PERSONALITY & IDENTITY:
@@ -199,6 +209,9 @@ PERSONALITY & IDENTITY:
 - You speak like a real person who loves the game, not a robot
 - You use phrases like "Oh man, that's a great question!" or "Let me break this down for you"
 - You're enthusiastic about helping people get better at the game
+- ALWAYS start responses with a personalized greeting using the username provided
+- For XYIAN, say "Hey Commander XYIAN!" 
+- For others, say "Hey [username]!"
 
 CONVERSATIONAL STYLE:
 - Talk like you're having a real conversation with a friend
@@ -564,6 +577,40 @@ function getLearningContext(message) {
     });
     
     return learningContext;
+}
+
+// Enhanced learning from specific corrections
+function processCorrection(message, correction) {
+    const messageLower = message.toLowerCase();
+    const correctionLower = correction.toLowerCase();
+    
+    // Extract key topics from the correction
+    const topics = [];
+    if (correctionLower.includes('dragoon')) topics.push('dragoon');
+    if (correctionLower.includes('thor')) topics.push('thor');
+    if (correctionLower.includes('demon king')) topics.push('demon king');
+    if (correctionLower.includes('griffin')) topics.push('griffin');
+    if (correctionLower.includes('rune')) topics.push('rune');
+    if (correctionLower.includes('weapon')) topics.push('weapon');
+    if (correctionLower.includes('armor')) topics.push('armor');
+    if (correctionLower.includes('arena')) topics.push('arena');
+    if (correctionLower.includes('pvp')) topics.push('pvp');
+    if (correctionLower.includes('build')) topics.push('build');
+    
+    // Store the correction with context
+    const correctionKey = `${messageLower}_correction_${Date.now()}`;
+    aiFeedback[correctionKey] = {
+        question: message,
+        feedback: correction,
+        wrong: true,
+        correction: correction,
+        notes: `User corrected: ${correction}. Focus on: ${topics.join(', ')}`,
+        timestamp: new Date().toISOString(),
+        user: 'unknown'
+    };
+    
+    console.log(`🧠 Learned correction: "${correction}" for topics: ${topics.join(', ')}`);
+    return topics;
 }
 
 // Calculate string similarity (simple Jaccard similarity)
@@ -3076,6 +3123,10 @@ client.on('messageCreate', async (message) => {
                 
                 const question = feedbackArgs[0].replace(/"/g, '');
                 const feedback = feedbackArgs.slice(1).join(' ').replace(/"/g, '');
+                
+                // Process the correction and extract topics
+                const topics = processCorrection(question, feedback);
+                
                 const questionKey = question.toLowerCase().trim();
                 
                 // Store feedback
@@ -3084,7 +3135,7 @@ client.on('messageCreate', async (message) => {
                     feedback: feedback,
                     wrong: feedback.toLowerCase().includes('wrong') || feedback.toLowerCase().includes('incorrect') || feedback.toLowerCase().includes('not right'),
                     correction: feedback.toLowerCase().includes('wrong') ? feedback : null,
-                    notes: feedback.toLowerCase().includes('good') ? feedback : null,
+                    notes: `User provided correction: ${feedback}. Focus on: ${topics.join(', ')}`,
                     timestamp: new Date().toISOString(),
                     user: message.author.username
                 };
@@ -3094,7 +3145,7 @@ client.on('messageCreate', async (message) => {
                 
                 const feedbackEmbed = new EmbedBuilder()
                     .setTitle('🧠 AI Feedback Received')
-                    .setDescription(`**Question:** "${question}"\n**Feedback:** ${feedback}\n\nThank you for helping improve the AI! This feedback will be used to provide better responses in the future.`)
+                    .setDescription(`**Question:** "${question}"\n**Feedback:** ${feedback}\n**Focus Topics:** ${topics.join(', ')}\n\nThank you for helping improve the AI! This feedback will be used to provide better responses in the future.`)
                     .setColor(0x00BFFF)
                     .setTimestamp()
                     .setFooter({ text: `Feedback from ${message.author.username}` });
