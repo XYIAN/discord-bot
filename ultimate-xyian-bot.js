@@ -5,7 +5,7 @@ require('dotenv').config();
 
 // Bot version and update tracking
 const BOT_VERSION = '2.0.0';
-const LAST_UPDATE = '2025-01-05';
+const LAST_UPDATE = '2025-01-06';
 const UPDATE_NOTES = 'AI Learning System + Conversational Responses';
 
 // AI Service (optional - requires OpenAI API key)
