@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, EmbedBuilder, WebhookClient } = require('discord.js');
+const { Client, GatewayIntentBits, EmbedBuilder, WebhookClient, SlashCommandBuilder, REST, Routes, Collection } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
@@ -43,10 +43,10 @@ async function generateAIResponse(message, channelName) {
                 { role: "system", content: context },
                 { role: "user", content: `User asks: "${message}"` }
             ],
-            max_tokens: 1500, // Increased for more detailed responses
-            temperature: 0.8, // More creative and conversational
-            presence_penalty: 0.3,
-            frequency_penalty: 0.2,
+            max_tokens: 2000, // Increased for more detailed responses
+            temperature: 0.7, // More conversational but focused
+            presence_penalty: 0.1,
+            frequency_penalty: 0.1,
         });
         
         const response = completion.choices[0]?.message?.content;
@@ -219,6 +219,7 @@ CONVERSATIONAL STYLE:
 - Ask follow-up questions when appropriate
 - Show excitement about the game and strategies
 - Use the data to give specific, detailed answers with actual numbers and mechanics
+- Be direct and helpful - don't give generic responses
 
 RESPONSE FORMATS:
 - For builds: Create tables with runes, stats, and explanations
@@ -229,7 +230,9 @@ RESPONSE FORMATS:
 
 KNOWLEDGE BASE: You have access to ${databaseKeys.length} entries of real Archero 2 data, community strategies, and expert insights. USE THIS DATA to give specific, accurate answers.
 
-${knowledgeString}${learningContext}`;
+${knowledgeString}${learningContext}
+
+IMPORTANT: Always use the knowledge base data provided above. Don't give generic responses - be specific and helpful based on the actual game data.`;
     
     const xyianIdentity = `XYIAN MISSION: Our ultimate goal is to be #1 on the leaderboards. You are XY Elder, XYIAN's henchman, dedicated to helping members grow their skills and dominate the competition. Always emphasize our leaderboard dominance goals and competitive excellence. Reference our Guild ID: 213797 and your role as XYIAN's trusted henchman.`;
     
@@ -300,10 +303,10 @@ const webhooks = {
     recruit: process.env.GUILD_RECRUIT_WEBHOOK,
     expedition: process.env.GUILD_EXPEDITION_WEBHOOK,
     arena: process.env.GUILD_ARENA_WEBHOOK,
-    aiQuestions: 'https://discord.com/api/webhooks/1424322423901392957/r546eXCaL9I1W92YVMAuSoLfk2pbTWs3y8BDr7HTx8jk32-WfTqsID3Sshg8aV8mi6yf',
-    umbralTempest: 'https://discord.com/api/webhooks/1424327958687907860/VAjMj6kMDSyKdubcCVuEyu8pTB_Wutn0LZsELvpm8PNJgDVfvV4JQOmwJaR_TO2-wtit',
-    gearRuneLoadouts: 'https://discord.com/api/webhooks/1424328645245407283/X0cUzwecUvcjYNNvRACUIfH0tiU_xwImn-D3PNnmGQRFjtv_FjY0MvBQZ847F4HcxW3m',
-    admin: 'https://discord.com/api/webhooks/1424329654738882647/hLSZIGm5GuhUlr_j4fa5K29ynnYu6htxdTGaoZ7fEyoAXFB0iZa8cJnVH7L6bZ0W5gM2'
+    aiQuestions: process.env.AI_QUESTIONS_WEBHOOK,
+    umbralTempest: process.env.UMBRAL_TEMPEST_WEBHOOK,
+    gearRuneLoadouts: process.env.GEAR_RUNE_WEBHOOK,
+    admin: process.env.ADMIN_WEBHOOK
 };
 
 // Member activity tracking
@@ -2116,7 +2119,7 @@ client.on('messageCreate', async (message) => {
     
     // Main message handling with error protection
     try {
-    // Handle commands
+        // Handle commands
     if (message.content.startsWith('!')) {
         const args = message.content.slice(1).trim().split(/ +/);
         const commandName = args.shift()?.toLowerCase();
@@ -2126,6 +2129,30 @@ client.on('messageCreate', async (message) => {
                 if (!trackResponse(message, 'ping')) return;
                 console.log(`🏰 PING COMMAND TRIGGERED by ${message.author.username}`);
                 
+                // Test AI connection
+                let aiStatus = '❌ Disabled';
+                let aiColor = 0xFF0000;
+                if (AIService) {
+                    try {
+                        // Quick test to see if API key works
+                        const testResponse = await AIService.chat.completions.create({
+                            model: "gpt-4",
+                            messages: [{ role: "user", content: "test" }],
+                            max_tokens: 5
+                        });
+                        if (testResponse.choices[0]?.message?.content) {
+                            aiStatus = '✅ Connected & Ready';
+                            aiColor = 0x00FF00;
+                        } else {
+                            aiStatus = '⚠️ Connected but No Response';
+                            aiColor = 0xFFA500;
+                        }
+                    } catch (error) {
+                        aiStatus = `❌ API Error: ${error.message.substring(0, 30)}...`;
+                        aiColor = 0xFF0000;
+                    }
+                }
+
                 const pingEmbed = new EmbedBuilder()
                     .setTitle('🏰 XYIAN Ultimate Bot Status')
                     .setDescription('**Bot is ONLINE and ready to help!**')
@@ -2133,11 +2160,11 @@ client.on('messageCreate', async (message) => {
                         { name: '📊 Version', value: `v${BOT_VERSION}`, inline: true },
                         { name: '📅 Last Update', value: LAST_UPDATE, inline: true },
                         { name: '🧠 Knowledge Base', value: `${Object.keys(archeroDatabase).length} entries`, inline: true },
-                        { name: '🤖 AI Status', value: AIService ? '✅ Enabled' : '❌ Disabled', inline: true },
+                        { name: '🤖 AI Status', value: aiStatus, inline: true },
                         { name: '📈 AI Learning', value: Object.keys(aiFeedback).length > 0 ? '✅ Active' : '🔄 Ready', inline: true },
                         { name: '🎯 Guild ID', value: '213797', inline: true }
                     )
-                    .setColor(0x00BFFF)
+                    .setColor(aiColor)
                     .setTimestamp()
                     .setFooter({ text: `XYIAN Ultimate Bot v${BOT_VERSION} - ${UPDATE_NOTES}` });
                 
@@ -3225,19 +3252,24 @@ client.on('messageCreate', async (message) => {
         // Let AI handle all questions - no hardcoded responses
         if (AIService && hasAIAccess) {
             try {
+                console.log(`🤖 Attempting AI response for: "${message.content}" by ${message.author.username}`);
                 answer = await generateAIResponse(message.content, message.channel.name);
                 if (answer && answer.length > 10) {
                     isAIResponse = true;
-                    console.log(`🤖 AI ANSWER USED for: "${message.content}"`);
+                    console.log(`✅ AI ANSWER USED for: "${message.content}" - Length: ${answer.length}`);
                     logCorrection(
                         message.content,
                         answer,
                         "AI response generated - no direct database answer available"
                     );
+                } else {
+                    console.log(`❌ AI response too short or empty: "${answer}"`);
                 }
             } catch (error) {
                 console.error('❌ AI response error:', error);
             }
+        } else {
+            console.log(`❌ AI not available - AIService: ${!!AIService}, hasAIAccess: ${hasAIAccess}, user: ${message.author.username}`);
         }
         
         // Final fallback if no answer found
