@@ -90,6 +90,34 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 - **Larger Images**: Welcome messages now use both user avatar (thumbnail) and Archero 2 logo (large image)
 - **XYIAN Branding**: Welcome messages emphasize XYIAN's quest for #1 leaderboard dominance and XY Elder's role
 
+## [2.0.1] - 2025-10-06
+
+### Fixed
+- **CRITICAL FIX**: Bot no longer responds with "I don't know" to simple questions
+- Created missing `cleaned-knowledge-database.json` with 287+ comprehensive entries
+- Fixed knowledge database loading system that was causing empty responses
+
+### Enhanced
+- **Smart Fallback Responses**: Bot now provides helpful alternatives when it doesn't know something
+- **Improved Knowledge Retrieval**: Enhanced relevance scoring and keyword matching
+- **Better Context Awareness**: AI gets more relevant knowledge for better responses
+- **Category-Based Matching**: Weapons, characters, arena, guild, runes, and gear questions get targeted responses
+
+### Added
+- Comprehensive Archero 2 game knowledge database
+- Enhanced weapon information (Oracle Staff, Griffin Claws, Dragoon Crossbow)
+- Character details (Thor, Otta, Helix) with build recommendations
+- Arena/PvP strategies and meta builds
+- Guild information and requirements
+- Gear set recommendations (Mixed Oracle/Dragoon meta)
+- Runes and enchantment guidance
+
+### Technical Improvements
+- Enhanced error handling for AI failures
+- Better knowledge database structure and processing
+- Improved response quality and relevance
+- Added comprehensive testing system
+
 ## [1.3.4] - 2025-10-05
 
 ### Added
