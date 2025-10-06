@@ -29,9 +29,31 @@ try {
 
 // AI helper functions
 async function generateAIResponse(message, channelName) {
-    if (!AIService) return null;
-    
     try {
+        // Use cognitive AI system if available
+        if (cognitiveAI && cognitiveAI.isInitialized) {
+            console.log('🧠 Using Cognitive AI System...');
+            
+            const context = {
+                userId: message.author?.id || 'unknown',
+                username: message.author?.username || 'User',
+                channelId: message.channel?.id,
+                guildId: message.guild?.id
+            };
+            
+            const result = await cognitiveAI.reason(message.content || message, context);
+            
+            if (result && result.answer && result.answer.length > 10) {
+                console.log(`✅ Cognitive AI response: ${result.answer.length} chars, confidence: ${result.confidence}`);
+                return result.answer;
+            }
+        }
+        
+        // Fallback to traditional AI if cognitive system not available
+        if (!AIService) return null;
+        
+        console.log('🤖 Using traditional AI...');
+        
         // Get relevant knowledge based on the user's message
         const relevantKnowledge = getRelevantKnowledge(message);
         const learningContext = getLearningContext(message);
@@ -67,7 +89,7 @@ async function generateAIResponse(message, channelName) {
         }
         return null;
     } catch (error) {
-        console.error('❌ OpenAI API error:', error.message);
+        console.error('❌ AI error:', error.message);
         return null;
     }
 }
@@ -470,7 +492,23 @@ function loadAnalytics() {
 // Load existing analytics on startup
 loadAnalytics();
 
-// Load high-quality cleaned knowledge database
+// Load cognitive AI system
+let cognitiveAI = null;
+
+async function initializeCognitiveAI() {
+    try {
+        const CognitiveAI = require('./src/cognitive/cognitive-ai');
+        cognitiveAI = new CognitiveAI();
+        await cognitiveAI.initialize();
+        console.log('🧠 Cognitive AI System loaded successfully');
+        return true;
+    } catch (error) {
+        console.error('❌ Failed to load Cognitive AI System:', error.message);
+        return false;
+    }
+}
+
+// Load high-quality cleaned knowledge database (fallback)
 let archeroDatabase = {};
 function loadKnowledgeDatabase() {
     try {
@@ -576,8 +614,15 @@ function loadKnowledgeDatabase() {
     }
 }
 
-// Load knowledge database on startup
-loadKnowledgeDatabase();
+// Initialize cognitive AI system on startup
+initializeCognitiveAI().then(success => {
+    if (success) {
+        console.log('🎉 Cognitive AI System ready!');
+    } else {
+        console.log('⚠️ Falling back to traditional knowledge database');
+        loadKnowledgeDatabase();
+    }
+});
 
 // AI Response Toggle - Controls whether bot responds to AI questions
 let aiResponseEnabled = true;
