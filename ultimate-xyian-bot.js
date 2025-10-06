@@ -474,9 +474,21 @@ loadAnalytics();
 let archeroDatabase = {};
 function loadKnowledgeDatabase() {
     try {
-        // Load real Archero 2 facts - stop using broken Discord chat data
-        const factsFile = path.join(__dirname, 'data', 'real-archero2-facts.json');
-        if (fs.existsSync(factsFile)) {
+        // Load cleaned real facts - extracted from all data sources
+        const cleanedFactsFile = path.join(__dirname, 'data', 'cleaned-real-facts.json');
+        if (fs.existsSync(cleanedFactsFile)) {
+            const data = JSON.parse(fs.readFileSync(cleanedFactsFile, 'utf8'));
+            
+            // Flatten the cleaned facts into a single database
+            archeroDatabase = {};
+            Object.entries(data).forEach(([category, facts]) => {
+                Object.entries(facts).forEach(([key, content]) => {
+                    archeroDatabase[`${category}_${key}`] = content;
+                });
+            });
+            
+            console.log(`✅ Loaded CLEANED real facts with ${Object.keys(archeroDatabase).length} entries`);
+        } else if (fs.existsSync(path.join(__dirname, 'data', 'real-archero2-facts.json'))) {
             const data = JSON.parse(fs.readFileSync(factsFile, 'utf8'));
             
             // Flatten the facts into a single database
