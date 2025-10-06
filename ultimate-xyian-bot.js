@@ -2046,19 +2046,8 @@ client.on('messageCreate', async (message) => {
                     break;
                     
                 default:
-                    // Try Q&A for unknown commands
-                    const answer = getAnswer(message.content);
-                    if (answer) {
-                        const qaEmbed = new EmbedBuilder()
-                            .setTitle('❓ Archero 2 Q&A (DM)')
-                            .setDescription(answer)
-                            .setColor(0x32CD32)
-                            .setTimestamp()
-                            .setFooter({ text: 'XYIAN Bot - DM Q&A' });
-                        await message.reply({ embeds: [qaEmbed] });
-                    } else {
-                        await message.reply('❓ I didn\'t understand that. Try asking an Archero 2 question or use `!help` for commands.');
-                    }
+                    // Let AI handle all questions
+                    console.log(`🤖 DM: Letting AI handle question: "${message.content}"`);
             }
         } else {
             // Check if user is in personalized setup
@@ -2066,18 +2055,9 @@ client.on('messageCreate', async (message) => {
                 return;
             }
             
-            // Handle Q&A for non-command messages
-            const answer = getAnswer(message.content);
-            if (answer) {
-                const qaEmbed = new EmbedBuilder()
-                    .setTitle('❓ Archero 2 Q&A (DM)')
-                    .setDescription(answer)
-                    .setColor(0x32CD32)
-                    .setTimestamp()
-                    .setFooter({ text: 'XYIAN Bot - DM Q&A' });
-                await message.reply({ embeds: [qaEmbed] });
-            } else {
-                const dmEmbed = new EmbedBuilder()
+            // Let AI handle all questions
+            console.log(`🤖 DM: Letting AI handle question: "${message.content}"`);
+            const dmEmbed = new EmbedBuilder()
                     .setTitle('🤖 XYIAN Bot - Direct Message')
                     .setDescription(`Hello ${message.author.username}! I'm the XYIAN Bot for the Arch 2 Addicts community.\n\n**Available Commands:**\n• \`!help\` - Show all commands\n• \`!menu\` - Show question menu\n• Ask any Archero 2 question!\n\n**Note:** For full functionality, please use me in the Arch 2 Addicts server!`)
                     .setColor(0x9b59b6)
@@ -3153,26 +3133,9 @@ client.on('messageCreate', async (message) => {
                 break;
                 
             default:
-                // Try Q&A system
-                const answer = getAnswer(message.content);
-                if (answer) {
-                    const startTime = Date.now();
-                    const qaEmbed = new EmbedBuilder()
-                        .setTitle('❓ Archero 2 Q&A')
-                        .setDescription(answer)
-                        .setColor(0x32CD32)
-                        .setTimestamp()
-                        .setFooter({ text: 'XYIAN OFFICIAL' });
-                    
-                    const response = await message.reply({ embeds: [qaEmbed] });
-                    const responseTime = Date.now() - startTime;
-                    
-                    // Log interaction and add feedback
-                    logInteraction(message.content, answer, message.author.id, message.channel.name, responseTime, false);
-                    await addReactionFeedback(response);
-                } else {
-                    await message.reply('❓ I didn\'t understand that. Try asking an Archero 2 question or use `!help` for commands.');
-                }
+                // Let AI handle all questions - no hardcoded responses
+                console.log(`🤖 Letting AI handle question: "${message.content}"`);
+                // AI response will be handled by the main message handler below
         }
     } else {
         // Check if this is the AI questions channel
@@ -3208,19 +3171,8 @@ client.on('messageCreate', async (message) => {
         // Check if user has access to AI features
         const hasAIAccess = hasBasicAccess(message.member);
         
-        // FIRST: Try database for direct answers
-        answer = getAnswer(message.content);
-        
-        // If we have a good database answer, use it (no AI needed)
-        if (answer && answer.length > 10) {
-            console.log(`📚 DATABASE ANSWER USED for: "${message.content}"`);
-            logCorrection(
-                message.content,
-                answer,
-                "Database answer used - direct factual information available"
-            );
-        } else if (AIService && hasAIAccess) {
-            // Only use AI if we don't have a good database answer
+        // Let AI handle all questions - no hardcoded responses
+        if (AIService && hasAIAccess) {
             try {
                 answer = await generateAIResponse(message.content, message.channel.name);
                 if (answer && answer.length > 10) {
