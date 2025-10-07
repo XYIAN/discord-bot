@@ -2,6 +2,14 @@
 
 All notable changes to the Arch 2 Addicts Discord Bot project will be documented in this file.
 
+## [2.0.1] - 2025-10-07
+
+### Changed
+- **🎉 Welcome Message Update**: Redesigned Discord welcome message with shorter arch-ai mention and enhanced Xyian henchmen persona
+- **🏰 Persona Enhancement**: XY Elder now presents as XYIAN's loyal henchman with military-style mission briefings
+- **📝 Message Optimization**: Streamlined welcome content to be more concise while maintaining essential information
+- **⚔️ Guild Focus**: Enhanced XYIAN OFFICIAL recruitment messaging with mission-oriented language
+
 ## [2.0.0] - 2025-01-06 - 🚀 2025 MODERNIZATION LAUNCH
 
 ### 🎯 **MAJOR: 2025 Modernization Initiative**

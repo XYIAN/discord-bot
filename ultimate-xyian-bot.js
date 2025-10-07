@@ -3781,29 +3781,24 @@ client.on('guildMemberAdd', async (member) => {
     try {
         const welcomeEmbed = new EmbedBuilder()
             .setTitle(`🎉 Welcome to Arch 2 Addicts, ${member.user.username}!`)
-            .setDescription(`Welcome ${member} to the Arch 2 Addicts community - your premier destination for Archero 2 discussion and strategy!\n\n**XY Elder here!** As XYIAN's trusted henchman, I'm excited to help you dominate the leaderboards and achieve competitive excellence!`)
+            .setDescription(`Welcome ${member} to the Arch 2 Addicts community! Our arch-ai system is here to help with any questions.\n\n**XY Elder reporting for duty!** 🏰 As one of XYIAN's loyal henchmen, I'm here to help you climb the ranks and support our guild's quest for dominance! Ready to show you the ropes and get you battle-ready, recruit!`)
             .setColor(0x00ff88)
             .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 256 }))
             .setImage('https://cdn.discordapp.com/attachments/1268830572743102505/1279024218473758770/archero2-logo.png')
             .addFields(
                 {
-                    name: '🏆 Community Features',
-                    value: '• **Daily tips and strategies** from expert players\n• **Guild recruitment opportunities** with top guilds\n• **Expert Q&A system** with instant answers\n• **Event discussions and guides** for all game modes',
+                    name: '⚔️ Your Mission Briefing',
+                    value: '• **Daily Objectives**: Complete boss battles and guild donations\n• **Intel Gathering**: Use `!help` for commands and `#arch-ai` for strategy\n• **Guild Recruitment**: Join XYIAN OFFICIAL for elite training\n• **Battle Prep**: Get tips on builds, weapons, and arena tactics',
                     inline: false
                 },
                 {
-                    name: '🎮 Getting Started',
-                    value: '• Use `!help` to view all available commands\n• Ask any Archero 2 question for instant answers\n• Check out `#arch-ai` for detailed help\n• Join our guild for competitive play!',
+                    name: '🏰 XYIAN OFFICIAL - Elite Guild Recruitment',
+                    value: '**Guild ID: 213797** - Under XYIAN\'s command!\n• **Mission**: Dominate leaderboards and reach #1\n• **Requirements**: 300k+ power, daily activity\n• **Duties**: 2 boss battles + donations daily\n• **Specialization**: Peak Arena mastery and PvP excellence\n\n*The guild needs dedicated warriors like you!*',
                     inline: false
                 },
                 {
-                    name: '🏰 Join XYIAN OFFICIAL - Quest for #1!',
-                    value: '**XYIAN OFFICIAL** - Guild ID: **213797**\n• **Grand Master**: XYIAN (Guild Commander)\n• **Requirements**: 2 daily boss battles + donations\n• **Goal**: Dominate leaderboards and become #1\n• **Looking for**: Active players with 300k+ power\n• **Specialists**: Peak Arena and PvP experts\n• **XY Elder**: Your trusted henchman for competitive excellence!',
-                    inline: false
-                },
-                {
-                    name: '⚡ XY Elder - Your Competitive Excellence Guide',
-                    value: `• **Character builds** (Thor, Demon King, Rolla, etc.) - Optimize for leaderboard dominance\n• **Weapon strategies** (Oracle Staff, Griffin Claws, Dragoon Crossbow) - Wreck the competition\n• **Peak Arena** team composition and tactics - Achieve #1 status\n• **Runes and upgrades** with exact stats and effects - Maximize performance\n• **Events and rewards** with current schedules - Stay ahead of the competition\n• **XYIAN Knowledge**: ${Object.keys(archeroDatabase).length} database entries of real game data and strategies!`,
+                    name: '🛡️ XY Elder\'s Services',
+                    value: `Ready to assist with battle strategies and guild operations! I've got intel on ${Object.keys(archeroDatabase).length} different topics including character builds, weapon tactics, and arena strategies. Just give the word, and I'll help you become a formidable force for XYIAN!`,
                     inline: false
                 }
             )
