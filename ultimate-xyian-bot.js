@@ -3781,29 +3781,19 @@ client.on('guildMemberAdd', async (member) => {
     try {
         const welcomeEmbed = new EmbedBuilder()
             .setTitle(`🎉 Welcome to Arch 2 Addicts, ${member.user.username}!`)
-            .setDescription(`Welcome ${member} to the Arch 2 Addicts community - your premier destination for Archero 2 discussion and strategy!\n\n**XY Elder here!** As XYIAN's trusted henchman, I'm here to help you dominate the leaderboards and achieve competitive excellence!`)
+            .setDescription(`Welcome ${member} to the Arch 2 Addicts community - your destination for Archero 2 discussion and strategy!`)
             .setColor(0x00ff88)
             .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 256 }))
             .setImage('https://cdn.discordapp.com/attachments/1268830572743102505/1279024218473758770/archero2-logo.png')
             .addFields(
                 {
-                    name: '🏆 Community Features',
-                    value: '• **Daily tips and strategies** from expert players\n• **Guild recruitment opportunities** with top guilds\n• **Expert Q&A system** with instant answers\n• **Event discussions and guides** for all game modes',
+                    name: '🏰 XYIAN OFFICIAL - Guild Recruitment',
+                    value: '**Guild ID: 213797**\n• **Grand Master**: XYIAN (Guild Commander)\n• **Requirements**: 2 daily boss battles + donations\n• **Goal**: Dominate leaderboards and become #1\n• **Looking for**: Active players with 300k+ power\n• **Focus**: Peak Arena and PvP excellence',
                     inline: false
                 },
                 {
-                    name: '🎮 Getting Started',
-                    value: '• Use `!help` to view all available commands\n• Ask any Archero 2 question for instant answers\n• Check out `#arch-ai` for detailed help\n• Join our guild for competitive play!',
-                    inline: false
-                },
-                {
-                    name: '🏰 Join XYIAN OFFICIAL - Quest for #1!',
-                    value: '**XYIAN OFFICIAL** - Guild ID: **213797**\n• **Grand Master**: XYIAN (Guild Commander)\n• **Requirements**: 2 daily boss battles + donations\n• **Goal**: Dominate leaderboards and become #1\n• **Looking for**: Active players with 300k+ power\n• **Specialists**: Peak Arena and PvP experts\n• **XY Elder**: Your trusted henchman for competitive excellence!',
-                    inline: false
-                },
-                {
-                    name: '⚡ XY Elder - Your Competitive Excellence Guide',
-                    value: `• **Character builds** (Thor, Demon King, Rolla, etc.) - Optimize for leaderboard dominance\n• **Weapon strategies** (Oracle Staff, Griffin Claws, Dragoon Crossbow) - Wreck the competition\n• **Peak Arena** team composition and tactics - Achieve #1 status\n• **Runes and upgrades** with exact stats and effects - Maximize performance\n• **Events and rewards** with current schedules - Stay ahead of the competition\n• **XYIAN Knowledge**: ${Object.keys(archeroDatabase).length} database entries of real game data and strategies!`,
+                    name: '🎮 Community',
+                    value: '• Daily tips and strategies from players\n• Guild recruitment opportunities\n• Event discussions and guides\n• General Archero 2 chat and help\n\n**XY Elder here** - XYIAN\'s trusted henchman ready to help you climb the ranks!',
                     inline: false
                 }
             )
