@@ -48,9 +48,9 @@
 
 XYIAN Bot is a **sophisticated AI-powered Discord platform** specifically designed for the **Archero 2** gaming community. It combines cutting-edge machine learning, comprehensive game knowledge, and advanced community management to create the ultimate gaming Discord experience.
 
-### 🆕 **Latest Version: 1.3.4** - Ultra-Advanced Community Platform
+### 🆕 **Latest Version: 2.0.1** - Ultra-Advanced Community Platform
 
-- **🧠 Comprehensive Knowledge Base** - 4.3M+ characters of real Discord community content
+- **🧠 Comprehensive Knowledge Base** - 217+ expert entries from comprehensive documentation
 - **📊 Advanced Analytics** - Real-time performance monitoring and user engagement tracking
 - **🤖 Enhanced AI Integration** - Role-based AI access with channel-specific responses
 - **📈 Learning System** - Automatic response improvement from user feedback

@@ -4,7 +4,7 @@ const path = require('path');
 require('dotenv').config();
 
 // Bot version and update tracking
-const BOT_VERSION = '2.0.0';
+const BOT_VERSION = '2.0.1';
 const LAST_UPDATE = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD format
 const UPDATE_NOTES = 'AI Learning System + Conversational Responses';
 
