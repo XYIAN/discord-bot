@@ -105,9 +105,9 @@ async function comprehensiveSingleSessionScraper() {
     await driver.navigate().refresh();
     await driver.sleep(2000); // Wait for refresh to complete
     
-    console.log('⏰ Manual login timer: 3 minutes - please log into Discord manually');
-    console.log('⏳ Waiting 3 minutes for manual login...');
-    await driver.sleep(180000); // 3 minutes
+    console.log('⏰ Manual login timer: 5 minutes - please log into Discord manually');
+    console.log('⏳ Waiting 5 minutes for manual login...');
+    await driver.sleep(300000); // 5 minutes
     
     console.log('✅ Manual login period complete, starting comprehensive scraping...');
     
@@ -206,16 +206,37 @@ async function comprehensiveSingleSessionScraper() {
     
     allData.totalWikiPages = allData.wikiPages.length;
     
-    // Save the comprehensive data
+    // Save the comprehensive data to raw directory
     const filename = `comprehensive-single-session-data-${Date.now()}.json`;
-    const filepath = path.join(__dirname, filename);
+    const filepath = path.join(__dirname, 'raw-scraped-data', filename);
     fs.writeFileSync(filepath, JSON.stringify(allData, null, 2));
+    
+    // Also save individual category files for easier processing
+    const categoryDir = path.join(__dirname, 'raw-scraped-data');
+    
+    // Save Discord theorycrafting data by category
+    for (const [category, data] of Object.entries(allData.categories)) {
+      const categoryFile = path.join(categoryDir, 'discord-theorycrafting', `${category}-${Date.now()}.json`);
+      fs.writeFileSync(categoryFile, JSON.stringify(data, null, 2));
+      console.log(`💾 ${category} data saved to: raw-scraped-data/discord-theorycrafting/${category}-${Date.now()}.json`);
+    }
+    
+    // Save additional channels data
+    const additionalChannelsFile = path.join(categoryDir, 'discord-additional-channels', `additional-channels-${Date.now()}.json`);
+    fs.writeFileSync(additionalChannelsFile, JSON.stringify(allData.additionalChannels, null, 2));
+    console.log(`💾 Additional channels data saved to: raw-scraped-data/discord-additional-channels/additional-channels-${Date.now()}.json`);
+    
+    // Save wiki data
+    const wikiFile = path.join(categoryDir, 'wiki-pages', `wiki-pages-${Date.now()}.json`);
+    fs.writeFileSync(wikiFile, JSON.stringify(allData.wikiPages, null, 2));
+    console.log(`💾 Wiki pages data saved to: raw-scraped-data/wiki-pages/wiki-pages-${Date.now()}.json`);
     
     console.log(`\n🎉 COMPREHENSIVE scraping complete!`);
     console.log(`📊 Total theorycrafting posts: ${allData.totalPosts}`);
     console.log(`📊 Total additional channels: ${allData.totalChannels}`);
     console.log(`📊 Total wiki pages: ${allData.totalWikiPages}`);
-    console.log(`💾 Data saved to: ${filename}`);
+    console.log(`💾 Main data saved to: raw-scraped-data/${filename}`);
+    console.log(`📁 Individual category files saved to raw-scraped-data/ subdirectories`);
     
     // Show summary
     console.log('\n📋 Summary by category:');
