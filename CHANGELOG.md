@@ -2,6 +2,12 @@
 
 All notable changes to the Arch 2 Addicts Discord Bot project will be documented in this file.
 
+## [2.0.1] - 2025-10-07
+
+### Changed
+- **🎉 Welcome Message Update**: Shortened XY Elder description to one sentence while maintaining Xyian henchmen persona
+- **📝 Minor Optimization**: Condensed arch-ai introduction to be more concise while preserving all original content and features
+
 ## [2.0.0] - 2025-01-06 - 🚀 2025 MODERNIZATION LAUNCH
 
 ### 🎯 **MAJOR: 2025 Modernization Initiative**
