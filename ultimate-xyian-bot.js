@@ -117,25 +117,25 @@ async function generateDailyMessage(messageType) {
         // Get sample of relevant data
         const sampleData = relevantKeys.slice(0, 10).map(key => `${key}: ${archeroDatabase[key]}`).join('\n');
         
-        const context = `You are XY Elder, the trusted henchman and guild elder of XYIAN OFFICIAL (Guild ID: 213797). You serve under the grand master and guild commander XYIAN, who leads our quest to dominate the leaderboards and become #1. Generate a unique, engaging daily ${messageType} message that embodies XYIAN's quest for leaderboard dominance and competitive excellence. Use our comprehensive database knowledge to create authentic, valuable content.
+        const context = `You are XY Elder, the trusted henchman and guild elder of XYIAN OFFICIAL (Guild ID: 213797). You serve under the grand master and guild commander XYIAN, who leads our quest to be the top guild. Generate a unique, engaging daily ${messageType} message that embodies XYIAN's competitive spirit and community focus. Use our comprehensive database knowledge to create authentic, valuable content.
 
-XYIAN MISSION: Our ultimate goal is to be #1 on the leaderboards with active, high-performing players. You are XY Elder, XYIAN's henchman, passionate about growing the guild and helping members develop skills to wreck the leaderboards. Emphasize that stats are hard to get in this game - that's where your extensive knowledge comes in.
+XYIAN MISSION: Our goal is to be #1 on the leaderboards with active, high-performing players. You are XY Elder, XYIAN's henchman, passionate about growing the guild and helping members develop skills to excel. Emphasize that stats are hard to get in this game - that's where your extensive knowledge comes in.
 
 RELEVANT DATABASE KNOWLEDGE:
 ${sampleData}
 
 Create a message that:
-1. Has a compelling title with XYIAN branding and leaderboard focus
+1. Has a compelling title with XYIAN branding and community focus
 2. Includes motivational content about daily requirements and competitive excellence
-3. Incorporates a fun fact or tip from our database that helps with leaderboard dominance
-4. Maintains XYIAN's quest for #1 status and competitive spirit
+3. Incorporates a fun fact or tip from our database that helps with progression
+4. Maintains XYIAN's quest for top status and competitive spirit
 5. Uses appropriate emojis and formatting
 6. Reflects your role as XYIAN's trusted henchman
 
 Format as:
 Title
-Description with XYIAN leaderboard dominance flavor
-Fun fact or tip from database that helps wreck the leaderboards`;
+Description with XYIAN community and competitive flavor
+Fun fact or tip from database that helps with progression`;
 
         const completion = await AIService.chat.completions.create({
             model: "gpt-3.5-turbo",
@@ -933,6 +933,11 @@ async function sendPersonalizedOnboarding(member) {
                 { 
                     name: '🏰 XYIAN Guild - Elite Competitive Play', 
                     value: '**Guild ID: 213797**\n• Requirements: 2 daily boss battles + donations\n• Looking for active players with 300k+ power\n• Peak Arena specialists and PvP experts\n• Exclusive guild strategies and team coordination', 
+                    inline: false 
+                },
+                { 
+                    name: '🎮 Community Channels - Your Adventure Awaits!', 
+                    value: '• **Community & Daily Chat**: [Join the conversation!](https://discord.com/channels/1419944148701679686/1425322796820725760)\n• **Want to Join XYIAN?**: [Apply here!](https://discord.com/channels/1419944148701679686/1419944464608268410)\n• **Umbral Teams**: [Team up for success!](https://discord.com/channels/1419944148701679686/1419944602651197511)\n• **PvP Enthusiasts**: [Battle it out!](https://discord.com/channels/1419944148701679686/1421948149827895498)\n• **Archero AI Training**: [Level up your knowledge!](https://discord.com/channels/1419944148701679686/1424322391160393790)', 
                     inline: false 
                 },
                 { 
@@ -1813,44 +1818,36 @@ const generalResetMessages = [
     }
 ];
 
-// General reset message using AI and comprehensive database
+// Daily Reset message with guild reminders and AI tips
 async function sendGeneralResetMessage() {
-    let title = '';
-    let description = '';
-    let funFact = '';
+    // Get random tip from our comprehensive database
+    const tipKeys = Object.keys(archeroDatabase);
+    const randomKey = tipKeys[Math.floor(Math.random() * tipKeys.length)];
+    const tip = archeroDatabase[randomKey];
     
-    // Try AI first, then fallback to database
-    if (AIService) {
-        try {
-            const aiMessage = await generateDailyMessage('general');
-            if (aiMessage) {
-                // Parse AI response (simple parsing)
-                const lines = aiMessage.split('\n').filter(line => line.trim());
-                title = lines[0] || '🎉 Happy Daily Reset!';
-                description = lines.slice(1, -1).join('\n') || '**A new day, new opportunities to level up!**';
-                funFact = lines[lines.length - 1] || '💡 **XYIAN AI Generated**: This message was created by our AI using comprehensive XYIAN knowledge!';
-            }
-        } catch (error) {
-            console.error('❌ AI daily message error:', error);
-        }
-    }
-    
-    // Fallback to comprehensive database if AI didn't work
-    if (!title) {
-        // Get random tip from our comprehensive database
-        const tipKeys = Object.keys(archeroDatabase);
-        const randomKey = tipKeys[Math.floor(Math.random() * tipKeys.length)];
-        const tip = archeroDatabase[randomKey];
-        
-        title = '🎉 Happy Daily Reset!';
-        description = '**A new day, new opportunities to level up!**\n\n✨ **What\'s new today:**\n• Fresh daily quests with great rewards\n• New challenges to conquer\n• Another chance to improve your build\n• More opportunities to earn gold and XP\n\n🎮 **Ready to dominate today\'s challenges?**';
-        funFact = `💡 **Daily Tip**: ${tip}`;
-    }
+    const title = '🔄 Daily Reset!';
+    const description = '**A new day, new opportunities to level up!**\n\n✨ **What\'s new today:**\n• Fresh daily quests with great rewards\n• New challenges to conquer\n• Another chance to improve your build\n• More opportunities to earn gold and XP';
     
     const embed = new EmbedBuilder()
         .setTitle(title)
         .setDescription(description)
-        .addFields({ name: 'Did You Know?', value: funFact, inline: false })
+        .addFields(
+            {
+                name: '⚔️ Daily Guild Reminders',
+                value: '• **Guild Boss Battles** - Complete your 2 daily battles!\n• **Donations** - Help the guild grow stronger!\n• **Gold Rush** - Don\'t miss out on extra gold!',
+                inline: false
+            },
+            {
+                name: '💪 Motivational Message',
+                value: 'Every reset is a chance to prove yourself! Whether you\'re climbing the leaderboards or perfecting your build, today\'s the day to make it count. Stay focused, stay determined, and remember - every champion was once a beginner who refused to give up! 🏆',
+                inline: false
+            },
+            {
+                name: '🤖 ArchAI Tip (Beta)',
+                value: `*${tip}*`,
+                inline: false
+            }
+        )
         .setColor(0x00FF88) // Green for positivity
         .setTimestamp()
         .setFooter({ text: 'Arch 2 Addicts - Daily Reset' });
@@ -2295,7 +2292,7 @@ client.on('messageCreate', async (message) => {
                         .addFields(
                             { name: '📊 Version', value: `v${BOT_VERSION}`, inline: true },
                             { name: '📅 Last Update', value: LAST_UPDATE, inline: true },
-                            { name: '🧠 Knowledge Base', value: `${Object.keys(archeroDatabase).length} entries`, inline: true },
+                            { name: '🧠 Knowledge Base', value: ragSystem ? `${ragSystem.getStats().totalEntries} entries` : `${Object.keys(archeroDatabase).length} entries`, inline: true },
                             { name: '🤖 AI Status', value: AIService ? '✅ Enabled' : '❌ Disabled', inline: true },
                             { name: '📈 AI Learning', value: Object.keys(aiFeedback).length > 0 ? '✅ Active' : '🔄 Ready', inline: true },
                             { name: '🎯 Guild ID', value: '213797', inline: true }
@@ -2395,7 +2392,7 @@ client.on('messageCreate', async (message) => {
                     .addFields(
                         { name: '📊 Version', value: `v${BOT_VERSION}`, inline: true },
                         { name: '📅 Last Update', value: LAST_UPDATE, inline: true },
-                        { name: '🧠 Knowledge Base', value: `${Object.keys(archeroDatabase).length} entries`, inline: true },
+                        { name: '🧠 Knowledge Base', value: ragSystem ? `${ragSystem.getStats().totalEntries} entries` : `${Object.keys(archeroDatabase).length} entries`, inline: true },
                         { name: '🤖 AI Status', value: aiStatus, inline: true },
                         { name: '📈 AI Learning', value: Object.keys(aiFeedback).length > 0 ? '✅ Active' : '🔄 Ready', inline: true },
                         { name: '🎯 Guild ID', value: '213797', inline: true }
@@ -3876,13 +3873,18 @@ client.on('guildMemberAdd', async (member) => {
                     inline: false
                 },
                 {
-                    name: '🎮 Community',
-                    value: '• Daily tips and strategies from players\n• Guild recruitment opportunities\n• Event discussions and guides\n• General Archero 2 chat and help\n\n**XY Elder here** - XYIAN\'s trusted henchman ready to help you climb the ranks!',
+                    name: '🎮 Community Channels - Choose Your Adventure!',
+                    value: '• **Community & Daily Chat**: [Join the conversation!](https://discord.com/channels/1419944148701679686/1425322796820725760)\n• **Want to Join XYIAN?**: [Apply here!](https://discord.com/channels/1419944148701679686/1419944464608268410)\n• **Umbral Teams**: [Team up for success!](https://discord.com/channels/1419944148701679686/1419944602651197511)\n• **PvP Enthusiasts**: [Battle it out!](https://discord.com/channels/1419944148701679686/1421948149827895498)\n• **Archero AI Training**: [Level up your knowledge!](https://discord.com/channels/1419944148701679686/1424322391160393790)',
+                    inline: false
+                },
+                {
+                    name: '🤖 XY Elder - Your AI Assistant',
+                    value: 'Ready to help you climb the ranks! Ask me anything about Archero 2 - strategies, builds, runes, or just say hi!',
                     inline: false
                 }
             )
             .setTimestamp()
-            .setFooter({ text: 'Arch 2 Addicts Community' });
+            .setFooter({ text: 'Arch 2 Addicts - Where Legends Are Born!' });
         
         await sendToGeneral({ embeds: [welcomeEmbed] });
         console.log(`✅ SINGLE welcome message sent for ${member.user.username} (ID: ${memberId})`);
