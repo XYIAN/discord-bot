@@ -90,3 +90,6 @@ scraped-*
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Bot lock file (prevents multiple instances)
+.bot.lock
