@@ -2,6 +2,29 @@
 
 All notable changes to the Arch 2 Addicts Discord Bot project will be documented in this file.
 
+## [2.0.2] - 2025-01-07
+
+### Added
+- **🔗 Direct Channel Links**: Welcome messages now include clickable Discord channel links for better navigation
+- **🎮 Enhanced Community Section**: Added themed channel descriptions with direct links to:
+  - Community & Daily Chat
+  - XYIAN Guild Application
+  - Umbral Teams
+  - PvP Enthusiasts  
+  - Archero AI Training
+- **✨ Themed Messaging**: Updated welcome messages with more engaging, adventure-themed language
+- **🔄 Daily Reset Improvements**: Completely revamped daily reset message system
+- **⚔️ Guild Reminders**: Added daily guild boss battles, donations, and gold rush reminders
+- **💪 Motivational Messages**: Added inspiring daily motivational content
+- **🤖 ArchAI Tips (Beta)**: Integrated AI-generated tips from comprehensive database
+
+### Changed
+- **📱 Welcome Embed**: Restructured to include "Choose Your Adventure!" channel navigation
+- **📩 DM Onboarding**: Added channel links to personalized onboarding messages
+- **🎯 User Experience**: Improved channel discovery and community engagement
+- **📅 Daily Reset Title**: Changed from "Daily Dominance Report" to "Daily Reset!"
+- **🎯 Daily Message Focus**: Streamlined daily messages with clear guild reminders and motivational content
+
 ## [2.0.1] - 2025-10-07
 
 ### Changed
