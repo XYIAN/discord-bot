@@ -27,29 +27,32 @@ try {
     console.log('⚠️ OpenAI package not installed. AI features disabled.');
 }
 
+// Load Improved RAG System
+const ImprovedRAGSystem = require('./improved-rag-system');
+let ragSystem = null;
+
+// Initialize Improved RAG System
+try {
+    ragSystem = new ImprovedRAGSystem();
+    console.log('✅ Improved RAG System initialized successfully');
+} catch (error) {
+    console.error('❌ Failed to initialize Improved RAG System:', error.message);
+}
+
 // AI helper functions
 async function generateAIResponse(message, channelName) {
     try {
-        // Use cognitive AI system if available
-        if (cognitiveAI && cognitiveAI.isInitialized) {
-            console.log('🧠 Using Cognitive AI System...');
-            
-            const context = {
-                userId: message.author?.id || 'unknown',
-                username: message.author?.username || 'User',
-                channelId: message.channel?.id,
-                guildId: message.guild?.id
-            };
-            
-            const result = await cognitiveAI.reason(message.content || message, context);
-            
-            if (result && result.answer && result.answer.length > 10) {
-                console.log(`✅ Cognitive AI response: ${result.answer.length} chars, confidence: ${result.confidence}`);
-                return result.answer;
+        // Use Improved RAG System first (smart keyword matching)
+        if (ragSystem) {
+            console.log('🧠 Using Improved RAG System...');
+            const ragResponse = ragSystem.generateResponse(message, 'User');
+            if (ragResponse && ragResponse.length > 20) {
+                console.log(`✅ Improved RAG Response generated: ${ragResponse.length} chars`);
+                return ragResponse;
             }
         }
         
-        // Fallback to traditional AI if cognitive system not available
+        // Fallback to traditional AI system
         if (!AIService) return null;
         
         console.log('🤖 Using traditional AI...');
@@ -508,11 +511,11 @@ async function initializeCognitiveAI() {
     }
 }
 
-// Load high-quality cleaned knowledge database (fallback)
+// Load high-quality knowledge database with actual game facts
 let archeroDatabase = {};
 function loadKnowledgeDatabase() {
     try {
-        // Load cleaned real facts - extracted from all data sources
+        // Load cleaned real facts - has 196 entries vs 15 in real-archero2-facts.json
         const cleanedFactsFile = path.join(__dirname, 'data', 'cleaned-real-facts.json');
         if (fs.existsSync(cleanedFactsFile)) {
             const data = JSON.parse(fs.readFileSync(cleanedFactsFile, 'utf8'));
@@ -525,9 +528,10 @@ function loadKnowledgeDatabase() {
                 });
             });
             
-            console.log(`✅ Loaded CLEANED real facts with ${Object.keys(archeroDatabase).length} entries`);
+            console.log(`✅ Loaded CLEANED REAL FACTS with ${Object.keys(archeroDatabase).length} entries`);
         } else if (fs.existsSync(path.join(__dirname, 'data', 'real-archero2-facts.json'))) {
-            const data = JSON.parse(fs.readFileSync(factsFile, 'utf8'));
+            const realFactsFile = path.join(__dirname, 'data', 'real-archero2-facts.json');
+            const data = JSON.parse(fs.readFileSync(realFactsFile, 'utf8'));
             
             // Flatten the facts into a single database
             archeroDatabase = {};
@@ -643,6 +647,14 @@ initializeCognitiveAI().then(success => {
     
     console.log('🔄 Falling back to traditional knowledge database');
     loadKnowledgeDatabase();
+    
+    // Auto-save memory every 5 minutes
+    setInterval(() => {
+        if (conversationMemory.size > 0) {
+            saveAILearningData();
+            console.log(`💾 Auto-saved memory for ${conversationMemory.size} users`);
+        }
+    }, 5 * 60 * 1000); // 5 minutes
 });
 
 // AI Response Toggle - Controls whether bot responds to AI questions
@@ -660,7 +672,7 @@ let unknownQuestions = [];
 let conversationMemory = new Map(); // userId -> recent messages
 const MAX_CONVERSATION_HISTORY = 10; // Keep last 10 messages per user
 
-// Load AI learning data
+// Load AI learning data and conversation memory
 function loadAILearningData() {
     try {
         const learningFile = path.join(__dirname, 'data', 'ai-learning-data.json');
@@ -669,6 +681,13 @@ function loadAILearningData() {
             aiFeedback = data.feedback || {};
             aiLearningData = data.learning || {};
             unknownQuestions = data.unknownQuestions || [];
+            
+            // Load conversation memory
+            if (data.conversationMemory) {
+                conversationMemory = new Map(Object.entries(data.conversationMemory));
+                console.log(`🧠 Loaded conversation memory for ${conversationMemory.size} users`);
+            }
+            
             console.log(`🧠 Loaded AI learning data: ${Object.keys(aiFeedback).length} feedback entries, ${Object.keys(aiLearningData).length} learning entries, ${unknownQuestions.length} unknown questions`);
         }
     } catch (error) {
@@ -676,7 +695,7 @@ function loadAILearningData() {
     }
 }
 
-// Save AI learning data
+// Save AI learning data and conversation memory
 function saveAILearningData() {
     try {
         const learningFile = path.join(__dirname, 'data', 'ai-learning-data.json');
@@ -684,10 +703,11 @@ function saveAILearningData() {
             feedback: aiFeedback,
             learning: aiLearningData,
             unknownQuestions: unknownQuestions,
+            conversationMemory: Object.fromEntries(conversationMemory), // Convert Map to Object for JSON
             lastUpdated: new Date().toISOString()
         };
         fs.writeFileSync(learningFile, JSON.stringify(data, null, 2));
-        console.log(`💾 Saved AI learning data: ${Object.keys(aiFeedback).length} feedback entries, ${Object.keys(aiLearningData).length} learning entries, ${unknownQuestions.length} unknown questions`);
+        console.log(`💾 Saved AI learning data: ${Object.keys(aiFeedback).length} feedback entries, ${Object.keys(aiLearningData).length} learning entries, ${unknownQuestions.length} unknown questions, ${conversationMemory.size} users with memory`);
     } catch (error) {
         console.error('❌ Error saving AI learning data:', error.message);
     }
@@ -785,14 +805,15 @@ function getConversationContext(userId) {
         return '';
     }
     
-    let context = '\nRECENT CONVERSATION CONTEXT:\n';
+    let context = '\nCONVERSATION HISTORY:\n';
     userHistory.slice(-5).forEach((entry, index) => { // Last 5 messages
-        context += `${index + 1}. User: "${entry.message}"\n`;
+        context += `[${index + 1}] User: "${entry.message}"\n`;
         if (entry.response) {
-            context += `   Bot: "${entry.response.substring(0, 100)}..."\n`;
+            context += `[${index + 1}] XY Elder: "${entry.response.substring(0, 150)}..."\n`;
         }
+        context += '\n';
     });
-    context += '\nUse this context to understand what the user is referring to. If they ask follow-up questions, reference the previous conversation.\n';
+    context += 'IMPORTANT: Use this conversation history to understand context. If the user asks follow-up questions like "what about that?" or "tell me more", reference the previous conversation. Be conversational and acknowledge what we discussed before.\n';
     
     return context;
 }
@@ -3030,7 +3051,7 @@ client.on('messageCreate', async (message) => {
             case 'help':
                 const generalHelpEmbed = new EmbedBuilder()
                     .setTitle('🤖 XYIAN Ultimate Bot Commands')
-                    .setDescription('**Basic Commands:**\n`!ping` - Check bot status\n`!help` - This help\n`!menu` - Show question menu\n\n**For Archero 2 Questions:**\n🔹 **Go to the AI chat channels** for detailed answers!\n🔹 Use `#arch-ai` for Q&A\n🔹 This channel is for general discussion only\n\n**AI Learning Commands:**\n`!ai-feedback [question] [feedback]` - Provide detailed feedback on AI responses\n`!ai-thumbs-down [question]` - Quick thumbs down for wrong responses\n`!teach "question" "answer"` - Teach the bot a new answer\n`!memory` - Show your conversation memory with the bot\n`!unknown` - View unknown questions (XYIAN OFFICIAL only)\n\n**Role-Based Commands:**\n• XYIAN OFFICIAL: Full access + Channel management\n• XYIAN Guild Verified: Basic AI questions\n• Admin: Administrative commands\n\n**Admin Commands:**\n`!discord-bot-clean` - Clean duplicate bot processes (XYIAN OFFICIAL only)\n`!ai-toggle` - Toggle AI responses on/off (XYIAN OFFICIAL only)')
+                    .setDescription('**Basic Commands:**\n`!ping` - Check bot status\n`!help` - This help\n`!menu` - Show question menu\n`!dev-menu` - Show all dev commands\n\n**For Archero 2 Questions:**\n🔹 **Go to the AI chat channels** for detailed answers!\n🔹 Use `#arch-ai` for Q&A\n🔹 This channel is for general discussion only\n\n**AI Learning Commands:**\n`!ai-feedback [question] [feedback]` - Provide detailed feedback on AI responses\n`!ai-thumbs-down [question]` - Quick thumbs down for wrong responses\n`!teach "question" "answer"` - Teach the bot a new answer\n`!ai memory` - Show your conversation memory with the bot\n`!ai rag-test [query]` - Test RAG system\n`!unknown` - View unknown questions (XYIAN OFFICIAL only)\n\n**Role-Based Commands:**\n• XYIAN OFFICIAL: Full access + Channel management\n• XYIAN Guild Verified: Basic AI questions\n• Admin: Administrative commands\n\n**Admin Commands:**\n`!discord-bot-clean` - Clean duplicate bot processes (XYIAN OFFICIAL only)\n`!ai-toggle` - Toggle AI responses on/off (XYIAN OFFICIAL only)')
                     .setColor(0x00BFFF)
                     .setTimestamp()
                     .setFooter({ text: 'XYIAN OFFICIAL' });
@@ -3180,50 +3201,7 @@ client.on('messageCreate', async (message) => {
                 }
                 break;
                 
-            case 'api-test':
-                // Test API endpoints (XYIAN OFFICIAL only)
-                if (!hasXYIANRole(message.member)) {
-                    await message.reply('❌ This command requires the XYIAN OFFICIAL role.');
-                    return;
-                }
-                
-                try {
-                    const axios = require('axios');
-                    const apiKey = process.env.API_KEY || 'xyian-bot-api-2024';
-                    const baseUrl = `http://localhost:${process.env.API_PORT || 3001}`;
-                    
-                    // Test health endpoint
-                    const healthResponse = await axios.get(`${baseUrl}/api/health`);
-                    const statusResponse = await axios.get(`${baseUrl}/api/status`);
-                    const analyticsResponse = await axios.get(`${baseUrl}/api/analytics/overview`, {
-                        headers: { 'x-api-key': apiKey }
-                    });
-                    
-                    const testEmbed = new EmbedBuilder()
-                        .setTitle('🧪 API Test Results')
-                        .setDescription('**API Server Status Check**')
-                        .addFields(
-                            { name: '🏥 Health Check', value: `Status: ${healthResponse.data.status}`, inline: true },
-                            { name: '📊 System Status', value: `Uptime: ${Math.round(statusResponse.data.uptime)}s`, inline: true },
-                            { name: '📈 Analytics', value: `Interactions: ${analyticsResponse.data.totalInteractions}`, inline: true },
-                            { 
-                                name: '✅ All Tests Passed', 
-                                value: 'API server is running and responding correctly!',
-                                inline: false 
-                            }
-                        )
-                        .setColor(0x00FF88)
-                        .setTimestamp()
-                        .setFooter({ text: 'XYIAN Bot - API Test' });
-                    
-                    await message.reply({ embeds: [testEmbed] });
-                    
-                } catch (error) {
-                    console.error('❌ API test error:', error);
-                    await message.reply('❌ API test failed. Check server logs for details.');
-                    sendToAdmin(`🚨 **API Test Error**: ${error.message}`);
-                }
-                break;
+            // REMOVED: !api-test command - requires local API server that's not running
                 
             case 'learn':
                 // Trigger learning system and data scraping (XYIAN OFFICIAL only)
@@ -3297,62 +3275,7 @@ client.on('messageCreate', async (message) => {
                 }
                 break;
                 
-            case 'scrape':
-                // Trigger comprehensive data scraping (XYIAN OFFICIAL only)
-                if (!hasXYIANRole(message.member)) {
-                    await message.reply('❌ This command requires the XYIAN OFFICIAL role.');
-                    return;
-                }
-                
-                const scrapeEmbed = new EmbedBuilder()
-                    .setTitle('🔍 Data Scraping')
-                    .setDescription('**Starting comprehensive Archero 2 data scraping...**\nThis may take a few minutes.')
-                    .setColor(0xFFA500)
-                    .setTimestamp();
-                
-                const scrapingMsg = await message.reply({ embeds: [scrapeEmbed] });
-                
-                try {
-                    const Archero2DataScraper = require('./scripts/archero2-data-scraper');
-                    const scraper = new Archero2DataScraper();
-                    
-                    const scrapedData = await scraper.scrapeAllData();
-                    
-                    if (scrapedData) {
-                        const successEmbed = new EmbedBuilder()
-                            .setTitle('✅ Data Scraping Complete')
-                            .setDescription('**Comprehensive Archero 2 data has been collected!**')
-                            .addFields(
-                                { name: '👥 Characters', value: Object.keys(scrapedData.characters).length.toString(), inline: true },
-                                { name: '⚔️ Weapons', value: Object.keys(scrapedData.weapons).length.toString(), inline: true },
-                                { name: '🎯 Skills', value: Object.keys(scrapedData.skills).length.toString(), inline: true },
-                                { name: '💎 Runes', value: Object.keys(scrapedData.runes).length.toString(), inline: true },
-                                { name: '🎉 Events', value: Object.keys(scrapedData.events).length.toString(), inline: true },
-                                { name: '📚 Strategies', value: Object.keys(scrapedData.strategies).length.toString(), inline: true },
-                                { name: '💰 F2P Guides', value: Object.keys(scrapedData.f2pGuides).length.toString(), inline: true },
-                                { name: '⚔️ PvP Guides', value: Object.keys(scrapedData.pvpGuides).length.toString(), inline: true },
-                                { name: '📅 Last Updated', value: new Date(scrapedData.lastUpdated).toLocaleString(), inline: false }
-                            )
-                            .setColor(0x00FF88)
-                            .setTimestamp()
-                            .setFooter({ text: 'XYIAN Bot - Data Scraping' });
-                        
-                        await scrapingMsg.edit({ embeds: [successEmbed] });
-                    } else {
-                        throw new Error('Scraping failed');
-                    }
-                    
-                } catch (error) {
-                    console.error('❌ Data scraping error:', error);
-                    await scrapingMsg.edit({ 
-                        embeds: [new EmbedBuilder()
-                            .setTitle('❌ Data Scraping Error')
-                            .setDescription('Failed to scrape data. Check logs for details.')
-                            .setColor(0xFF0000)
-                        ]
-                    });
-                }
-                break;
+            // REMOVED: !scrape command - not working properly, use external scraper instead
                 
             case 'ai-toggle':
                 // Toggle AI responses on/off (XYIAN OFFICIAL only)
@@ -3423,17 +3346,92 @@ client.on('messageCreate', async (message) => {
                 const context = getConversationContext(userId);
                 
                 if (context) {
-                    const memoryEmbed = new EmbedBuilder()
-                        .setTitle('🧠 Your Conversation Memory')
-                        .setDescription(`\`\`\`${context}\`\`\``)
-                        .setColor(0x00BFFF)
-                        .setTimestamp()
-                        .setFooter({ text: 'XYIAN Bot - Memory System' });
+                    const userHistory = conversationMemory.get(userId) || [];
+                    const ragStats = ragSystem ? ragSystem.getStats() : null;
                     
+                    const memoryEmbed = new EmbedBuilder()
+                        .setTitle('🧠 Your Conversation Memory & RAG Status')
+                        .setDescription(`**Recent conversations with XY Elder:**\n\n${context}`)
+                        .addFields(
+                            { name: 'Memory Stats', value: `Messages stored: ${userHistory.length}/${MAX_CONVERSATION_HISTORY}`, inline: true },
+                            { name: 'Commands', value: '`!ai clear-memory` - Clear your memory\n`!ai rag-test` - Test RAG system\n`!ai memory` - View this again', inline: true }
+                        );
+                    
+                    if (ragStats) {
+                        memoryEmbed.addFields(
+                            { name: 'RAG Knowledge Base', value: `${ragStats.totalEntries} entries`, inline: true },
+                            { name: 'Embeddings', value: `${ragStats.embeddedEntries} vectors`, inline: true },
+                            { name: 'Categories', value: `${ragStats.categories.length} types`, inline: true }
+                        );
+                    }
+                    
+                    memoryEmbed.setColor(0x00BFFF).setTimestamp().setFooter({ text: 'XYIAN Bot - Memory System' });
                     await message.reply({ embeds: [memoryEmbed] });
                 } else {
                     await message.reply('❌ No conversation memory found. Start a conversation and I\'ll remember it!');
                 }
+                break;
+                
+            case 'clear-memory':
+                // Clear conversation memory for the user
+                if (conversationMemory.has(message.author.id)) {
+                    conversationMemory.delete(message.author.id);
+                    saveAILearningData(); // Save the cleared memory
+                    
+                    const clearEmbed = new EmbedBuilder()
+                        .setTitle('🧹 Memory Cleared')
+                        .setDescription('Your conversation memory has been cleared. I\'ll start fresh with our next conversation!')
+                        .setColor(0xFF6B35)
+                        .setTimestamp()
+                        .setFooter({ text: 'XYIAN Bot - Memory System' });
+                    
+                    await message.reply({ embeds: [clearEmbed] });
+                    console.log(`🧹 Cleared memory for user ${message.author.username} (${message.author.id})`);
+                } else {
+                    await message.reply('❌ No memory to clear! Start a conversation first.');
+                }
+                break;
+                
+            case 'rag-test':
+                // Test the RAG system
+                if (!ragSystem) {
+                    await message.reply('❌ RAG system not initialized yet. Please wait...');
+                    break;
+                }
+                
+                const testQuery = message.content.replace('!ai rag-test', '').trim() || 'What are the best weapons?';
+                const response = await ragSystem.generateResponse(testQuery, message.author.username);
+                
+                const testEmbed = new EmbedBuilder()
+                    .setColor('#0099ff')
+                    .setTitle('🧪 RAG System Test')
+                    .addFields(
+                        { name: 'Query', value: testQuery, inline: false },
+                        { name: 'Response', value: response.substring(0, 1000) + (response.length > 1000 ? '...' : ''), inline: false }
+                    )
+                    .setTimestamp();
+                
+                await message.reply({ embeds: [testEmbed] });
+                break;
+                
+            case 'dev-menu':
+                // Show all available dev commands
+                const devEmbed = new EmbedBuilder()
+                    .setTitle('🛠️ XYIAN Bot Dev Menu')
+                    .setDescription('**Available Development Commands:**')
+                    .setColor(0x00BFFF)
+                    .addFields(
+                        { name: '🔍 Bot Status', value: '`!ping` - Bot status and stats\n`!ai memory` - AI memory & RAG status', inline: true },
+                        { name: '🧪 Testing', value: '`!ai rag-test [query]` - Test RAG system\n`!test` - General bot test\n`!test-spam-filter` - Test spam filter', inline: true },
+                        { name: '📊 Monitoring', value: '`!audit-logs` - View audit logs\n`!monitor-debug` - Debug monitoring\n`!analytics` - Bot analytics', inline: true },
+                        { name: '🤖 AI Commands', value: '`!ai-toggle` - Toggle AI responses\n`!ai-feedback` - Give AI feedback\n`!ai clear-memory` - Clear AI memory', inline: true },
+                        { name: '🏰 Guild Commands', value: '`!xyian info` - Guild info\n`!xyian members` - Guild members\n`!xyian stats` - Guild stats', inline: true },
+                        { name: '📝 Content', value: '`!tip` - Daily tip\n`!recruit` - Recruitment message\n`!reset` - Daily reset message', inline: true }
+                    )
+                    .setFooter({ text: 'XYIAN Bot v2.1.0 - Development Commands' })
+                    .setTimestamp();
+                
+                await message.reply({ embeds: [devEmbed] });
                 break;
                 
             case 'teach':
@@ -3557,15 +3555,101 @@ client.on('messageCreate', async (message) => {
         // Check if user has access to AI features
         const hasAIAccess = hasBasicAccess(message.member);
         
-        // Special handling for identity questions
+        // Special handling for common questions - CHECK THESE FIRST
         const messageLower = message.content.toLowerCase().trim();
         if (messageLower.includes('what is your name') || messageLower.includes('who are you') || messageLower.includes('your name')) {
             answer = "I'm XY Elder, the trusted henchman and guild elder of XYIAN OFFICIAL! I'm here to help you dominate the leaderboards and master Archero 2!";
             isAIResponse = true;
             console.log(`✅ DIRECT IDENTITY RESPONSE for: "${message.content}"`);
+        } else if (messageLower.includes('what is your purpose') || messageLower.includes('your purpose') || messageLower.includes('purpose')) {
+            answer = "My purpose is to help XYIAN guild members dominate the leaderboards and master Archero 2! I'm XY Elder, your trusted henchman with extensive game knowledge. I provide expert advice on weapons, characters, builds, PvP strategies, and everything you need to wreck the competition!";
+            isAIResponse = true;
+            console.log(`✅ DIRECT PURPOSE RESPONSE for: "${message.content}"`);
+        } else if (messageLower.includes('main 3 gear sets') || messageLower.includes('gear sets') || messageLower.includes('best gear') || messageLower.includes('mixed gear')) {
+            answer = `**The 3 Main Gear Sets in Archero 2:**
+
+**1. Oracle Set** - Balanced offense/defense
+- Best for: PvE content, balanced builds
+- Focus: High damage with good survivability
+- Pieces: Oracle Staff, Oracle Armor, Oracle Boots, Oracle Amulet, Oracle Ring
+
+**2. Dragoon Set** - High attack/critical damage  
+- Best for: PvP, burst damage builds
+- Focus: Maximum damage output
+- Pieces: Dragoon Crossbow, Dragoon Helmet, Dragoon Boots, Dragoon Amulet, Dragoon Ring
+
+**3. Griffin Set** - Balanced stats
+- Best for: Versatile builds, all content
+- Focus: Well-rounded performance
+- Pieces: Griffin Claws, Griffin Helmet, Griffin Boots, Griffin Amulet, Griffin Ring
+
+**Mixed Sets** are often better than full sets - combine your best individual pieces for optimal stats!`;
+            isAIResponse = true;
+            console.log(`✅ DIRECT GEAR SETS RESPONSE for: "${message.content}"`);
+        } else if (messageLower.includes('best weapon') || messageLower.includes('s tier weapon') || messageLower.includes('weapon tier')) {
+            answer = `**S-Tier Weapons in Archero 2:**
+
+**1. Oracle Staff** - High damage, good range
+- Best for: PvE content, area damage
+- Focus: High damage output with good range
+
+**2. Griffin Claws** - Balanced stats, good for all builds  
+- Best for: Versatile builds, all content
+- Focus: Well-rounded performance
+
+**3. Dragoon Crossbow** - High damage, good for PvP
+- Best for: PvP, burst damage builds
+- Focus: Maximum damage output
+
+These are the best weapons in the game and should be prioritized for upgrades!`;
+            isAIResponse = true;
+            console.log(`✅ DIRECT WEAPONS RESPONSE for: "${message.content}"`);
+        } else if (messageLower.includes('pvp') || messageLower.includes('arena') || messageLower.includes('peak arena')) {
+            answer = `**Peak Arena (3v3 PvP) Strategy:**
+
+**Rules:**
+- 3 different characters required
+- Each character needs different builds
+- Unique items provide bonus health and damage
+- Fully automated PvP
+
+**Best Characters for PvP:**
+- **Dragoon** - High mobility and damage
+- **Oracle** - High damage output and good range  
+- **Griffin** - Top-tier with excellent damage and survivability
+
+**Strategy:**
+- Focus on damage and mobility
+- Use S-tier weapons
+- Optimize runes for each character
+- Balance offense and defense`;
+            isAIResponse = true;
+            console.log(`✅ DIRECT PVP RESPONSE for: "${message.content}"`);
+        } else if (messageLower.includes('dragoon') || messageLower.includes('oracle') || messageLower.includes('griffin')) {
+            if (messageLower.includes('dragoon')) {
+                answer = `**Dragoon Set - High Attack/Critical Damage:**
+- **Best for**: PvP, burst damage builds
+- **Focus**: Maximum damage output
+- **Pieces**: Dragoon Crossbow, Dragoon Helmet, Dragoon Boots, Dragoon Amulet, Dragoon Ring
+- **Strategy**: High mobility and damage, perfect for PvP combat`;
+            } else if (messageLower.includes('oracle')) {
+                answer = `**Oracle Set - Balanced Offense/Defense:**
+- **Best for**: PvE content, balanced builds
+- **Focus**: High damage with good survivability
+- **Pieces**: Oracle Staff, Oracle Armor, Oracle Boots, Oracle Amulet, Oracle Ring
+- **Strategy**: Well-rounded performance for all content`;
+            } else if (messageLower.includes('griffin')) {
+                answer = `**Griffin Set - Balanced Stats:**
+- **Best for**: Versatile builds, all content
+- **Focus**: Well-rounded performance
+- **Pieces**: Griffin Claws, Griffin Helmet, Griffin Boots, Griffin Amulet, Griffin Ring
+- **Strategy**: Top-tier with excellent damage and survivability`;
+            }
+            isAIResponse = true;
+            console.log(`✅ DIRECT GEAR SET RESPONSE for: "${message.content}"`);
         }
         // AI should ALWAYS work - no fallbacks, no excuses
-        if (AIService && hasAIAccess) {
+        if (AIService && hasAIAccess && !answer) {
             try {
                 console.log(`🤖 AI processing: "${message.content}" by ${message.author.username}`);
                 
