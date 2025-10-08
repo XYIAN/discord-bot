@@ -76,9 +76,9 @@ async function scrapeTheorycraftingPosts() {
     await driver.navigate().refresh();
     await driver.sleep(2000); // Wait for refresh to complete
     
-    console.log('⏰ Manual login timer: 3 minutes - please log into Discord manually');
-    console.log('⏳ Waiting 3 minutes for manual login...');
-    await driver.sleep(180000); // 3 minutes
+    console.log('⏰ Manual login timer: 5 minutes - please log into Discord manually');
+    console.log('⏳ Waiting 5 minutes for manual login...');
+    await driver.sleep(300000); // 5 minutes
     
     console.log('✅ Manual login period complete, starting scraping...');
     

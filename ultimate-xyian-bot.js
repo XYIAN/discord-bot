@@ -4,9 +4,9 @@ const path = require('path');
 require('dotenv').config();
 
 // Bot version and update tracking
-const BOT_VERSION = '2.0.0';
+const BOT_VERSION = '2.1.0';
 const LAST_UPDATE = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD format
-const UPDATE_NOTES = 'AI Learning System + Conversational Responses';
+const UPDATE_NOTES = 'Comprehensive Knowledge Base System - 1,367 Real Data Entries';
 
 // AI Service (optional - requires OpenAI API key)
 let AIService = null;
@@ -27,33 +27,34 @@ try {
     console.log('⚠️ OpenAI package not installed. AI features disabled.');
 }
 
-// Load Improved RAG System
-const ImprovedRAGSystem = require('./improved-rag-system');
+// Load Ultimate RAG System
+const UltimateRAGSystem = require('./ultimate-rag-system');
 let ragSystem = null;
 
-// Initialize Improved RAG System
+// Initialize Ultimate RAG System
 try {
-    ragSystem = new ImprovedRAGSystem();
-    console.log('✅ Improved RAG System initialized successfully');
+    ragSystem = new UltimateRAGSystem();
+    console.log('✅ Ultimate RAG System initialized successfully');
 } catch (error) {
-    console.error('❌ Failed to initialize Improved RAG System:', error.message);
+    console.error('❌ Failed to initialize Ultimate RAG System:', error.message);
 }
 
 // AI helper functions
 async function generateAIResponse(message, channelName) {
     try {
-        // Use Improved RAG System first (smart keyword matching)
+        // Use Ultimate RAG System (comprehensive knowledge base)
         if (ragSystem) {
-            console.log('🧠 Using Improved RAG System...');
+            console.log('🧠 Using Ultimate RAG System...');
             const ragResponse = ragSystem.generateResponse(message, 'User');
             if (ragResponse && ragResponse.length > 20) {
-                console.log(`✅ Improved RAG Response generated: ${ragResponse.length} chars`);
+                console.log(`✅ Ultimate RAG Response generated: ${ragResponse.length} chars`);
                 return ragResponse;
             }
         }
         
-        // Fallback to traditional AI system
-        if (!AIService) return null;
+        // No fallback - only use real data from RAG system
+        console.log('⚠️ No relevant data found in knowledge base');
+        return null;
         
         console.log('🤖 Using traditional AI...');
         
@@ -515,9 +516,23 @@ async function initializeCognitiveAI() {
 let archeroDatabase = {};
 function loadKnowledgeDatabase() {
     try {
-        // Load cleaned real facts - has 196 entries vs 15 in real-archero2-facts.json
-        const cleanedFactsFile = path.join(__dirname, 'data', 'cleaned-real-facts.json');
-        if (fs.existsSync(cleanedFactsFile)) {
+        // Load comprehensive knowledge base first (1,367 entries)
+        const comprehensiveFile = path.join(__dirname, 'data', 'comprehensive-knowledge-base', 'comprehensive-knowledge-base.json');
+        if (fs.existsSync(comprehensiveFile)) {
+            const data = JSON.parse(fs.readFileSync(comprehensiveFile, 'utf8'));
+            
+            // Load all categories from comprehensive knowledge base
+            archeroDatabase = {};
+            Object.entries(data).forEach(([category, entries]) => {
+                Object.entries(entries).forEach(([key, content]) => {
+                    archeroDatabase[`${category}_${key}`] = content;
+                });
+            });
+            
+            console.log(`✅ Loaded COMPREHENSIVE KNOWLEDGE BASE with ${Object.keys(archeroDatabase).length} entries`);
+        } else if (fs.existsSync(path.join(__dirname, 'data', 'cleaned-real-facts.json'))) {
+            // Fallback to cleaned real facts
+            const cleanedFactsFile = path.join(__dirname, 'data', 'cleaned-real-facts.json');
             const data = JSON.parse(fs.readFileSync(cleanedFactsFile, 'utf8'));
             
             // Flatten the cleaned facts into a single database
@@ -917,7 +932,7 @@ async function sendPersonalizedOnboarding(member) {
         // Send DM to new member
         const onboardingEmbed = new EmbedBuilder()
             .setTitle('🎉 Welcome to Arch 2 Addicts!')
-            .setDescription(`Hi ${member.user.username}! Welcome to our awesome Archero 2 community!\n\nI'm **XY Elder**, your personal bot assistant with ULTRA-DEEP knowledge of Archero 2. I can help you with advanced strategies, builds, and competitive play!`)
+            .setDescription(`Welcome to Arch 2 Addicts, ${member.user.username}!\n\nI'm **XY Elder**, your AI assistant with comprehensive Archero 2 knowledge.`)
             .setColor(0x9b59b6)
             .addFields(
                 { 
@@ -1703,34 +1718,7 @@ async function sendDailyResetMessages() {
     console.log('✅ Daily reset messages sent!');
 }
 
-// Guild reset messages with fun facts
-const guildResetMessages = [
-    {
-        title: '🔄 Daily Reset - XYIAN Guild',
-        description: '**Daily reset is here! Time to get back to business!**\n\n⚔️ **Remember your daily requirements:**\n• Complete 2 Boss Battles\n• Make 1 Guild Donation\n• Stay active and engaged\n\n💪 **Let\'s show everyone why XYIAN is the best guild!**',
-        funFact: '💡 **Fun Fact**: Did you know that completing daily boss battles gives you 2x the normal rewards? That\'s why it\'s so important!'
-    },
-    {
-        title: '⏰ Reset Time - XYIAN Guild',
-        description: '**New day, new opportunities! Don\'t forget your daily requirements!**\n\n⚔️ **Daily Checklist:**\n• 2 Boss Battles (10-15 minutes)\n• 1 Guild Donation (helps everyone)\n• Stay active in chat\n\n🏆 **XYIAN Excellence**: We maintain our top ranking through daily dedication!',
-        funFact: '💡 **Fun Fact**: The 5 PM Pacific reset time was chosen because it\'s 8 PM Eastern and 1 AM GMT - covering most time zones!'
-    },
-    {
-        title: '🌅 Fresh Start - XYIAN Guild',
-        description: '**Another day to prove you\'re XYIAN material! Complete those dailies!**\n\n⚔️ **Your Mission:**\n• Boss battles (2x rewards)\n• Guild donations (teamwork)\n• Stay engaged (community)\n\n💪 **Together we\'re stronger!**',
-        funFact: '💡 **Fun Fact**: Guild members who consistently complete dailies have a 40% higher chance of getting rare drops from events!'
-    },
-    {
-        title: '⚡ Reset Alert - XYIAN Guild',
-        description: '**Time to sharpen your skills! Complete your boss battles and donations!**\n\n⚔️ **Daily Requirements:**\n• 2 Boss Battles (prove your skill)\n• 1 Guild Donation (support the team)\n• Stay active (be part of the family)\n\n🎯 **Pro tip**: Complete your requirements early to avoid missing out on rewards!',
-        funFact: '💡 **Fun Fact**: Boss battles reset at the same time daily, but the bosses get slightly stronger each week to keep things challenging!'
-    },
-    {
-        title: '🌟 New Day Dawns - XYIAN Guild',
-        description: '**Fresh opportunities await! Don\'t miss your daily requirements!**\n\n⚔️ **XYIAN Standards:**\n• Complete 2 Boss Battles\n• Make 1 Guild Donation\n• Stay active and engaged\n\n🏆 **Let\'s maintain our top 100 global ranking!**',
-        funFact: '💡 **Fun Fact**: The guild donation system was designed to encourage teamwork - every donation helps the entire guild grow stronger!'
-    }
-];
+// No hardcoded fallbacks - only use real data
 
 // Guild reset message
 async function sendGuildResetMessage() {
@@ -1770,11 +1758,10 @@ async function sendGuildResetMessage() {
             description = `**Daily reset is here! Time to get back to business!**\n\n⚔️ **Remember your daily requirements:**\n• Complete 2 Boss Battles\n• Make 1 Guild Donation\n• Stay active and engaged\n\n💪 **Let's show everyone why XYIAN is the best guild!**`;
             funFact = `💡 **XYIAN Tip**: ${guildTip}`;
         } else {
-            // Ultimate fallback to hardcoded
-            const randomMessage = guildResetMessages[Math.floor(Math.random() * guildResetMessages.length)];
-            title = randomMessage.title;
-            description = randomMessage.description;
-            funFact = randomMessage.funFact;
+            // No hardcoded fallbacks - only use real data
+            title = '🔄 Daily Reset - XYIAN Guild';
+            description = '**Daily reset is here!**\n\n⚔️ **Remember your daily requirements:**\n• Complete 2 Boss Battles\n• Make 1 Guild Donation\n• Stay active and engaged';
+            funFact = '💡 **XYIAN Tip**: Complete your daily requirements to maintain our competitive edge!';
         }
     }
     
@@ -1869,7 +1856,7 @@ async function sendDailyTip() {
                 tip = `**${randomTip.category.toUpperCase()} TIP:** ${randomTip.tip}`;
             }
         } catch (error) {
-            console.log('⚠️ Could not load high-quality tips, using fallback');
+            console.log('⚠️ Could not load high-quality tips');
         }
     }
     
@@ -1880,7 +1867,7 @@ async function sendDailyTip() {
             const randomKey = tipKeys[Math.floor(Math.random() * tipKeys.length)];
             tip = archeroDatabase[randomKey];
         } else {
-            tip = 'Focus on upgrading your main weapon first - it provides the most DPS increase!';
+            tip = 'Check the knowledge base for tips!';
         }
     }
     
@@ -2283,27 +2270,10 @@ client.on('messageCreate', async (message) => {
             const commandName = args.shift()?.toLowerCase();
             
             switch (commandName) {
-                case 'ping':
-                    if (!trackResponse(message, 'ping-dm')) return;
-                    
-                    const dmPingEmbed = new EmbedBuilder()
-                        .setTitle('🏰 XYIAN Ultimate Bot Status (DM Mode)')
-                        .setDescription('**Bot is ONLINE and ready to help!**')
-                        .addFields(
-                            { name: '📊 Version', value: `v${BOT_VERSION}`, inline: true },
-                            { name: '📅 Last Update', value: LAST_UPDATE, inline: true },
-                            { name: '🧠 Knowledge Base', value: ragSystem ? `${ragSystem.getStats().totalEntries} entries` : `${Object.keys(archeroDatabase).length} entries`, inline: true },
-                            { name: '🤖 AI Status', value: AIService ? '✅ Enabled' : '❌ Disabled', inline: true },
-                            { name: '📈 AI Learning', value: Object.keys(aiFeedback).length > 0 ? '✅ Active' : '🔄 Ready', inline: true },
-                            { name: '🎯 Guild ID', value: '213797', inline: true }
-                        )
-                        .setColor(0x9b59b6)
-                        .setTimestamp()
-                        .setFooter({ text: `XYIAN Ultimate Bot v${BOT_VERSION} - ${UPDATE_NOTES}` });
-                    
-                    await message.reply({ embeds: [dmPingEmbed] });
-                    console.log(`✅ DM ping response sent to ${message.author.username}`);
-                    messageResponseTracker.set(spamKey, true);
+            case 'ping':
+                // Skip ping in DM mode to avoid duplicates
+                console.log(`⏭️ Skipping ping in DM mode to avoid duplicates`);
+                return;
                     await logBotResponse('DM', message.content, 'Ping Command', message.author.id, message.author.username);
                     break;
                     
@@ -2392,7 +2362,7 @@ client.on('messageCreate', async (message) => {
                     .addFields(
                         { name: '📊 Version', value: `v${BOT_VERSION}`, inline: true },
                         { name: '📅 Last Update', value: LAST_UPDATE, inline: true },
-                        { name: '🧠 Knowledge Base', value: ragSystem ? `${ragSystem.getStats().totalEntries} entries` : `${Object.keys(archeroDatabase).length} entries`, inline: true },
+                        { name: '🧠 Knowledge Base', value: ragSystem ? `${ragSystem.getTotalEntries()} entries` : '0 entries', inline: true },
                         { name: '🤖 AI Status', value: aiStatus, inline: true },
                         { name: '📈 AI Learning', value: Object.keys(aiFeedback).length > 0 ? '✅ Active' : '🔄 Ready', inline: true },
                         { name: '🎯 Guild ID', value: '213797', inline: true }
@@ -3027,7 +2997,7 @@ client.on('messageCreate', async (message) => {
             case 'help':
                 const generalHelpEmbed = new EmbedBuilder()
                     .setTitle('🤖 XYIAN Ultimate Bot Commands')
-                    .setDescription('**Basic Commands:**\n`!ping` - Check bot status\n`!help` - This help\n`!menu` - Show question menu\n`!dev-menu` - Show all dev commands\n\n**For Archero 2 Questions:**\n🔹 **Go to the AI chat channels** for detailed answers!\n🔹 Use `#arch-ai` for Q&A\n🔹 This channel is for general discussion only\n\n**AI Learning Commands:**\n`!ai-feedback [question] [feedback]` - Provide detailed feedback on AI responses\n`!ai-thumbs-down [question]` - Quick thumbs down for wrong responses\n`!teach "question" "answer"` - Teach the bot a new answer\n`!ai memory` - Show your conversation memory with the bot\n`!ai rag-test [query]` - Test RAG system\n`!unknown` - View unknown questions (XYIAN OFFICIAL only)\n\n**Role-Based Commands:**\n• XYIAN OFFICIAL: Full access + Channel management\n• XYIAN Guild Verified: Basic AI questions\n• Admin: Administrative commands\n\n**Admin Commands:**\n`!discord-bot-clean` - Clean duplicate bot processes (XYIAN OFFICIAL only)\n`!ai-toggle` - Toggle AI responses on/off (XYIAN OFFICIAL only)')
+                    .setDescription('**Basic Commands:**\n`!ping` - Check bot status\n`!help` - This help\n`!menu` - Show question menu\n`!dev-menu` - Show all dev commands\n\n**For Archero 2 Questions:**\n🔹 **Go to the AI chat channels** for detailed answers!\n🔹 Use `#arch-ai` for Q&A\n🔹 This channel is for general discussion only\n\n**AI Learning Commands:**\n`!ai-feedback [question] [feedback]` - Provide detailed feedback on AI responses\n`!ai-thumbs-down [question]` - Quick thumbs down for wrong responses\n`!teach "question" "answer"` - Teach the bot a new answer\n`!ai memory` - Show your conversation memory with the bot\n`!ai rag-test [query]` - Test RAG system\n`!unknown` - View unknown questions (XYIAN OFFICIAL only)\n\n**Role-Based Commands:**\n• XYIAN OFFICIAL: Full access + Channel management\n• XYIAN Guild Verified: Basic AI questions\n• Admin: Administrative commands\n\n**Admin Commands:**\n`!discord-bot-clean` - Clean duplicate bot processes (XYIAN OFFICIAL only)\n`!ai-toggle` - Toggle AI responses on/off (XYIAN OFFICIAL only)\n`!clean-ai-chat` - Clean #arch-ai channel (XYIAN OFFICIAL only)\n`!clean-logs` - Clean #debug-logs channel (XYIAN OFFICIAL only)')
                     .setColor(0x00BFFF)
                     .setTimestamp()
                     .setFooter({ text: 'XYIAN OFFICIAL' });
@@ -3402,12 +3372,187 @@ client.on('messageCreate', async (message) => {
                         { name: '📊 Monitoring', value: '`!audit-logs` - View audit logs\n`!monitor-debug` - Debug monitoring\n`!analytics` - Bot analytics', inline: true },
                         { name: '🤖 AI Commands', value: '`!ai-toggle` - Toggle AI responses\n`!ai-feedback` - Give AI feedback\n`!ai clear-memory` - Clear AI memory', inline: true },
                         { name: '🏰 Guild Commands', value: '`!xyian info` - Guild info\n`!xyian members` - Guild members\n`!xyian stats` - Guild stats', inline: true },
-                        { name: '📝 Content', value: '`!tip` - Daily tip\n`!recruit` - Recruitment message\n`!reset` - Daily reset message', inline: true }
+                        { name: '📝 Content', value: '`!tip` - Daily tip\n`!recruit` - Recruitment message\n`!reset` - Daily reset message', inline: true },
+                        { name: '🧹 Cleanup', value: '`!clean-ai-chat` - Clean #arch-ai channel\n`!clean-logs` - Clean #debug-logs channel', inline: true }
                     )
                     .setFooter({ text: 'XYIAN Bot v2.1.0 - Development Commands' })
                     .setTimestamp();
                 
                 await message.reply({ embeds: [devEmbed] });
+                break;
+                
+            case 'clean-ai-chat':
+                // Clean arch-ai channel (XYIAN OFFICIAL only)
+                if (!hasXYIANRole(message.member)) {
+                    await message.reply('❌ This command requires the XYIAN OFFICIAL role.');
+                    return;
+                }
+                
+                const cleanAIEmbed = new EmbedBuilder()
+                    .setTitle('🧹 Cleaning #arch-ai Channel')
+                    .setDescription('**Starting cleanup of arch-ai channel...**\nThis may take a few minutes.')
+                    .setColor(0xFFA500)
+                    .setTimestamp();
+                
+                const cleaningMsg = await message.reply({ embeds: [cleanAIEmbed] });
+                
+                try {
+                    const channel = message.guild.channels.cache.find(ch => ch.name === 'arch-ai');
+                    if (!channel) {
+                        await cleaningMsg.edit({ 
+                            embeds: [new EmbedBuilder()
+                                .setTitle('❌ Channel Not Found')
+                                .setDescription('arch-ai channel not found!')
+                                .setColor(0xFF0000)
+                            ]
+                        });
+                        return;
+                    }
+                    
+                    let totalDeleted = 0;
+                    let batchCount = 0;
+                    
+                    while (true) {
+                        const messages = await channel.messages.fetch({ limit: 100 });
+                        if (messages.size === 0) break;
+                        
+                        batchCount++;
+                        
+                        // Delete messages one by one
+                        for (const [id, message] of messages) {
+                            try {
+                                if (message.pinned) continue;
+                                
+                                await message.delete();
+                                totalDeleted++;
+                                
+                                // Rate limit delay
+                                await new Promise(resolve => setTimeout(resolve, 100));
+                                
+                            } catch (error) {
+                                console.error(`❌ Error deleting message ${id}:`, error.message);
+                            }
+                        }
+                        
+                        // Update progress
+                        await cleaningMsg.edit({ 
+                            embeds: [new EmbedBuilder()
+                                .setTitle('🧹 Cleaning #arch-ai Channel')
+                                .setDescription(`**Progress:** Batch ${batchCount} complete\n**Deleted:** ${totalDeleted} messages`)
+                                .setColor(0xFFA500)
+                                .setTimestamp()
+                            ]
+                        });
+                        
+                        // Small delay between batches
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    }
+                    
+                    const successEmbed = new EmbedBuilder()
+                        .setTitle('✅ #arch-ai Cleanup Complete')
+                        .setDescription(`**Successfully deleted ${totalDeleted} messages from #arch-ai!**`)
+                        .setColor(0x00FF00)
+                        .setTimestamp();
+                    
+                    await cleaningMsg.edit({ embeds: [successEmbed] });
+                    
+                } catch (error) {
+                    console.error('❌ Cleanup error:', error);
+                    await cleaningMsg.edit({ 
+                        embeds: [new EmbedBuilder()
+                            .setTitle('❌ Cleanup Failed')
+                            .setDescription(`Error: ${error.message}`)
+                            .setColor(0xFF0000)
+                        ]
+                    });
+                }
+                break;
+                
+            case 'clean-logs':
+                // Clean debug-logs channel (XYIAN OFFICIAL only)
+                if (!hasXYIANRole(message.member)) {
+                    await message.reply('❌ This command requires the XYIAN OFFICIAL role.');
+                    return;
+                }
+                
+                const cleanLogsEmbed = new EmbedBuilder()
+                    .setTitle('🧹 Cleaning #debug-logs Channel')
+                    .setDescription('**Starting cleanup of debug-logs channel...**\nThis may take a few minutes.')
+                    .setColor(0xFFA500)
+                    .setTimestamp();
+                
+                const cleaningLogsMsg = await message.reply({ embeds: [cleanLogsEmbed] });
+                
+                try {
+                    const channel = message.guild.channels.cache.find(ch => ch.name === 'debug-logs');
+                    if (!channel) {
+                        await cleaningLogsMsg.edit({ 
+                            embeds: [new EmbedBuilder()
+                                .setTitle('❌ Channel Not Found')
+                                .setDescription('debug-logs channel not found!')
+                                .setColor(0xFF0000)
+                            ]
+                        });
+                        return;
+                    }
+                    
+                    let totalDeleted = 0;
+                    let batchCount = 0;
+                    
+                    while (true) {
+                        const messages = await channel.messages.fetch({ limit: 100 });
+                        if (messages.size === 0) break;
+                        
+                        batchCount++;
+                        
+                        // Delete messages one by one
+                        for (const [id, message] of messages) {
+                            try {
+                                if (message.pinned) continue;
+                                
+                                await message.delete();
+                                totalDeleted++;
+                                
+                                // Rate limit delay
+                                await new Promise(resolve => setTimeout(resolve, 100));
+                                
+                            } catch (error) {
+                                console.error(`❌ Error deleting message ${id}:`, error.message);
+                            }
+                        }
+                        
+                        // Update progress
+                        await cleaningLogsMsg.edit({ 
+                            embeds: [new EmbedBuilder()
+                                .setTitle('🧹 Cleaning #debug-logs Channel')
+                                .setDescription(`**Progress:** Batch ${batchCount} complete\n**Deleted:** ${totalDeleted} messages`)
+                                .setColor(0xFFA500)
+                                .setTimestamp()
+                            ]
+                        });
+                        
+                        // Small delay between batches
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    }
+                    
+                    const successEmbed = new EmbedBuilder()
+                        .setTitle('✅ #debug-logs Cleanup Complete')
+                        .setDescription(`**Successfully deleted ${totalDeleted} messages from #debug-logs!**`)
+                        .setColor(0x00FF00)
+                        .setTimestamp();
+                    
+                    await cleaningLogsMsg.edit({ embeds: [successEmbed] });
+                    
+                } catch (error) {
+                    console.error('❌ Cleanup error:', error);
+                    await cleaningLogsMsg.edit({ 
+                        embeds: [new EmbedBuilder()
+                            .setTitle('❌ Cleanup Failed')
+                            .setDescription(`Error: ${error.message}`)
+                            .setColor(0xFF0000)
+                        ]
+                    });
+                }
                 break;
                 
             case 'teach':
@@ -3531,99 +3676,8 @@ client.on('messageCreate', async (message) => {
         // Check if user has access to AI features
         const hasAIAccess = hasBasicAccess(message.member);
         
-        // Special handling for common questions - CHECK THESE FIRST
-        const messageLower = message.content.toLowerCase().trim();
-        if (messageLower.includes('what is your name') || messageLower.includes('who are you') || messageLower.includes('your name')) {
-            answer = "I'm XY Elder, the trusted henchman and guild elder of XYIAN OFFICIAL! I'm here to help you dominate the leaderboards and master Archero 2!";
-            isAIResponse = true;
-            console.log(`✅ DIRECT IDENTITY RESPONSE for: "${message.content}"`);
-        } else if (messageLower.includes('what is your purpose') || messageLower.includes('your purpose') || messageLower.includes('purpose')) {
-            answer = "My purpose is to help XYIAN guild members dominate the leaderboards and master Archero 2! I'm XY Elder, your trusted henchman with extensive game knowledge. I provide expert advice on weapons, characters, builds, PvP strategies, and everything you need to wreck the competition!";
-            isAIResponse = true;
-            console.log(`✅ DIRECT PURPOSE RESPONSE for: "${message.content}"`);
-        } else if (messageLower.includes('main 3 gear sets') || messageLower.includes('gear sets') || messageLower.includes('best gear') || messageLower.includes('mixed gear')) {
-            answer = `**The 3 Main Gear Sets in Archero 2:**
-
-**1. Oracle Set** - Balanced offense/defense
-- Best for: PvE content, balanced builds
-- Focus: High damage with good survivability
-- Pieces: Oracle Staff, Oracle Armor, Oracle Boots, Oracle Amulet, Oracle Ring
-
-**2. Dragoon Set** - High attack/critical damage  
-- Best for: PvP, burst damage builds
-- Focus: Maximum damage output
-- Pieces: Dragoon Crossbow, Dragoon Helmet, Dragoon Boots, Dragoon Amulet, Dragoon Ring
-
-**3. Griffin Set** - Balanced stats
-- Best for: Versatile builds, all content
-- Focus: Well-rounded performance
-- Pieces: Griffin Claws, Griffin Helmet, Griffin Boots, Griffin Amulet, Griffin Ring
-
-**Mixed Sets** are often better than full sets - combine your best individual pieces for optimal stats!`;
-            isAIResponse = true;
-            console.log(`✅ DIRECT GEAR SETS RESPONSE for: "${message.content}"`);
-        } else if (messageLower.includes('best weapon') || messageLower.includes('s tier weapon') || messageLower.includes('weapon tier')) {
-            answer = `**S-Tier Weapons in Archero 2:**
-
-**1. Oracle Staff** - High damage, good range
-- Best for: PvE content, area damage
-- Focus: High damage output with good range
-
-**2. Griffin Claws** - Balanced stats, good for all builds  
-- Best for: Versatile builds, all content
-- Focus: Well-rounded performance
-
-**3. Dragoon Crossbow** - High damage, good for PvP
-- Best for: PvP, burst damage builds
-- Focus: Maximum damage output
-
-These are the best weapons in the game and should be prioritized for upgrades!`;
-            isAIResponse = true;
-            console.log(`✅ DIRECT WEAPONS RESPONSE for: "${message.content}"`);
-        } else if (messageLower.includes('pvp') || messageLower.includes('arena') || messageLower.includes('peak arena')) {
-            answer = `**Peak Arena (3v3 PvP) Strategy:**
-
-**Rules:**
-- 3 different characters required
-- Each character needs different builds
-- Unique items provide bonus health and damage
-- Fully automated PvP
-
-**Best Characters for PvP:**
-- **Dragoon** - High mobility and damage
-- **Oracle** - High damage output and good range  
-- **Griffin** - Top-tier with excellent damage and survivability
-
-**Strategy:**
-- Focus on damage and mobility
-- Use S-tier weapons
-- Optimize runes for each character
-- Balance offense and defense`;
-            isAIResponse = true;
-            console.log(`✅ DIRECT PVP RESPONSE for: "${message.content}"`);
-        } else if (messageLower.includes('dragoon') || messageLower.includes('oracle') || messageLower.includes('griffin')) {
-            if (messageLower.includes('dragoon')) {
-                answer = `**Dragoon Set - High Attack/Critical Damage:**
-- **Best for**: PvP, burst damage builds
-- **Focus**: Maximum damage output
-- **Pieces**: Dragoon Crossbow, Dragoon Helmet, Dragoon Boots, Dragoon Amulet, Dragoon Ring
-- **Strategy**: High mobility and damage, perfect for PvP combat`;
-            } else if (messageLower.includes('oracle')) {
-                answer = `**Oracle Set - Balanced Offense/Defense:**
-- **Best for**: PvE content, balanced builds
-- **Focus**: High damage with good survivability
-- **Pieces**: Oracle Staff, Oracle Armor, Oracle Boots, Oracle Amulet, Oracle Ring
-- **Strategy**: Well-rounded performance for all content`;
-            } else if (messageLower.includes('griffin')) {
-                answer = `**Griffin Set - Balanced Stats:**
-- **Best for**: Versatile builds, all content
-- **Focus**: Well-rounded performance
-- **Pieces**: Griffin Claws, Griffin Helmet, Griffin Boots, Griffin Amulet, Griffin Ring
-- **Strategy**: Top-tier with excellent damage and survivability`;
-            }
-            isAIResponse = true;
-            console.log(`✅ DIRECT GEAR SET RESPONSE for: "${message.content}"`);
-        }
+        // Use only RAG system - no hardcoded responses
+        // All responses come from the comprehensive knowledge base
         // AI should ALWAYS work - no fallbacks, no excuses
         if (AIService && hasAIAccess && !answer) {
             try {
@@ -3862,29 +3916,23 @@ client.on('guildMemberAdd', async (member) => {
     try {
         const welcomeEmbed = new EmbedBuilder()
             .setTitle(`🎉 Welcome to Arch 2 Addicts, ${member.user.username}!`)
-            .setDescription(`Welcome ${member} to the Arch 2 Addicts community - your destination for Archero 2 discussion and strategy!`)
+            .setDescription(`Welcome ${member}!`)
             .setColor(0x00ff88)
             .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 256 }))
-            .setImage('https://cdn.discordapp.com/attachments/1268830572743102505/1279024218473758770/archero2-logo.png')
             .addFields(
                 {
-                    name: '🏰 XYIAN OFFICIAL - Guild Recruitment',
-                    value: '**Guild ID: 213797**\n• **Grand Master**: XYIAN (Guild Commander)\n• **Requirements**: 2 daily boss battles + donations\n• **Goal**: Dominate leaderboards and become #1\n• **Looking for**: Active players with 300k+ power\n• **Focus**: Peak Arena and PvP excellence',
+                    name: '🏰 XYIAN Guild - Guild ID: 213797',
+                    value: 'Requirements: 2 daily boss battles + donations\nLooking for: Active players with 300k+ power',
                     inline: false
                 },
                 {
-                    name: '🎮 Community Channels - Choose Your Adventure!',
+                    name: '🎮 Community Channels',
                     value: '• **Community & Daily Chat**: [Join the conversation!](https://discord.com/channels/1419944148701679686/1425322796820725760)\n• **Want to Join XYIAN?**: [Apply here!](https://discord.com/channels/1419944148701679686/1419944464608268410)\n• **Umbral Teams**: [Team up for success!](https://discord.com/channels/1419944148701679686/1419944602651197511)\n• **PvP Enthusiasts**: [Battle it out!](https://discord.com/channels/1419944148701679686/1421948149827895498)\n• **Archero AI Training**: [Level up your knowledge!](https://discord.com/channels/1419944148701679686/1424322391160393790)',
-                    inline: false
-                },
-                {
-                    name: '🤖 XY Elder - Your AI Assistant',
-                    value: 'Ready to help you climb the ranks! Ask me anything about Archero 2 - strategies, builds, runes, or just say hi!',
                     inline: false
                 }
             )
             .setTimestamp()
-            .setFooter({ text: 'Arch 2 Addicts - Where Legends Are Born!' });
+            .setFooter({ text: 'Arch 2 Addicts Community' });
         
         await sendToGeneral({ embeds: [welcomeEmbed] });
         console.log(`✅ SINGLE welcome message sent for ${member.user.username} (ID: ${memberId})`);
