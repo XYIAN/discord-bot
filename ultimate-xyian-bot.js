@@ -1969,11 +1969,15 @@ async function sendToXYIAN(content) {
 }
 
 async function sendToGeneral(content) {
-    if (!webhooks.general) return;
+    if (!webhooks.general) {
+        console.error('❌ GENERAL_CHAT_WEBHOOK not configured - welcome messages will not be sent!');
+        return;
+    }
     
     try {
         const webhook = new WebhookClient({ url: webhooks.general });
         await webhook.send(content);
+        console.log('✅ Message sent to general chat successfully');
     } catch (error) {
         console.error('❌ Failed to send general message:', error.message);
     }
@@ -2159,6 +2163,23 @@ async function logCorrection(originalMessage, correction, reason) {
 }
 
 // Message handling with error protection
+// Bot ready event
+client.once('ready', () => {
+    console.log(`✅ Bot logged in as ${client.user.tag}`);
+    console.log(`🏰 Serving ${client.guilds.cache.size} guilds`);
+    console.log(`👥 Watching ${client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)} members`);
+    
+    // Check webhook configuration
+    console.log('🔧 Webhook Configuration:');
+    console.log(`  • General Chat: ${webhooks.general ? '✅ Configured' : '❌ Missing'}`);
+    console.log(`  • XYIAN Guild: ${webhooks.xyian ? '✅ Configured' : '❌ Missing'}`);
+    console.log(`  • AI Questions: ${webhooks.aiQuestions ? '✅ Configured' : '❌ Missing'}`);
+    
+    if (!webhooks.general) {
+        console.error('⚠️ WARNING: GENERAL_CHAT_WEBHOOK not set - welcome messages will NOT work!');
+    }
+});
+
 client.on('messageCreate', async (message) => {
     if (message.author.bot) return;
     
@@ -3776,6 +3797,7 @@ client.on('guildMemberAdd', async (member) => {
     processedMembers.add(memberId);
     
     console.log(`👋 New member joined: ${member.user.username} (ID: ${memberId})`);
+    console.log(`🔧 DEBUG: General webhook configured: ${webhooks.general ? '✅ YES' : '❌ NO'}`);
     
     // Send SINGLE welcome message to GENERAL CHAT - NO AI, NO SPAM
     try {
