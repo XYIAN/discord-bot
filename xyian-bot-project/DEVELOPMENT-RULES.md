@@ -1,0 +1,293 @@
+# Development Rules and Guidelines
+
+This document outlines critical development rules and guidelines for the Arch 2 Addicts Discord Bot project to prevent common mistakes and ensure quality development.
+
+## Core Principles
+
+### 0. Auto-Scrape Command
+- **When user says "begin scrape"**: Automatically run `cd research-tools && node theorycrafting-posts-scraper.js`
+- **Fresh system setup**: This command should be the first thing to run after system reset
+- **Purpose**: Start scraping 28 theorycrafting posts with cache clearing and manual login
+- **Expected behavior**: 3-minute manual login timer, then automated scraping of all categories
+
+### 0.1. Bot Commands Reference
+- **Basic Commands**: `!ping`, `!help`, `!menu`, `!tip`
+- **XYIAN Commands**: `!xyian info`, `!xyian members`, `!xyian stats`, `!xyian events`, `!xyian weapon <name>`, `!xyian skill <name>`, `!xyian build <class>`
+- **Admin Commands**: `!discord-bot-clean`, `!audit-logs`, `!test-spam-filter`, `!monitor-debug`, `!create-admin-channels`, `!analytics`, `!api-test`, `!learn`, `!scrape`
+- **Guild Commands**: `!recruit`, `!reset`, `!expedition`, `!arena`
+- **AI Commands**: `!ai-menu`, `!send-ai-menu`
+- **Test Commands**: `!test`
+
+### 1. Deep Research First
+- **ALWAYS** research thoroughly before implementing features
+- Use multiple sources: Discord channels, wikis, community discussions
+- Verify information accuracy before adding to knowledge base
+- Test with real game data and community feedback
+
+### 2. No Duplicate Messages
+- Implement proper message tracking to prevent duplicate responses
+- Use unique message keys for each response
+- Check if bot has already responded to a message
+- Log all responses for debugging
+
+### 3. Channel-Specific Logic
+- **AI Channels**: Only respond to plain text (no commands needed)
+- **General Chat**: Only respond to `!help` and `!menu` commands
+- **Guild Recruit**: Only cron jobs, no live responses
+- **Other Channels**: Only respond to `!` or `/` commands
+
+### 4. Test Before Pushing
+- **ALWAYS** test builds locally before pushing to production
+- Verify all commands work correctly
+- Check for syntax errors and runtime issues
+- Test channel filtering and response logic
+- **NEVER** push broken code to production
+
+### 5. Documentation and Versioning
+- Update changelog after every completed task
+- Use semantic versioning (e.g., 1.3.3)
+- Document all new features and fixes
+- Update README files with new information
+
+## Channel Behavior Matrix
+
+| Channel Type | Live Responses | Commands | AI Responses | Notes |
+|--------------|----------------|----------|--------------|-------|
+| AI Channels | ✅ Yes | ✅ Yes | ✅ Yes | Full AI support |
+| General Chat | ❌ No | ✅ Limited | ❌ No | Only !help, !menu |
+| Guild Recruit | ❌ No | ❌ No | ❌ No | Cron jobs only |
+| Other Channels | ❌ No | ✅ Yes | ❌ No | Commands only |
+
+## Webhook Rules
+
+### General Chat Webhook
+- **Purpose**: General community announcements
+- **Allowed**: Welcome messages, daily tips, general info
+- **Blocked**: AI responses, duplicate messages
+
+### Guild Chat Webhook
+- **Purpose**: XYIAN guild-specific content
+- **Allowed**: Guild announcements, requirements, events
+- **Blocked**: General AI responses
+
+### AI Questions Webhook
+- **Purpose**: AI-powered question answering
+- **Allowed**: All AI responses, complex questions
+- **Blocked**: None (full AI support)
+
+### Admin Webhook
+- **Purpose**: Error logging and system monitoring
+- **Allowed**: Error messages, debug info, system status
+- **Blocked**: User-facing content
+
+## Development Checklist
+
+### Before Starting Work
+- [ ] Research the feature thoroughly
+- [ ] Check existing code for similar functionality
+- [ ] Plan the implementation approach
+- [ ] Identify potential issues and solutions
+
+### During Development
+- [ ] Implement proper error handling
+- [ ] Add logging for debugging
+- [ ] Test each function individually
+- [ ] Verify channel filtering logic
+- [ ] Check for duplicate response prevention
+
+### Before Pushing
+- [ ] Test build locally
+- [ ] Verify all commands work
+- [ ] Check for syntax errors
+- [ ] Test channel behavior
+- [ ] Update documentation
+- [ ] Update changelog
+- [ ] Update version number
+
+### After Pushing
+- [ ] Monitor deployment logs
+- [ ] Test in production environment
+- [ ] Check for any issues
+- [ ] Monitor user feedback
+- [ ] Update documentation if needed
+
+## Common Mistakes to Avoid
+
+### 1. Duplicate Messages
+- **Problem**: Bot sends multiple responses to same message
+- **Solution**: Implement message tracking and unique response keys
+- **Prevention**: Always check if response already sent
+
+### 2. Wrong Channel Responses
+- **Problem**: Bot responds in channels where it shouldn't
+- **Solution**: Implement proper channel filtering logic
+- **Prevention**: Use channel-specific response rules
+
+### 3. Broken Builds
+- **Problem**: Pushing code with syntax errors
+- **Solution**: Test builds locally before pushing
+- **Prevention**: Always test before pushing
+
+### 4. Missing Documentation
+- **Problem**: Features not documented
+- **Solution**: Update documentation after each change
+- **Prevention**: Make documentation part of the workflow
+
+### 5. Version Control Issues
+- **Problem**: Not updating version numbers
+- **Solution**: Use semantic versioning consistently
+- **Prevention**: Update version with each change
+
+## Testing Procedures
+
+### Local Testing
+1. Run bot locally with test environment
+2. Test all commands and responses
+3. Verify channel filtering works
+4. Check for duplicate message prevention
+5. Test error handling and fallbacks
+
+### Production Testing
+1. Deploy to staging environment first
+2. Test with real Discord server
+3. Monitor logs for errors
+4. Test all webhook integrations
+5. Verify AI responses work correctly
+
+### User Acceptance Testing
+1. Test with real users
+2. Gather feedback on responses
+3. Check for accuracy of information
+4. Monitor for any issues
+5. Update based on feedback
+
+## Error Handling
+
+### Bot Errors
+- All errors go to admin webhook
+- Users never see technical error messages
+- Implement graceful fallbacks
+- Log all errors for debugging
+
+### API Errors
+- Handle OpenAI API failures gracefully
+- Provide fallback responses
+- Log API errors for monitoring
+- Implement retry logic where appropriate
+
+### Database Errors
+- Handle database connection failures
+- Provide fallback data when possible
+- Log database errors for debugging
+- Implement graceful degradation
+
+## Security Guidelines
+
+### Token Protection
+- Never commit tokens to repository
+- Use environment variables for all secrets
+- Rotate tokens regularly
+- Monitor for token exposure
+
+### Input Validation
+- Validate all user inputs
+- Sanitize data before processing
+- Implement rate limiting
+- Check for malicious content
+
+### Permission Management
+- Use role-based access control
+- Implement proper permission checks
+- Monitor for permission escalation
+- Regular permission audits
+
+## Performance Guidelines
+
+### Response Time
+- Keep response times under 3 seconds
+- Implement caching where appropriate
+- Optimize database queries
+- Monitor performance metrics
+
+### Resource Usage
+- Monitor memory usage
+- Implement proper cleanup
+- Avoid memory leaks
+- Optimize for efficiency
+
+### Scalability
+- Design for multiple servers
+- Implement proper load balancing
+- Monitor for bottlenecks
+- Plan for growth
+
+## Maintenance
+
+### Regular Updates
+- Update dependencies regularly
+- Monitor for security updates
+- Test after each update
+- Document changes
+
+### Monitoring
+- Monitor bot performance
+- Check for errors regularly
+- Monitor user feedback
+- Update based on usage patterns
+
+### Documentation
+- Keep documentation current
+- Update README files
+- Document new features
+- Maintain changelog
+
+## Emergency Procedures
+
+### Bot Down
+1. Check deployment logs
+2. Restart bot if needed
+3. Check for configuration issues
+4. Notify users of status
+
+### Data Loss
+1. Check database backups
+2. Restore from backup if needed
+3. Investigate cause
+4. Implement prevention measures
+
+### Security Breach
+1. Rotate all tokens immediately
+2. Check for unauthorized access
+3. Review logs for suspicious activity
+4. Implement additional security measures
+
+## Quality Assurance
+
+### Code Quality
+- Follow consistent coding standards
+- Use proper error handling
+- Implement comprehensive logging
+- Write maintainable code
+
+### User Experience
+- Provide clear, helpful responses
+- Use proper formatting and emojis
+- Implement user-friendly error messages
+- Gather and act on user feedback
+
+### Performance
+- Optimize for speed and efficiency
+- Monitor resource usage
+- Implement proper caching
+- Regular performance reviews
+
+## Conclusion
+
+Following these rules and guidelines will help ensure:
+- High-quality, reliable bot functionality
+- Proper error handling and user experience
+- Maintainable and scalable code
+- Effective team collaboration
+- Successful project outcomes
+
+Remember: **Quality over speed, testing over assumptions, documentation over memory.**
