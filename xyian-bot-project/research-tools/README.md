@@ -1,180 +1,179 @@
-# Research Tools Directory
+# 🔬 Research Tools Directory
 
-This directory contains all scraping and research tools for the Arch 2 Addicts Discord Bot project. These tools are designed to gather comprehensive game knowledge from various sources.
+## Purpose
 
-## Overview
+This directory contains all scraping, extraction, and data processing tools used to gather and clean Archero 2 data from various sources.
 
-The research tools are organized to scrape data from:
-- **Discord Channels**: Official Archero 2 Discord server channels
-- **Wiki Pages**: Official Archero 2 wiki content
-- **Forum Threads**: Discord forum discussions and theorycrafting posts
-- **Community Content**: User-generated guides and discussions
+## ⚠️ Important Note
 
-## Tools Available
+**These tools are for DATA COLLECTION only. The bot does NOT use these files at runtime.**
 
-### Core Scrapers
+The bot uses only: `../data/real-structured-data/unified_game_data.json`
 
-#### `theorycrafting-posts-scraper.js`
-- **Purpose**: Scrapes 28 theorycrafting posts organized by category
-- **Categories**: General, PVE, PVP, Events, Other
-- **Features**: 
-  - Cache clearing and hard refresh
-  - 3-minute manual login timer
-  - Human-like delays and behavior
-  - Category organization
-  - Error handling for each post
+## 📂 Directory Structure
 
-#### `human-like-forum-scraper.js`
-- **Purpose**: Scrapes Discord forum threads with human-like behavior
-- **Features**:
-  - 3-minute manual login timer
-  - Random delays and scrolling
-  - Human-like pauses between threads
-  - Multiple CSS selector attempts
+### Main Scrapers
 
-#### `working-discord-scraper.js`
-- **Purpose**: Scrapes Discord channels with manual login support
-- **Features**:
-  - Manual login timer
-  - Discord app navigation
-  - Human-like behavior patterns
-  - Content extraction from messages
+- **`ultimate-comprehensive-scraper.js`** - Master scraper for all sources
+- **`theorycrafting-posts-scraper.js`** - Discord theorycrafting channel scraper
+- **`robust-theria-scraper.js`** - Theria Games Wiki scraper
+- **`comprehensive-discord-wiki-scraper.js`** - Combined Discord + Wiki scraper
+
+### Discord Scrapers
+
+Multiple iterations of Discord scrapers:
+- `discord-scraper.js`, `discord-real-scraper.js`, `working-discord-scraper.js`
+- `all-discord-channels-scraper.js`, `complete-discord-scraper.js`
+- `theorycrafting-posts-scraper.js` - **Most reliable Discord scraper**
+
+### Wiki Scrapers
+
+- `archero2-wiki-scraper.js` - Early wiki scraper
+- `archero2-official-wiki-scraper.js` - Official wiki scraper
+- `robust-theria-scraper.js` - **Most reliable wiki scraper**
+- `theria-wiki-sitemap-scraper.js` - Sitemap-based scraper
+
+### Data Processors
+
+- `comprehensive-data-extractor.py` - Python data extraction
+- `advanced-data-extractor.js` - JavaScript data extraction
+- `data-quality-auditor.js` - Data quality checking
+- `comprehensive-data-cleaner.js` - Data cleaning
 
 ### Knowledge Injectors
 
-#### `ultimate-knowledge-injector.js`
-- **Purpose**: Injects scraped Discord channel data into bot knowledge base
-- **Features**: Processes JSON data files and updates bot database
+Scripts to inject scraped data into the bot's knowledge base:
+- `ultimate-knowledge-injector.js`
+- `complete-knowledge-injector.js`
+- Various specialized injectors
 
-#### `complete-knowledge-injector.js`
-- **Purpose**: Injects comprehensive Discord channel knowledge
-- **Features**: Handles multiple channel data sources
+## 📦 Raw Scraped Data
 
-#### `final-knowledge-injector.js`
-- **Purpose**: Final knowledge injection from all sources
-- **Features**: Consolidates all research data
+The `raw-scraped-data/` directory contains organized scraping outputs:
 
-### Utility Scripts
+```
+raw-scraped-data/
+├── discord-theorycrafting/    - Theorycrafting posts
+├── discord-additional-channels/ - Other Discord channels
+├── wiki-pages/                - Wiki page content
+├── theria-games-wiki/         - Theria wiki data
+├── reddit/                    - Reddit posts (if scraped)
+├── bluestacks/                - BlueStacks guides (if scraped)
+└── damage-calculator/         - Damage calc data (if scraped)
+```
 
-#### `knowledge-summary-report.js`
-- **Purpose**: Generates comprehensive summary of bot knowledge
-- **Features**: Shows all scraped data in organized tables
+## 🔧 How to Use
 
-#### `ultimate-knowledge-cleaner.js`
-- **Purpose**: Cleans up old, incorrect data files
-- **Features**: Removes outdated information and consolidates knowledge base
+### Run a Scraper
 
-## Usage
-
-### Prerequisites
 ```bash
-cd research-tools
+# Scrape Discord theorycrafting channel (5 min manual login timer)
+node theorycrafting-posts-scraper.js
+
+# Scrape Theria Games Wiki
+node robust-theria-scraper.js
+
+# Scrape everything (comprehensive)
+node ultimate-comprehensive-scraper.js
+```
+
+### Extract Data
+
+```bash
+# Extract structured data with Python
+cd /Users/kyle/code/discord-bot/xyian-bot-project
+python3 research-tools/comprehensive-data-extractor.py
+
+# Or use JavaScript extractor
+node research-tools/advanced-data-extractor.js
+```
+
+### Process and Clean
+
+```bash
+# Clean extracted data
+node research-tools/comprehensive-data-cleaner.js
+
+# Audit data quality
+node research-tools/data-quality-auditor.js
+```
+
+## 📊 Scraping Sources
+
+1. **Discord - Theorycrafting Channel** (Primary source)
+   - Expert player discussions
+   - META strategies
+   - Character/gear analysis
+
+2. **Theria Games Wiki** (Secondary source)
+   - Official game data
+   - Stats and mechanics
+   - Item descriptions
+
+3. **Reddit** (Optional)
+   - Community discussions
+   - Guide posts
+
+4. **BlueStacks Guides** (Optional)
+   - External guides
+
+5. **Google Sheets** (Optional)
+   - Community spreadsheets
+
+## ⚙️ Dependencies
+
+All scrapers require:
+```bash
 npm install
 ```
 
-### Running Scrapers
-```bash
-# Theorycrafting posts (28 posts, 5 categories)
-# Use "begin scrape" command to auto-start this scraper
-node theorycrafting-posts-scraper.js
+Key packages:
+- `selenium-webdriver` - Browser automation
+- `chromedriver` - Chrome driver for Selenium
+- `axios` - HTTP requests
+- `cheerio` - HTML parsing
+- `puppeteer` - Alternative browser automation
 
-# Forum threads with human-like behavior
-node human-like-forum-scraper.js
+## 🎯 Current Status
 
-# Discord channels with manual login
-node working-discord-scraper.js
-```
+**Data Collection**: ✅ Complete
+- Scraped 1,367+ Discord messages
+- Scraped Theria Games Wiki pages
+- Organized by category
 
-### Knowledge Injection
-```bash
-# Inject scraped data into bot knowledge base
-node ultimate-knowledge-injector.js
-node complete-knowledge-injector.js
-node final-knowledge-injector.js
-```
+**Data Cleaning**: ✅ Complete
+- Extracted facts from conversations
+- Created structured data
+- Removed Discord chat noise
 
-## Data Sources
+**Bot Integration**: ✅ Complete
+- Bot uses `unified_game_data.json`
+- Clean, structured facts only
 
-### Discord Channels (12 channels)
-- General discussion channels
-- Game update channels
-- Q&A channels
-- Event-specific channels
-- Theorycrafting channels
+## 🚀 Future Scraping
 
-### Wiki Pages
-- Official Archero 2 wiki
-- Artifacts system documentation
-- Character guides
-- Gear and rune information
+To update data in the future:
 
-### Forum Threads
-- Theorycrafting discussions
-- Build guides
-- Event strategies
-- PVP tips and arena guides
+1. Run scrapers to get fresh data
+2. Review `raw-scraped-data/` outputs
+3. Extract new facts manually or with Python
+4. Update `../data/real-structured-data/unified_game_data.json`
+5. Restart bot
 
-## Output Files
+## 📝 Notes
 
-### Scraped Data
-- `theorycrafting-posts-data-*.json`: Theorycrafting posts by category
-- `discord-channels-data-*.json`: Discord channel content
-- `wiki-data-*.json`: Wiki page content
-- `forum-threads-data-*.json`: Forum thread discussions
+- **Manual Login**: Discord scrapers require manual login (5 min timer)
+- **Rate Limits**: Use human-like delays to avoid rate limits
+- **Data Quality**: Always manually review extracted data before adding to bot
+- **Selenium**: Requires Chrome/Chromium installed
 
-### Knowledge Base
-- `archero_qa_learned.json`: Bot's knowledge database
-- `knowledge-summary-*.json`: Comprehensive knowledge reports
+## 🔗 Related Files
 
-## Features
+- Main bot: `../ultimate-xyian-bot.js`
+- RAG system: `../working-rag-system.js`
+- Active data: `../data/real-structured-data/unified_game_data.json`
+- Data docs: `../DATA-STRUCTURE.md`
 
-### Human-like Behavior
-- Random delays between actions (2-15 seconds)
-- Random scrolling patterns
-- Realistic pause times
-- Manual login support
+---
 
-### Error Handling
-- Graceful failure handling
-- Retry logic for failed requests
-- Progress tracking
-- Detailed logging
-
-### Data Organization
-- Category-based organization
-- URL tracking
-- Timestamp logging
-- Content validation
-
-## Best Practices
-
-1. **Manual Login**: Always use the 3-minute manual login timer
-2. **Human-like Delays**: Use random delays to avoid detection
-3. **Cache Clearing**: Start with fresh browser sessions
-4. **Error Handling**: Check for cooldown periods and retry
-5. **Data Validation**: Verify scraped content before injection
-
-## Troubleshooting
-
-### Common Issues
-- **Cooldown Periods**: Wait 10-15 minutes between scraping attempts
-- **Login Issues**: Use manual login timer and fresh browser sessions
-- **Detection**: Use human-like delays and behavior patterns
-- **Data Quality**: Validate scraped content before injection
-
-### Solutions
-- Clear browser cache and cookies
-- Use hard refresh before scraping
-- Implement longer delays between requests
-- Check for Discord rate limits
-
-## Integration
-
-All scraped data is automatically integrated into the bot's knowledge base through the knowledge injector scripts. The bot uses this data to provide accurate, community-sourced information to users.
-
-## Maintenance
-
-- Regular updates to scraped data
-- Monitoring for new content sources
-- Updating scraper logic for Discord changes
-- Maintaining human-like behavior patterns
+**Remember**: These are research tools. The bot doesn't run these at runtime!
