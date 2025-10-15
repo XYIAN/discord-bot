@@ -22,9 +22,10 @@
 ## 🚀 **Revolutionary Features**
 
 ### 🤖 **AI-Powered Intelligence (2025)**
-- **OpenAI GPT-4 Integration** - Latest AI model with multimodal capabilities
+- **Working RAG System** - Retrieval-Augmented Generation with structured game data
+- **Real Structured Data** - ~40 hand-curated facts covering gear, runes, characters, and strategies
 - **Advanced Learning System** - Real-time learning from user feedback with confidence scoring
-- **Comprehensive Knowledge Database** - 4.3M+ characters of verified Discord community content
+- **Clean Knowledge Base** - No Discord chat noise, only verified game facts
 - **Context-Aware AI** - Adapts responses based on channel type and user history
 - **Multimodal Support** - Image analysis, voice commands, and rich interactions
 
@@ -263,20 +264,50 @@ API_KEY=your_api_key
 
 ### **Project Structure**
 ```
-arch2-discord-bot/
-├── ultimate-xyian-bot.js          # Main bot service
-├── api-server.js                  # Express API server
-├── learning-system.js             # Machine learning system
-├── archero2-data-scraper.js       # Data collection system
-├── src/                           # TypeScript source
-│   ├── commands/                  # Command handlers
-│   ├── services/                  # Core services
-│   ├── utils/                     # Utility functions
-│   └── types/                     # TypeScript definitions
-├── docs/                          # Comprehensive documentation
-├── data/                          # Learning and analytics data
-└── config/                        # Configuration files
+xyian-bot-project/
+├── ultimate-xyian-bot.js          # Main bot service (v2.2.0)
+├── working-rag-system.js          # RAG system with structured data
+├── data/
+│   ├── real-structured-data/      # ✅ ACTIVE - Bot uses this
+│   │   └── unified_game_data.json # Clean, structured game facts
+│   ├── comprehensive-knowledge-base/ # Archive - Raw scraped data
+│   ├── cleaned-database/          # Archive - Intermediate cleaning
+│   ├── structured-tables/         # Archive - CSV extractions
+│   └── README.md                  # Data directory documentation
+├── research-tools/                # Data collection & scraping tools
+│   ├── theorycrafting-posts-scraper.js
+│   ├── robust-theria-scraper.js
+│   ├── ultimate-comprehensive-scraper.js
+│   └── raw-scraped-data/          # Raw scraping outputs
+├── scripts/                       # Data processing scripts
+│   └── parse-real-game-data.py
+├── CHANGELOG.md                   # Version history
+├── DEPLOYMENT-CHECKLIST.md        # Railway deployment guide
+├── DATA-STRUCTURE.md              # Data architecture docs
+└── package.json                   # Node.js dependencies
 ```
+
+### **Data Architecture (v2.2.0)**
+The bot uses a **clean, structured data approach**:
+
+**Active Data** (Bot Uses):
+- `data/real-structured-data/unified_game_data.json` - ~40 hand-curated facts
+  - Gear Sets (Oracle, Dragoon, Griffin, Mixed)
+  - Runes (Meteor, Sprite, Circles, Frost, etc.)
+  - Characters (Thor, Otta, Helix, DK, etc.)
+  - Weapons (Xbow, Bow, Staff, etc.)
+  - Game Modes (Peak Arena, Arena, GvG, Shackled Jungle)
+  - Pro Tips & Strategies
+
+**Archived Data** (Reference Only):
+- `comprehensive-knowledge-base/` - 1,367 Discord messages (organized by category)
+- `cleaned-database/` - Partially cleaned data (still had noise)
+- `structured-tables/` - CSV extraction attempts
+
+**Why the Change?**
+- ❌ Before: Bot searched 1,367 Discord chat messages (noisy, inconsistent)
+- ✅ Now: Bot uses 40 structured facts (clean, accurate, fast)
+- Result: Accurate responses, no chat noise, instant search
 
 ### **Available Scripts**
 ```bash

@@ -4,9 +4,9 @@ const path = require('path');
 require('dotenv').config();
 
 // Bot version and update tracking
-const BOT_VERSION = '2.1.0';
+const BOT_VERSION = '2.2.0';
 const LAST_UPDATE = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD format
-const UPDATE_NOTES = 'Comprehensive Knowledge Base System - 1,367 Real Data Entries';
+const UPDATE_NOTES = 'Real Structured Game Data - Clean Facts Only';
 
 // AI Service (optional - requires OpenAI API key)
 let AIService = null;
@@ -27,33 +27,44 @@ try {
     console.log('⚠️ OpenAI package not installed. AI features disabled.');
 }
 
-// Load Ultimate RAG System
-const CleanRAGSystem = require('./clean-rag-system');
+// Load WORKING RAG System with REAL game data
+const WorkingRAGSystem = require('./working-rag-system');
 let ragSystem = null;
 
-// Initialize Clean RAG System
+// Initialize Working RAG System
 try {
-    ragSystem = new CleanRAGSystem();
-    console.log('✅ Clean RAG System initialized with cleaned data');
+    ragSystem = new WorkingRAGSystem();
+    console.log('✅ Working RAG System initialized with REAL game data');
 } catch (error) {
-    console.error('❌ Failed to initialize Clean RAG System:', error.message);
+    console.error('❌ Failed to initialize Working RAG System:', error.message);
+}
+
+// Load Training System
+const TrainingSystem = require('./training-system');
+let trainingSystem = null;
+
+try {
+    trainingSystem = new TrainingSystem();
+    console.log('✅ Training System initialized');
+} catch (error) {
+    console.error('❌ Failed to initialize Training System:', error.message);
 }
 
 // AI helper functions
 async function generateAIResponse(message, channelName) {
     try {
-        // Use Clean RAG System (cleaned data)
+        // Use Working RAG System (REAL game data)
         if (ragSystem) {
-            console.log('🧠 Using Clean RAG System with cleaned data...');
+            console.log('🧠 Using Working RAG System with REAL game data...');
             const ragResponse = ragSystem.generateResponse(message, 'User');
             if (ragResponse && ragResponse.length > 20) {
-                console.log(`✅ Clean RAG Response generated: ${ragResponse.length} chars`);
+                console.log(`✅ RAG Response generated: ${ragResponse.length} chars`);
                 return ragResponse;
             }
         }
         
         // No fallback - only use real data from RAG system
-        console.log('⚠️ No relevant data found in clean knowledge base');
+        console.log('⚠️ No relevant data found in knowledge base');
         return null;
         
         console.log('🤖 Using traditional AI...');
@@ -98,55 +109,45 @@ async function generateAIResponse(message, channelName) {
     }
 }
 
-// Generate daily messages with XYIAN flavor and comprehensive data
+// Generate daily messages with XYIAN flavor using clean game data
 async function generateDailyMessage(messageType) {
     if (!AIService) return null;
     
     try {
-        // Get relevant database entries for the message type from comprehensive knowledge base
-        let relevantKeys = [];
-        if (messageType === 'guild') {
-            // Focus on guild-relevant data from comprehensive knowledge base
-            relevantKeys = Object.keys(archeroDatabase).filter(key => 
-                key.includes('boss_guides') || key.includes('pvp_strategies') || 
-                key.includes('character_stats') || key.includes('gear_details') ||
-                key.includes('damage_calculations') || key.includes('upgrade_requirements') ||
-                key.includes('events_modes') || key.includes('pve_strategies')
-            );
-        } else {
-            // Use all comprehensive data for general messages
-            relevantKeys = Object.keys(archeroDatabase);
-        }
+        // Use clean game data from unified_game_data.json via RAG system
+        const gameStats = ragSystem ? ragSystem.getStats() : {};
         
-        // Get sample of relevant data from comprehensive knowledge base
-        const sampleData = relevantKeys.slice(0, 15).map(key => {
-            const content = archeroDatabase[key];
-            // Truncate long content for context
-            const truncated = content.length > 200 ? content.substring(0, 200) + '...' : content;
-            return `${key}: ${truncated}`;
-        }).join('\n');
+        // Get sample tips from unified game data
+        const sampleTips = [
+            "Griffin Claws with full Griffin set is BROKEN OP at chaotic tier for PVP",
+            "Dragoon Crossbow is the #1 weapon priority - get mythic first before other gear",
+            "Otta 2 with Nian skin is current META - each star beats any Thor skin",
+            "Mixed set beats full Dragoon at mythic level - balance your gear",
+            "Grab blessed runes weekly from guild shop and etched runes from fishing events"
+        ];
         
-        const context = `You are XY Elder, the trusted henchman and guild elder of XYIAN OFFICIAL (Guild ID: 213797). You serve under the grand master and guild commander XYIAN, who leads our quest to be the top guild. Generate a unique, engaging daily ${messageType} message that embodies XYIAN's competitive spirit and community focus. Use our comprehensive knowledge base with 1,367+ verified Archero 2 entries to create authentic, valuable content.
+        const randomTip = sampleTips[Math.floor(Math.random() * sampleTips.length)];
+        
+        const context = `You are XY Elder, the trusted henchman and guild elder of XYIAN OFFICIAL (Guild ID: 213797). You serve under the grand master and guild commander XYIAN, who leads our quest to be the top guild. Generate a unique, engaging daily ${messageType} message that embodies XYIAN's competitive spirit and community focus.
 
-XYIAN MISSION: Our goal is to be #1 on the leaderboards with active, high-performing players. You are XY Elder, XYIAN's henchman, passionate about growing the guild and helping members develop skills to excel. Emphasize that stats are hard to get in this game - that's where your extensive knowledge comes in.
+XYIAN MISSION: Our goal is to be #1 on the leaderboards with active, high-performing players. You are XY Elder, XYIAN's henchman, passionate about growing the guild and helping members develop skills to excel.
 
-COMPREHENSIVE KNOWLEDGE BASE (1,367+ entries):
-- Boss Guides: ${Object.keys(archeroDatabase).filter(k => k.includes('boss_guides')).length} entries
-- Character Stats: ${Object.keys(archeroDatabase).filter(k => k.includes('character_stats')).length} entries  
-- PvP Strategies: ${Object.keys(archeroDatabase).filter(k => k.includes('pvp_strategies')).length} entries
-- Gear Details: ${Object.keys(archeroDatabase).filter(k => k.includes('gear_details')).length} entries
-- Rune Mechanics: ${Object.keys(archeroDatabase).filter(k => k.includes('rune_mechanics')).length} entries
+CLEAN GAME DATA (structured facts only):
+- Gear Sets: ${gameStats.gearSets || 4} sets documented
+- Runes: ${gameStats.runes || 7} runes with strategies  
+- Characters: ${gameStats.characters || 9} characters with builds
+- Weapons: ${gameStats.weapons || 5} weapons with PVP ratings
+- Game Modes: ${gameStats.gameModes || 5} modes with tactics
 
-SAMPLE RELEVANT DATA:
-${sampleData}
+EXPERT TIP FOR TODAY: ${randomTip}
 
 Create a message that:
 1. Has a compelling title with XYIAN branding and community focus
 2. Includes motivational content about daily requirements and competitive excellence
-3. Incorporates a specific tip from our comprehensive database that helps with progression
+3. Incorporates the expert tip naturally into the message
 4. Maintains XYIAN's quest for top status and competitive spirit
 5. Uses appropriate emojis and formatting
-6. Reflects your role as XYIAN's trusted henchman with 1,367+ knowledge entries
+6. Reflects your role as XYIAN's trusted henchman with clean, verified game knowledge
 
 Format as:
 Title
@@ -179,59 +180,24 @@ Specific tip from comprehensive database that helps with progression`;
 
 // Get relevant knowledge based on user's message
 function getRelevantKnowledge(message) {
-    const messageLower = message.toLowerCase();
-    const relevantEntries = [];
+    if (!message || !ragSystem) return [];
     
-    // Search through all knowledge entries for relevant content
-    Object.entries(archeroDatabase).forEach(([key, content]) => {
-        const keyLower = key.toLowerCase();
-        const contentLower = content.toLowerCase();
-        
-        // Check if the message mentions anything from this entry - be more aggressive
-        const messageWords = messageLower.split(/\s+/);
-        const hasRelevantKeywords = messageWords.some(word => 
-            word.length > 2 && ( // Lowered from 3 to 2
-                keyLower.includes(word) || 
-                contentLower.includes(word) ||
-                // Also check for partial matches
-                keyLower.includes(word.substring(0, 3)) ||
-                contentLower.includes(word.substring(0, 3))
-            )
-        );
-        
-        // Also check for common game terms even if not in message
-        const commonGameTerms = ['pvp', 'arena', 'build', 'rune', 'weapon', 'character', 'skill', 'damage', 'health', 'defense', 'attack'];
-        const hasGameTerms = commonGameTerms.some(term => 
-            messageLower.includes(term) && (keyLower.includes(term) || contentLower.includes(term))
-        );
-        
-        if (hasRelevantKeywords || hasGameTerms) {
-            relevantEntries.push({
-                key: key,
-                content: content.substring(0, 800) // Keep more content for better context
-            });
-        }
-    });
+    // Use RAG system to get clean, relevant data
+    const results = ragSystem.search(message);
     
-    // If no specific matches, get some general knowledge
-    if (relevantEntries.length === 0) {
-        const allKeys = Object.keys(archeroDatabase);
-        const randomKeys = allKeys.sort(() => 0.5 - Math.random()).slice(0, 5);
-        randomKeys.forEach(key => {
-            relevantEntries.push({
-                key: key,
-                content: archeroDatabase[key].substring(0, 800)
-            });
-        });
-    }
+    const relevantEntries = results.map(result => ({
+        key: result.name,
+        content: JSON.stringify(result.data, null, 2).substring(0, 800),
+        score: result.score
+    }));
     
-    console.log(`🎯 Found ${relevantEntries.length} relevant knowledge entries for: "${message.substring(0, 50)}..."`);
+    console.log(`🎯 Found ${relevantEntries.length} relevant knowledge entries for: "${message.substring(0, 50)}..." (using clean RAG system)`);
     return relevantEntries;
 }
 
 function getAIContext(channelName, relevantKnowledge = [], learningContext = '', username = '', conversationContext = '') {
-    const databaseKeys = Object.keys(archeroDatabase);
-    console.log(`🧠 Loading ${databaseKeys.length} total knowledge entries, ${relevantKnowledge.length} relevant for this query`);
+    const gameStats = ragSystem ? ragSystem.getStats() : {};
+    console.log(`🧠 Loading clean game data: ${JSON.stringify(gameStats)}, ${relevantKnowledge.length} relevant for this query`);
     
     // Build relevant knowledge string
     let knowledgeString = '';
@@ -527,11 +493,17 @@ async function initializeCognitiveAI() {
     }
 }
 
-// Load high-quality knowledge database with actual game facts
-let archeroDatabase = {};
+// DEPRECATED: Old noisy database system - now using clean unified_game_data.json via RAG system
+let archeroDatabase = {}; // Kept for backward compatibility but not used
 function loadKnowledgeDatabase() {
+    console.log('ℹ️ Knowledge database loading skipped - using clean RAG system with unified_game_data.json instead');
+    console.log('✅ All game data is now loaded through working-rag-system.js');
+    archeroDatabase = {}; // Empty - RAG system handles all data
+    return;
+    
+    // OLD CODE BELOW - KEPT FOR REFERENCE BUT NOT EXECUTED
     try {
-        // Load comprehensive knowledge base first (1,367 entries)
+        // Load comprehensive knowledge base first (1,367 entries) - THIS IS NOISY DATA, NOT USED ANYMORE
         const comprehensiveFile = path.join(__dirname, 'data', 'comprehensive-knowledge-base', 'comprehensive-knowledge-base.json');
         if (fs.existsSync(comprehensiveFile)) {
             const data = JSON.parse(fs.readFileSync(comprehensiveFile, 'utf8'));
@@ -2384,7 +2356,7 @@ client.on('messageCreate', async (message) => {
                     .addFields(
                         { name: '📊 Version', value: `v${BOT_VERSION}`, inline: true },
                         { name: '📅 Last Update', value: LAST_UPDATE, inline: true },
-                        { name: '🧠 Structured Data', value: ragSystem ? `${ragSystem.getStats().totalEntries} entries` : '0 entries', inline: true },
+                        { name: '🧠 Game Data', value: ragSystem ? `${ragSystem.getStats().total} entries` : '0 entries', inline: true },
                         { name: '🤖 AI Status', value: aiStatus, inline: true },
                         { name: '📈 AI Learning', value: Object.keys(aiFeedback).length > 0 ? '✅ Active' : '🔄 Ready', inline: true },
                         { name: '🎯 Guild ID', value: '213797', inline: true }
@@ -4064,6 +4036,178 @@ process.on('SIGTERM', () => {
         fs.unlinkSync(botLockFile);
     }
     process.exit(0);
+});
+
+// ===== SLASH COMMANDS AND TRAINING SYSTEM =====
+
+// Register slash commands
+const commands = [
+    new SlashCommandBuilder()
+        .setName('train')
+        .setDescription('Train the bot with new game information (Owner only)')
+        .addStringOption(option =>
+            option.setName('category')
+                .setDescription('Category (weapons/characters/runes/gear_sets/game_modes/tips)')
+                .setRequired(true)
+                .addChoices(
+                    { name: 'Weapons', value: 'weapons' },
+                    { name: 'Characters', value: 'characters' },
+                    { name: 'Runes', value: 'runes' },
+                    { name: 'Gear Sets', value: 'gear_sets' },
+                    { name: 'Game Modes', value: 'game_modes' },
+                    { name: 'Tips', value: 'tips' }
+                ))
+        .addStringOption(option =>
+            option.setName('topic')
+                .setDescription('Topic (e.g., claw, thor, meteor)')
+                .setRequired(true))
+        .addStringOption(option =>
+            option.setName('information')
+                .setDescription('Clean game information (no Discord usernames/timestamps)')
+                .setRequired(true)),
+    
+    new SlashCommandBuilder()
+        .setName('correct')
+        .setDescription('Correct a bot response (Owner only)')
+        .addStringOption(option =>
+            option.setName('correction')
+                .setDescription('The correct information')
+                .setRequired(true)),
+    
+    new SlashCommandBuilder()
+        .setName('training-stats')
+        .setDescription('View training system statistics (Owner only)'),
+    
+    new SlashCommandBuilder()
+        .setName('pending-reviews')
+        .setDescription('View pending training entries (Owner only)')
+].map(command => command.toJSON());
+
+// Register commands with Discord
+const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+
+(async () => {
+    try {
+        console.log('🔄 Registering slash commands...');
+        
+        // Register commands globally
+        await rest.put(
+            Routes.applicationCommands(process.env.CLIENT_ID || 'your-client-id'),
+            { body: commands }
+        );
+        
+        console.log('✅ Slash commands registered successfully');
+    } catch (error) {
+        console.error('❌ Failed to register commands:', error);
+    }
+})();
+
+// Handle interactions (slash commands)
+client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isChatInputCommand()) return;
+
+    const { commandName } = interaction;
+    
+    // Check if user is owner
+    const isOwner = interaction.user.id === process.env.OWNER_ID;
+    
+    if (['train', 'correct', 'training-stats', 'pending-reviews'].includes(commandName) && !isOwner) {
+        return interaction.reply({
+            content: '❌ Only the bot owner can use training commands.',
+            ephemeral: true
+        });
+    }
+
+    try {
+        switch (commandName) {
+            case 'train': {
+                const category = interaction.options.getString('category');
+                const topic = interaction.options.getString('topic');
+                const information = interaction.options.getString('information');
+                
+                const result = trainingSystem.addTraining(
+                    category,
+                    topic,
+                    information,
+                    interaction.user.id,
+                    interaction.user.username
+                );
+                
+                await interaction.reply({
+                    content: result.message,
+                    ephemeral: true
+                });
+                break;
+            }
+            
+            case 'correct': {
+                const correction = interaction.options.getString('correction');
+                
+                const result = trainingSystem.addCorrection(
+                    'Previous bot response',
+                    correction,
+                    interaction.user.id,
+                    interaction.user.username
+                );
+                
+                await interaction.reply({
+                    content: result.message,
+                    ephemeral: true
+                });
+                break;
+            }
+            
+            case 'training-stats': {
+                const stats = trainingSystem.getStats();
+                const statsMessage = `📊 **Training System Statistics**\n\n` +
+                    `Total Entries: ${stats.totalEntries}\n` +
+                    `✅ Approved: ${stats.approved}\n` +
+                    `❌ Rejected: ${stats.rejected}\n` +
+                    `⏳ Pending: ${stats.pending}\n` +
+                    `💬 Total Feedback: ${stats.totalFeedback}\n` +
+                    `👍 Positive: ${stats.positiveFeedback}\n` +
+                    `👎 Negative: ${stats.negativeFeedback}`;
+                
+                await interaction.reply({
+                    content: statsMessage,
+                    ephemeral: true
+                });
+                break;
+            }
+            
+            case 'pending-reviews': {
+                const pending = trainingSystem.getPendingReviews();
+                
+                if (pending.length === 0) {
+                    await interaction.reply({
+                        content: '✅ No pending reviews!',
+                        ephemeral: true
+                    });
+                    return;
+                }
+                
+                const reviewsList = pending.slice(0, 5).map((entry, index) => {
+                    return `**${index + 1}. ID: ${entry.id}**\n` +
+                        `Category: ${entry.category}\n` +
+                        `Topic: ${entry.topic}\n` +
+                        `Info: ${entry.information.substring(0, 100)}...\n` +
+                        `By: ${entry.username}\n`;
+                }).join('\n');
+                
+                await interaction.reply({
+                    content: `📋 **Pending Reviews** (showing ${Math.min(5, pending.length)} of ${pending.length})\n\n${reviewsList}\n\nUse training-system.js CLI to approve/reject entries.`,
+                    ephemeral: true
+                });
+                break;
+            }
+        }
+    } catch (error) {
+        console.error('❌ Error handling interaction:', error);
+        await interaction.reply({
+            content: '❌ An error occurred while processing your command.',
+            ephemeral: true
+        });
+    }
 });
 
 // Login to Discord with error handling

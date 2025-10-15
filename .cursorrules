@@ -1,0 +1,186 @@
+# Discord Bot Project - AI Assistant Rules
+
+## 📊 DATA STRUCTURE - CRITICAL
+
+### Single Source of Truth
+**ONLY use: `xyian-bot-project/data/real-structured-data/unified_game_data.json`**
+
+This is the ONLY active data file. All other data sources have been archived to `data/outdated-data/` and must NOT be used.
+
+### Data Quality Standards
+
+**GOOD DATA** ✅:
+- Clean, complete game facts
+- Specific weapon names (Griffin Claws, Dragoon Crossbow, Dragoon Bow)
+- Character builds with details
+- Gear set bonuses and use cases
+- Rune effects and combinations
+- Game mode strategies
+- NO usernames, NO timestamps, NO chat fragments
+
+**BAD DATA** ❌:
+- Discord usernames (e.g., "Awesomethanu Senior Archer")
+- Timestamps (e.g., "827 AM", "10:25 PM")
+- Incomplete sentences or fragments
+- Chat noise like "(edited)", "1", emojis without context
+- References to users asking questions
+- Off-topic discussions
+
+### Data Sources (Current Status)
+
+**ACTIVE**:
+- `xyian-bot-project/data/real-structured-data/unified_game_data.json` ✅ ONLY USE THIS
+
+**ARCHIVED** (reference only, DO NOT USE):
+- `data/outdated-data/comprehensive-knowledge-base/` ❌ Discord chatter noise
+- `data/outdated-data/cleaned-database/` ❌ Still too noisy
+- `data/outdated-data/structured-tables/` ❌ Superseded by unified data
+
+## 🤖 BOT ARCHITECTURE
+
+### Data Loading
+- Bot uses `working-rag-system.js` which loads `unified_game_data.json`
+- NO direct loading of comprehensive-knowledge-base
+- NO fallback to noisy data sources
+
+### Response Generation
+- RAG system searches unified_game_data.json
+- Returns structured, clean responses
+- Includes PVP ratings, gear set info, combinations
+
+### Key Example: PVP Weapons
+When asked "what's the best PVP weapon?", bot MUST mention:
+1. **Griffin Claws** - S-tier with Griffin set (broken OP at chaotic tier)
+2. **Dragoon Crossbow** - S-tier best overall for mixed sets
+3. **Dragoon Bow** - A-tier for Dragoon builds
+
+## 📝 UPDATING DATA
+
+### How to Add New Information
+1. Edit `xyian-bot-project/data/real-structured-data/unified_game_data.json`
+2. Follow existing structure for each category
+3. Include all relevant fields (pvp_rating, best_for, combinations, etc.)
+4. Run validation: `node xyian-bot-project/validate-data-quality.js`
+5. Test bot responses before committing
+
+### Data Format Rules
+```json
+{
+  "weapons": {
+    "weapon_name": {
+      "aka": "alternative name",
+      "type": "ranged/melee/magic",
+      "pvp_rating": "S-tier / A-tier description",
+      "gear_set": "which gear set it pairs with",
+      "best_for": ["use case 1", "use case 2"],
+      "combinations": ["combo 1", "combo 2"],
+      "note": "Pro tip or important detail"
+    }
+  }
+}
+```
+
+### Validation Checklist
+Before adding data, ensure:
+- [ ] No usernames or Discord handles
+- [ ] No timestamps
+- [ ] Complete sentences
+- [ ] Specific game facts
+- [ ] Proper JSON syntax
+- [ ] All relevant fields included
+
+## 🚀 RAILWAY DEPLOYMENT
+
+### Environment Variables Required
+- `DISCORD_TOKEN` - Bot token
+- `OWNER_ID` - Your Discord user ID (for training commands)
+- `OPENAI_API_KEY` - Optional, for AI features
+
+### Persistent Data
+- `/data` volume mounted for persistence
+- `unified_game_data.json` persists across deployments
+- Training data stored in `data/user-training/`
+
+### Deployment Command
+```bash
+cd xyian-bot-project
+npm install
+node ultimate-xyian-bot.js
+```
+
+## 🎓 TRAINING SYSTEM
+
+### Discord Commands (Owner Only)
+- `/train <topic> <correct_info>` - Add/update game information
+- `/feedback thumbs_up/thumbs_down` - Rate bot responses
+- `/correct <correction>` - Fix incorrect answers
+
+### Local Training
+```bash
+node xyian-bot-project/train-bot.js
+```
+
+### Training Data Flow
+1. Training input collected via Discord or CLI
+2. Validated for quality (no Discord chatter)
+3. Stored in `data/user-training/training-log.json`
+4. Reviewed and merged into `unified_game_data.json`
+
+## ⚠️ CRITICAL REMINDERS
+
+### What NOT to Do
+1. ❌ DO NOT load data from comprehensive-knowledge-base
+2. ❌ DO NOT load data from cleaned-database
+3. ❌ DO NOT add Discord usernames to unified_game_data.json
+4. ❌ DO NOT add timestamps to unified_game_data.json
+5. ❌ DO NOT create alternative data files - use unified_game_data.json
+
+### What TO Do
+1. ✅ ONLY use unified_game_data.json
+2. ✅ Validate data quality before adding
+3. ✅ Include specific weapon/character/rune names
+4. ✅ Add PVP ratings and gear set info
+5. ✅ Keep data clean and structured
+
+## 📚 Documentation
+
+### Key Files to Read First
+1. `xyian-bot-project/DATA-STRUCTURE.md` - Data organization
+2. `xyian-bot-project/PROJECT-STATUS.md` - Current state
+3. `xyian-bot-project/CHANGELOG.md` - Version history
+4. `xyian-bot-project/README.md` - Setup and usage
+
+### Getting Started
+```bash
+# Read the data structure
+cat xyian-bot-project/data/real-structured-data/unified_game_data.json
+
+# Test bot responses
+node xyian-bot-project/working-rag-system.js
+
+# Validate data quality
+node xyian-bot-project/validate-data-quality.js
+```
+
+## 🎯 QUALITY GOALS
+
+### Success Criteria
+- Bot mentions Griffin Claws AND Dragoon Bow for PVP weapon questions
+- No Discord chatter in responses
+- All responses use clean, structured data
+- Daily tips use real game facts (no usernames/timestamps)
+- Training system allows easy updates without losing quality
+
+### Testing
+Always test these queries after changes:
+1. "what's the best PVP weapon?"
+   - Must mention: Griffin Claws, Dragoon Crossbow, Dragoon Bow
+2. "best PVP build?"
+   - Must include gear + characters + runes
+3. "tell me about Griffin set"
+   - Must mention it's broken OP at chaotic tier with claws
+
+---
+
+**Remember**: This project has been cleaned up from 1,367 noisy Discord messages to ~40 high-quality structured entries. Keep it that way!
+
