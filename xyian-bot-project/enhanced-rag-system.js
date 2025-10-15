@@ -393,3 +393,4 @@ class EnhancedRAGSystem {
 }
 
 module.exports = EnhancedRAGSystem;
+
