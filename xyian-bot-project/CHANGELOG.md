@@ -2,6 +2,35 @@
 
 All notable changes to the Arch 2 Addicts Discord Bot project will be documented in this file.
 
+## [2.3.1] - 2025-10-19
+
+### 🔧 MAJOR REFACTOR: Project Structure Cleanup
+
+#### Changed
+- **🏗️ Project Structure** - Reorganized for Railway deployment best practices
+- **📁 File Organization** - Consolidated duplicate files to xyian-bot-project/ as single source of truth
+- **🧹 Root Directory** - Cleaned root directory to contain only deployment configuration
+- **📦 Package Management** - Merged package.json versions (now v2.2.0 across board)
+- **🚀 Railway Config** - Standardized Railway configuration with Nixpacks builder
+- **🔗 Import Paths** - Updated all import paths and file references
+
+#### Removed
+- **🗑️ Duplicate Files** - Removed duplicate bot files from root directory
+- **📂 Obsolete Directories** - Archived obsolete project directories (xyian-bot/, src/, discord-bot/, services/)
+- **⚙️ Conflicting Configs** - Removed conflicting configuration files
+
+#### Fixed
+- **🔧 Import Path Inconsistencies** - All paths now work correctly from xyian-bot-project/
+- **⚙️ Railway Deployment Conflicts** - Single, consistent deployment configuration
+- **📦 Package.json Version Mismatches** - Synchronized versions across all files
+
+#### Archived
+- **📁 Old Project Structures** - Moved to archive/old-project-structures/
+  - xyian-bot/ - Old bot implementation
+  - src/ - TypeScript source code
+  - discord-bot/ - Debug utilities
+  - services/ - API server code
+
 ## [2.3.0] - 2025-01-14
 
 ### 🎉 MAJOR UPDATE: Data Cleanup & Training System
