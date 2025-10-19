@@ -20,6 +20,7 @@ pids
 *.pid
 *.seed
 *.pid.lock
+.bot.lock
 
 # Coverage directory used by tools like istanbul
 coverage/
@@ -76,13 +77,14 @@ research-tools/node_modules/
 research-tools/*.json
 research-tools/*.log
 
-# Scraped data files (but keep package.json and package-lock.json)
+# Scraped data files (but keep essential files)
 archero2-*.json
 discord-*.json
 scraped-*.json
 *.json
 !package.json
 !package-lock.json
+!xyian-bot-project/data/real-structured-data/*.json
 
 # OS generated files
 .DS_Store
