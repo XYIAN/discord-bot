@@ -72,9 +72,9 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 - **Owner Protection**: Training commands require `OWNER_ID` match
 - **Railway Ready**: Configured with persistent volumes and environment variables
 
-## [2.2.0] - 2025-10-13
+## [2.2.0] - 2025-10-14
 
-### 🎯 MAJOR UPDATE: Real Structured Game Data
+### 🎯 MAJOR UPDATE: Real Structured Game Data + Training System
 
 #### Added
 - **📊 Real Structured Data** - Created unified game data with ACTUAL facts extracted from conversations
@@ -85,6 +85,10 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 - **🎮 Game Modes** - Peak Arena, Arena, Guild Wars (GvG), Shackled Jungle strategies
 - **💡 Pro Tips System** - Priority guides for gear, characters, skins, and F2P paths
 - **🤖 Working RAG System** - NEW RAG system that uses structured data instead of Discord chat noise
+- **🎓 Training System** - Owner can train bot with `/train`, `/correct`, `/training-stats`, `/pending-reviews` commands
+- **✅ Input Validation** - Training system validates all inputs to prevent Discord chat noise
+- **📋 Pending Review System** - All training entries go through manual review before merging
+- **🔄 Data Flow Diagram** - Complete visual documentation of system architecture
 
 #### Fixed
 - **❌ REMOVED Discord Chat Noise** - Bot was trying to answer from raw Discord conversations
@@ -102,9 +106,20 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 #### Technical Details
 - **File**: `working-rag-system.js` - Production-ready RAG system
 - **Data**: `unified_game_data.json` - Single source of truth for all game data
+- **Training**: `training-system.js` - Owner-only training system with validation
 - **Categories**: gear_sets, runes, characters, weapons, blessings, game_modes, tips
 - **Quality**: Hand-curated facts extracted from expert player conversations
 - **Format**: Structured JSON with consistent schema for easy bot queries
+- **Slash Commands**: `/train`, `/correct`, `/training-stats`, `/pending-reviews`
+- **Validation**: Prevents Discord usernames, timestamps, and chat noise
+- **Review Process**: All training goes to pending-review.json before merging
+
+#### Bug Fixes (Code Review)
+- **🐛 Fixed Property Names** - Changed `gameStats.gearSets` to `gameStats.gear_sets` to match RAG system output
+- **🐛 Fixed CLIENT_ID Check** - Added proper validation before registering slash commands
+- **🐛 Improved Error Handling** - Graceful fallback if CLIENT_ID not set
+- **🐛 Training System Integration** - Properly integrated training-system.js with bot
+- **🐛 Data Flow Verification** - Created comprehensive data flow diagram to verify all connections
 
 ### 📋 Project Organization
 - **✅ Railway Ready** - All configs verified (`railway.json`, `package.json`)

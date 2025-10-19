@@ -3,8 +3,9 @@
 ## ✅ Pre-Deployment Verification
 
 ### 1. Core Files Present
-- [x] `ultimate-xyian-bot.js` - Main bot file
+- [x] `ultimate-xyian-bot.js` - Main bot file (v2.2.0)
 - [x] `working-rag-system.js` - RAG system
+- [x] `training-system.js` - Training system
 - [x] `data/real-structured-data/unified_game_data.json` - Game data
 - [x] `package.json` - Dependencies
 - [x] `railway.json` - Railway config
@@ -52,7 +53,8 @@ All required npm packages in `package.json`:
 
 Required:
 - [x] `DISCORD_TOKEN` - Your Discord bot token
-- [x] `CLIENT_ID` - Discord application client ID
+- [x] `CLIENT_ID` - Discord application client ID (required for slash commands)
+- [x] `OWNER_ID` - Your Discord user ID (required for training commands)
 
 Optional (for full features):
 - [ ] `OPENAI_API_KEY` - OpenAI API key for AI features
@@ -109,8 +111,14 @@ In Railway dashboard → Variables tab:
 ```
 DISCORD_TOKEN=your_token_here
 CLIENT_ID=your_client_id_here
+OWNER_ID=your_discord_user_id_here
 OPENAI_API_KEY=your_openai_key_here (optional)
 ```
+
+**How to get OWNER_ID**:
+1. Enable Developer Mode in Discord (Settings → Advanced → Developer Mode)
+2. Right-click your username → Copy ID
+3. Paste as OWNER_ID value
 
 ### 3. Deploy
 1. Railway will automatically detect Node.js project
@@ -151,6 +159,13 @@ Expected: Detailed, formatted responses with emojis and pro tips
 - `!dev-menu` - Shows developer menu (XYIAN role required)
 - `!clean-ai-chat` - Cleans arch-ai channel (XYIAN role required)
 - `!clean-logs` - Cleans debug-logs channel (XYIAN role required)
+
+### 3.5 Test Training System (Owner Only)
+- `/train` - Add new game information
+- `/correct` - Correct a bot response
+- `/training-stats` - View training statistics
+- `/pending-reviews` - View pending training entries
+- CLI: `node training-system.js` - Interactive training management
 
 ### 4. Test AI Channel
 - Post a question in arch-ai channel
