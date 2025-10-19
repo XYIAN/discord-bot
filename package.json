@@ -1,36 +1,24 @@
 {
-  "name": "xyian-discord-bot",
+  "name": "xyian-discord-bot-monorepo",
   "version": "2.2.0",
-  "description": "XYIAN Discord Bot - Clean RAG-only system",
-  "main": "ultimate-xyian-bot.js",
+  "description": "XYIAN Discord Bot Monorepo - Clean RAG-only system",
+  "private": true,
   "scripts": {
-    "start": "node ultimate-xyian-bot.js",
-    "dev": "node ultimate-xyian-bot.js",
-    "build": "echo 'Node.js project - no build step required'"
+    "start": "cd xyian-bot-project && npm start",
+    "dev": "cd xyian-bot-project && npm run dev",
+    "install": "cd xyian-bot-project && npm install",
+    "build": "cd xyian-bot-project && npm run build"
   },
   "keywords": [
     "discord",
     "bot",
     "archero2",
     "xyian",
-    "rag"
+    "rag",
+    "monorepo"
   ],
   "author": "Kyle",
   "license": "MIT",
-  "dependencies": {
-    "axios": "^1.6.2",
-    "cheerio": "^1.1.2",
-    "chromedriver": "^141.0.0",
-    "cors": "^2.8.5",
-    "discord.js": "^14.14.1",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "express-rate-limit": "^7.1.5",
-    "openai": "^6.1.0",
-    "puppeteer": "^24.25.0",
-    "selenium-webdriver": "^4.36.0",
-    "winston": "^3.11.0"
-  },
   "engines": {
     "node": ">=16.9.0"
   }
