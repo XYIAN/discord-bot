@@ -1,0 +1,286 @@
+{
+  "timestamp": "2025-10-05T20:00:26.516Z",
+  "sources": [
+    {
+      "url": "https://archero-2.game-vault.net/wiki/Artifacts",
+      "pageName": "Artifacts",
+      "scraped": true,
+      "contentLength": 103882,
+      "artifactSets": 9,
+      "mythicArtifacts": 11,
+      "legendaryArtifacts": 10
+    }
+  ],
+  "artifactSets": {
+    "goldenDragonTreasure": {
+      "name": "Golden Dragon's Treasure Set",
+      "artifacts": [
+        "Pumpkin Lantern",
+        "Four-Leaf Clover",
+        "Laurel Wreath"
+      ],
+      "bonuses": {
+        "3 Star": "ATK +2% & HP +2%",
+        "6 Star": "ATK +3% & HP +3%",
+        "9 Star": "ATK +4% & HP +4%",
+        "12 Star": "ATK +5% & HP +5%",
+        "15 Star": "ATK +6% & HP +6%"
+      }
+    },
+    "heartseekerArrow": {
+      "name": "Heartseeker Arrow Set",
+      "artifacts": [
+        "Heartseeker Arrow",
+        "Cupid's Bow",
+        "Cupid's Arrow"
+      ],
+      "bonuses": {
+        "3 Star": "ATK +2% & HP +2%",
+        "6 Star": "ATK +3% & HP +3%",
+        "9 Star": "ATK +4% & HP +4%",
+        "12 Star": "ATK +5% & HP +5%",
+        "15 Star": "ATK +6% & HP +6%"
+      }
+    },
+    "heavenlyMusic": {
+      "name": "Heavenly Music Set",
+      "artifacts": [
+        "Magic Harp",
+        "Pan's Flute",
+        "Tidal Conch"
+      ],
+      "bonuses": {
+        "3 Star": "ATK +2% & HP +2%",
+        "6 Star": "ATK +3% & HP +3%",
+        "9 Star": "ATK +4% & HP +4%",
+        "12 Star": "ATK +5% & HP +5%",
+        "15 Star": "ATK +6% & HP +6%"
+      }
+    },
+    "vikingBattleCry": {
+      "name": "Viking Battle Cry Set",
+      "artifacts": [
+        "Attack Horn",
+        "Bull Skull",
+        "Gargoyle"
+      ],
+      "bonuses": {
+        "3 Star": "ATK +2% & HP +2%",
+        "6 Star": "ATK +3% & HP +3%",
+        "9 Star": "ATK +4% & HP +4%",
+        "12 Star": "ATK +5% & HP +5%",
+        "15 Star": "ATK +6% & HP +6%"
+      }
+    },
+    "rareTreasure": {
+      "name": "Rare Treasure Set",
+      "artifacts": [
+        "Golden Fleece",
+        "Goldfinger",
+        "Golden Mask"
+      ],
+      "bonuses": {
+        "3 Star": "ATK +2% & HP +2%",
+        "6 Star": "ATK +3% & HP +3%",
+        "9 Star": "ATK +4% & HP +4%",
+        "12 Star": "ATK +5% & HP +5%",
+        "15 Star": "ATK +6% & HP +6%"
+      }
+    },
+    "sleeplessStories": {
+      "name": "Sleepless Stories Set",
+      "artifacts": [
+        "Demon Blood",
+        "Demon King's Eye",
+        "Ravenous Chain"
+      ],
+      "bonuses": {
+        "3 Star": "ATK +2% & HP +2%",
+        "6 Star": "ATK +3% & HP +3%",
+        "9 Star": "ATK +4% & HP +4%",
+        "12 Star": "ATK +5% & HP +5%",
+        "15 Star": "ATK +6% & HP +6%"
+      }
+    },
+    "hypnosisStories": {
+      "name": "Hypnosis Stories Set",
+      "artifacts": [
+        "Swiftwind Jade",
+        "Aeon Spire",
+        "Healing Grail"
+      ],
+      "bonuses": {
+        "3 Star": "ATK +2% & HP +2%",
+        "6 Star": "ATK +3% & HP +3%",
+        "9 Star": "ATK +4% & HP +4%",
+        "12 Star": "ATK +5% & HP +5%",
+        "15 Star": "ATK +6% & HP +6%"
+      }
+    },
+    "wonderfulPlant": {
+      "name": "Wonderful Plant Set",
+      "artifacts": [
+        "Fire Phoenix Feather",
+        "Dragon Heart",
+        "Brisingamen"
+      ],
+      "bonuses": {
+        "3 Star": "ATK +2% & HP +2%",
+        "6 Star": "ATK +3% & HP +3%",
+        "9 Star": "ATK +4% & HP +4%",
+        "12 Star": "ATK +5% & HP +5%",
+        "15 Star": "ATK +6% & HP +6%"
+      }
+    },
+    "knightsOath": {
+      "name": "Knight's Oath Set",
+      "artifacts": [
+        "Gladiator's Helm",
+        "Sword in the Stone",
+        "Iron Throne",
+        "Supreme Staff"
+      ],
+      "bonuses": {
+        "3 Star": "ATK +1% & HP +1%",
+        "6 Star": "ATK +1.5% & HP +1.5%",
+        "9 Star": "ATK +2% & HP +2%",
+        "12 Star": "ATK +2.5% & HP +2.5%",
+        "15 Star": "ATK +3% & HP +3%"
+      }
+    }
+  },
+  "allArtifacts": {
+    "mythic": [
+      {
+        "name": "Cupid's Arrow",
+        "stats": "ATK +360 & HP +1440",
+        "special": "Flame DMG +20%",
+        "source": "Exchange shop"
+      },
+      {
+        "name": "Demon King's Eye",
+        "stats": "ATK +360 & HP +1440",
+        "special": "Player DMG reduced by 8%",
+        "source": "Exchange shop"
+      },
+      {
+        "name": "Goldfinger",
+        "stats": "ATK +360 & HP +1440",
+        "special": "DODGE +4%",
+        "source": "Wish"
+      },
+      {
+        "name": "Golden Fleece",
+        "stats": "ATK +360 & HP +1440",
+        "special": "ATK SPD +6%",
+        "source": "Wish"
+      },
+      {
+        "name": "Ravenous Chain",
+        "stats": "ATK +360 & HP +1440",
+        "special": "SPRITE DMG +12%",
+        "source": "Event"
+      },
+      {
+        "name": "Pan's Flute",
+        "stats": "ATK +360 & HP +1440",
+        "special": "CRIT Rate +4%",
+        "source": "Wish"
+      },
+      {
+        "name": "Tidal Conch",
+        "stats": "ATK +360 & HP +1440",
+        "special": "CRIT DMG +16%",
+        "source": "Wish"
+      },
+      {
+        "name": "Golden Mask",
+        "stats": "ATK +360 & HP +1440",
+        "special": "DMG Reduction +4%",
+        "source": "Wish"
+      },
+      {
+        "name": "Demon Blood",
+        "stats": "ATK +360 & HP +1440",
+        "special": "DMG to players increased by 8%",
+        "source": "Exchange shop"
+      },
+      {
+        "name": "Swiftwind Jade",
+        "stats": "ATK +360 & HP +1440",
+        "special": "Chance to spawn whirlwind when Cloudfooted is active",
+        "source": "Event"
+      },
+      {
+        "name": "Aeon Spire",
+        "stats": "ATK +360 & HP +1440",
+        "special": "Circle DMG +12%",
+        "source": "Event"
+      }
+    ],
+    "legendary": [
+      {
+        "name": "Cupid's Bow",
+        "stats": "ATK +120 & HP +480",
+        "special": "Poison DMG +10%",
+        "source": "Exchange shop"
+      },
+      {
+        "name": "Brisingamen",
+        "stats": "ATK +120 & HP +480",
+        "special": "DMG vs Elites +4%",
+        "source": "Wish"
+      },
+      {
+        "name": "Dragon Heart",
+        "stats": "ATK +120 & HP +480",
+        "special": "HP +2%",
+        "source": "Wish"
+      },
+      {
+        "name": "Attack Horn",
+        "stats": "ATK +120 & HP +480",
+        "special": "DMG vs ground ennemies +8%",
+        "source": "Wish"
+      },
+      {
+        "name": "Healing Grail",
+        "stats": "ATK +120 & HP +480",
+        "special": "Boss DMG +8%",
+        "source": "Wish"
+      },
+      {
+        "name": "Damocles' Sword",
+        "stats": "ATK +120 & HP +480",
+        "special": "DMG vs minions +4%",
+        "source": "Wish"
+      },
+      {
+        "name": "Gargoyle",
+        "stats": "ATK +120 & HP +480",
+        "special": "CRIT DMG +8%",
+        "source": "Wish"
+      },
+      {
+        "name": "Bull Skull",
+        "stats": "ATK +120 & HP +480",
+        "special": "ATK +3%",
+        "source": "Wish"
+      },
+      {
+        "name": "Fire Phoenix Feather",
+        "stats": "ATK +120 & HP +480",
+        "special": "DMG vs airborne Enemies +4%",
+        "source": "Wish"
+      },
+      {
+        "name": "Magic Harp",
+        "stats": "ATK +120 & HP +480",
+        "special": "Gear base stats +3%",
+        "source": "Wish"
+      }
+    ],
+    "epic": [],
+    "rare": []
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "damage_calculator": {
+    "title": "Archero Damage Calculator",
+    "version": "4.12.2",
+    "author": "u/raytheblue",
+    "last_updated": "8 May 2023",
+    "url": "https://docs.google.com/spreadsheets/d/1-xLV4JSE71lI9W3SbXn9G_BNganA9VkzbnC5FmH3DaA/edit",
+    "status": "INCOMPLETE - No further updates planned",
+    "description": "Comprehensive damage calculation spreadsheet for Archero with detailed formulas and data entry sections",
+    "features": [
+      "Hero base attack calculations",
+      "Rune damage contributions",
+      "Talent percentage bonuses",
+      "Altar and relic stat increases",
+      "Monster egg bonuses",
+      "Hero outfit buffs",
+      "Weapon and equipment calculations",
+      "Damage formula breakdowns"
+    ],
+    "categories": {
+      "hero_stats": "Base hero attack and powerup calculations",
+      "runes": "Courage rune flat and percentage bonuses",
+      "talents": "Hero powerup talent percentages",
+      "altar": "Hero altar base stats increases",
+      "relics": "Mystic emblem relic bonuses",
+      "medals": "Worthy Warrior and other medal bonuses",
+      "monster_eggs": "Boss monster egg bonuses (Arch Leader, Medusa, Skeleton King, etc.)",
+      "hero_outfits": "Character outfit buffs and bonuses",
+      "weapons": "Weapon damage calculations",
+      "equipment": "Gear and equipment bonuses"
+    },
+    "usage_instructions": [
+      "Make a copy of the spreadsheet to input your own data",
+      "Key in data in the specified sections",
+      "White cells are calculated by formula automatically",
+      "Use for comparing current vs new equipment/rune setups",
+      "Take note of specific rows when checking to swap runes"
+    ],
+    "source": "Google Sheets - Community created",
+    "added_to_scraper": "2025-01-05T21:55:00Z"
+  }
+}

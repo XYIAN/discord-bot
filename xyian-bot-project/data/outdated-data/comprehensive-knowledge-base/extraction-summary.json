@@ -1,0 +1,62 @@
+{
+  "extractedAt": "2025-10-08T05:32:39.958Z",
+  "totalCategories": 11,
+  "totalEntries": 1367,
+  "categories": [
+    {
+      "name": "upgrade_requirements",
+      "count": 32,
+      "priority": "high"
+    },
+    {
+      "name": "dragoon_guides",
+      "count": 226,
+      "priority": "high"
+    },
+    {
+      "name": "boss_guides",
+      "count": 140,
+      "priority": "high"
+    },
+    {
+      "name": "events_modes",
+      "count": 43,
+      "priority": "high"
+    },
+    {
+      "name": "rune_mechanics",
+      "count": 181,
+      "priority": "high"
+    },
+    {
+      "name": "gear_details",
+      "count": 240,
+      "priority": "high"
+    },
+    {
+      "name": "talent_cards",
+      "count": 102,
+      "priority": "medium"
+    },
+    {
+      "name": "damage_calculations",
+      "count": 127,
+      "priority": "high"
+    },
+    {
+      "name": "character_stats",
+      "count": 103,
+      "priority": "high"
+    },
+    {
+      "name": "pvp_strategies",
+      "count": 75,
+      "priority": "high"
+    },
+    {
+      "name": "pve_strategies",
+      "count": 98,
+      "priority": "medium"
+    }
+  ]
+}

@@ -81,7 +81,6 @@ research-tools/*.log
 archero2-*.json
 discord-*.json
 scraped-*.json
-*.json
 !package.json
 !package-lock.json
 !railway.json

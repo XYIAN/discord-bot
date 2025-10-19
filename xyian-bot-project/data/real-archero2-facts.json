@@ -1,0 +1,29 @@
+{
+  "mixed_gear_sets": {
+    "how_mixed_gear_works": "Mixed gear sets in Archero 2 allow you to combine different pieces from different sets while still getting some bonuses. Each piece of gear has individual stats, and when you mix sets, you get the individual piece bonuses but not the full set bonuses. This is useful for optimization when you don't have complete sets or when individual pieces have better stats.",
+    "mixed_gear_benefits": "Benefits of mixed gear: 1) Better individual stats from high-tier pieces, 2) More flexibility in builds, 3) Can use your best pieces regardless of set, 4) Good for early game when you don't have complete sets, 5) Allows for more customized builds based on your playstyle.",
+    "mixed_gear_drawbacks": "Drawbacks of mixed gear: 1) No full set bonuses, 2) Less synergy between pieces, 3) May not be optimal for endgame, 4) Requires more knowledge to optimize properly.",
+    "when_to_use_mixed_gear": "Use mixed gear when: 1) You don't have complete sets, 2) Individual pieces have significantly better stats, 3) You're experimenting with builds, 4) You're in early-mid game progression, 5) You want to maximize specific stats over set bonuses."
+  },
+  "pvp_characters": {
+    "dragoon_pvp": "Dragoon is excellent for PvP due to high mobility and damage. Best builds focus on: 1) High attack damage, 2) Critical hit chance, 3) Movement speed, 4) Dodge chance. Recommended weapons: Crossbow or Staff. Key skills: Dash abilities, damage buffs, mobility skills.",
+    "oracle_pvp": "Oracle is strong in PvP with high damage output and good range. Best builds focus on: 1) High attack damage, 2) Critical hit chance, 3) Range bonuses, 4) Skill damage. Recommended weapons: Staff or Crossbow. Key skills: Damage over time, area damage, critical hit bonuses.",
+    "griffin_pvp": "Griffin is top-tier for PvP with excellent damage and survivability. Best builds focus on: 1) Balanced attack and defense, 2) Critical hit chance, 3) Health bonuses, 4) Skill cooldown reduction. Recommended weapons: Any S-tier weapon. Key skills: Damage buffs, defensive skills, utility abilities."
+  },
+  "weapons": {
+    "s_tier_weapons": "S-tier weapons in Archero 2: 1) Oracle Staff - High damage, good range, 2) Griffin Claws - Balanced stats, good for all builds, 3) Dragoon Crossbow - High damage, good for PvP. These are the best weapons in the game and should be prioritized for upgrades.",
+    "weapon_tiers": "Weapon tiers from best to worst: S-tier (Oracle Staff, Griffin Claws, Dragoon Crossbow), A-tier (good weapons for specific builds), B-tier (decent weapons), C-tier (basic weapons). Focus on getting S-tier weapons first."
+  },
+  "runes": {
+    "best_pvp_runes": "Best runes for PvP: 1) Attack damage runes, 2) Critical hit chance runes, 3) Movement speed runes, 4) Dodge chance runes, 5) Health runes. Avoid defensive runes that don't help with mobility or damage.",
+    "rune_priorities": "Rune priority for PvP: 1) Attack damage (most important), 2) Critical hit chance, 3) Movement speed, 4) Dodge chance, 5) Health. Focus on offensive runes over defensive ones for PvP success."
+  },
+  "arena": {
+    "peak_arena_rules": "Peak Arena is the 3v3 PvP mode in Archero 2. Rules: 1) 3 different characters required, 2) Each character needs different builds, 3) Unique items provide bonus health and damage, 4) Fully automated PvP, 5) Focus on high damage and mobility builds.",
+    "arena_strategy": "Peak Arena strategy: 1) Use your best 3 characters, 2) Focus on damage and mobility, 3) Balance offense and defense, 4) Use S-tier weapons, 5) Optimize runes for each character, 6) Practice with different team compositions."
+  },
+  "guild": {
+    "xyian_requirements": "XYIAN Guild requirements: 1) 2 daily boss battles, 2) Daily donations, 3) Active participation, 4) Guild ID: 213797. Benefits include: 1) Access to guild-exclusive content, 2) Better rewards, 3) Community support, 4) Competitive advantages.",
+    "guild_benefits": "Guild benefits in Archero 2: 1) Guild-exclusive rewards, 2) Better daily rewards, 3) Access to guild events, 4) Community support and advice, 5) Competitive advantages in leaderboards, 6) Shared knowledge and strategies."
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "scrapedAt": "2025-10-05T21:26:53.251Z",
+  "totalPosts": 0,
+  "categories": {
+    "general": {
+      "postCount": 6,
+      "posts": []
+    },
+    "pve": {
+      "postCount": 7,
+      "posts": []
+    },
+    "pvp": {
+      "postCount": 3,
+      "posts": []
+    },
+    "events": {
+      "postCount": 8,
+      "posts": []
+    },
+    "other": {
+      "postCount": 4,
+      "posts": []
+    }
+  }
+}
