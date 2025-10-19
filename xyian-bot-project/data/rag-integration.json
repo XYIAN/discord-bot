@@ -1,0 +1,716 @@
+{
+  "name": "Structured RAG Integration",
+  "description": "Integration layer for structured data in RAG system",
+  "version": "2.2.0",
+  "data": {
+    "gear_sets": {
+      "griffin": {
+        "name": "griffin",
+        "pieces": [
+          {
+            "name": "griffin",
+            "pieceType": "unknown",
+            "mentions": 335,
+            "context": "s too 1 murvy Legendary Archer 8:56 AM Pvp beeing griffin Amulett and Ring. Also oracle chest Iirc murvy Le"
+          }
+        ],
+        "totalMentions": 335,
+        "bestContext": "s too 1 murvy Legendary Archer 8:56 AM Pvp beeing griffin Amulett and Ring. Also oracle chest Iirc murvy Le",
+        "sources": []
+      },
+      "chromatic": {
+        "name": "chromatic",
+        "pieces": [
+          {
+            "name": "chromatic",
+            "pieceType": "unknown",
+            "mentions": 36,
+            "context": "that but it would require you to open griffin or chromatic chests and its just not optimal The important pie"
+          }
+        ],
+        "totalMentions": 36,
+        "bestContext": "that but it would require you to open griffin or chromatic chests and its just not optimal The important pie",
+        "sources": []
+      },
+      "dragoon": {
+        "name": "dragoon",
+        "pieces": [
+          {
+            "name": "dragoon",
+            "pieceType": "unknown",
+            "mentions": 277,
+            "context": "anu Senior Archer 8:27 AM mixed set can beat full dragoon set . runes wise meteor and probably sprite/eleme"
+          }
+        ],
+        "totalMentions": 277,
+        "bestContext": "anu Senior Archer 8:27 AM mixed set can beat full dragoon set . runes wise meteor and probably sprite/eleme",
+        "sources": []
+      },
+      "oracle": {
+        "name": "oracle",
+        "pieces": [
+          {
+            "name": "oracle",
+            "pieceType": "unknown",
+            "mentions": 363,
+            "context": "\"ay Tryhard Cat MOP Bad"
+          }
+        ],
+        "totalMentions": 363,
+        "bestContext": "\"ay Tryhard Cat MOP Bad",
+        "sources": []
+      },
+      "mythic": {
+        "name": "mythic",
+        "pieces": [
+          {
+            "name": "mythic",
+            "pieceType": "unknown",
+            "mentions": 30,
+            "context": "\"🆙️ if you want more shovels October 3"
+          }
+        ],
+        "totalMentions": 30,
+        "bestContext": "\"🆙️ if you want more shovels October 3",
+        "sources": []
+      }
+    },
+    "runes": {
+      "etched": {
+        "name": "etched",
+        "mentions": 246,
+        "effects": [],
+        "context": "\"Help :D ARC2 Chat Mod 5/25/25",
+        "sources": []
+      },
+      "circle": {
+        "name": "circle",
+        "mentions": 55,
+        "effects": [],
+        "context": "\"/25",
+        "sources": []
+      },
+      "meteor": {
+        "name": "meteor",
+        "mentions": 107,
+        "effects": [],
+        "context": "\"ot it Demon Junior Archer 9/17/25",
+        "sources": []
+      },
+      "sprite": {
+        "name": "sprite",
+        "mentions": 93,
+        "effects": [],
+        "context": "aren't good for full oracle users. Either double sprite etched or if you have otta 2 with her skin at a h",
+        "sources": []
+      },
+      "potion": {
+        "name": "potion",
+        "mentions": 126,
+        "effects": [],
+        "context": "\"rcher 10/1/25",
+        "sources": []
+      },
+      "ice": {
+        "name": "ice",
+        "mentions": 57,
+        "effects": [],
+        "context": "variables you are testing for and then doing practice runs in seal or invasion. Turn on damage numbers.",
+        "sources": []
+      },
+      "elemental": {
+        "name": "elemental",
+        "mentions": 98,
+        "effects": [],
+        "context": "\"ho Circle Old Sprite Awe New Sprite Assist/Meteor Elemental 2 Strikes",
+        "sources": []
+      },
+      "freeze": {
+        "name": "freeze",
+        "mentions": 13,
+        "effects": [],
+        "context": "(displayed in white numbers) and when ice circle freeze it deals additional elemental ice damage (display",
+        "sources": []
+      },
+      "sword": {
+        "name": "sword",
+        "mentions": 22,
+        "effects": [],
+        "context": "\"elp :D ARC2 Chat Mod 3/27/25",
+        "sources": []
+      },
+      "lightning": {
+        "name": "lightning",
+        "mentions": 4,
+        "effects": [],
+        "context": "\"vers",
+        "sources": []
+      }
+    },
+    "characters": {
+      "thor": {
+        "name": "thor",
+        "mentions": 348,
+        "context": "\"AM Yeah its better for sure",
+        "sources": [],
+        "usage": []
+      },
+      "otta": {
+        "name": "otta",
+        "mentions": 419,
+        "context": "ment as you do a lot of dodging. a lot of it you gotta keep moving and only attack during punches cuz hi",
+        "sources": [],
+        "usage": []
+      },
+      "helix": {
+        "name": "helix",
+        "mentions": 282,
+        "context": "\"ecifically",
+        "sources": [],
+        "usage": []
+      },
+      "drac": {
+        "name": "drac",
+        "mentions": 144,
+        "context": "\"773 Mythic Archer 9/30/25",
+        "sources": [],
+        "usage": []
+      },
+      "rolla": {
+        "name": "rolla",
+        "mentions": 174,
+        "context": "\"he best combo for pve? i’m thinking 6 nyanja with rolla and thor",
+        "sources": [],
+        "usage": [
+          "PvE"
+        ]
+      },
+      "loki": {
+        "name": "loki",
+        "mentions": 79,
+        "context": "\"onger but that’s jus my feeling tho",
+        "sources": [],
+        "usage": []
+      },
+      "nyanja": {
+        "name": "nyanja",
+        "mentions": 43,
+        "context": "\" AM what’s the best combo for pve? i’m thinking 6 nyanja with rolla and thor",
+        "sources": [],
+        "usage": [
+          "PvE"
+        ]
+      },
+      "dracoola": {
+        "name": "dracoola",
+        "mentions": 34,
+        "context": "\"6/25",
+        "sources": [],
+        "usage": []
+      }
+    },
+    "materials": {
+      "0": {
+        "name": "0",
+        "totalQuantity": 2214,
+        "mentions": 199,
+        "context": "each milestone: ╔══════╤══════╤══════╤═══════╗ ║ 40 │ 45 │ 50 │ 55 ║ ╠══════╪══════╪══════╪═══════╣ ║",
+        "sources": []
+      },
+      "1 arc2": {
+        "name": "1 arc2",
+        "totalQuantity": 16,
+        "mentions": 16,
+        "context": "\"sk of taking a bolder or rock throw.",
+        "sources": []
+      },
+      "pm": {
+        "name": "pm",
+        "totalQuantity": 933,
+        "mentions": 79,
+        "context": "\" 2025 EasyVictor ARC2 Senior Archer 5/22/25",
+        "sources": []
+      },
+      "star atm soft": {
+        "name": "star atm soft",
+        "totalQuantity": 78,
+        "mentions": 39,
+        "context": "\"ng Loki",
+        "sources": []
+      },
+      "am data collection for s gear to": {
+        "name": "am data collection for s gear to",
+        "totalQuantity": 1190,
+        "mentions": 34,
+        "context": "\"ber 2",
+        "sources": []
+      },
+      "k for": {
+        "name": "k for",
+        "totalQuantity": 162,
+        "mentions": 18,
+        "context": "\" gems)",
+        "sources": []
+      },
+      "shards epic starting at 40 shards rare starting at 100": {
+        "name": "shards epic starting at 40 shards rare starting at 100",
+        "totalQuantity": 280,
+        "mentions": 14,
+        "context": "to double per star level Legendary starting at 20 shards Epic starting at 40 shards Rare starting at 100 shards (edited) For artifacts Legendary and lower",
+        "sources": []
+      },
+      "anybody already has some information on how much": {
+        "name": "anybody already has some information on how much",
+        "totalQuantity": 26325,
+        "mentions": 13,
+        "context": "\" 10",
+        "sources": []
+      },
+      "pm for artifacts legendary and lower seems to double per star level legendary starting at 20 shards epic starting at 40 shards rare starting at 100": {
+        "name": "pm for artifacts legendary and lower seems to double per star level legendary starting at 20 shards epic starting at 40 shards rare starting at 100",
+        "totalQuantity": 1485,
+        "mentions": 27,
+        "context": "\"d) 1 June 8",
+        "sources": []
+      },
+      "also requires 50": {
+        "name": "also requires 50",
+        "totalQuantity": 0,
+        "mentions": 31,
+        "context": "\"5 Pontus Chat Mod 6/1/25",
+        "sources": []
+      },
+      "for example 200": {
+        "name": "for example 200",
+        "totalQuantity": 16500,
+        "mentions": 33,
+        "context": "\"equired for 0-8 50/50/100/100/150/150/200/300/500 For example 200 Shards required for 5→6 ⁠🎮・questions⁠ Artifact",
+        "sources": []
+      },
+      "pm anybody already has some information on how much": {
+        "name": "pm anybody already has some information on how much",
+        "totalQuantity": 336,
+        "mentions": 16,
+        "context": "\"uly 10",
+        "sources": []
+      },
+      "for artifacts legendary and lower seems to double per star level legendary starting at 20 shards epic starting at 40 shards rare starting at 100": {
+        "name": "for artifacts legendary and lower seems to double per star level legendary starting at 20 shards epic starting at 40 shards rare starting at 100",
+        "totalQuantity": 16,
+        "mentions": 16,
+        "context": "\" Up",
+        "sources": []
+      },
+      "am lucky wheel event also gives starcores ⲧⲟⅺⅽ lucky wheel event also gives star": {
+        "name": "am lucky wheel event also gives starcores ⲧⲟⅺⅽ lucky wheel event also gives star",
+        "totalQuantity": 17,
+        "mentions": 17,
+        "context": "\"emembering? epex ⲦⲞⅪⅭ Senior Archer 9/25/25",
+        "sources": []
+      },
+      "am star": {
+        "name": "am star",
+        "totalQuantity": 493,
+        "mentions": 17,
+        "context": "\"ot lucky",
+        "sources": []
+      },
+      "am is vibrant voyage the only event that gives tidal star": {
+        "name": "am is vibrant voyage the only event that gives tidal star",
+        "totalQuantity": 656,
+        "mentions": 16,
+        "context": "\"on skin fylopian STFC Senior Archer 9/25/25",
+        "sources": []
+      },
+      "am hmm any clue how the razor star": {
+        "name": "am hmm any clue how the razor star",
+        "totalQuantity": 297,
+        "mentions": 27,
+        "context": "its better to get keys nani Novice Explorer 7:11 AM Hmm any clue how the razor starcores for weapons work in the first place? Do you",
+        "sources": []
+      },
+      "pm anyone know how high are the": {
+        "name": "pm anyone know how high are the",
+        "totalQuantity": 725,
+        "mentions": 25,
+        "context": "\"October 3",
+        "sources": []
+      },
+      "shovels and 100": {
+        "name": "shovels and 100",
+        "totalQuantity": 4480,
+        "mentions": 28,
+        "context": "\"hes + 80 Shovels August is going to be tough. 160 shovels and 100 keys needed omgawd 2 August 3",
+        "sources": []
+      },
+      "tickets 50": {
+        "name": "tickets 50",
+        "totalQuantity": 168,
+        "mentions": 28,
+        "context": "tickets Kill bosses: +3 tickets Kill minions: +6 tickets 50 Keys: +12 tickets 50 Wishes: +12 tickets 80 Shove",
+        "sources": []
+      },
+      "am if im going to be able to get enough star": {
+        "name": "am if im going to be able to get enough star",
+        "totalQuantity": 962,
+        "mentions": 26,
+        "context": "\"downside October 5",
+        "sources": []
+      },
+      "and wishes are 50 anyone know how high are the": {
+        "name": "and wishes are 50 anyone know how high are the",
+        "totalQuantity": 2000,
+        "mentions": 25,
+        "context": "and gems tasks in this new event? shovels are 80 and wishes are 50 anyone know how high are the keys and gems tasks in this new event? Shadowfax8",
+        "sources": []
+      },
+      "pm so i have like 100": {
+        "name": "pm so i have like 100",
+        "totalQuantity": 75,
+        "mentions": 25,
+        "context": "\"ess gems. greenleaf10 Junior Archer 10/1/25",
+        "sources": []
+      },
+      "star soft": {
+        "name": "star soft",
+        "totalQuantity": 104,
+        "mentions": 13,
+        "context": "\". PvP I guess Loki as the base would be good at 8 star softcorecinnamon Senior Archer 9/30/25",
+        "sources": []
+      },
+      "pm thx soft": {
+        "name": "pm thx soft",
+        "totalQuantity": 308,
+        "mentions": 11,
+        "context": "\"ad? Yes. It can RB773 Mythic Archer 9/30/25",
+        "sources": []
+      },
+      "pm i dont get how the top players on the board have so many": {
+        "name": "pm i dont get how the top players on the board have so many",
+        "totalQuantity": 448,
+        "mentions": 14,
+        "context": "softcorecinnamon Senior Archer Yesterday at 4:32 PM I dont get how the top players on the board have so many shards to spend. I still can't hit the same level",
+        "sources": []
+      },
+      "myth": {
+        "name": "myth",
+        "totalQuantity": 14,
+        "mentions": 14,
+        "context": "gear to key ratio. Sepetate forms for chroma and mythstone chests below. 5 2 Follow Poosti Wiki Contrib",
+        "sources": []
+      },
+      "pm 30": {
+        "name": "pm 30",
+        "totalQuantity": 952,
+        "mentions": 17,
+        "context": "\" 10/5/25",
+        "sources": []
+      },
+      "pm 1 1 arc2": {
+        "name": "pm 1 1 arc2",
+        "totalQuantity": 592,
+        "mentions": 16,
+        "context": "\" throw.",
+        "sources": []
+      },
+      "pm yeah annoyingly i bought 2 razor star": {
+        "name": "pm yeah annoyingly i bought 2 razor star",
+        "totalQuantity": 800,
+        "mentions": 20,
+        "context": "\"0/5/25",
+        "sources": []
+      },
+      "yeah annoyingly i bought 2 razor star": {
+        "name": "yeah annoyingly i bought 2 razor star",
+        "totalQuantity": 40500,
+        "mentions": 20,
+        "context": "\"/25",
+        "sources": []
+      },
+      "am i got 86 soul": {
+        "name": "am i got 86 soul",
+        "totalQuantity": 425,
+        "mentions": 17,
+        "context": "\"terday at 1:25 AM Monday",
+        "sources": []
+      },
+      "pm are the artifact shards worth it at all or are people just buying more": {
+        "name": "pm are the artifact shards worth it at all or are people just buying more",
+        "totalQuantity": 512,
+        "mentions": 16,
+        "context": "\" 10/5/25",
+        "sources": []
+      },
+      "pm are the artifact": {
+        "name": "pm are the artifact",
+        "totalQuantity": 512,
+        "mentions": 16,
+        "context": "\" 10/5/25",
+        "sources": []
+      }
+    },
+    "builds": {
+      "pvp": {
+        "name": "PvP Builds",
+        "recommendations": [
+          {
+            "name": "Griffin PvP Build",
+            "description": "High-tier PvP build using Griffin set",
+            "gear": [
+              "griffin amulet",
+              "griffin ring"
+            ],
+            "characters": [
+              "otta",
+              "thor",
+              "helix"
+            ],
+            "runes": [
+              "meteor",
+              "sprite",
+              "elemental"
+            ],
+            "context": "PvP being griffin Amulett and Ring. Also oracle chest"
+          },
+          {
+            "name": "Dragoon Crossbow Build",
+            "description": "Crossbow-focused PvP build",
+            "gear": [
+              "dragoon crossbow",
+              "dragoon boots",
+              "dragoon helmet"
+            ],
+            "characters": [
+              "otta",
+              "thor"
+            ],
+            "runes": [
+              "meteor",
+              "etched"
+            ],
+            "context": "chaotic dragoon weapon, helm, boots, griffin amulet, ring, oracle armor"
+          }
+        ]
+      },
+      "pve": {
+        "name": "PvE Builds",
+        "recommendations": [
+          {
+            "name": "Oracle PvE Build",
+            "description": "PvE-focused build using Oracle set",
+            "gear": [
+              "oracle spear",
+              "oracle chest",
+              "oracle boots"
+            ],
+            "characters": [
+              "rolla",
+              "thor",
+              "nyanja"
+            ],
+            "runes": [
+              "sprite",
+              "circle"
+            ],
+            "context": "6 nyanja with rolla and thor for PvE"
+          }
+        ]
+      },
+      "mixed": {
+        "name": "Mixed Set Builds",
+        "recommendations": [
+          {
+            "name": "Oracle + Dragoon Mixed",
+            "description": "Best mixed set combination",
+            "gear": [
+              "dragoon crossbow",
+              "oracle amulet",
+              "oracle ring",
+              "oracle chest",
+              "dragoon boots",
+              "dragoon helmet"
+            ],
+            "characters": [
+              "otta",
+              "thor",
+              "helix"
+            ],
+            "runes": [
+              "meteor",
+              "sprite",
+              "elemental"
+            ],
+            "context": "mixed set can beat full dragoon set"
+          }
+        ]
+      }
+    },
+    "costs": {
+      "runes": {},
+      "materials": {
+        "0": {
+          "totalQuantity": 2214,
+          "averagePerMention": 11.125628140703517
+        },
+        "1 arc2": {
+          "totalQuantity": 16,
+          "averagePerMention": 1
+        },
+        "pm": {
+          "totalQuantity": 933,
+          "averagePerMention": 11.810126582278482
+        },
+        "star atm soft": {
+          "totalQuantity": 78,
+          "averagePerMention": 2
+        },
+        "am data collection for s gear to": {
+          "totalQuantity": 1190,
+          "averagePerMention": 35
+        },
+        "k for": {
+          "totalQuantity": 162,
+          "averagePerMention": 9
+        },
+        "shards epic starting at 40 shards rare starting at 100": {
+          "totalQuantity": 280,
+          "averagePerMention": 20
+        },
+        "anybody already has some information on how much": {
+          "totalQuantity": 26325,
+          "averagePerMention": 2025
+        },
+        "pm for artifacts legendary and lower seems to double per star level legendary starting at 20 shards epic starting at 40 shards rare starting at 100": {
+          "totalQuantity": 1485,
+          "averagePerMention": 55
+        },
+        "for example 200": {
+          "totalQuantity": 16500,
+          "averagePerMention": 500
+        },
+        "pm anybody already has some information on how much": {
+          "totalQuantity": 336,
+          "averagePerMention": 21
+        },
+        "for artifacts legendary and lower seems to double per star level legendary starting at 20 shards epic starting at 40 shards rare starting at 100": {
+          "totalQuantity": 16,
+          "averagePerMention": 1
+        },
+        "am lucky wheel event also gives starcores ⲧⲟⅺⅽ lucky wheel event also gives star": {
+          "totalQuantity": 17,
+          "averagePerMention": 1
+        },
+        "am star": {
+          "totalQuantity": 493,
+          "averagePerMention": 29
+        },
+        "am is vibrant voyage the only event that gives tidal star": {
+          "totalQuantity": 656,
+          "averagePerMention": 41
+        },
+        "am hmm any clue how the razor star": {
+          "totalQuantity": 297,
+          "averagePerMention": 11
+        },
+        "pm anyone know how high are the": {
+          "totalQuantity": 725,
+          "averagePerMention": 29
+        },
+        "shovels and 100": {
+          "totalQuantity": 4480,
+          "averagePerMention": 160
+        },
+        "tickets 50": {
+          "totalQuantity": 168,
+          "averagePerMention": 6
+        },
+        "am if im going to be able to get enough star": {
+          "totalQuantity": 962,
+          "averagePerMention": 37
+        },
+        "and wishes are 50 anyone know how high are the": {
+          "totalQuantity": 2000,
+          "averagePerMention": 80
+        },
+        "pm so i have like 100": {
+          "totalQuantity": 75,
+          "averagePerMention": 3
+        },
+        "star soft": {
+          "totalQuantity": 104,
+          "averagePerMention": 8
+        },
+        "pm thx soft": {
+          "totalQuantity": 308,
+          "averagePerMention": 28
+        },
+        "pm i dont get how the top players on the board have so many": {
+          "totalQuantity": 448,
+          "averagePerMention": 32
+        },
+        "myth": {
+          "totalQuantity": 14,
+          "averagePerMention": 1
+        },
+        "pm 30": {
+          "totalQuantity": 952,
+          "averagePerMention": 56
+        },
+        "pm 1 1 arc2": {
+          "totalQuantity": 592,
+          "averagePerMention": 37
+        },
+        "pm yeah annoyingly i bought 2 razor star": {
+          "totalQuantity": 800,
+          "averagePerMention": 40
+        },
+        "yeah annoyingly i bought 2 razor star": {
+          "totalQuantity": 40500,
+          "averagePerMention": 2025
+        },
+        "am i got 86 soul": {
+          "totalQuantity": 425,
+          "averagePerMention": 25
+        },
+        "pm are the artifact shards worth it at all or are people just buying more": {
+          "totalQuantity": 512,
+          "averagePerMention": 32
+        },
+        "pm are the artifact": {
+          "totalQuantity": 512,
+          "averagePerMention": 32
+        }
+      },
+      "events": {}
+    }
+  },
+  "searchPatterns": {
+    "gear": [
+      "best gear set",
+      "oracle vs dragoon",
+      "griffin build",
+      "mixed set",
+      "pvp gear"
+    ],
+    "runes": [
+      "best runes",
+      "meteor rune",
+      "sprite rune",
+      "etched rune",
+      "rune build"
+    ],
+    "characters": [
+      "best character",
+      "otta build",
+      "thor build",
+      "helix build",
+      "character tier list"
+    ],
+    "materials": [
+      "upgrade cost",
+      "shard requirements",
+      "gem cost",
+      "upgrade materials"
+    ]
+  }
+}

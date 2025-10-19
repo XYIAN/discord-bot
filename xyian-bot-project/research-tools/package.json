@@ -1,0 +1,19 @@
+{
+  "name": "archero2-research-tools",
+  "version": "1.0.0",
+  "description": "Research tools for scraping Archero 2 information",
+  "main": "archero2-wiki-scraper.js",
+  "scripts": {
+    "scrape-wiki": "node archero2-wiki-scraper.js",
+    "scrape-discord": "node archero2-discord-scraper.js",
+    "gather-info": "node archero2-info-gatherer.js"
+  },
+  "dependencies": {
+    "selenium-webdriver": "^4.15.0",
+    "chromedriver": "^119.0.0",
+    "axios": "^1.6.0"
+  },
+  "keywords": ["archero2", "scraping", "research"],
+  "author": "XYIAN Research Team",
+  "license": "MIT"
+}

@@ -1,0 +1,13 @@
+{
+  "resonance": {
+    "definition": "Ability to use another character's skill on current character",
+    "unlock_requirements": {
+      "first_resonance": "Unlocked when character reaches 3-star level",
+      "second_resonance": "Unlocked when character reaches 6-star level"
+    },
+    "character_max_stars": 7,
+    "source": "User correction - Kyle",
+    "recorded_at": "2025-01-05T21:50:00Z",
+    "notes": "This corrects the incorrect information that was in the scraped data. The scraped data only contained fragments of casual chat without proper explanations."
+  }
+}
