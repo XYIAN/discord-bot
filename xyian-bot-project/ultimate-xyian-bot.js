@@ -1500,19 +1500,36 @@ function setupDailyResetMessaging() {
 // Removed sendInitialMessages function - no longer sending messages on startup
 
 // Send daily messages
+let dailyMessagesLock = false;
 async function sendDailyMessages() {
+    if (dailyMessagesLock) {
+        console.log('🚫 DUPLICATE PREVENTION: Daily messages already being sent, skipping...');
+        return;
+    }
+    
+    dailyMessagesLock = true;
     console.log('📅 Sending daily messages...');
     
-    // Send daily tip
-    await sendDailyTip();
-    
-    // Send expedition message
-    await sendExpeditionMessage();
-    
-    // Send arena tip
-    await sendArenaTip();
-    
-    console.log('✅ Daily messages sent!');
+    try {
+        // Send daily tip
+        await sendDailyTip();
+        
+        // Send expedition message
+        await sendExpeditionMessage();
+        
+        // Send arena tip
+        await sendArenaTip();
+        
+        console.log('✅ Daily messages sent!');
+    } catch (error) {
+        console.error('❌ Error sending daily messages:', error);
+    } finally {
+        // Reset lock after 5 minutes to allow next day's messages
+        setTimeout(() => {
+            dailyMessagesLock = false;
+            console.log('🔓 Daily messages lock released');
+        }, 5 * 60 * 1000);
+    }
 }
 
 // Send guild recruitment every other day
@@ -1625,15 +1642,25 @@ const generalResetMessages = [
 ];
 
 // Daily Reset message with guild reminders and AI tips
+let resetMessageLock = false;
 async function sendGeneralResetMessage() {
-    // Get tip from RAG system
-    let tip = 'Check the knowledge base for tips!';
-    if (ragSystem) {
-        const results = ragSystem.search('daily tips strategies');
-        if (results.length > 0 && results[0].data.note) {
-            tip = results[0].data.note;
-        }
+    if (resetMessageLock) {
+        console.log('🚫 DUPLICATE PREVENTION: Reset message already being sent, skipping...');
+        return;
     }
+    
+    resetMessageLock = true;
+    console.log('🔄 Sending daily reset message...');
+    
+    try {
+        // Get tip from RAG system
+        let tip = 'Check the knowledge base for tips!';
+        if (ragSystem) {
+            const results = ragSystem.search('daily tips strategies');
+            if (results.length > 0 && results[0].data.note) {
+                tip = results[0].data.note;
+            }
+        }
     
     const title = '🔄 Daily Reset Reminder!';
     const description = '**Daily reset is here! Complete your daily tasks before 5pm Pacific!**\n\n✨ **What\'s new today:**\n• Fresh daily quests with great rewards\n• New challenges to conquer\n• Another chance to improve your build\n• More opportunities to earn gold and XP';
@@ -1662,7 +1689,17 @@ async function sendGeneralResetMessage() {
         .setTimestamp()
         .setFooter({ text: 'Arch 2 Addicts - Daily Reset' });
 
-    await sendToGeneral({ embeds: [embed] });
+        await sendToGeneral({ embeds: [embed] });
+        console.log('✅ Daily reset message sent successfully');
+    } catch (error) {
+        console.error('❌ Error sending daily reset message:', error);
+    } finally {
+        // Reset lock after 5 minutes
+        setTimeout(() => {
+            resetMessageLock = false;
+            console.log('🔓 Reset message lock released');
+        }, 5 * 60 * 1000);
+    }
 }
 
 // Send daily tip using high-quality cleaned database
