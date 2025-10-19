@@ -108,6 +108,56 @@ npm install
 node ultimate-xyian-bot.js
 ```
 
+## 📁 STRICT FILE ORGANIZATION - CRITICAL
+
+### ROOT DIRECTORY RULES - NEVER VIOLATE
+**🚨 CRITICAL: NEVER add scripts, Python files, or random files to root directory!**
+
+**ROOT DIRECTORY IS FOR:**
+- `package.json` - Main project configuration
+- `railway.json` - Railway deployment config
+- `Procfile` - Process configuration
+- `.nvmrc` - Node.js version
+- `README.md` - Project documentation
+- `.cursorrules` - AI assistant rules
+
+**ROOT DIRECTORY IS NOT FOR:**
+- ❌ Python scripts (.py files)
+- ❌ One-off scripts
+- ❌ Random .js files
+- ❌ Test files
+- ❌ Documentation files
+- ❌ Data files
+- ❌ Any temporary files
+
+### BEFORE ADDING ANY FILE TO ROOT:
+1. **STOP** and analyze where it should go
+2. **ASK**: Does this belong in root? (99% of the time: NO)
+3. **ORGANIZE**: Create proper directory structure if needed
+4. **CLEAN UP**: Delete temporary files when done
+
+### PROPER FILE LOCATIONS:
+- **Bot Code**: `xyian-bot-project/`
+- **Scripts**: `xyian-bot-project/scripts/` or `scripts/`
+- **Documentation**: `xyian-bot-project/docs/` or `docs/`
+- **Data**: `xyian-bot-project/data/`
+- **Tests**: `xyian-bot-project/tests/` or `tests/`
+- **One-off scripts**: `scripts/` (DELETE when done)
+
+### RAILWAY DEPLOYMENT REQUIREMENTS:
+- Railway detects project type by root directory files
+- Python files in root = Python project (WRONG!)
+- Node.js files in root = Node.js project (CORRECT!)
+- Keep root clean and organized
+- All actual code goes in `xyian-bot-project/`
+
+### CLEANUP RULES:
+1. **One-off scripts**: Create in `scripts/`, use, then DELETE
+2. **Temporary files**: Create in appropriate subdirectory, DELETE when done
+3. **Test files**: Create in `tests/` or `xyian-bot-project/tests/`
+4. **Documentation**: Create in proper docs directory
+5. **Never leave random files in root**
+
 ## 🎓 TRAINING SYSTEM
 
 ### Discord Commands (Owner Only)
