@@ -76,11 +76,13 @@ research-tools/node_modules/
 research-tools/*.json
 research-tools/*.log
 
-# Scraped data files
+# Scraped data files (but keep package.json and package-lock.json)
+archero2-*.json
+discord-*.json
+scraped-*.json
 *.json
-archero2-*
-discord-*
-scraped-*
+!package.json
+!package-lock.json
 
 # OS generated files
 .DS_Store
