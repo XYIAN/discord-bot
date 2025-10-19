@@ -84,6 +84,7 @@ scraped-*.json
 *.json
 !package.json
 !package-lock.json
+!railway.json
 !xyian-bot-project/data/real-structured-data/*.json
 
 # OS generated files
