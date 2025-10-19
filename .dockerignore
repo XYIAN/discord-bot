@@ -48,3 +48,5 @@ xyian-bot-project/scripts/
 data/
 xyian-bot-project/data/outdated-data/
 xyian-bot-project/data/structured-tables/
+# But keep the essential data files
+!xyian-bot-project/data/real-structured-data/
