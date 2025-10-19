@@ -1,6 +1,7 @@
 const { Client, GatewayIntentBits, EmbedBuilder, WebhookClient, SlashCommandBuilder, REST, Routes, Collection } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
+const express = require('express');
 require('dotenv').config();
 
 // Bot version and update tracking
@@ -3791,36 +3792,14 @@ process.on('uncaughtException', (error) => {
     // Don't crash on uncaught exceptions - just log them
 });
 
-// Prevent multiple bot instances
-const botLockFile = path.join(__dirname, '.bot.lock');
-if (fs.existsSync(botLockFile)) {
-    console.error('❌ Bot is already running! Another instance detected.');
-    process.exit(1);
-}
-
-// Create lock file
-fs.writeFileSync(botLockFile, process.pid.toString());
-
-// Clean up lock file on exit
-process.on('exit', () => {
-    if (fs.existsSync(botLockFile)) {
-        fs.unlinkSync(botLockFile);
-    }
-});
-
+// Graceful shutdown handling
 process.on('SIGINT', () => {
     console.log('🛑 Bot shutting down gracefully...');
-    if (fs.existsSync(botLockFile)) {
-        fs.unlinkSync(botLockFile);
-    }
     process.exit(0);
 });
 
 process.on('SIGTERM', () => {
     console.log('🛑 Bot shutting down gracefully...');
-    if (fs.existsSync(botLockFile)) {
-        fs.unlinkSync(botLockFile);
-    }
     process.exit(0);
 });
 
@@ -3999,6 +3978,33 @@ client.on('interactionCreate', async (interaction) => {
             ephemeral: true
         });
     }
+});
+
+// ===== EXPRESS SERVER FOR HEALTH CHECKS =====
+
+// Create Express app for health checks
+const app = express();
+const port = process.env.PORT || 3000;
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.json({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        service: 'XYIAN Discord Bot',
+        version: BOT_VERSION,
+        uptime: process.uptime(),
+        memory: process.memoryUsage(),
+        dependencies: {
+            discord: client.isReady() ? 'connected' : 'disconnected',
+            rag: ragSystem ? 'loaded' : 'not loaded'
+        }
+    });
+});
+
+// Start Express server
+app.listen(port, () => {
+    console.log(`🏥 Health check server running on port ${port}`);
 });
 
 // Login to Discord with error handling
