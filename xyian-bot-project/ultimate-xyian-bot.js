@@ -133,11 +133,11 @@ async function generateDailyMessage(messageType) {
 XYIAN MISSION: Our goal is to be #1 on the leaderboards with active, high-performing players. You are XY Elder, XYIAN's henchman, passionate about growing the guild and helping members develop skills to excel.
 
 CLEAN GAME DATA (structured facts only):
-- Gear Sets: ${gameStats.gearSets || 4} sets documented
+- Gear Sets: ${gameStats.gear_sets || 4} sets documented
 - Runes: ${gameStats.runes || 7} runes with strategies  
 - Characters: ${gameStats.characters || 9} characters with builds
 - Weapons: ${gameStats.weapons || 5} weapons with PVP ratings
-- Game Modes: ${gameStats.gameModes || 5} modes with tactics
+- Game Modes: ${gameStats.game_modes || 5} modes with tactics
 
 EXPERT TIP FOR TODAY: ${randomTip}
 
@@ -152,7 +152,7 @@ Create a message that:
 Format as:
 Title
 Description with XYIAN community and competitive flavor
-Specific tip from comprehensive database that helps with progression`;
+Specific tip from RAG system that helps with progression`;
 
         const completion = await AIService.chat.completions.create({
             model: "gpt-3.5-turbo",
@@ -273,9 +273,9 @@ This is the AI-powered Archero 2 questions channel. Answer questions directly an
     } else if (channelName === 'xyian-guild') {
         return `${baseContext} ${xyianIdentity}  ${xyianValues} This is the XYIAN OFFICIAL guild channel. As XY Elder, XYIAN's trusted henchman, focus on guild requirements (2 daily boss battles, donations), Peak Arena strategies, team coordination, and competitive guild management. Emphasize our leaderboard dominance goals, competitive excellence, and helping members develop skills to wreck the leaderboards. Reference our Guild ID: 213797 and your role as XYIAN's henchman.`;
     } else if (channelName === 'arena' || channelName === 'peak-arena') {
-        return `${baseContext} ${xyianIdentity}  ${xyianValues} Focus on Arena and Peak Arena strategies using our comprehensive database. As XY Elder, XYIAN's henchman, cover runes, builds, positioning, and competitive tactics that help members dominate the leaderboards. Emphasize our quest for #1 status and competitive excellence.`;
+        return `${baseContext} ${xyianIdentity}  ${xyianValues} Focus on Arena and Peak Arena strategies using our RAG system. As XY Elder, XYIAN's henchman, cover runes, builds, positioning, and competitive tactics that help members dominate the leaderboards. Emphasize our quest for #1 status and competitive excellence.`;
     } else {
-        return `${baseContext} ${xyianIdentity}  ${xyianValues} This is a general Archero 2 community channel. As XY Elder, XYIAN's henchman, provide helpful advice using our comprehensive database while emphasizing XYIAN's quest for leaderboard dominance and competitive excellence.`;
+        return `${baseContext} ${xyianIdentity}  ${xyianValues} This is a general Archero 2 community channel. As XY Elder, XYIAN's henchman, provide helpful advice using our RAG system while emphasizing XYIAN's quest for leaderboard dominance and competitive excellence.`;
     }
 }
 
@@ -478,186 +478,21 @@ function loadAnalytics() {
 loadAnalytics();
 
 // Load cognitive AI system
-let cognitiveAI = null;
+// Cognitive AI system removed - using RAG system instead
 
-async function initializeCognitiveAI() {
-    try {
-        const CognitiveAI = require('./src/cognitive/cognitive-ai');
-        cognitiveAI = new CognitiveAI();
-        await cognitiveAI.initialize();
-        console.log('🧠 Cognitive AI System loaded successfully');
-        return true;
-    } catch (error) {
-        console.error('❌ Failed to load Cognitive AI System:', error.message);
-        return false;
+// REMOVED: All old knowledge base code - now using ONLY working-rag-system.js
+// The bot now uses clean structured data from unified_game_data.json via RAG system
+
+// RAG system is the primary knowledge source
+console.log('🔄 RAG system is the primary knowledge source');
+
+// Auto-save memory every 5 minutes
+setInterval(() => {
+    if (conversationMemory.size > 0) {
+        saveAILearningData();
+        console.log(`💾 Auto-saved memory for ${conversationMemory.size} users`);
     }
-}
-
-// DEPRECATED: Old noisy database system - now using clean unified_game_data.json via RAG system
-let archeroDatabase = {}; // Kept for backward compatibility but not used
-function loadKnowledgeDatabase() {
-    console.log('ℹ️ Knowledge database loading skipped - using clean RAG system with unified_game_data.json instead');
-    console.log('✅ All game data is now loaded through working-rag-system.js');
-    archeroDatabase = {}; // Empty - RAG system handles all data
-    return;
-    
-    // OLD CODE BELOW - KEPT FOR REFERENCE BUT NOT EXECUTED
-    try {
-        // Load comprehensive knowledge base first (1,367 entries) - THIS IS NOISY DATA, NOT USED ANYMORE
-        const comprehensiveFile = path.join(__dirname, 'data', 'comprehensive-knowledge-base', 'comprehensive-knowledge-base.json');
-        if (fs.existsSync(comprehensiveFile)) {
-            const data = JSON.parse(fs.readFileSync(comprehensiveFile, 'utf8'));
-            
-            // Load all categories from comprehensive knowledge base
-            archeroDatabase = {};
-            Object.entries(data).forEach(([category, entries]) => {
-                Object.entries(entries).forEach(([key, content]) => {
-                    archeroDatabase[`${category}_${key}`] = content;
-                });
-            });
-            
-            console.log(`✅ Loaded COMPREHENSIVE KNOWLEDGE BASE with ${Object.keys(archeroDatabase).length} entries`);
-        } else if (fs.existsSync(path.join(__dirname, 'data', 'cleaned-real-facts.json'))) {
-            // Fallback to cleaned real facts
-            const cleanedFactsFile = path.join(__dirname, 'data', 'cleaned-real-facts.json');
-            const data = JSON.parse(fs.readFileSync(cleanedFactsFile, 'utf8'));
-            
-            // Flatten the cleaned facts into a single database
-            archeroDatabase = {};
-            Object.entries(data).forEach(([category, facts]) => {
-                Object.entries(facts).forEach(([key, content]) => {
-                    archeroDatabase[`${category}_${key}`] = content;
-                });
-            });
-            
-            console.log(`✅ Loaded CLEANED REAL FACTS with ${Object.keys(archeroDatabase).length} entries`);
-        } else if (fs.existsSync(path.join(__dirname, 'data', 'real-archero2-facts.json'))) {
-            const realFactsFile = path.join(__dirname, 'data', 'real-archero2-facts.json');
-            const data = JSON.parse(fs.readFileSync(realFactsFile, 'utf8'));
-            
-            // Flatten the facts into a single database
-            archeroDatabase = {};
-            Object.entries(data).forEach(([category, entries]) => {
-                if (typeof entries === 'object') {
-                    Object.entries(entries).forEach(([key, content]) => {
-                        archeroDatabase[`${category}_${key}`] = content;
-                    });
-                } else {
-                    archeroDatabase[category] = entries;
-                }
-            });
-            
-            console.log(`✅ Loaded REAL Archero 2 facts with ${Object.keys(archeroDatabase).length} entries`);
-        } else if (fs.existsSync(path.join(__dirname, 'data', 'cleaned-knowledge-database.json'))) {
-            const data = JSON.parse(fs.readFileSync(cleanedFile, 'utf8'));
-            
-            // Load cleaned entries
-            archeroDatabase = {};
-            Object.keys(data.entries).forEach(key => {
-                const entry = data.entries[key];
-                if (typeof entry === 'string') {
-                    archeroDatabase[key] = entry;
-                } else if (entry && typeof entry === 'object' && entry.content) {
-                    archeroDatabase[key] = entry.content;
-                } else if (entry && typeof entry === 'object') {
-                    archeroDatabase[key] = JSON.stringify(entry);
-                }
-            });
-            
-            console.log(`✅ Loaded high-quality cleaned database with ${Object.keys(archeroDatabase).length} entries`);
-            console.log(`📊 Quality: ${data.metadata.quality}`);
-            console.log(`📊 Source: ${data.metadata.source}`);
-            console.log(`📊 Categories: ${Object.keys(data.categories).join(', ')}`);
-            
-            // Debug: Check for Dragoon and Oracle content
-            const dragoonCount = Object.entries(archeroDatabase).filter(([key, content]) => 
-                key.toLowerCase().includes('dragoon') || content.toLowerCase().includes('dragoon')
-            ).length;
-            
-            const oracleCount = Object.entries(archeroDatabase).filter(([key, content]) => 
-                key.toLowerCase().includes('oracle') || content.toLowerCase().includes('oracle')
-            ).length;
-            
-            console.log(`🎯 Found ${dragoonCount} Dragoon entries and ${oracleCount} Oracle entries`);
-        } else {
-            // Fallback to original database if cleaned version not available
-            const knowledgeFile = path.join(__dirname, 'data', 'archero_qa_learned.json');
-            if (fs.existsSync(knowledgeFile)) {
-                const data = JSON.parse(fs.readFileSync(knowledgeFile, 'utf8'));
-                archeroDatabase = {};
-                
-                // Process all categories from the unified knowledge system
-                const categories = ['theorycrafting', 'discordChannels', 'wikiPages', 'forumThreads', 'gameInfo', 'weapons', 'characters', 'mechanics', 'events', 'guild', 'artifacts', 'statistics'];
-                categories.forEach(category => {
-                    if (data.categories && data.categories[category]) {
-                        Object.keys(data.categories[category]).forEach(key => {
-                            const entry = data.categories[category][key];
-                            if (entry && entry.content) {
-                                const keywords = entry.keywords || [];
-                                const source = entry.source || category;
-
-                                // Add entry with keywords
-                                keywords.forEach(keyword => {
-                                    const dbKey = `${keyword}_${source}_${key}`;
-                                    archeroDatabase[dbKey] = entry.content.substring(0, 1000);
-                                });
-
-                                // Add general entry
-                                const generalKey = `${category}_${key}`;
-                                archeroDatabase[generalKey] = entry.content.substring(0, 1000);
-                                
-                                // Add content-based entries for better searchability
-                                const contentWords = entry.content.toLowerCase().match(/\b\w{4,}\b/g) || [];
-                                const gameTerms = ['weapon', 'character', 'damage', 'pvp', 'arena', 'rune', 'gear', 'build', 'dragoon', 'oracle', 'griffin', 'thor', 'demon', 'king', 'crossbow', 'staff', 'meteor', 'sprite'];
-                                
-                                contentWords.forEach(word => {
-                                    if (gameTerms.includes(word)) {
-                                        const contentKey = `${word}_content_${key}`;
-                                        archeroDatabase[contentKey] = entry.content.substring(0, 1000);
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-
-                console.log(`✅ Loaded fallback knowledge database with ${Object.keys(archeroDatabase).length} entries`);
-            } else {
-                console.log('⚠️ No knowledge database found, using empty database');
-                archeroDatabase = {};
-            }
-        }
-    } catch (error) {
-        console.error('❌ Failed to load knowledge database:', error);
-        archeroDatabase = {};
-    }
-}
-
-// Initialize cognitive AI system on startup
-initializeCognitiveAI().then(success => {
-    if (success && cognitiveAI && cognitiveAI.knowledgeGraph) {
-        const stats = cognitiveAI.knowledgeGraph.getStats();
-        if (stats.entities > 0) {
-            console.log('🎉 Cognitive AI System ready with knowledge!');
-            return;
-        } else {
-            console.log('⚠️ Cognitive AI loaded but has no knowledge data');
-        }
-    } else {
-        console.log('⚠️ Cognitive AI failed to initialize');
-    }
-    
-    console.log('🔄 Falling back to traditional knowledge database');
-    loadKnowledgeDatabase();
-    
-    // Auto-save memory every 5 minutes
-    setInterval(() => {
-        if (conversationMemory.size > 0) {
-            saveAILearningData();
-            console.log(`💾 Auto-saved memory for ${conversationMemory.size} users`);
-        }
-    }, 5 * 60 * 1000); // 5 minutes
-});
+}, 5 * 60 * 1000); // 5 minutes
 
 // AI Response Toggle - Controls whether bot responds to AI questions
 let aiResponseEnabled = true;
@@ -866,13 +701,9 @@ function calculateSimilarity(str1, str2) {
 // Load AI learning data on startup
 loadAILearningData();
 
-// Start API server
-const startApiServer = require('./services/api-server');
-startApiServer();
+// API server removed - focusing on core bot functionality
 
-// Initialize learning system
-const ArcheroLearningSystem = require('./scripts/learning-system');
-const learningSystem = new ArcheroLearningSystem();
+// Learning system removed - focusing on core bot functionality
 
 // Helper function to add reaction feedback to responses
 async function addReactionFeedback(response) {
@@ -1736,27 +1567,20 @@ async function sendGuildResetMessage() {
         }
     }
     
-    // Fallback to comprehensive database if AI didn't work
+    // Fallback to RAG system if AI didn't work
     if (!title) {
-        // Get random guild-related tip from our comprehensive database
-        const guildKeys = Object.keys(archeroDatabase).filter(key => 
-            key.includes('guild') || key.includes('boss') || key.includes('donation') || 
-            key.includes('daily') || key.includes('requirement') || key.includes('battle')
-        );
-        
-        if (guildKeys.length > 0) {
-            const randomKey = guildKeys[Math.floor(Math.random() * guildKeys.length)];
-            const guildTip = archeroDatabase[randomKey];
-            
-            title = '🔄 Daily Reset Reminder - XYIAN Guild';
-            description = `**Daily reset is here! Complete your daily tasks before 5pm Pacific!**\n\n⚔️ **Remember your daily requirements:**\n• Complete 2 Guild Boss Battles\n• Make 1 Guild Donation\n• Participate in Gold Rush\n• Complete Daily Quests\n\n💪 **Let's show everyone why XYIAN is the best guild!**`;
-            funFact = `💡 **XYIAN Tip**: ${guildTip}`;
-        } else {
-            // No hardcoded fallbacks - only use real data
-            title = '🔄 Daily Reset Reminder - XYIAN Guild';
-            description = '**Daily reset is here! Complete your daily tasks before 5pm Pacific!**\n\n⚔️ **Remember your daily requirements:**\n• Complete 2 Guild Boss Battles\n• Make 1 Guild Donation\n• Participate in Gold Rush\n• Complete Daily Quests';
-            funFact = '💡 **XYIAN Tip**: Complete your daily requirements to maintain our competitive edge!';
+        // Get guild-related tip from RAG system
+        let guildTip = 'Complete your daily requirements to maintain our competitive edge!';
+        if (ragSystem) {
+            const results = ragSystem.search('guild boss daily requirements');
+            if (results.length > 0 && results[0].data.note) {
+                guildTip = results[0].data.note;
+            }
         }
+        
+        title = '🔄 Daily Reset Reminder - XYIAN Guild';
+        description = '**Daily reset is here! Complete your daily tasks before 5pm Pacific!**\n\n⚔️ **Remember your daily requirements:**\n• Complete 2 Guild Boss Battles\n• Make 1 Guild Donation\n• Participate in Gold Rush\n• Complete Daily Quests\n\n💪 **Let\'s show everyone why XYIAN is the best guild!**';
+        funFact = `💡 **XYIAN Tip**: ${guildTip}`;
     }
     
     const embed = new EmbedBuilder()
@@ -1801,10 +1625,14 @@ const generalResetMessages = [
 
 // Daily Reset message with guild reminders and AI tips
 async function sendGeneralResetMessage() {
-    // Get random tip from our comprehensive database
-    const tipKeys = Object.keys(archeroDatabase);
-    const randomKey = tipKeys[Math.floor(Math.random() * tipKeys.length)];
-    const tip = archeroDatabase[randomKey];
+    // Get tip from RAG system
+    let tip = 'Check the knowledge base for tips!';
+    if (ragSystem) {
+        const results = ragSystem.search('daily tips strategies');
+        if (results.length > 0 && results[0].data.note) {
+            tip = results[0].data.note;
+        }
+    }
     
     const title = '🔄 Daily Reset Reminder!';
     const description = '**Daily reset is here! Complete your daily tasks before 5pm Pacific!**\n\n✨ **What\'s new today:**\n• Fresh daily quests with great rewards\n• New challenges to conquer\n• Another chance to improve your build\n• More opportunities to earn gold and XP';
@@ -1854,16 +1682,7 @@ async function sendDailyTip() {
         }
     }
     
-    // Fallback to database entries if no tips available
-    if (!tip) {
-        const tipKeys = Object.keys(archeroDatabase);
-        if (tipKeys.length > 0) {
-            const randomKey = tipKeys[Math.floor(Math.random() * tipKeys.length)];
-            tip = archeroDatabase[randomKey];
-        } else {
-            tip = 'Check the knowledge base for tips!';
-        }
-    }
+    // Tip already set from RAG system above
     
     const embed = new EmbedBuilder()
         .setTitle('💡 Daily Archero 2 Tip')
@@ -1901,16 +1720,13 @@ async function sendGeneralWelcome() {
 
 // Send guild expedition message
 async function sendExpeditionMessage() {
-    // Get expedition-related tip from our comprehensive database
-    const expeditionKeys = Object.keys(archeroDatabase).filter(key => 
-        key.includes('expedition') || key.includes('guild') || key.includes('battle') || 
-        key.includes('strategy') || key.includes('team') || key.includes('coordination')
-    );
-    
+    // Get expedition-related tip from RAG system
     let expeditionTip = 'Focus on high-value targets and coordinate with guild members for maximum efficiency!';
-    if (expeditionKeys.length > 0) {
-        const randomKey = expeditionKeys[Math.floor(Math.random() * expeditionKeys.length)];
-        expeditionTip = archeroDatabase[randomKey];
+    if (ragSystem) {
+        const results = ragSystem.search('expedition guild battle strategy');
+        if (results.length > 0 && results[0].data.note) {
+            expeditionTip = results[0].data.note;
+        }
     }
     
     const embed = new EmbedBuilder()
@@ -1924,24 +1740,21 @@ async function sendExpeditionMessage() {
     await sendToExpedition({ embeds: [embed] });
 }
 
-// Send arena tip using comprehensive database
+// Send arena tip using RAG system
 async function sendArenaTip() {
-    // Get arena-related tips from our comprehensive database
-    const arenaKeys = Object.keys(archeroDatabase).filter(key => 
-        key.includes('arena') || key.includes('pvp') || key.includes('supreme') || 
-        key.includes('ranking') || key.includes('rewards') || key.includes('strategy')
-    );
-    
+    // Get arena-related tips from RAG system
     let arenaTip = 'Focus on speed and efficiency in Arena, perfect execution in Peak Arena!';
     let supremeTip = 'Peak Arena offers the best rewards but requires flawless strategy!';
     
-    if (arenaKeys.length > 0) {
-        const randomKey1 = arenaKeys[Math.floor(Math.random() * arenaKeys.length)];
-        arenaTip = archeroDatabase[randomKey1];
+    if (ragSystem) {
+        const arenaResults = ragSystem.search('arena pvp strategy');
+        if (arenaResults.length > 0 && arenaResults[0].data.note) {
+            arenaTip = arenaResults[0].data.note;
+        }
         
-        if (arenaKeys.length > 1) {
-            const randomKey2 = arenaKeys[Math.floor(Math.random() * arenaKeys.length)];
-            supremeTip = archeroDatabase[randomKey2];
+        const supremeResults = ragSystem.search('supreme arena peak arena');
+        if (supremeResults.length > 0 && supremeResults[0].data.note) {
+            supremeTip = supremeResults[0].data.note;
         }
     }
     
@@ -2805,45 +2618,23 @@ client.on('messageCreate', async (message) => {
                             return;
                         }
                         
-                        // Search unified knowledge database for weapon information
-                        const weaponKeys = Object.keys(archeroDatabase).filter(key => 
-                            key.toLowerCase().includes('weapon') || 
-                            key.toLowerCase().includes(weaponName) ||
-                            archeroDatabase[key].toLowerCase().includes(weaponName) ||
-                            archeroDatabase[key].toLowerCase().includes('weapon')
-                        );
-                        
+                        // Search RAG system for weapon information
                         let weaponInfo = '';
-                        if (weaponKeys.length > 0) {
-                            // Get the most relevant weapon information
-                            const relevantWeapon = weaponKeys.find(key => 
-                                archeroDatabase[key].toLowerCase().includes(weaponName) ||
-                                key.toLowerCase().includes(weaponName)
-                            );
-                            
-                            if (relevantWeapon) {
-                                weaponInfo = archeroDatabase[relevantWeapon];
+                        if (ragSystem) {
+                            const results = ragSystem.search(weaponName + ' weapon');
+                            if (results.length > 0) {
+                                const weaponData = results[0].data;
+                                weaponInfo = `**${weaponName}** - Weapon Information:\n\n`;
+                                if (weaponData.pvp_rating) weaponInfo += `**PVP Rating:** ${weaponData.pvp_rating}\n`;
+                                if (weaponData.priority) weaponInfo += `**Priority:** ${weaponData.priority}\n`;
+                                if (weaponData.notes) weaponInfo += `**Notes:** ${weaponData.notes}\n`;
+                                if (weaponData.note) weaponInfo += `**Pro Tip:** ${weaponData.note}\n`;
+                                weaponInfo += `\n*Source: XYIAN RAG System*`;
                             } else {
-                                // Use first weapon-related entry
-                                weaponInfo = archeroDatabase[weaponKeys[0]];
+                                weaponInfo = `**${weaponName}** - Weapon information not found in our database. Try asking about specific weapons like Crossbow, Staff, or Bow.`;
                             }
-                            
-                            // Add source information
-                            weaponInfo += `\n\n*Source: XYIAN Knowledge Database*`;
                         } else {
-                            // Fallback to basic weapon search
-                            const allKeys = Object.keys(archeroDatabase);
-                            const weaponRelated = allKeys.filter(key => 
-                                archeroDatabase[key].toLowerCase().includes('weapon') ||
-                                archeroDatabase[key].toLowerCase().includes('damage') ||
-                                archeroDatabase[key].toLowerCase().includes('attack')
-                            );
-                            
-                            if (weaponRelated.length > 0) {
-                                weaponInfo = `**${weaponName}** - General weapon information:\n\n${archeroDatabase[weaponRelated[0]]}\n\n*Source: XYIAN Knowledge Database*`;
-                            } else {
-                                weaponInfo = `**${weaponName}** - Weapon information not found in our database. Try asking about specific weapons like Staff of Light, Demon Blade, or Windforce Bow.`;
-                            }
+                            weaponInfo = `**${weaponName}** - RAG system not available. Please try again later.`;
                         }
                         
                         const weaponEmbed = new EmbedBuilder()
@@ -2862,46 +2653,23 @@ client.on('messageCreate', async (message) => {
                             return;
                         }
                         
-                        // Search unified knowledge database for skill information
-                        const skillKeys = Object.keys(archeroDatabase).filter(key => 
-                            key.toLowerCase().includes('skill') || 
-                            key.toLowerCase().includes(skillName) ||
-                            archeroDatabase[key].toLowerCase().includes(skillName) ||
-                            archeroDatabase[key].toLowerCase().includes('skill') ||
-                            archeroDatabase[key].toLowerCase().includes('ability')
-                        );
-                        
+                        // Search RAG system for skill information
                         let skillInfo = '';
-                        if (skillKeys.length > 0) {
-                            // Get the most relevant skill information
-                            const relevantSkill = skillKeys.find(key => 
-                                archeroDatabase[key].toLowerCase().includes(skillName) ||
-                                key.toLowerCase().includes(skillName)
-                            );
-                            
-                            if (relevantSkill) {
-                                skillInfo = archeroDatabase[relevantSkill];
-                            } else {
-                                // Use first skill-related entry
-                                skillInfo = archeroDatabase[skillKeys[0]];
-                            }
-                            
-                            // Add source information
-                            skillInfo += `\n\n*Source: XYIAN Knowledge Database*`;
-                        } else {
-                            // Fallback to basic skill search
-                            const allKeys = Object.keys(archeroDatabase);
-                            const skillRelated = allKeys.filter(key => 
-                                archeroDatabase[key].toLowerCase().includes('skill') ||
-                                archeroDatabase[key].toLowerCase().includes('ability') ||
-                                archeroDatabase[key].toLowerCase().includes('power')
-                            );
-                            
-                            if (skillRelated.length > 0) {
-                                skillInfo = `**${skillName}** - General skill information:\n\n${archeroDatabase[skillRelated[0]]}\n\n*Source: XYIAN Knowledge Database*`;
+                        if (ragSystem) {
+                            const results = ragSystem.search(skillName + ' skill ability');
+                            if (results.length > 0) {
+                                const skillData = results[0].data;
+                                skillInfo = `**${skillName}** - Skill Information:\n\n`;
+                                if (skillData.description) skillInfo += `**Description:** ${skillData.description}\n`;
+                                if (skillData.effects) skillInfo += `**Effects:** ${skillData.effects.join(', ')}\n`;
+                                if (skillData.best_uses) skillInfo += `**Best Uses:** ${skillData.best_uses.join(', ')}\n`;
+                                if (skillData.note) skillInfo += `**Pro Tip:** ${skillData.note}\n`;
+                                skillInfo += `\n*Source: XYIAN RAG System*`;
                             } else {
                                 skillInfo = `**${skillName}** - Skill information not found in our database. Try asking about specific skills like Multi-shot, Ricochet, or Piercing.`;
                             }
+                        } else {
+                            skillInfo = `**${skillName}** - RAG system not available. Please try again later.`;
                         }
                         
                         const skillEmbed = new EmbedBuilder()
@@ -2920,48 +2688,24 @@ client.on('messageCreate', async (message) => {
                             return;
                         }
                         
-                        // Search unified knowledge database for build information
-                        const buildKeys = Object.keys(archeroDatabase).filter(key => 
-                            key.toLowerCase().includes('build') || 
-                            key.toLowerCase().includes(className) ||
-                            archeroDatabase[key].toLowerCase().includes(className) ||
-                            archeroDatabase[key].toLowerCase().includes('build') ||
-                            archeroDatabase[key].toLowerCase().includes('strategy') ||
-                            archeroDatabase[key].toLowerCase().includes('guide')
-                        );
-                        
+                        // Search RAG system for build information
                         let buildInfo = '';
-                        if (buildKeys.length > 0) {
-                            // Get the most relevant build information
-                            const relevantBuild = buildKeys.find(key => 
-                                archeroDatabase[key].toLowerCase().includes(className) ||
-                                key.toLowerCase().includes(className)
-                            );
-                            
-                            if (relevantBuild) {
-                                buildInfo = archeroDatabase[relevantBuild];
+                        if (ragSystem) {
+                            const results = ragSystem.search(className + ' build character');
+                            if (results.length > 0) {
+                                const buildData = results[0].data;
+                                buildInfo = `**${className}** - Build Information:\n\n`;
+                                if (buildData.role) buildInfo += `**Role:** ${buildData.role}\n`;
+                                if (buildData.stars) buildInfo += `**Stars:** ${buildData.stars}\n`;
+                                if (buildData.skins) buildInfo += `**Skins:** ${buildData.skins}\n`;
+                                if (buildData.meta_info) buildInfo += `**Meta Info:** ${buildData.meta_info}\n`;
+                                if (buildData.note) buildInfo += `**Pro Tip:** ${buildData.note}\n`;
+                                buildInfo += `\n*Source: XYIAN RAG System*`;
                             } else {
-                                // Use first build-related entry
-                                buildInfo = archeroDatabase[buildKeys[0]];
+                                buildInfo = `**${className}** - Build information not found in our database. Try asking about specific characters like Thor, Otta, or Helix.`;
                             }
-                            
-                            // Add source information
-                            buildInfo += `\n\n*Source: XYIAN Knowledge Database*`;
                         } else {
-                            // Fallback to basic build search
-                            const allKeys = Object.keys(archeroDatabase);
-                            const buildRelated = allKeys.filter(key => 
-                                archeroDatabase[key].toLowerCase().includes('build') ||
-                                archeroDatabase[key].toLowerCase().includes('strategy') ||
-                                archeroDatabase[key].toLowerCase().includes('guide') ||
-                                archeroDatabase[key].toLowerCase().includes('recommendation')
-                            );
-                            
-                            if (buildRelated.length > 0) {
-                                buildInfo = `**${className}** - General build information:\n\n${archeroDatabase[buildRelated[0]]}\n\n*Source: XYIAN Knowledge Database*`;
-                            } else {
-                                buildInfo = `**${className}** - Build information not found in our database. Try asking about specific classes like Mage, Warrior, or Archer.`;
-                            }
+                            buildInfo = `**${className}** - RAG system not available. Please try again later.`;
                         }
                         
                         const buildEmbed = new EmbedBuilder()
@@ -4084,23 +3828,28 @@ const commands = [
 ].map(command => command.toJSON());
 
 // Register commands with Discord
-const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+if (process.env.CLIENT_ID && process.env.DISCORD_TOKEN) {
+    const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 
-(async () => {
-    try {
-        console.log('🔄 Registering slash commands...');
-        
-        // Register commands globally
-        await rest.put(
-            Routes.applicationCommands(process.env.CLIENT_ID || 'your-client-id'),
-            { body: commands }
-        );
-        
-        console.log('✅ Slash commands registered successfully');
-    } catch (error) {
-        console.error('❌ Failed to register commands:', error);
-    }
-})();
+    (async () => {
+        try {
+            console.log('🔄 Registering slash commands...');
+            
+            // Register commands globally
+            await rest.put(
+                Routes.applicationCommands(process.env.CLIENT_ID),
+                { body: commands }
+            );
+            
+            console.log('✅ Slash commands registered successfully');
+        } catch (error) {
+            console.error('❌ Failed to register commands:', error);
+        }
+    })();
+} else {
+    console.log('⚠️ CLIENT_ID not set - slash commands will not be registered');
+    console.log('   Set CLIENT_ID environment variable to enable training commands');
+}
 
 // Handle interactions (slash commands)
 client.on('interactionCreate', async (interaction) => {
