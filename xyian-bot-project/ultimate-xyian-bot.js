@@ -1435,6 +1435,7 @@ client.once('clientReady', () => {
     console.log('🏰 XYIAN Ultimate Bot - Initializing...');
     console.log(`✅ XYIAN Ultimate Bot is online as ${client.user.tag}!`);
     console.log(`📊 Managing ${client.guilds.cache.size} guilds`);
+    console.log(`🔍 PROCESS ID: ${process.pid} - Check for duplicates!`);
     
     // Set up daily messaging system
     setupDailyMessaging();
@@ -1773,8 +1774,10 @@ async function sendToXYIAN(content) {
     if (!webhooks.xyian) return;
     
     try {
+        console.log('🔍 DEBUG: Sending to XYIAN webhook');
         const webhook = new WebhookClient({ url: webhooks.xyian });
         await webhook.send(content);
+        console.log('✅ DEBUG: XYIAN webhook sent successfully');
     } catch (error) {
         console.error('❌ Failed to send XYIAN message:', error.message);
     }
@@ -1784,8 +1787,10 @@ async function sendToGeneral(content) {
     if (!webhooks.general) return;
     
     try {
+        console.log('🔍 DEBUG: Sending to General webhook');
         const webhook = new WebhookClient({ url: webhooks.general });
         await webhook.send(content);
+        console.log('✅ DEBUG: General webhook sent successfully');
     } catch (error) {
         console.error('❌ Failed to send general message:', error.message);
     }
