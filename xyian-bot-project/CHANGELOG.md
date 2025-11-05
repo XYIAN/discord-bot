@@ -2,6 +2,16 @@
 
 All notable changes to the Arch 2 Addicts Discord Bot project will be documented in this file.
 
+## [2.3.2] - 2025-01-XX
+
+### ⏰ Scheduled Message Timing Update
+
+#### Changed
+- **🕐 Daily Reset Timing** - Changed daily reset messages from 5pm to 4pm Pacific Time
+  - Updated `setHours(17)` to `setHours(16)` in `setupDailyResetMessaging()`
+  - Updated all text references from "5pm" to "4pm" and "5:00 PM" to "4:00 PM"
+  - Updated both root and xyian-bot-project bot files
+
 ## [2.3.1] - 2025-10-19
 
 ### 🔧 MAJOR REFACTOR: Project Structure Cleanup

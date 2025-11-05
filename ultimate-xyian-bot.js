@@ -1351,7 +1351,7 @@ const archeroQA = {
     "how to join guild": "To join XYIAN OFFICIAL guild: 1) Be level 50+ in Archero 2, 2) Have 300k+ power, 3) Be active daily, 4) Complete 2 boss battles per day, 5) Make 1 guild donation per day. Guild ID: 213797",
     "umbral tempest": "Umbral Tempest Event Tips: 1) Use high DPS builds, 2) Focus on area damage skills, 3) Save your ultimate for boss phases, 4) Join with guild members for better rewards, 5) Complete daily event quests for maximum rewards.",
     "best build": "Best build depends on your class: Warrior - Demon Blade + defensive skills, Mage - Staff of Light + magical skills, Archer - Windforce + mobility skills. Focus on synergy between your weapon and chosen skills.",
-    "daily reset": "Daily reset happens at 5:00 PM Pacific Time. Remember to complete your daily quests, boss battles, and guild donations before reset to maximize your rewards!",
+    "daily reset": "Daily reset happens at 4:00 PM Pacific Time. Remember to complete your daily quests, boss battles, and guild donations before reset to maximize your rewards!",
     "arena": "Arena is a fully automated PvP mode where you select heroes and gear, then AI handles combat. Winning increases ladder points, losses decrease them. Rewards include gold, scrolls, and Arena Exchange Tickets based on your PvP tier and ranking.",
     "Peak Arena": "Peak Arena is the ultimate PvP challenge requiring 3 different characters with 3 different builds. Each different item provides bonus health and damage. Top 40% of players remain in Supreme Rank weekly, others are demoted. Only the most skilled players with optimal builds can consistently win.",
     "arena vs Peak Arena": "Both are fully automated PvP modes. Arena is accessible to most players with decent rewards. Peak Arena requires 3-character team composition with different builds and items for maximum bonuses. Peak Arena has much higher difficulty but offers the best rewards and exclusive items.",
@@ -1441,7 +1441,7 @@ client.once('clientReady', () => {
     // Set up daily messaging system
     setupDailyMessaging();
     
-    // Set up daily reset messaging (5pm Pacific)
+    // Set up daily reset messaging (4pm Pacific)
     setupDailyResetMessaging();
     
     console.log('✅ All systems activated!');
@@ -1463,18 +1463,18 @@ function setupDailyMessaging() {
     console.log('✅ Daily messaging schedule set!');
 }
 
-// Daily reset messaging (5pm Pacific)
+// Daily reset messaging (4pm Pacific)
 function setupDailyResetMessaging() {
-    console.log('🔄 Setting up daily reset messaging (5pm Pacific exactly)...');
+    console.log('🔄 Setting up daily reset messaging (4pm Pacific exactly)...');
     
     // Use cron-like scheduling for exact timing
     const scheduleDailyReset = () => {
         const now = new Date();
         const pacificTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Los_Angeles"}));
         
-        // Calculate time until next 5pm Pacific
+        // Calculate time until next 4pm Pacific
         const targetTime = new Date(pacificTime);
-        targetTime.setHours(17, 0, 0, 0); // 5:00 PM exactly
+        targetTime.setHours(16, 0, 0, 0); // 4:00 PM exactly
         
         if (targetTime <= pacificTime) {
             targetTime.setDate(targetTime.getDate() + 1); // Tomorrow
@@ -1495,7 +1495,7 @@ function setupDailyResetMessaging() {
     // Start the scheduling
     scheduleDailyReset();
     
-    console.log(`✅ Daily reset messaging set for 5pm Pacific exactly!`);
+    console.log(`✅ Daily reset messaging set for 4pm Pacific exactly!`);
 }
 
 // Removed sendInitialMessages function - no longer sending messages on startup
@@ -1578,7 +1578,7 @@ async function sendGuildResetMessage() {
                 // Parse AI response (simple parsing)
                 const lines = aiMessage.split('\n').filter(line => line.trim());
                 title = lines[0] || '🔄 Daily Reset Reminder - XYIAN Guild';
-                description = lines.slice(1).join('\n') || '**Daily reset is here! Complete your daily tasks before 5pm Pacific!**';
+                description = lines.slice(1).join('\n') || '**Daily reset is here! Complete your daily tasks before 4pm Pacific!**';
                 funFact = '💡 **XYIAN AI Generated**: This message was created by our AI using comprehensive XYIAN knowledge!';
             }
         } catch (error) {
@@ -1598,7 +1598,7 @@ async function sendGuildResetMessage() {
         }
         
         title = '🔄 Daily Reset Reminder - XYIAN Guild';
-        description = '**Daily reset is here! Complete your daily tasks before 5pm Pacific!**\n\n⚔️ **Remember your daily requirements:**\n• Complete 2 Guild Boss Battles\n• Make 1 Guild Donation\n• Participate in Gold Rush\n• Complete Daily Quests\n\n💪 **Let\'s show everyone why XYIAN is the best guild!**';
+        description = '**Daily reset is here! Complete your daily tasks before 4pm Pacific!**\n\n⚔️ **Remember your daily requirements:**\n• Complete 2 Guild Boss Battles\n• Make 1 Guild Donation\n• Participate in Gold Rush\n• Complete Daily Quests\n\n💪 **Let\'s show everyone why XYIAN is the best guild!**';
         funFact = `💡 **XYIAN Tip**: ${guildTip}`;
     }
     
@@ -1623,7 +1623,7 @@ const generalResetMessages = [
     {
         title: '🌅 New Day, New Adventures!',
         description: '**Fresh start! Time to make today count!**\n\n✨ **Today\'s opportunities:**\n• New daily quests await\n• Fresh challenges to tackle\n• Another chance to perfect your build\n• More gold and XP to earn\n\n🚀 **Let\'s make today legendary!**',
-        funFact: '💡 **Fun Fact**: The daily reset happens at 5 PM Pacific because that\'s when most players are active after work/school!'
+        funFact: '💡 **Fun Fact**: The daily reset happens at 4 PM Pacific because that\'s when most players are active after work/school!'
     },
     {
         title: '⚡ Reset Time - Fresh Start!',
@@ -1664,7 +1664,7 @@ async function sendGeneralResetMessage() {
         }
     
     const title = '🔄 Daily Reset Reminder!';
-    const description = '**Daily reset is here! Complete your daily tasks before 5pm Pacific!**\n\n✨ **What\'s new today:**\n• Fresh daily quests with great rewards\n• New challenges to conquer\n• Another chance to improve your build\n• More opportunities to earn gold and XP';
+    const description = '**Daily reset is here! Complete your daily tasks before 4pm Pacific!**\n\n✨ **What\'s new today:**\n• Fresh daily quests with great rewards\n• New challenges to conquer\n• Another chance to improve your build\n• More opportunities to earn gold and XP';
     
     const embed = new EmbedBuilder()
         .setTitle(title)
