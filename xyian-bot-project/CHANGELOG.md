@@ -11,6 +11,12 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
   - Updated `setHours(17)` to `setHours(16)` in `setupDailyResetMessaging()`
   - Updated all text references from "5pm" to "4pm" and "5:00 PM" to "4:00 PM"
   - Updated both root and xyian-bot-project bot files
+- **🤖 AI-Generated Welcome Messages** - Welcome messages now use OpenAI to generate varied messages
+  - Uses `OPENAI_API_KEY` from Railway environment variables
+  - Generates unique welcome messages for each new member
+  - Keeps guild info and community channels static (only main message varies)
+  - Falls back gracefully to default message if API key fails or is unavailable
+  - Uses GPT-3.5-turbo with high temperature (0.9) for variety
 
 #### Removed
 - **🚫 Expedition Message** - Removed expedition message from daily messages schedule
