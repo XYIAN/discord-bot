@@ -1515,9 +1515,6 @@ async function sendDailyMessages() {
         // Send daily tip
         await sendDailyTip();
         
-        // Send expedition message
-        await sendExpeditionMessage();
-        
         // Send arena tip
         await sendArenaTip();
         
@@ -1552,9 +1549,6 @@ async function sendGuildRecruitmentSchedule() {
 // Send daily reset messages
 async function sendDailyResetMessages() {
     console.log('🔄 Sending daily reset messages...');
-    
-    // Guild reset message
-    await sendGuildResetMessage();
     
     // General reset message
     await sendGeneralResetMessage();
@@ -1705,23 +1699,41 @@ async function sendGeneralResetMessage() {
 
 // Send daily tip using high-quality cleaned database
 async function sendDailyTip() {
-    // Try to load high-quality tips first
-    const tipsFile = path.join(__dirname, 'data', 'high-quality-tips.json');
     let tip = '';
     
+    // Try to load high-quality tips first
+    const tipsFile = path.join(__dirname, 'data', 'high-quality-tips.json');
     if (fs.existsSync(tipsFile)) {
         try {
             const tips = JSON.parse(fs.readFileSync(tipsFile, 'utf8'));
-            if (tips.length > 0) {
-                const randomTip = tips[Math.floor(Math.random() * tips.length)];
-                tip = `**${randomTip.category.toUpperCase()} TIP:** ${randomTip.tip}`;
+            if (tips && Array.isArray(tips) && tips.length > 0) {
+                const validTips = tips.filter(t => t.tip && t.tip.trim().length > 0);
+                if (validTips.length > 0) {
+                    const randomTip = validTips[Math.floor(Math.random() * validTips.length)];
+                    tip = `**${randomTip.category ? randomTip.category.toUpperCase() : 'GENERAL'} TIP:** ${randomTip.tip}`;
+                }
             }
         } catch (error) {
-            console.log('⚠️ Could not load high-quality tips');
+            console.log('⚠️ Could not load high-quality tips:', error.message);
         }
     }
     
-    // Tip already set from RAG system above
+    // Fallback to RAG system if no tip loaded
+    if (!tip && ragSystem) {
+        try {
+            const results = ragSystem.search('daily tips strategies best practices');
+            if (results.length > 0 && results[0].data && results[0].data.note) {
+                tip = `💡 **Daily Tip:** ${results[0].data.note}`;
+            }
+        } catch (error) {
+            console.log('⚠️ Could not get tip from RAG system:', error.message);
+        }
+    }
+    
+    // Final fallback if everything fails
+    if (!tip) {
+        tip = '💡 **Daily Tip:** Complete your daily quests and guild activities for maximum rewards!';
+    }
     
     const embed = new EmbedBuilder()
         .setTitle('💡 Daily Archero 2 Tip')
