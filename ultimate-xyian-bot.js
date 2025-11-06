@@ -179,6 +179,52 @@ Specific tip from RAG system that helps with progression`;
     }
 }
 
+// Generate varied welcome message using OpenAI
+async function generateWelcomeMessage(memberUsername) {
+    if (!AIService) return null;
+    
+    try {
+        const context = `You are XY Elder, the trusted henchman and guild elder of XYIAN OFFICIAL. Generate a warm, welcoming message for a new member joining the Arch 2 Addicts Discord server.
+
+Requirements:
+- Keep it friendly and welcoming (2-3 sentences max)
+- Mention they're joining a great Archero 2 community
+- Vary the message each time (don't repeat the same wording)
+- Use appropriate emojis (1-2 max)
+- Keep it concise and engaging
+- Don't mention specific guild requirements or channels (those are handled separately)
+
+Examples of good welcome messages:
+- "Welcome to our amazing Archero 2 community! We're thrilled to have you join us on this adventure. Get ready to level up your game and connect with fellow players!"
+- "Hey there! So excited you've joined our community! You're going to love the tips, strategies, and friendly players here. Let's make some epic progress together!"
+- "Welcome aboard! You've just joined one of the best Archero 2 communities around. We're here to help you grow, learn, and dominate the leaderboards!"
+
+Generate a unique welcome message for ${memberUsername}:`;
+
+        const completion = await AIService.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [
+                { role: "system", content: context },
+                { role: "user", content: `Generate a unique welcome message for ${memberUsername} joining the server.` }
+            ],
+            max_tokens: 150,
+            temperature: 0.9,
+            presence_penalty: 0.3,
+            frequency_penalty: 0.2,
+        });
+        
+        const response = completion.choices[0]?.message?.content?.trim();
+        if (response && response.length > 20 && response.length < 300) {
+            console.log(`🤖 AI Welcome message generated for ${memberUsername}: ${response.substring(0, 50)}...`);
+            return response;
+        }
+        return null;
+    } catch (error) {
+        console.error('❌ AI Welcome message error:', error.message);
+        return null;
+    }
+}
+
 // Get relevant knowledge based on user's message
 function getRelevantKnowledge(message) {
     if (!message || !ragSystem) return [];
@@ -3705,11 +3751,25 @@ client.on('guildMemberAdd', async (member) => {
     
     console.log(`👋 New member joined: ${member.user.username} (ID: ${memberId})`);
     
-    // Send SINGLE welcome message to GENERAL CHAT - NO AI, NO SPAM
+    // Send SINGLE welcome message to GENERAL CHAT with AI-generated variation
     try {
+        // Try to generate AI welcome message, fallback to default if it fails
+        let welcomeDescription = `Welcome ${member}!`;
+        try {
+            const aiWelcome = await generateWelcomeMessage(member.user.username);
+            if (aiWelcome) {
+                welcomeDescription = aiWelcome;
+            } else {
+                console.log('⚠️ AI welcome message generation failed, using default');
+            }
+        } catch (error) {
+            console.log('⚠️ AI welcome message error, using default:', error.message);
+            // Fallback to default message
+        }
+        
         const welcomeEmbed = new EmbedBuilder()
             .setTitle(`🎉 Welcome to Arch 2 Addicts, ${member.user.username}!`)
-            .setDescription(`Welcome ${member}!`)
+            .setDescription(welcomeDescription)
             .setColor(0x00ff88)
             .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 256 }))
             .addFields(
