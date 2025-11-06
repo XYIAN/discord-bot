@@ -4,13 +4,24 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 ## [2.3.2] - 2025-01-XX
 
-### ⏰ Scheduled Message Timing Update
+### ⏰ Scheduled Message Updates
 
 #### Changed
 - **🕐 Daily Reset Timing** - Changed daily reset messages from 5pm to 4pm Pacific Time
   - Updated `setHours(17)` to `setHours(16)` in `setupDailyResetMessaging()`
   - Updated all text references from "5pm" to "4pm" and "5:00 PM" to "4:00 PM"
   - Updated both root and xyian-bot-project bot files
+
+#### Removed
+- **🚫 Expedition Message** - Removed expedition message from daily messages schedule
+- **🚫 Guild Reset Message** - Removed guild reset message from daily reset schedule (only general reset remains)
+
+#### Fixed
+- **💡 Daily Tips** - Fixed daily tips functionality with proper fallback chain
+  - Now validates tips file data before using
+  - Falls back to RAG system if tips file is empty or invalid
+  - Has final fallback message if all else fails
+  - Prevents empty tip messages from being sent
 
 ## [2.3.1] - 2025-10-19
 
