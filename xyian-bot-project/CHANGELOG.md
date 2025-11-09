@@ -21,6 +21,7 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 #### Removed
 - **🚫 Expedition Message** - Removed expedition message from daily messages schedule
 - **🚫 Guild Reset Message** - Removed guild reset message from daily reset schedule (only general reset remains)
+- **⏸️ Daily Tip & Arena Tip** - Temporarily unscheduled daily tip and arena tip messages (functions preserved for future re-enablement)
 
 #### Fixed
 - **💡 Daily Tips** - Fixed daily tips functionality with proper fallback chain
