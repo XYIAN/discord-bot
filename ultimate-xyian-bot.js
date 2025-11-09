@@ -1558,11 +1558,9 @@ async function sendDailyMessages() {
     console.log('📅 Sending daily messages...');
     
     try {
-        // Send daily tip
-        await sendDailyTip();
-        
-        // Send arena tip
-        await sendArenaTip();
+        // Daily tip and arena tip temporarily unscheduled
+        // await sendDailyTip();
+        // await sendArenaTip();
         
         console.log('✅ Daily messages sent!');
     } catch (error) {
