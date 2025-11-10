@@ -17,6 +17,9 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
   - Keeps guild info and community channels static (only main message varies)
   - Falls back gracefully to default message if API key fails or is unavailable
   - Uses GPT-3.5-turbo with high temperature (0.9) for variety
+- **💪 Guild Power Requirement** - Updated guild power requirement from 300k+ to 550K+
+  - Updated all references in help menus, recruitment messages, welcome messages, and knowledge base
+  - Changed in both root and xyian-bot-project bot files
 
 #### Removed
 - **🚫 Expedition Message** - Removed expedition message from daily messages schedule
