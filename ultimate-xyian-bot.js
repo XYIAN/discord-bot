@@ -812,7 +812,7 @@ async function sendPersonalizedOnboarding(member) {
                 },
                 { 
                     name: '🏰 XYIAN Guild - Elite Competitive Play', 
-                    value: '**Guild ID: 213797**\n• Requirements: 2 daily boss battles + donations\n• Looking for active players with 300k+ power\n• Peak Arena specialists and PvP experts\n• Exclusive guild strategies and team coordination', 
+                    value: '**Guild ID: 213797**\n• Requirements: 2 daily boss battles + donations\n• Looking for active players with 550K+ power\n• Peak Arena specialists and PvP experts\n• Exclusive guild strategies and team coordination', 
                     inline: false 
                 },
                 { 
@@ -1394,7 +1394,7 @@ const archeroQA = {
     "how to get more power": "To increase your power level: 1) Upgrade your weapons and armor, 2) Level up your character, 3) Enhance your runes, 4) Complete daily quests, 5) Join a guild for bonuses, 6) Participate in events for rewards.",
     "best skills": "Top skills to prioritize: 1) Multi-shot (increases projectiles), 2) Ricochet (bounces between enemies), 3) Piercing (passes through enemies), 4) Bouncy Wall (bounces off walls), 5) Side Arrow (additional projectiles).",
     "guild requirements": "Daily guild requirements: • Complete 2 Boss Battles • Make 1 Guild Donation • Maintain active participation. Use !boss and !donate to record your progress.",
-    "how to join guild": "To join XYIAN OFFICIAL guild: 1) Be level 50+ in Archero 2, 2) Have 300k+ power, 3) Be active daily, 4) Complete 2 boss battles per day, 5) Make 1 guild donation per day. Guild ID: 213797",
+    "how to join guild": "To join XYIAN OFFICIAL guild: 1) Be level 50+ in Archero 2, 2) Have 550K+ power, 3) Be active daily, 4) Complete 2 boss battles per day, 5) Make 1 guild donation per day. Guild ID: 213797",
     "umbral tempest": "Umbral Tempest Event Tips: 1) Use high DPS builds, 2) Focus on area damage skills, 3) Save your ultimate for boss phases, 4) Join with guild members for better rewards, 5) Complete daily event quests for maximum rewards.",
     "best build": "Best build depends on your class: Warrior - Demon Blade + defensive skills, Mage - Staff of Light + magical skills, Archer - Windforce + mobility skills. Focus on synergy between your weapon and chosen skills.",
     "daily reset": "Daily reset happens at 4:00 PM Pacific Time. Remember to complete your daily quests, boss battles, and guild donations before reset to maximize your rewards!",
@@ -1793,7 +1793,7 @@ async function sendDailyTip() {
 async function sendGuildRecruitment() {
     const embed = new EmbedBuilder()
         .setTitle('🏰 XYIAN OFFICIAL - Guild Recruitment')
-        .setDescription(`**Guild ID: 213797**\n\n**We're looking for dedicated players to join our elite community!**\n\n✨ **What we offer:**\n• Active daily community\n• Expert strategies and guides\n• Guild events and challenges\n• 10% discount on guild shop items\n• Supportive and friendly environment\n\n🎯 **Requirements:**\n• Daily participation in guild activities\n• 2 Boss Battles per day\n• 1 Guild Donation per day\n• Active in Discord community\n\n💪 **Power Level:** 300k+ recommended\n\n**Ready to join the elite? Apply now!**`)
+        .setDescription(`**Guild ID: 213797**\n\n**We're looking for dedicated players to join our elite community!**\n\n✨ **What we offer:**\n• Active daily community\n• Expert strategies and guides\n• Guild events and challenges\n• 10% discount on guild shop items\n• Supportive and friendly environment\n\n🎯 **Requirements:**\n• Daily participation in guild activities\n• 2 Boss Battles per day\n• 1 Guild Donation per day\n• Active in Discord community\n\n💪 **Power Level:** 550K+ recommended\n\n**Ready to join the elite? Apply now!**`)
         .setColor(0xFFA500) // Gold color
         .setTimestamp()
         .setFooter({ text: 'XYIAN OFFICIAL - Arch 2 Addicts' });
@@ -2673,7 +2673,7 @@ client.on('messageCreate', async (message) => {
                     case 'info':
                         const infoEmbed = new EmbedBuilder()
                             .setTitle('🏰 XYIAN OFFICIAL Guild Info')
-                            .setDescription('**Elite Archero 2 Guild - Arch 2 Addicts**\n\n📊 **Guild Statistics:**\n• Members: Active and growing\n• Power Level: 300k+ average\n• Daily Activity: 100%\n• Guild Level: Elite\n\n🎯 **Focus:**\n• Daily boss battles\n• Guild donations\n• Community support\n• Strategy sharing')
+                            .setDescription('**Elite Archero 2 Guild - Arch 2 Addicts**\n\n📊 **Guild Statistics:**\n• Members: Active and growing\n• Power Level: 550K+ average\n• Daily Activity: 100%\n• Guild Level: Elite\n\n🎯 **Focus:**\n• Daily boss battles\n• Guild donations\n• Community support\n• Strategy sharing')
                             .setColor(0xFFD700)
                             .setTimestamp()
                             .setFooter({ text: 'XYIAN OFFICIAL' });
@@ -3773,7 +3773,7 @@ client.on('guildMemberAdd', async (member) => {
             .addFields(
                 {
                     name: '🏰 XYIAN Guild - Guild ID: 213797',
-                    value: 'Requirements: 2 daily boss battles + donations\nLooking for: Active players with 300k+ power',
+                    value: 'Requirements: 2 daily boss battles + donations\nLooking for: Active players with 550K+ power',
                     inline: false
                 },
                 {
