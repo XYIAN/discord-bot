@@ -20,6 +20,13 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 - **💪 Guild Power Requirement** - Updated guild power requirement from 300k+ to 550K+
   - Updated all references in help menus, recruitment messages, welcome messages, and knowledge base
   - Changed in both root and xyian-bot-project bot files
+- **💪 Minimum Power Level 1M** - Updated minimum power level from 550K to 1M across all daily/guild messaging
+  - Guild recruitment embed (general chat + guild recruit webhooks): "1M+ recommended"
+  - Dev-menu guild info, welcome embeds, and "how to join guild" knowledge base: "1M+"
+  - Applied in both `ultimate-xyian-bot.js` and `xyian-bot-project/ultimate-xyian-bot.js`
+- **📅 Daily Reset to General** - Removed ArchAI Tip (Beta) section from daily reset message
+  - Message now only includes Daily Guild Reminders and Motivational Message
+  - Removed RAG tip fetch used only for that section
 
 #### Removed
 - **🚫 Expedition Message** - Removed expedition message from daily messages schedule
