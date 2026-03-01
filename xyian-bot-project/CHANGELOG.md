@@ -2,6 +2,8 @@
 
 All notable changes to the Arch 2 Addicts Discord Bot project will be documented in this file.
 
+**Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
+
 ## [3.2.1] - 2026-03-01
 
 ### Changelog channel + fact sync workflow

@@ -43,11 +43,17 @@ Members add facts via `!addfact` on the live bot — these are stored in `knowle
 3. Adds them to `data/knowledge.json` in the repo
 4. Commits, pushes, and sends a debug confirmation
 
-This ensures custom facts survive redeployments.
+This ensures custom facts survive redeployments. Each fact sync counts as a patch version bump (e.g. 3.2.1 → 3.2.2) and gets its own CHANGELOG entry.
 
 ## Changelog Channel
 
 The bot posts release notes to #changelog (`1424784471395274803`) on every deploy. The `BOT_CHANGELOG` array in `bot.js` holds the current version's changes — update it each release.
+
+### Versioning convention
+
+- **Major** (X.0.0) — Breaking changes or full rebuilds
+- **Minor** (3.X.0) — New features (commands, channels, integrations)
+- **Patch** (3.2.X) — Fact syncs, bug fixes, doc updates, knowledge base growth
 
 ## Files
 
