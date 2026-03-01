@@ -32,5 +32,6 @@ Use this when setting up `.env` or Railway. See **RESTART-PLAN.md** for how each
 |---------|--------------|-----|
 | Main Q&A (only channel we reply to for normal messages) | arch-ai | `1424322391160393790` |
 | Guild recruit (never reply; only cron sends) | (your recruit channel) | `1419944464608268410` |
+| Changelog (bot posts release notes on deploy) | changelog | `1424784471395274803` |
 
 To get a channel ID: Discord → User Settings → App Settings → Developer Mode ON → right‑click channel → Copy ID.

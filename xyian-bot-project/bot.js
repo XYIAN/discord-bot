@@ -24,7 +24,13 @@ const path = require('path');
 const express = require('express');
 require('dotenv').config();
 
-const BOT_VERSION = '3.2.0';
+const BOT_VERSION = '3.2.1';
+
+const BOT_CHANGELOG = [
+    '🔄 **Fact sync workflow** — Dev can pull custom facts from live bot into the repo so they survive redeployments',
+    '📢 **Changelog channel** — Bot now posts release notes to #changelog on deploy',
+    '📝 Docs updated with fact-sync workflow and changelog process',
+];
 
 // ── Config ──────────────────────────────────────────────────────────────────
 
@@ -32,6 +38,7 @@ const CONFIG = {
     channels: {
         archAi: '1424322391160393790',
         guildRecruit: '1419944464608268410',
+        changelog: '1424784471395274803',
         general: null,  // resolved on ready by channel name
     },
     ignoreChannelNames: ['guild-recruit-chat', 'xyian-guild', 'guild-chat', 'recruit', 'guild-recruit'],
@@ -221,6 +228,16 @@ async function sendToGeneral(content) {
 
 async function sendToRecruit(content) {
     return sendViaWebhook(webhooks.recruit, CONFIG.channels.guildRecruit, 'recruit', content);
+}
+
+async function sendToChangelog(content) {
+    if (!CONFIG.channels.changelog || !client.isReady()) return;
+    try {
+        const channel = await client.channels.fetch(CONFIG.channels.changelog);
+        if (channel) await channel.send(content);
+    } catch (e) {
+        console.log(`⚠️  Could not post to changelog: ${e.message}`);
+    }
 }
 
 // ── OpenAI Q&A ──────────────────────────────────────────────────────────────
@@ -626,13 +643,24 @@ client.once('ready', async () => {
         console.log(`⚠️  Could not resolve general channel: ${e.message}`);
     }
 
-    // Deploy notification
+    // Deploy notification → debug channel
     await sendToAdmin({
         content: `🚀 **Bot deployed!** v${BOT_VERSION}\n` +
             `📊 ${countFacts()} facts loaded\n` +
             `🤖 OpenAI: ${openai ? '✅ ready' : '❌ not configured'}\n` +
             `⏰ ${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })} Pacific`,
     });
+
+    // Release notes → changelog channel
+    if (BOT_CHANGELOG.length > 0) {
+        const embed = new EmbedBuilder()
+            .setTitle(`📦 XYIAN Bot v${BOT_VERSION}`)
+            .setDescription(BOT_CHANGELOG.map(line => `• ${line}`).join('\n'))
+            .setColor(0x00ff88)
+            .setTimestamp()
+            .setFooter({ text: 'XYIAN Bot — Changelog' });
+        await sendToChangelog({ embeds: [embed] });
+    }
 
     setupDailyResetMessaging();
     setupDailyMessaging();
