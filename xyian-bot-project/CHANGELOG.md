@@ -2,6 +2,144 @@
 
 All notable changes to the Arch 2 Addicts Discord Bot project will be documented in this file.
 
+## [3.2.0] - 2026-02-16
+
+### Deploy notifications + stale message cleanup
+
+#### Deploy notification
+- Bot now sends a summary message to the debug/admin channel every time it starts up
+- Includes version, fact count, OpenAI status, and Pacific timestamp
+- Makes it easy to confirm Railway deployments landed successfully
+
+#### Auto-delete stale scheduled messages
+- Before sending a new daily reset or guild recruitment message, the bot checks if its previous message is still the most recent in that channel
+- If no user has posted since the last bot message, it deletes the old one first, then sends the new one — keeps channels from stacking identical bot posts
+- If users have been chatting (latest message isn't the bot's), the old message is left alone
+- Tracking is in-memory per session; on fresh deploy the first message always sends without deleting
+
+#### Internal changes
+- Refactored webhook senders into a unified `sendViaWebhook()` that handles tracking and cleanup
+- General channel ID now resolved dynamically on startup by matching channel names
+- Version bumped to 3.2.0
+
+---
+
+## [3.1.0] - 2025-02-16
+
+### Rebuild: Clean repo + full feature set
+
+**Context:** Completed restart plan. Cleaned repo down to essentials, then rebuilt incrementally with all planned features in a single clean bot file.
+
+#### Repo cleanup
+- Archived all dead code to `archive/legacy/`: RAG systems (5 files), training system, scrapers (50+ files), old data files (megabytes of scraped JSON), stale docs (30+ markdown files), the 3,500-line `ultimate-xyian-bot.js`
+- Removed root-level duplicate files (`ultimate-xyian-bot.js`, `working-rag-system.js`, `training-system.js`)
+- Trimmed dependencies: removed `puppeteer`, `selenium-webdriver`, `chromedriver`, `cheerio`, `axios`, `cors`, `express-rate-limit`, `winston`. Kept: `discord.js`, `express`, `dotenv`, `openai`
+- Renamed `bot-skeleton.js` to `bot.js` — single file, ~400 lines, every line has a purpose
+- Renamed `unified_game_data.json` to `data/knowledge.json`
+- Updated `package.json` start script, version to 3.1.0
+
+#### OpenAI-powered Q&A (Step 2)
+- Questions in #arch-ai answered by `gpt-4o-mini` with all knowledge.json facts in the system prompt
+- Role-gated: requires XYIAN Guild Verified, XYIAN OFFICIAL, Admin, or Server Booster
+- Shows typing indicator while thinking
+- Graceful fallback if no API key or OpenAI errors
+- Users without a verified role get a clear message explaining why
+
+#### Knowledge management (Step 3)
+- `!addfact <text>` — XYIAN OFFICIAL / Admin adds a fact to knowledge.json (immediately available)
+- `!removefact <n>` — XYIAN OFFICIAL / Admin removes a custom fact by number
+- `!listfacts` — Any verified role can browse custom facts
+- `!faq` — Shows all topic categories and counts
+
+#### Welcome message (Step 4)
+- Static embed sent to general chat when a new member joins
+- Shows avatar, channel links, guild info
+- Duplicate prevention (tracks processed member IDs)
+
+#### Daily tip from knowledge (Step 5)
+- Daily reset message now includes a random fact from knowledge.json as "Tip of the Day"
+- Pulls from tips, notes, descriptions, and custom facts
+
+#### Reaction feedback (Step 6)
+- Every Q&A reply gets thumbs-up/thumbs-down reactions
+- Reactions logged to `data/feedback.json` with question, answer snippet, user, timestamp
+- 5-minute collection window per reply
+- Log capped at 500 entries
+
+#### Role structure
+- Everyone: `!ping`, `!help`, `!menu`, see embeds
+- Verified role (XYIAN Guild Verified, XYIAN OFFICIAL, Admin, Server Booster): Q&A in #arch-ai, `!faq`, `!listfacts`
+- Admin (XYIAN OFFICIAL, Admin): `!addfact`, `!removefact`, `!recruit`, `!reset`
+- Owner (OWNER_ID env var): reserved for future features
+
+## [3.0.0] - 2025-02-16
+
+### Restart: Clean canvas + defaults
+
+**Context:** Knowledge-bot approach (RAG, scraped data) didn't work well. Restarted with a clean canvas: kept vital behavior and pre-connections; removed RAG/training; ready for incremental features.
+
+#### Kept
+- Daily reset reminder at 4pm Pacific → general chat webhook
+- Guild recruitment every other day → guild recruit webhook
+- Debug/errors → admin webhook (debug-logs channel)
+- Main channel (arch-ai) only gets non-command replies; stub message: "Knowledge answers are paused; use !help for commands. New features will be added here bit by bit."
+- All env vars and channel IDs (single CONFIG in code + docs)
+- Commands: `!ping`, `!help`, `!menu`, `!recruit`, `!reset`, `!monitor-debug`, `!clean-logs`, `!clean-ai-chat`, role checks (XYIAN OFFICIAL)
+- Health check endpoint for Railway
+- Express server for `/health`
+
+#### Removed / stubbed
+- RAG system and training system (no longer required at startup)
+- AI/RAG reply in arch-ai (replaced with stub message)
+- Commands stubbed with "temporarily disabled": `!teach`, `!ai-feedback`, `!ai-thumbs-down`, `!ai memory`, `!ai rag-test`, `!unknown`, `!ai-toggle`; slash `/train`, `/correct`, `/training-stats`, `/pending-reviews`
+- RAG usage in scheduled/one-off helpers (sendGuildResetMessage, sendDailyTip, sendExpeditionMessage, sendArenaTip); !xyian weapon/skill/build
+
+#### Added
+- **CONFIG** object in bot: single place for channel IDs and channel names (mainBotChannel, guildRecruit, mainBot, debugLogs, ignore list, generalChat)
+- **!hello** – Replies "Hi, I'm the bot! Use !help for commands. New features will be added here bit by bit."
+- **Documentation folder** – `xyian-bot-project/docs/` README updated: "Add research notes, Discord/bot learnings, and feature docs here as we build"
+- **.cursorrules** and **.cursor/rules.mdc** – Replaced/trimmed to clean-canvas rules (project structure, Railway, changelog, docs); removed Archero/RAG/data-specific rules
+
+#### Files
+- `xyian-bot-project/ultimate-xyian-bot.js` – All changes in this file (config, RAG/training removed, stubs, !hello)
+- `.cursorrules` – Rewritten for clean canvas
+- `.cursor/rules.mdc` – Trimmed to channel/webhook behavior, testing, docs
+- `xyian-bot-project/docs/README.md` – Added research/docs line
+- `xyian-bot-project/README.md` – Restart note at top
+- `xyian-bot-project/CHANGELOG.md` – This entry
+
+## [3.0.0-skeleton] - 2025-02-16
+
+### 🔄 Restart: Skeleton bot and plan
+
+**Context:** Knowledge-bot approach (RAG, scraped data) didn’t work well; restarting with a minimal bot and adding features piece by piece.
+
+#### Added
+- **`bot-skeleton.js`** – Minimal bot that keeps only vital behavior:
+  - Daily reset reminder at 4pm Pacific → general chat webhook
+  - Guild recruitment every other day → guild recruit webhook
+  - One main channel (arch-ai) that responds to messages (placeholder reply for now)
+  - Debug/errors → admin webhook (single “debug messages” channel)
+  - General chat: only `!help` / `!menu`; guild recruit channel: no replies (cron only)
+- **`docs/RESTART-PLAN.md`** – What we keep vs drop, Discord bot 101, suggested next steps
+- **`docs/ENV-AND-CHANNELS.md`** – Single reference for env vars and channel IDs
+
+#### Kept (unchanged)
+- All env variable names and webhook usage (general, recruit, admin)
+- Channel IDs for arch-ai and guild recruit
+- Daily reset and guild recruit message content and timing
+- Health check endpoint for Railway
+
+#### Intentionally not in skeleton (add back as separate features later)
+- RAG system, training system, unified_game_data.json
+- Complex AI Q&A, slash commands, analytics, welcome flow
+- All other scheduled messages (daily tip, arena, expedition, guild reset)
+
+#### How to run
+- **Railway (production):** `npm start` runs the skeleton (`xyian-bot-project/bot-skeleton.js`). Railway uses this by default, so the same env vars send daily reset and guild recruit to Discord.
+- Local: `npm start` or `cd xyian-bot-project && node bot-skeleton.js`
+- Old full bot: `npm run start:full`
+
 ## [2.3.2] - 2025-01-XX
 
 ### ⏰ Scheduled Message Updates

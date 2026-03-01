@@ -1,6 +1,8 @@
 # Discord Bot Development Documentation
 
-This documentation covers everything you need to know about Discord applications, APIs, bots, and community management.
+**Add research notes, Discord/bot learnings, and feature docs here as we build.** This folder is the single place to add to as we do research and add features incrementally.
+
+This documentation also covers Discord applications, APIs, bots, and community management.
 
 ## Table of Contents
 
