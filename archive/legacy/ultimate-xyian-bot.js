@@ -5,9 +5,9 @@ const express = require('express');
 require('dotenv').config();
 
 // Bot version and update tracking
-const BOT_VERSION = '2.2.0';
-const LAST_UPDATE = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD format
-const UPDATE_NOTES = 'Real Structured Game Data - Clean Facts Only';
+const BOT_VERSION = '3.0.0';
+const LAST_UPDATE = new Date().toISOString().split('T')[0];
+const UPDATE_NOTES = 'Clean canvas: daily reset, guild recruit, debug channel, arch-ai stub; add features incrementally';
 
 // AI Service (optional - requires OpenAI API key)
 let AIService = null;
@@ -28,86 +28,11 @@ try {
     console.log('⚠️ OpenAI package not installed. AI features disabled.');
 }
 
-// Load WORKING RAG System with REAL game data
-const WorkingRAGSystem = require('./working-rag-system');
-let ragSystem = null;
+// RAG and Training systems removed for clean canvas; add features incrementally.
 
-// Initialize Working RAG System
-try {
-    ragSystem = new WorkingRAGSystem();
-    console.log('✅ Working RAG System initialized with REAL game data');
-} catch (error) {
-    console.error('❌ Failed to initialize Working RAG System:', error.message);
-}
-
-// Load Training System
-const TrainingSystem = require('./training-system');
-let trainingSystem = null;
-
-try {
-    trainingSystem = new TrainingSystem();
-    console.log('✅ Training System initialized');
-} catch (error) {
-    console.error('❌ Failed to initialize Training System:', error.message);
-}
-
-// AI helper functions
-async function generateAIResponse(message, channelName) {
-    try {
-        // Use Working RAG System (REAL game data)
-        if (ragSystem) {
-            console.log('🧠 Using Working RAG System with REAL game data...');
-            const ragResponse = ragSystem.generateResponse(message, 'User');
-            if (ragResponse && ragResponse.length > 20) {
-                console.log(`✅ RAG Response generated: ${ragResponse.length} chars`);
-                return ragResponse;
-            }
-        }
-        
-        // No fallback - only use real data from RAG system
-        console.log('⚠️ No relevant data found in knowledge base');
-        return null;
-        
-        console.log('🤖 Using traditional AI...');
-        
-        // Get relevant knowledge based on the user's message
-        const relevantKnowledge = getRelevantKnowledge(message);
-        const learningContext = getLearningContext(message);
-        const conversationContext = getConversationContext(message.author?.id || '');
-        const context = getAIContext(channelName, relevantKnowledge, learningContext, message.author?.username || '', conversationContext);
-        
-        const completion = await AIService.chat.completions.create({
-            model: "gpt-4", // Use GPT-4 for better responses
-            messages: [
-                { role: "system", content: context },
-                { role: "user", content: `User asks: "${message}"` }
-            ],
-            max_tokens: 2000, // Increased for more detailed responses
-            temperature: 0.7, // More conversational but focused
-            presence_penalty: 0.1,
-            frequency_penalty: 0.1,
-        });
-        
-        const response = completion.choices[0]?.message?.content;
-        if (response && response.length > 10) {
-            console.log(`🤖 AI Response generated for ${channelName}: ${response.substring(0, 50)}...`);
-            
-            // Store the question-answer pair for potential feedback
-            const questionKey = message.toLowerCase().trim();
-            aiLearningData[questionKey] = {
-                question: message,
-                response: response,
-                timestamp: new Date().toISOString(),
-                channel: channelName
-            };
-            
-            return response;
-        }
-        return null;
-    } catch (error) {
-        console.error('❌ AI error:', error.message);
-        return null;
-    }
+// Stub: no longer using AI/RAG for arch-ai replies (clean canvas; add features incrementally)
+async function generateAIResponse() {
+    return null;
 }
 
 // Generate daily messages with XYIAN flavor using clean game data
@@ -115,8 +40,7 @@ async function generateDailyMessage(messageType) {
     if (!AIService) return null;
     
     try {
-        // Use clean game data from unified_game_data.json via RAG system
-        const gameStats = ragSystem ? ragSystem.getStats() : {};
+        const gameStats = {};
         
         // Get sample tips from unified game data
         const sampleTips = [
@@ -225,105 +149,13 @@ Generate a unique welcome message for ${memberUsername}:`;
     }
 }
 
-// Get relevant knowledge based on user's message
-function getRelevantKnowledge(message) {
-    if (!message || !ragSystem) return [];
-    
-    // Use RAG system to get clean, relevant data
-    const results = ragSystem.search(message);
-    
-    const relevantEntries = results.map(result => ({
-        key: result.name,
-        content: JSON.stringify(result.data, null, 2).substring(0, 800),
-        score: result.score
-    }));
-    
-    console.log(`🎯 Found ${relevantEntries.length} relevant knowledge entries for: "${message.substring(0, 50)}..." (using clean RAG system)`);
-    return relevantEntries;
+// Stubbed: RAG removed for clean canvas
+function getRelevantKnowledge() {
+    return [];
 }
 
-function getAIContext(channelName, relevantKnowledge = [], learningContext = '', username = '', conversationContext = '') {
-    const gameStats = ragSystem ? ragSystem.getStats() : {};
-    console.log(`🧠 Loading clean game data: ${JSON.stringify(gameStats)}, ${relevantKnowledge.length} relevant for this query`);
-    
-    // Build relevant knowledge string
-    let knowledgeString = '';
-    if (relevantKnowledge.length > 0) {
-        knowledgeString = `RELEVANT KNOWLEDGE FOR THIS QUERY:\n`;
-        relevantKnowledge.forEach((entry, index) => {
-            knowledgeString += `${index + 1}. ${entry.key}: ${entry.content}\n\n`;
-        });
-    }
-    
-    // Personalized greeting based on username
-    let personalGreeting = '';
-    if (username) {
-        if (username.toLowerCase() === 'xyian') {
-            personalGreeting = `Hey Commander XYIAN! `;
-        } else {
-            personalGreeting = `Hey ${username}! `;
-        }
-    }
-    
-    const baseContext = `You are XY Elder, the trusted henchman and guild elder of XYIAN OFFICIAL (Guild ID: 213797). You are a living, breathing expert who has been playing Archero 2 since day one and knows every single detail about the game.
-
-PERSONALITY & IDENTITY:
-- You ARE XY Elder - when asked "What is your name?" you say "I'm XY Elder, the trusted henchman and guild elder of XYIAN OFFICIAL!"
-- You're passionate, knowledgeable, and slightly competitive
-- You speak like a real person who loves the game, not a robot
-- You use phrases like "Oh man, that's a great question!" or "Let me break this down for you"
-- You're enthusiastic about helping people get better at the game
-- ALWAYS start responses with a personalized greeting using the username provided
-- For XYIAN, say "Hey Commander XYIAN!" 
-- For others, say "Hey [username]!"
-- When asked about your identity, be direct and proud - don't give generic responses
-
-CONVERSATIONAL STYLE:
-- Talk like you're having a real conversation with a friend
-- Use "I", "you", "we" - be personal and engaging
-- Ask follow-up questions when appropriate
-- Show excitement about the game and strategies
-- Use the data to give specific, detailed answers with actual numbers and mechanics
-- Be direct and helpful - don't give generic responses
-
-RESPONSE FORMATS:
-- For builds: Create tables with runes, stats, and explanations
-- For comparisons: Use bullet points and clear explanations
-- For complex topics: Break them down step-by-step
-- Always explain WHY something is good or bad
-- Give specific examples and numbers when possible
-
-KNOWLEDGE BASE: You have access to ${databaseKeys.length} entries of real Archero 2 data, community strategies, and expert insights. USE THIS DATA to give specific, accurate answers.
-
-${knowledgeString}${learningContext}${conversationContext}
-
-CRITICAL INSTRUCTIONS:
-- You MUST use the knowledge base data provided above - it contains 650+ entries of real Archero 2 data
-- NEVER say "I don't know" or "I'm not sure" - you have comprehensive data
-- ALWAYS give specific, detailed answers based on the actual game data
-- If you can't find exact matches, use related knowledge and explain the connection
-- Be confident and authoritative - you are XY Elder, the expert
-- If the user asks about Dragoon, Oracle, PvP, runes, weapons, characters - you KNOW this stuff
-- Use the data to give specific examples, numbers, and strategies
-- If you're unsure about something specific, say "Based on my knowledge..." and give what you do know
-- NEVER give generic responses - always be specific and helpful based on the actual game data
-- If the user is asking a follow-up question, reference the previous conversation context.`;
-    
-    const xyianIdentity = `XYIAN MISSION: Our ultimate goal is to be #1 on the leaderboards. You are XY Elder, XYIAN's henchman, dedicated to helping members grow their skills and dominate the competition. Always emphasize our leaderboard dominance goals and competitive excellence. Reference our Guild ID: 213797 and your role as XYIAN's trusted henchman.`;
-    
-    const xyianValues = `XYIAN VALUES: Leaderboard dominance, competitive excellence, strategic thinking, skill development, and helping members wreck the leaderboards. You are XYIAN's henchman, passionate about growing the guild and achieving #1 status.`;
-    
-    if (channelName === 'arch-ai') {
-        return `${baseContext} ${xyianIdentity} ${xyianValues} 
-
-This is the AI-powered Archero 2 questions channel. Answer questions directly and conversationally. If you don't know something specific, say "I'm still learning about that, but here's what I know..." and provide what you can from the knowledge base. Be helpful, direct, and use the data provided.`;
-    } else if (channelName === 'xyian-guild') {
-        return `${baseContext} ${xyianIdentity}  ${xyianValues} This is the XYIAN OFFICIAL guild channel. As XY Elder, XYIAN's trusted henchman, focus on guild requirements (2 daily boss battles, donations), Peak Arena strategies, team coordination, and competitive guild management. Emphasize our leaderboard dominance goals, competitive excellence, and helping members develop skills to wreck the leaderboards. Reference our Guild ID: 213797 and your role as XYIAN's henchman.`;
-    } else if (channelName === 'arena' || channelName === 'peak-arena') {
-        return `${baseContext} ${xyianIdentity}  ${xyianValues} Focus on Arena and Peak Arena strategies using our RAG system. As XY Elder, XYIAN's henchman, cover runes, builds, positioning, and competitive tactics that help members dominate the leaderboards. Emphasize our quest for #1 status and competitive excellence.`;
-    } else {
-        return `${baseContext} ${xyianIdentity}  ${xyianValues} This is a general Archero 2 community channel. As XY Elder, XYIAN's henchman, provide helpful advice using our RAG system while emphasizing XYIAN's quest for leaderboard dominance and competitive excellence.`;
-    }
+function getAIContext() {
+    return '';
 }
 
 // Enhanced fallback with learning system
@@ -366,6 +198,23 @@ const client = new Client({
         GatewayIntentBits.GuildMessageReactions
     ]
 });
+
+// === CONFIG: env vars and channel IDs (single reference) ===
+// Env: DISCORD_TOKEN, OWNER_ID, OPENAI_API_KEY (optional), GENERAL_CHAT_WEBHOOK, GUILD_RECRUIT_WEBHOOK,
+//      ADMIN_WEBHOOK, XYIAN_GUILD_WEBHOOK, AI_QUESTIONS_WEBHOOK, GUILD_EXPEDITION_WEBHOOK, GUILD_ARENA_WEBHOOK,
+//      UMBRAL_TEMPEST_WEBHOOK, GEAR_RUNE_WEBHOOK
+const CONFIG = {
+    channelIds: {
+        mainBotChannel: '1424322391160393790',  // arch-ai
+        guildRecruit: '1419944464608268410'
+    },
+    channelNames: {
+        mainBot: 'arch-ai',
+        debugLogs: 'debug-logs',
+        ignore: ['guild-recruit-chat', 'xyian-guild', 'guild-chat', 'recruit', 'guild-recruit'],
+        generalChat: ['general', 'general-chat', 'main-chat', 'arch-2-addicts']
+    }
+};
 
 // Webhook configurations
 const webhooks = {
@@ -530,8 +379,7 @@ loadAnalytics();
 // REMOVED: All old knowledge base code - now using ONLY working-rag-system.js
 // The bot now uses clean structured data from unified_game_data.json via RAG system
 
-// RAG system is the primary knowledge source
-console.log('🔄 RAG system is the primary knowledge source');
+// Clean canvas: RAG removed; add features incrementally
 
 // Auto-save memory every 5 minutes
 setInterval(() => {
@@ -543,7 +391,7 @@ setInterval(() => {
 
 // AI Response Toggle - Controls whether bot responds to AI questions
 let aiResponseEnabled = true;
-const AI_QUESTIONS_CHANNEL_ID = '1424322391160393790'; // Channel ID from the webhook URL
+const AI_QUESTIONS_CHANNEL_ID = CONFIG.channelIds.mainBotChannel;
 
 // AI Learning System - Store feedback and improve responses
 let aiFeedback = {};
@@ -1624,17 +1472,8 @@ async function sendGuildResetMessage() {
         }
     }
     
-    // Fallback to RAG system if AI didn't work
     if (!title) {
-        // Get guild-related tip from RAG system
-        let guildTip = 'Complete your daily requirements to maintain our competitive edge!';
-        if (ragSystem) {
-            const results = ragSystem.search('guild boss daily requirements');
-            if (results.length > 0 && results[0].data.note) {
-                guildTip = results[0].data.note;
-            }
-        }
-        
+        const guildTip = 'Complete your daily requirements to maintain our competitive edge!';
         title = '🔄 Daily Reset Reminder - XYIAN Guild';
         description = '**Daily reset is here! Complete your daily tasks before 4pm Pacific!**\n\n⚔️ **Remember your daily requirements:**\n• Complete 2 Guild Boss Battles\n• Make 1 Guild Donation\n• Participate in Gold Rush\n• Complete Daily Quests\n\n💪 **Let\'s show everyone why XYIAN is the best guild!**';
         funFact = `💡 **XYIAN Tip**: ${guildTip}`;
@@ -1748,18 +1587,6 @@ async function sendDailyTip() {
         }
     }
     
-    // Fallback to RAG system if no tip loaded
-    if (!tip && ragSystem) {
-        try {
-            const results = ragSystem.search('daily tips strategies best practices');
-            if (results.length > 0 && results[0].data && results[0].data.note) {
-                tip = `💡 **Daily Tip:** ${results[0].data.note}`;
-            }
-        } catch (error) {
-            console.log('⚠️ Could not get tip from RAG system:', error.message);
-        }
-    }
-    
     // Final fallback if everything fails
     if (!tip) {
         tip = '💡 **Daily Tip:** Complete your daily quests and guild activities for maximum rewards!';
@@ -1801,15 +1628,7 @@ async function sendGeneralWelcome() {
 
 // Send guild expedition message
 async function sendExpeditionMessage() {
-    // Get expedition-related tip from RAG system
-    let expeditionTip = 'Focus on high-value targets and coordinate with guild members for maximum efficiency!';
-    if (ragSystem) {
-        const results = ragSystem.search('expedition guild battle strategy');
-        if (results.length > 0 && results[0].data.note) {
-            expeditionTip = results[0].data.note;
-        }
-    }
-    
+    const expeditionTip = 'Focus on high-value targets and coordinate with guild members for maximum efficiency!';
     const embed = new EmbedBuilder()
         .setTitle('🏰 XYIAN Guild Expedition')
         .setDescription('**Ready for another day of conquest and glory!**\n\n⚔️ **Expedition Focus:**\n• Complete daily expedition challenges\n• Maximize guild contribution points\n• Unlock rare rewards and materials\n• Support your fellow guild members\n\n🎯 **Today\'s Strategy:**\n• Focus on high-value targets\n• Coordinate with guild members\n• Use optimal builds for each stage\n• Share discoveries and tips\n\n💪 **Let\'s show everyone why XYIAN is the best!**')
@@ -1821,24 +1640,10 @@ async function sendExpeditionMessage() {
     await sendToExpedition({ embeds: [embed] });
 }
 
-// Send arena tip using RAG system
+// Send arena tip
 async function sendArenaTip() {
-    // Get arena-related tips from RAG system
-    let arenaTip = 'Focus on speed and efficiency in Arena, perfect execution in Peak Arena!';
-    let supremeTip = 'Peak Arena offers the best rewards but requires flawless strategy!';
-    
-    if (ragSystem) {
-        const arenaResults = ragSystem.search('arena pvp strategy');
-        if (arenaResults.length > 0 && arenaResults[0].data.note) {
-            arenaTip = arenaResults[0].data.note;
-        }
-        
-        const supremeResults = ragSystem.search('supreme arena peak arena');
-        if (supremeResults.length > 0 && supremeResults[0].data.note) {
-            supremeTip = supremeResults[0].data.note;
-        }
-    }
-    
+    const arenaTip = 'Focus on speed and efficiency in Arena, perfect execution in Peak Arena!';
+    const supremeTip = 'Peak Arena offers the best rewards but requires flawless strategy!';
     const embed = new EmbedBuilder()
         .setTitle('🏟️ Daily Arena Tips')
         .setDescription(`**Arena & Peak Arena Strategies**\n\n${arenaTip}\n\n${supremeTip}\n\n💪 **Key Differences:**\n• **Arena**: Focus on speed and efficiency\n• **Peak Arena**: Ultimate challenge requiring perfect execution\n• **Rewards**: Peak Arena offers the best rewards\n• **Strategy**: Both require high DPS and optimal positioning`)
@@ -2093,10 +1898,10 @@ client.on('messageCreate', async (message) => {
     
     // Check if this is the specific AI questions channel (by ID for security)
     const isAIChannel = message.channel.id === AI_QUESTIONS_CHANNEL_ID || 
-                       message.channel.name === 'arch-ai';
+                       message.channel.name === CONFIG.channelNames.mainBot;
     
     // IGNORE these channels completely (no responses at all) - ONLY CRON JOBS ALLOWED
-    const ignoreChannels = ['guild-recruit-chat', 'xyian-guild', 'guild-chat', 'recruit', 'guild-recruit', 'guild-recruit-chat', 'guild-recruit'];
+    const ignoreChannels = [...CONFIG.channelNames.ignore, 'guild-recruit-chat'];
     if (ignoreChannels.includes(message.channel.name)) {
         console.log(`⏭️ IGNORING: Channel ${message.channel.name} is in ignore list - ONLY CRON JOBS ALLOWED`);
         return;
@@ -2109,14 +1914,13 @@ client.on('messageCreate', async (message) => {
     }
     
     // CRITICAL: Check channel ID for guild recruit channel
-    if (message.channel.id === '1419944464608268410') {
+    if (message.channel.id === CONFIG.channelIds.guildRecruit) {
         console.log(`⏭️ IGNORING: Guild recruit channel by ID - ONLY CRON JOBS ALLOWED`);
         return;
     }
     
     // GENERAL CHAT - Only respond to !help and !menu, direct to AI chat for questions
-    const generalChatChannels = ['general', 'general-chat', 'main-chat', 'arch-2-addicts'];
-    if (generalChatChannels.includes(message.channel.name)) {
+    if (CONFIG.channelNames.generalChat.includes(message.channel.name)) {
         if (message.content.startsWith('!help') || message.content.startsWith('!menu')) {
             // Allow these commands
         } else {
@@ -2220,6 +2024,10 @@ client.on('messageCreate', async (message) => {
         const commandName = args.shift()?.toLowerCase();
         
         switch (commandName) {
+            case 'hello':
+                await message.reply("Hi, I'm the bot! Use `!help` for commands. New features will be added here bit by bit.");
+                break;
+                    
             case 'ping':
                 if (!trackResponse(message, 'ping')) return;
                 console.log(`🏰 PING COMMAND TRIGGERED by ${message.author.username}`);
@@ -2254,7 +2062,7 @@ client.on('messageCreate', async (message) => {
                     .addFields(
                         { name: '📊 Version', value: `v${BOT_VERSION}`, inline: true },
                         { name: '📅 Last Update', value: LAST_UPDATE, inline: true },
-                        { name: '🧠 Game Data', value: ragSystem ? `${ragSystem.getStats().total} entries` : '0 entries', inline: true },
+                        { name: '🧠 Game Data', value: '0 entries (knowledge features paused)', inline: true },
                         { name: '🤖 AI Status', value: aiStatus, inline: true },
                         { name: '📈 AI Learning', value: Object.keys(aiFeedback).length > 0 ? '✅ Active' : '🔄 Ready', inline: true },
                         { name: '🎯 Guild ID', value: '213797', inline: true }
@@ -2703,24 +2511,7 @@ client.on('messageCreate', async (message) => {
                             return;
                         }
                         
-                        // Search RAG system for weapon information
-                        let weaponInfo = '';
-                        if (ragSystem) {
-                            const results = ragSystem.search(weaponName + ' weapon');
-                            if (results.length > 0) {
-                                const weaponData = results[0].data;
-                                weaponInfo = `**${weaponName}** - Weapon Information:\n\n`;
-                                if (weaponData.pvp_rating) weaponInfo += `**PVP Rating:** ${weaponData.pvp_rating}\n`;
-                                if (weaponData.priority) weaponInfo += `**Priority:** ${weaponData.priority}\n`;
-                                if (weaponData.notes) weaponInfo += `**Notes:** ${weaponData.notes}\n`;
-                                if (weaponData.note) weaponInfo += `**Pro Tip:** ${weaponData.note}\n`;
-                                weaponInfo += `\n*Source: XYIAN RAG System*`;
-                            } else {
-                                weaponInfo = `**${weaponName}** - Weapon information not found in our database. Try asking about specific weapons like Crossbow, Staff, or Bow.`;
-                            }
-                        } else {
-                            weaponInfo = `**${weaponName}** - RAG system not available. Please try again later.`;
-                        }
+                        const weaponInfo = `**${weaponName}** - Knowledge features are paused. We're adding new features incrementally. Use \`!help\` for available commands.`;
                         
                         const weaponEmbed = new EmbedBuilder()
                             .setTitle(`⚔️ Weapon: ${weaponName}`)
@@ -2738,24 +2529,7 @@ client.on('messageCreate', async (message) => {
                             return;
                         }
                         
-                        // Search RAG system for skill information
-                        let skillInfo = '';
-                        if (ragSystem) {
-                            const results = ragSystem.search(skillName + ' skill ability');
-                            if (results.length > 0) {
-                                const skillData = results[0].data;
-                                skillInfo = `**${skillName}** - Skill Information:\n\n`;
-                                if (skillData.description) skillInfo += `**Description:** ${skillData.description}\n`;
-                                if (skillData.effects) skillInfo += `**Effects:** ${skillData.effects.join(', ')}\n`;
-                                if (skillData.best_uses) skillInfo += `**Best Uses:** ${skillData.best_uses.join(', ')}\n`;
-                                if (skillData.note) skillInfo += `**Pro Tip:** ${skillData.note}\n`;
-                                skillInfo += `\n*Source: XYIAN RAG System*`;
-                            } else {
-                                skillInfo = `**${skillName}** - Skill information not found in our database. Try asking about specific skills like Multi-shot, Ricochet, or Piercing.`;
-                            }
-                        } else {
-                            skillInfo = `**${skillName}** - RAG system not available. Please try again later.`;
-                        }
+                        const skillInfo = `**${skillName}** - Knowledge features are paused. We're adding new features incrementally. Use \`!help\` for available commands.`;
                         
                         const skillEmbed = new EmbedBuilder()
                             .setTitle(`✨ Skill: ${skillName}`)
@@ -2773,25 +2547,7 @@ client.on('messageCreate', async (message) => {
                             return;
                         }
                         
-                        // Search RAG system for build information
-                        let buildInfo = '';
-                        if (ragSystem) {
-                            const results = ragSystem.search(className + ' build character');
-                            if (results.length > 0) {
-                                const buildData = results[0].data;
-                                buildInfo = `**${className}** - Build Information:\n\n`;
-                                if (buildData.role) buildInfo += `**Role:** ${buildData.role}\n`;
-                                if (buildData.stars) buildInfo += `**Stars:** ${buildData.stars}\n`;
-                                if (buildData.skins) buildInfo += `**Skins:** ${buildData.skins}\n`;
-                                if (buildData.meta_info) buildInfo += `**Meta Info:** ${buildData.meta_info}\n`;
-                                if (buildData.note) buildInfo += `**Pro Tip:** ${buildData.note}\n`;
-                                buildInfo += `\n*Source: XYIAN RAG System*`;
-                            } else {
-                                buildInfo = `**${className}** - Build information not found in our database. Try asking about specific characters like Thor, Otta, or Helix.`;
-                            }
-                        } else {
-                            buildInfo = `**${className}** - RAG system not available. Please try again later.`;
-                        }
+                        const buildInfo = `**${className}** - Knowledge features are paused. We're adding new features incrementally. Use \`!help\` for available commands.`;
                         
                         const buildEmbed = new EmbedBuilder()
                             .setTitle(`🎯 Build: ${className}`)
@@ -3047,94 +2803,28 @@ client.on('messageCreate', async (message) => {
             // REMOVED: !scrape command - not working properly, use external scraper instead
                 
             case 'ai-toggle':
-                // Toggle AI responses on/off (XYIAN OFFICIAL only)
-                if (!hasXYIANRole(message.member)) {
-                    await message.reply('❌ This command requires the XYIAN OFFICIAL role.');
-                    return;
-                }
-                
-                aiResponseEnabled = !aiResponseEnabled;
-                const status = aiResponseEnabled ? 'ENABLED' : 'DISABLED';
-                const color = aiResponseEnabled ? 0x00FF00 : 0xFF0000;
-                
-                const toggleEmbed = new EmbedBuilder()
-                    .setTitle(`🤖 AI Response Toggle`)
-                    .setDescription(`AI responses are now **${status}**\n\n**Channel:** arch-ai (ID: ${AI_QUESTIONS_CHANNEL_ID})\n**Webhook:** ${webhooks.aiQuestions ? '✅ Connected' : '❌ Not configured'}`)
-                    .setColor(color)
-                    .setTimestamp()
-                    .setFooter({ text: 'XYIAN OFFICIAL - AI Control' });
-                
-                await message.reply({ embeds: [toggleEmbed] });
-                console.log(`🤖 AI Response Toggle: ${status} by ${message.author.username}`);
+                await message.reply('⏸️ This command is temporarily disabled. Knowledge features are paused; we\'re adding new features incrementally.');
                 break;
                 
             case 'ai-feedback':
-                // Provide feedback on AI responses
-                const feedbackArgs = args.slice(1);
-                if (feedbackArgs.length < 2) {
-                    await message.reply('❌ Usage: `!ai-feedback [question] [feedback]`\n\n**Examples:**\n`!ai-feedback "best dragoon build" "wrong, dragoon is not a character"`\n`!ai-feedback "resonance" "good answer, but add more about 6-star unlock"`');
-                    return;
-                }
-                
-                const question = feedbackArgs[0].replace(/"/g, '');
-                const feedback = feedbackArgs.slice(1).join(' ').replace(/"/g, '');
-                
-                // Process the correction and extract topics
-                const topics = processCorrection(question, feedback);
-                
-                const questionKey = question.toLowerCase().trim();
-                
-                // Store feedback
-                aiFeedback[questionKey] = {
-                    question: question,
-                    feedback: feedback,
-                    wrong: feedback.toLowerCase().includes('wrong') || feedback.toLowerCase().includes('incorrect') || feedback.toLowerCase().includes('not right'),
-                    correction: feedback.toLowerCase().includes('wrong') ? feedback : null,
-                    notes: `User provided correction: ${feedback}. Focus on: ${topics.join(', ')}`,
-                    timestamp: new Date().toISOString(),
-                    user: message.author.username
-                };
-                
-                // Save learning data
-                saveAILearningData();
-                
-                const feedbackEmbed = new EmbedBuilder()
-                    .setTitle('🧠 AI Feedback Received')
-                    .setDescription(`**Question:** "${question}"\n**Feedback:** ${feedback}\n**Focus Topics:** ${topics.join(', ')}\n\nThank you for helping improve the AI! This feedback will be used to provide better responses in the future.`)
-                    .setColor(0x00BFFF)
-                    .setTimestamp()
-                    .setFooter({ text: `Feedback from ${message.author.username}` });
-                
-                await message.reply({ embeds: [feedbackEmbed] });
-                console.log(`🧠 AI Feedback received from ${message.author.username}: "${question}" -> "${feedback}"`);
+                await message.reply('⏸️ This command is temporarily disabled. Knowledge features are paused; we\'re adding new features incrementally.');
                 break;
                 
             case 'memory':
-                // Show conversation memory for the user
+                // Show conversation memory for the user (RAG removed)
                 const userId = message.author.id;
                 const context = getConversationContext(userId);
                 
                 if (context) {
                     const userHistory = conversationMemory.get(userId) || [];
-                    const ragStats = ragSystem ? ragSystem.getStats() : null;
-                    
                     const memoryEmbed = new EmbedBuilder()
-                        .setTitle('🧠 Your Conversation Memory & RAG Status')
-                        .setDescription(`**Recent conversations with XY Elder:**\n\n${context}`)
+                        .setTitle('🧠 Your Conversation Memory')
+                        .setDescription(`**Recent conversations:**\n\n${context}`)
                         .addFields(
                             { name: 'Memory Stats', value: `Messages stored: ${userHistory.length}/${MAX_CONVERSATION_HISTORY}`, inline: true },
-                            { name: 'Commands', value: '`!ai clear-memory` - Clear your memory\n`!ai rag-test` - Test RAG system\n`!ai memory` - View this again', inline: true }
-                        );
-                    
-                    if (ragStats) {
-                        memoryEmbed.addFields(
-                            { name: 'RAG Knowledge Base', value: `${ragStats.totalEntries} entries`, inline: true },
-                            { name: 'Embeddings', value: `${ragStats.embeddedEntries} vectors`, inline: true },
-                            { name: 'Categories', value: `${ragStats.categories.length} types`, inline: true }
-                        );
-                    }
-                    
-                    memoryEmbed.setColor(0x00BFFF).setTimestamp().setFooter({ text: 'XYIAN Bot - Memory System' });
+                            { name: 'Commands', value: '`!ai clear-memory` - Clear your memory\n`!ai memory` - View this again', inline: true }
+                        )
+                        .setColor(0x00BFFF).setTimestamp().setFooter({ text: 'XYIAN Bot - Memory System' });
                     await message.reply({ embeds: [memoryEmbed] });
                 } else {
                     await message.reply('❌ No conversation memory found. Start a conversation and I\'ll remember it!');
@@ -3162,25 +2852,7 @@ client.on('messageCreate', async (message) => {
                 break;
                 
             case 'rag-test':
-                // Test the RAG system
-                if (!ragSystem) {
-                    await message.reply('❌ RAG system not initialized yet. Please wait...');
-                    break;
-                }
-                
-                const testQuery = message.content.replace('!ai rag-test', '').trim() || 'What are the best weapons?';
-                const response = await ragSystem.generateResponse(testQuery, message.author.username);
-                
-                const testEmbed = new EmbedBuilder()
-                    .setColor('#0099ff')
-                    .setTitle('🧪 RAG System Test')
-                    .addFields(
-                        { name: 'Query', value: testQuery, inline: false },
-                        { name: 'Response', value: response.substring(0, 1000) + (response.length > 1000 ? '...' : ''), inline: false }
-                    )
-                    .setTimestamp();
-                
-                await message.reply({ embeds: [testEmbed] });
+                await message.reply('⏸️ This command is temporarily disabled. Knowledge features are paused; we\'re adding new features incrementally.');
                 break;
                 
             case 'dev-menu':
@@ -3220,7 +2892,7 @@ client.on('messageCreate', async (message) => {
                 const cleaningMsg = await message.reply({ embeds: [cleanAIEmbed] });
                 
                 try {
-                    const channel = message.guild.channels.cache.find(ch => ch.name === 'arch-ai');
+                    const channel = message.guild.channels.cache.find(ch => ch.name === CONFIG.channelNames.mainBot);
                     if (!channel) {
                         await cleaningMsg.edit({ 
                             embeds: [new EmbedBuilder()
@@ -3307,7 +2979,7 @@ client.on('messageCreate', async (message) => {
                 const cleaningLogsMsg = await message.reply({ embeds: [cleanLogsEmbed] });
                 
                 try {
-                    const channel = message.guild.channels.cache.find(ch => ch.name === 'debug-logs');
+                    const channel = message.guild.channels.cache.find(ch => ch.name === CONFIG.channelNames.debugLogs);
                     if (!channel) {
                         await cleaningLogsMsg.edit({ 
                             embeds: [new EmbedBuilder()
@@ -3379,85 +3051,15 @@ client.on('messageCreate', async (message) => {
                 break;
                 
             case 'teach':
-                // Teach the bot a new answer
-                const teachArgs = args.slice(1);
-                if (teachArgs.length < 2) {
-                    await message.reply('❌ Usage: `!teach "question" "answer"`\n\n**Example:** `!teach "what is resonance" "Resonance allows using another character\'s skill at 3-star and 6-star"`');
-                    return;
-                }
-                
-                const teachQuestion = teachArgs[0].replace(/"/g, '');
-                const teachAnswer = teachArgs.slice(1).join(' ').replace(/"/g, '');
-                
-                // Teach the bot
-                teachBot(teachQuestion, teachAnswer, message.author.username);
-                
-                const teachEmbed = new EmbedBuilder()
-                    .setTitle('🎓 Bot Taught Successfully!')
-                    .setDescription(`**Question:** "${teachQuestion}"\n**Answer:** ${teachAnswer}\n\nI've learned this and will remember it for future questions!`)
-                    .setColor(0x00FF00)
-                    .setTimestamp()
-                    .setFooter({ text: `Taught by ${message.author.username}` });
-                
-                await message.reply({ embeds: [teachEmbed] });
+                await message.reply('⏸️ This command is temporarily disabled. Knowledge features are paused; we\'re adding new features incrementally.');
                 break;
                 
             case 'unknown':
-                // Show unknown questions that need answers (XYIAN OFFICIAL only)
-                if (!hasXYIANOfficialAccess(message.member)) {
-                    await message.reply('❌ This command requires XYIAN OFFICIAL role or higher.');
-                    return;
-                }
-                
-                const recentUnknown = unknownQuestions.slice(-10); // Last 10 unknown questions
-                
-                if (recentUnknown.length === 0) {
-                    await message.reply('✅ No unknown questions! The bot knows everything asked recently.');
-                    return;
-                }
-                
-                let unknownList = '**Recent Unknown Questions:**\n\n';
-                recentUnknown.forEach((q, index) => {
-                    unknownList += `${index + 1}. "${q.question}"\n   *${q.timestamp}*\n\n`;
-                });
-                
-                const unknownEmbed = new EmbedBuilder()
-                    .setTitle('❓ Unknown Questions Log')
-                    .setDescription(unknownList)
-                    .setColor(0xFFA500)
-                    .setTimestamp()
-                    .setFooter({ text: `Total unknown: ${unknownQuestions.length}` });
-                
-                await message.reply({ embeds: [unknownEmbed] });
+                await message.reply('⏸️ This command is temporarily disabled. Knowledge features are paused; we\'re adding new features incrementally.');
                 break;
                 
             case 'ai-thumbs-down':
-                // Quick thumbs down for wrong responses
-                const thumbsDownArgs = args.slice(1);
-                if (thumbsDownArgs.length < 1) {
-                    await message.reply('❌ Usage: `!ai-thumbs-down [question]`\n\n**Example:** `!ai-thumbs-down "best dragoon build"`');
-                    return;
-                }
-                
-                const thumbsDownQuestion = thumbsDownArgs.join(' ').replace(/"/g, '');
-                const thumbsDownKey = thumbsDownQuestion.toLowerCase().trim();
-                
-                // Store thumbs down feedback
-                aiFeedback[thumbsDownKey] = {
-                    question: thumbsDownQuestion,
-                    feedback: 'Thumbs down - response was incorrect',
-                    wrong: true,
-                    correction: null,
-                    notes: 'User indicated response was wrong',
-                    timestamp: new Date().toISOString(),
-                    user: message.author.username
-                };
-                
-                // Save learning data
-                saveAILearningData();
-                
-                await message.reply('👎 Thumbs down recorded! The AI will learn from this feedback and provide better responses in the future.');
-                console.log(`👎 AI Thumbs down from ${message.author.username}: "${thumbsDownQuestion}"`);
+                await message.reply('⏸️ This command is temporarily disabled. Knowledge features are paused; we\'re adding new features incrementally.');
                 break;
                 
             default:
@@ -3467,7 +3069,7 @@ client.on('messageCreate', async (message) => {
         }
     } else {
         // Check if this is the AI questions channel
-        if (message.channel.name === 'arch-ai') {
+        if (message.channel.name === CONFIG.channelNames.mainBot) {
             // Check for help command
             if (message.content.toLowerCase().includes('!bothelp') || message.content.toLowerCase().includes('!bot help')) {
                 const helpEmbed = getBotQuestionHelp();
@@ -3490,131 +3092,25 @@ client.on('messageCreate', async (message) => {
             return;
         }
         
-        // Q&A System with role-based access - PRIORITIZE DATABASE OVER AI
+        // Main bot channel (arch-ai): stub reply - clean canvas; add features incrementally
         if (!trackResponse(message, 'qa-response')) return;
         
-        let answer = null;
-        let isAIResponse = false;
-        
-        // Check if user has access to AI features
-        const hasAIAccess = hasBasicAccess(message.member);
-        
-        // Use only RAG system - no hardcoded responses
-        // All responses come from the comprehensive knowledge base
-        // AI should ALWAYS work - no fallbacks, no excuses
-        if (AIService && hasAIAccess && !answer) {
-            try {
-                console.log(`🤖 AI processing: "${message.content}" by ${message.author.username}`);
-                
-                // Get relevant knowledge first
-                const relevantKnowledge = getRelevantKnowledge(message.content);
-                console.log(`🎯 Found ${relevantKnowledge.length} relevant knowledge entries`);
-                
-                // Generate AI response with knowledge
-                answer = await generateAIResponse(message.content, message.channel.name);
-                
-                if (answer && answer.length > 10) {
-                    isAIResponse = true;
-                    console.log(`✅ AI SUCCESS: "${message.content}" - Length: ${answer.length}`);
-                } else {
-                    // AI failed - this should NEVER happen, but if it does, use knowledge directly
-                    console.log(`🚨 AI FAILED - Using knowledge directly for: "${message.content}"`);
-                    if (relevantKnowledge.length > 0) {
-                        const bestMatch = relevantKnowledge[0];
-                        answer = `Hey ${message.author.username}! Based on my knowledge:\n\n**${bestMatch.key}:**\n${bestMatch.content}\n\n*This is from my knowledge base - let me know if you need more specific info!*`;
-                        isAIResponse = true;
-                        console.log(`✅ DIRECT KNOWLEDGE USED: ${bestMatch.key}`);
-                    } else {
-                        // This should NEVER happen with 650+ entries
-                        console.log(`🚨 CRITICAL: No knowledge found for "${message.content}" - This is a bug!`);
-                        answer = `Hey ${message.author.username}! I'm having trouble accessing my knowledge base right now. Please try rephrasing your question or contact XYIAN if this persists.`;
-                    }
-                }
-            } catch (error) {
-                console.error('🚨 AI ERROR:', error);
-                // Even on error, try to use knowledge
-                const relevantKnowledge = getRelevantKnowledge(message.content);
-                if (relevantKnowledge.length > 0) {
-                    const bestMatch = relevantKnowledge[0];
-                    answer = `Hey ${message.author.username}! Based on my knowledge:\n\n**${bestMatch.key}:**\n${bestMatch.content}\n\n*This is from my knowledge base - let me know if you need more specific info!*`;
-                    isAIResponse = true;
-                } else {
-                    answer = `Hey ${message.author.username}! I'm experiencing technical difficulties. Please try again or contact XYIAN.`;
-                }
-            }
-        } else {
-            console.log(`❌ AI not available - AIService: ${!!AIService}, hasAIAccess: ${hasAIAccess}, user: ${message.author.username}`);
-            answer = "❓ I'd love to help with your Archero 2 question! However, AI-powered responses require the **XYIAN Guild Verified** role or higher. You can still ask basic questions, or use `!menu` to see what I can help with!";
-        }
-        
-        // Add feedback instructions to every response
-        if (answer && isAIResponse) {
-            answer += "\n\n💡 **Help me improve!** If this answer is wrong or needs tweaking, use:\n• `!ai-feedback \"your question\" \"what's wrong\"`\n• `!ai-thumbs-down \"your question\"`";
-            
-            // Automatically learn from every AI interaction
-            const questionKey = message.content.toLowerCase().trim();
-            aiLearningData[questionKey] = {
-                question: message.content,
-                response: answer,
-                timestamp: new Date().toISOString(),
-                channel: message.channel.name,
-                user: message.author.username
-            };
-            
-            // Save learning data
-            saveAILearningData();
-        }
+        const stubMessage = `I'm the XYIAN bot. Knowledge answers are paused; use \`!help\` for commands. New features will be added here bit by bit.`;
+        const answer = stubMessage;
         
         const qaEmbed = new EmbedBuilder()
-                .setTitle('❓ Archero 2 Q&A')
+                .setTitle('🤖 XYIAN Bot')
                 .setDescription(answer)
                 .setColor(0x00BFFF)
                 .setTimestamp()
                 .setFooter({ text: 'XYIAN Bot' });
         
-        const response = await message.reply({ embeds: [qaEmbed] });
+        await message.reply({ embeds: [qaEmbed] });
         
-        // Store conversation memory for all messages (not just AI responses)
-        addToConversationMemory(message.author.id, message.content, answer || null);
-        
-        // Add reaction feedback for AI responses
-        if (isAIResponse) {
-            await response.react('👍');
-            await response.react('👎');
-            
-            // Set up reaction collector for automatic feedback
-            const filter = (reaction, user) => {
-                return ['👍', '👎'].includes(reaction.emoji.name) && !user.bot;
-            };
-            
-            const collector = response.createReactionCollector({ filter, time: 300000 }); // 5 minutes
-            
-            collector.on('collect', async (reaction, user) => {
-                const questionKey = message.content.toLowerCase().trim();
-                const isGood = reaction.emoji.name === '👍';
-                
-                // Store feedback
-                aiFeedback[questionKey] = {
-                    question: message.content,
-                    feedback: isGood ? 'Thumbs up - response was helpful' : 'Thumbs down - response was incorrect',
-                    wrong: !isGood,
-                    correction: null,
-                    notes: isGood ? 'User indicated response was helpful' : 'User indicated response was wrong',
-                    timestamp: new Date().toISOString(),
-                    user: user.username
-                };
-                
-                // Save learning data
-                saveAILearningData();
-                
-                console.log(`👆 ${isGood ? 'Thumbs up' : 'Thumbs down'} from ${user.username} for: "${message.content}"`);
-            });
-        }
-        
-        // Mark message as processed and log response
         messageResponseTracker.set(spamKey, true);
         await logBotResponse(message.channel.name, message.content, 'Q&A Response', message.author.id, message.author.username);
-    }    } catch (error) {
+    }
+    } catch (error) {
         console.error('❌ Error in message handler:', error);
         // Don't crash the bot - just log the error
         try {
@@ -3946,86 +3442,15 @@ client.on('interactionCreate', async (interaction) => {
 
     try {
         switch (commandName) {
-            case 'train': {
-                const category = interaction.options.getString('category');
-                const topic = interaction.options.getString('topic');
-                const information = interaction.options.getString('information');
-                
-                const result = trainingSystem.addTraining(
-                    category,
-                    topic,
-                    information,
-                    interaction.user.id,
-                    interaction.user.username
-                );
-                
+            case 'train':
+            case 'correct':
+            case 'training-stats':
+            case 'pending-reviews':
                 await interaction.reply({
-                    content: result.message,
+                    content: '⏸️ Training/knowledge commands are temporarily disabled. We\'re adding new features incrementally.',
                     ephemeral: true
                 });
                 break;
-            }
-            
-            case 'correct': {
-                const correction = interaction.options.getString('correction');
-                
-                const result = trainingSystem.addCorrection(
-                    'Previous bot response',
-                    correction,
-                    interaction.user.id,
-                    interaction.user.username
-                );
-                
-                await interaction.reply({
-                    content: result.message,
-                    ephemeral: true
-                });
-                break;
-            }
-            
-            case 'training-stats': {
-                const stats = trainingSystem.getStats();
-                const statsMessage = `📊 **Training System Statistics**\n\n` +
-                    `Total Entries: ${stats.totalEntries}\n` +
-                    `✅ Approved: ${stats.approved}\n` +
-                    `❌ Rejected: ${stats.rejected}\n` +
-                    `⏳ Pending: ${stats.pending}\n` +
-                    `💬 Total Feedback: ${stats.totalFeedback}\n` +
-                    `👍 Positive: ${stats.positiveFeedback}\n` +
-                    `👎 Negative: ${stats.negativeFeedback}`;
-                
-                await interaction.reply({
-                    content: statsMessage,
-                    ephemeral: true
-                });
-                break;
-            }
-            
-            case 'pending-reviews': {
-                const pending = trainingSystem.getPendingReviews();
-                
-                if (pending.length === 0) {
-                    await interaction.reply({
-                        content: '✅ No pending reviews!',
-                        ephemeral: true
-                    });
-                    return;
-                }
-                
-                const reviewsList = pending.slice(0, 5).map((entry, index) => {
-                    return `**${index + 1}. ID: ${entry.id}**\n` +
-                        `Category: ${entry.category}\n` +
-                        `Topic: ${entry.topic}\n` +
-                        `Info: ${entry.information.substring(0, 100)}...\n` +
-                        `By: ${entry.username}\n`;
-                }).join('\n');
-                
-                await interaction.reply({
-                    content: `📋 **Pending Reviews** (showing ${Math.min(5, pending.length)} of ${pending.length})\n\n${reviewsList}\n\nUse training-system.js CLI to approve/reject entries.`,
-                    ephemeral: true
-                });
-                break;
-            }
         }
     } catch (error) {
         console.error('❌ Error handling interaction:', error);
@@ -4053,7 +3478,7 @@ app.get('/health', (req, res) => {
         memory: process.memoryUsage(),
         dependencies: {
             discord: client.isReady() ? 'connected' : 'disconnected',
-            rag: ragSystem ? 'loaded' : 'not loaded'
+            rag: 'not loaded'
         }
     });
 });
