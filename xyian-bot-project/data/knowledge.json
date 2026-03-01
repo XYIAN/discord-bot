@@ -318,7 +318,19 @@
     "rune_farming": "Grab blessed runes weekly from guild shop. Etched runes from fishing events.",
     "dont_waste": "Don't buy weapon skins, don't buy Thor skins, don't level Otta past 2 until late game",
     "weapon_guide": "For PVP: Griffin Claws dominate with Griffin set (chaotic tier). Dragoon Crossbow is best overall. Dragoon Bow works for Dragoon builds."
-  }
+  },
+  "custom_facts": [
+    {
+      "text": "Guild donations: You can donate 5 times per day. The first donation is free, and the remaining 4 cost 50 gems each (200 gems total). Always do at least the free donation daily!",
+      "added_by": "xyian",
+      "added_at": "2026-03-01"
+    },
+    {
+      "text": "The max guild level is 11",
+      "added_by": "xyian",
+      "added_at": "2026-03-01"
+    }
+  ]
 }
 
 
