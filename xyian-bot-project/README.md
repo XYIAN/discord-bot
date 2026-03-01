@@ -4,7 +4,7 @@ Discord bot for the Arch 2 Addicts server and XYIAN OFFICIAL guild (ID: 213797).
 
 ## What it does
 
-- **Q&A in #arch-ai** — Ask any Archero 2 question; the bot answers using OpenAI + curated facts (verified roles only)
+- **Q&A in #arch-ai** — Ask any Archero 2 question; the bot answers using OpenAI + curated facts (verified roles + AI Enabled)
 - **Daily reset reminder** — 4pm Pacific every day in general chat
 - **Guild recruitment** — Every other day in the recruit channel
 - **Welcome message** — Greets new members in general chat
@@ -18,10 +18,14 @@ Discord bot for the Arch 2 Addicts server and XYIAN OFFICIAL guild (ID: 213797).
 |---------|-----|------|
 | `!ping` | Everyone | Bot status |
 | `!help` / `!menu` | Everyone | Command list |
+| `!suggest <text>` | AI Enabled / Verified | Suggest a correction or new info |
 | `!faq` | Verified role | Topics the bot knows about |
 | `!listfacts` | Verified role | Browse custom facts |
 | `!addfact <text>` | XYIAN OFFICIAL / Admin | Add a fact |
 | `!removefact <n>` | XYIAN OFFICIAL / Admin | Remove a custom fact by number |
+| `!suggestions` | XYIAN OFFICIAL / Admin | Review pending suggestions |
+| `!approve <#>` | XYIAN OFFICIAL / Admin | Approve suggestion → adds as fact |
+| `!reject <#> [reason]` | XYIAN OFFICIAL / Admin | Reject a suggestion |
 | `!recruit` | XYIAN OFFICIAL / Admin | Send recruitment now |
 | `!reset` | XYIAN OFFICIAL / Admin | Send daily reset now |
 
