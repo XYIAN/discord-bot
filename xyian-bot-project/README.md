@@ -33,6 +33,22 @@ npm install
 npm start
 ```
 
+## Fact Sync Workflow
+
+Members add facts via `!addfact` on the live bot — these are stored in `knowledge.json` on Railway's server. Since Railway can wipe the filesystem on redeploy, facts need to be synced to the repo periodically.
+
+**How to sync:**
+1. Ask the dev to "sync facts" or "check what's on the bot"
+2. Dev reads the live bot's custom facts via Discord API
+3. Adds them to `data/knowledge.json` in the repo
+4. Commits, pushes, and sends a debug confirmation
+
+This ensures custom facts survive redeployments.
+
+## Changelog Channel
+
+The bot posts release notes to #changelog (`1424784471395274803`) on every deploy. The `BOT_CHANGELOG` array in `bot.js` holds the current version's changes — update it each release.
+
 ## Files
 
 - `bot.js` — The bot (single file)

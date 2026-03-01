@@ -2,6 +2,26 @@
 
 All notable changes to the Arch 2 Addicts Discord Bot project will be documented in this file.
 
+## [3.2.1] - 2026-03-01
+
+### Changelog channel + fact sync workflow
+
+#### Changelog channel
+- Bot now posts release notes to #changelog (`1424784471395274803`) on every deploy
+- Uses `BOT_CHANGELOG` array in `bot.js` — update it each release with bullet points
+- Posts as an embed with version number, changes, and timestamp
+
+#### Fact sync workflow (documented)
+- Documented the process for syncing custom facts from the live Railway bot back into the repo
+- Dev reads live bot's `!addfact` entries via Discord API, adds to `knowledge.json`, commits and pushes
+- Prevents fact loss on redeployment
+
+#### Docs
+- README updated with fact sync workflow and changelog channel sections
+- ENV-AND-CHANNELS.md updated with changelog channel ID
+
+---
+
 ## [3.2.0] - 2026-02-16
 
 ### Deploy notifications + stale message cleanup
