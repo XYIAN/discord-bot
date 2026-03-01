@@ -5,8 +5,9 @@
  * Features:
  *   - Daily reset reminder (4pm Pacific) → general chat
  *   - Guild recruitment (every other day) → recruit channel
- *   - OpenAI-powered Q&A in #arch-ai (verified roles only)
+ *   - OpenAI-powered Q&A in #arch-ai (verified roles + AI Enabled)
  *   - !addfact / !removefact / !listfacts for admins
+ *   - !suggest for community corrections → admin review queue
  *   - Welcome message for new members
  *   - Thumbs-up/down feedback on Q&A replies
  *   - Deploy notification → admin webhook on startup
@@ -24,12 +25,14 @@ const path = require('path');
 const express = require('express');
 require('dotenv').config();
 
-const BOT_VERSION = '3.2.1';
+const BOT_VERSION = '3.3.0';
 
 const BOT_CHANGELOG = [
-    '🔄 **Fact sync workflow** — Dev can pull custom facts from live bot into the repo so they survive redeployments',
-    '📢 **Changelog channel** — Bot now posts release notes to #changelog on deploy',
-    '📝 Docs updated with fact-sync workflow and changelog process',
+    '🆕 **AI Enabled role** — Non-guild members can now ask questions in #arch-ai with the AI Enabled role',
+    '💡 **!suggest command** — Anyone with AI access can suggest corrections or new info for admin review',
+    '📋 **Suggestion queue** — Admins can review, approve, or reject suggestions (`!suggestions`, `!approve`, `!reject`)',
+    '🔒 Guild knowledge (`!listfacts`, `!faq`) stays restricted to verified guild roles',
+    '📝 Q&A answers show a *"use !suggest to report incorrect info"* hint for AI Enabled users',
 ];
 
 // ── Config ──────────────────────────────────────────────────────────────────
@@ -156,6 +159,41 @@ function logFeedback(question, answer, emoji, username) {
     try { fs.writeFileSync(FEEDBACK_PATH, JSON.stringify(log, null, 2)); } catch { /* best effort */ }
 }
 
+// ── Suggestions system ──────────────────────────────────────────────────────
+
+const SUGGESTIONS_PATH = path.join(__dirname, 'data', 'suggestions.json');
+const suggestCooldown = new Map();
+const SUGGEST_COOLDOWN_MS = 60 * 1000;
+const SUGGEST_DAILY_MAX = 5;
+
+function loadSuggestions() {
+    try { return JSON.parse(fs.readFileSync(SUGGESTIONS_PATH, 'utf8')); } catch { return []; }
+}
+
+function saveSuggestions(suggestions) {
+    try { fs.writeFileSync(SUGGESTIONS_PATH, JSON.stringify(suggestions, null, 2)); } catch { /* best effort */ }
+}
+
+function canSuggest(userId) {
+    const now = Date.now();
+    const tracker = suggestCooldown.get(userId) || { count: 0, firstAt: now, lastAt: 0 };
+    if (now - tracker.lastAt < SUGGEST_COOLDOWN_MS) return { ok: false, reason: 'Please wait a minute between suggestions.' };
+    if (now - tracker.firstAt > 24 * 60 * 60 * 1000) {
+        tracker.count = 0;
+        tracker.firstAt = now;
+    }
+    if (tracker.count >= SUGGEST_DAILY_MAX) return { ok: false, reason: `You've hit the daily limit (${SUGGEST_DAILY_MAX} suggestions). Try again tomorrow!` };
+    return { ok: true, tracker };
+}
+
+function recordSuggestion(userId) {
+    const now = Date.now();
+    const tracker = suggestCooldown.get(userId) || { count: 0, firstAt: now, lastAt: 0 };
+    tracker.count++;
+    tracker.lastAt = now;
+    suggestCooldown.set(userId, tracker);
+}
+
 // ── Role helpers ────────────────────────────────────────────────────────────
 
 function isOwner(member) {
@@ -171,6 +209,11 @@ function hasVerifiedRole(member) {
     if (!member || !member.roles) return false;
     const allowed = ['XYIAN OFFICIAL', 'XYIAN Guild Verified', 'Admin', 'Server Booster'];
     return member.roles.cache.some(r => allowed.includes(r.name));
+}
+
+function hasAIAccess(member) {
+    if (!member || !member.roles) return false;
+    return hasVerifiedRole(member) || member.roles.cache.some(r => r.name === 'AI Enabled');
 }
 
 // ── Webhook senders (with stale-message cleanup) ────────────────────────────
@@ -449,13 +492,18 @@ client.on('messageCreate', async (message) => {
                         '**Everyone:**\n' +
                         '`!ping` — Bot status\n' +
                         '`!help` / `!menu` — This message\n\n' +
-                        '**Verified roles** (ask in **#arch-ai**):\n' +
+                        '**AI Enabled / Verified roles** (in **#arch-ai**):\n' +
                         'Just type your Archero 2 question — no command needed!\n' +
+                        '`!suggest <text>` — Suggest a correction or new info\n\n' +
+                        '**Verified roles only:**\n' +
                         '`!faq` — Common topics\n' +
                         '`!listfacts` — Browse custom facts\n\n' +
                         '**XYIAN OFFICIAL / Admin:**\n' +
                         '`!addfact <text>` — Add a fact to the knowledge base\n' +
                         '`!removefact <number>` — Remove a custom fact by number\n' +
+                        '`!suggestions` — Review pending suggestions\n' +
+                        '`!approve <#>` — Approve a suggestion (adds as fact)\n' +
+                        '`!reject <#> [reason]` — Reject a suggestion\n' +
                         '`!recruit` — Send guild recruitment now\n' +
                         '`!reset` — Send daily reset now'
                     )
@@ -534,6 +582,88 @@ client.on('messageCreate', async (message) => {
                 return message.reply('🔄 Daily reset message sent!');
             }
 
+            case 'suggest': {
+                if (!hasAIAccess(message.member)) {
+                    return message.reply('❌ You need the **AI Enabled** role or a verified guild role to use this.');
+                }
+                if (!argText || argText.length < 10) {
+                    return message.reply('Usage: `!suggest <your correction or suggestion>` (at least 10 characters)');
+                }
+                const check = canSuggest(message.author.id);
+                if (!check.ok) return message.reply(`⏳ ${check.reason}`);
+                const suggestions = loadSuggestions();
+                suggestions.push({
+                    id: suggestions.length + 1,
+                    text: argText,
+                    by: message.author.username,
+                    userId: message.author.id,
+                    at: new Date().toISOString(),
+                    status: 'pending',
+                });
+                saveSuggestions(suggestions);
+                recordSuggestion(message.author.id);
+                await sendToAdmin({ content: `💡 **New suggestion** from ${message.author.username}:\n> ${argText.substring(0, 500)}` });
+                return message.reply('💡 Thanks! Your suggestion has been submitted for admin review.');
+            }
+
+            case 'suggestions': {
+                if (!isAdmin(message.member)) {
+                    return message.reply('❌ This command requires the **XYIAN OFFICIAL** or **Admin** role.');
+                }
+                const all = loadSuggestions();
+                const pending = all.filter(s => s.status === 'pending');
+                if (!pending.length) return message.reply('📭 No pending suggestions!');
+                const list = pending.slice(-15).map(s =>
+                    `**#${s.id}** (${s.by}) — ${s.text.substring(0, 100)}${s.text.length > 100 ? '...' : ''}`
+                ).join('\n');
+                const embed = new EmbedBuilder()
+                    .setTitle(`💡 Pending Suggestions (${pending.length})`)
+                    .setDescription(list)
+                    .setColor(0xffa500).setTimestamp()
+                    .setFooter({ text: 'Use !approve <#> or !reject <#> [reason]' });
+                return message.reply({ embeds: [embed] });
+            }
+
+            case 'approve': {
+                if (!isAdmin(message.member)) {
+                    return message.reply('❌ This command requires the **XYIAN OFFICIAL** or **Admin** role.');
+                }
+                const suggestions = loadSuggestions();
+                const approveId = parseInt(argText, 10);
+                const target = suggestions.find(s => s.id === approveId && s.status === 'pending');
+                if (!target) return message.reply(`❌ No pending suggestion #${approveId}. Use \`!suggestions\` to see the queue.`);
+                target.status = 'approved';
+                target.reviewed_by = message.author.username;
+                target.reviewed_at = new Date().toISOString();
+                if (!knowledge.custom_facts) knowledge.custom_facts = [];
+                knowledge.custom_facts.push({
+                    text: target.text,
+                    added_by: `${target.by} (via suggestion)`,
+                    added_at: new Date().toISOString().split('T')[0],
+                });
+                saveKnowledge();
+                saveSuggestions(suggestions);
+                return message.reply(`✅ Suggestion #${approveId} approved and added as a fact!\n> ${target.text.substring(0, 200)}\n**${countFacts()}** facts total.`);
+            }
+
+            case 'reject': {
+                if (!isAdmin(message.member)) {
+                    return message.reply('❌ This command requires the **XYIAN OFFICIAL** or **Admin** role.');
+                }
+                const rejSuggestions = loadSuggestions();
+                const parts = argText.split(/\s+/);
+                const rejectId = parseInt(parts[0], 10);
+                const reason = parts.slice(1).join(' ') || 'No reason given';
+                const rejTarget = rejSuggestions.find(s => s.id === rejectId && s.status === 'pending');
+                if (!rejTarget) return message.reply(`❌ No pending suggestion #${rejectId}. Use \`!suggestions\` to see the queue.`);
+                rejTarget.status = 'rejected';
+                rejTarget.reason = reason;
+                rejTarget.reviewed_by = message.author.username;
+                rejTarget.reviewed_at = new Date().toISOString();
+                saveSuggestions(rejSuggestions);
+                return message.reply(`🗑️ Suggestion #${rejectId} rejected. Reason: ${reason}`);
+            }
+
             default:
                 if (isAIChannel || isDM) {
                     return message.reply('Unknown command. Try `!help`.');
@@ -553,9 +683,9 @@ client.on('messageCreate', async (message) => {
     if (spamTracker.size > 1000) spamTracker.delete(spamTracker.keys().next().value);
 
     // Role check
-    if (!hasVerifiedRole(message.member)) {
+    if (!hasAIAccess(message.member)) {
         const embed = new EmbedBuilder()
-            .setDescription('You need a verified role to ask questions here. Check the server rules or ask an admin!')
+            .setDescription('You need the **AI Enabled** role or a verified guild role to ask questions here. Ask an admin for access!')
             .setColor(0xff6b6b).setFooter({ text: 'XYIAN Bot' });
         return message.reply({ embeds: [embed] });
     }
@@ -581,12 +711,16 @@ client.on('messageCreate', async (message) => {
             return message.reply({ embeds: [embed] });
         }
 
+        const footerText = hasVerifiedRole(message.member)
+            ? 'XYIAN Bot — React 👍/👎 to give feedback'
+            : 'Something wrong? Use !suggest to report incorrect info  •  React 👍/👎';
+
         const embed = new EmbedBuilder()
             .setTitle('❓ Archero 2 Q&A')
             .setDescription(answer)
             .setColor(0x00bfff)
             .setTimestamp()
-            .setFooter({ text: 'XYIAN Bot — React 👍/👎 to give feedback' });
+            .setFooter({ text: footerText });
 
         const reply = await message.reply({ embeds: [embed] });
 

@@ -4,6 +4,31 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.3.0] - 2026-03-01
+
+### AI Enabled role + suggestion system
+
+#### AI Enabled role
+- New `AI Enabled` Discord role grants Q&A access in #arch-ai to non-guild members
+- `hasAIAccess()` helper checks for AI Enabled OR any verified guild role
+- Guild-internal commands (`!faq`, `!listfacts`) remain restricted to verified roles only
+- Q&A answers show a suggestion breadcrumb for AI Enabled users: *"Something wrong? Use !suggest to report incorrect info"*
+
+#### Suggestion system
+- `!suggest <text>` — Anyone with AI access can submit corrections or new info
+- Suggestions saved to `data/suggestions.json` with user info and timestamps
+- Rate-limited: 1 minute cooldown between suggestions, max 5 per day per user
+- Admins notified via debug channel when new suggestions arrive
+- `!suggestions` — Admins can view pending suggestions
+- `!approve <#>` — Approve a suggestion (auto-adds as a custom fact)
+- `!reject <#> [reason]` — Reject with optional reason
+
+#### Updated
+- `!help` menu updated with new commands and role tiers
+- README command table updated
+
+---
+
 ## [3.2.1] - 2026-03-01
 
 ### Changelog channel + fact sync workflow
