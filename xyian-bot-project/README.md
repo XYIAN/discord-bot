@@ -26,6 +26,8 @@ Discord bot for the Arch 2 Addicts server and XYIAN OFFICIAL guild (ID: 213797).
 | `!suggestions` | XYIAN OFFICIAL / Admin | Review pending suggestions |
 | `!approve <#>` | XYIAN OFFICIAL / Admin | Approve suggestion → adds as fact |
 | `!reject <#> [reason]` | XYIAN OFFICIAL / Admin | Reject a suggestion |
+| `!grant @user` | XYIAN OFFICIAL / Admin | Manually assign the reaction role |
+| `!setupreaction` | XYIAN OFFICIAL / Admin | Post a reaction-role message in current channel |
 | `!recruit` | XYIAN OFFICIAL / Admin | Send recruitment now |
 | `!reset` | XYIAN OFFICIAL / Admin | Send daily reset now |
 
@@ -43,15 +45,26 @@ Members add facts via `!addfact` on the live bot — these are stored in `knowle
 
 **How to sync:**
 1. Ask the dev to "sync facts" or "check what's on the bot"
-2. Dev reads the live bot's custom facts via Discord API
-3. Adds them to `data/knowledge.json` in the repo
-4. Commits, pushes, and sends a debug confirmation
+2. Dev reads the live bot's custom facts via Discord API (`/channels/{id}/messages`)
+3. Reviews and structures the data — raw custom facts get organized into proper categories (skills, resources, etc.) when possible
+4. Adds them to `data/knowledge.json` in the repo
+5. Posts a **sync summary to #arch-ai** so contributors know their facts were saved to permanent memory (include what was synced, who contributed, and the new fact count)
+6. Posts a **sync confirmation to the debug channel** for admin records
+7. Commits, pushes, and updates the CHANGELOG
 
-This ensures custom facts survive redeployments. Each fact sync counts as a patch version bump (e.g. 3.2.1 → 3.2.2) and gets its own CHANGELOG entry.
+The #arch-ai notification is important — it lets users know their `!addfact` contributions were officially reviewed, approved, and made permanent. Example message:
+
+> 📦 **Memory Sync Complete**
+> 3 community-contributed facts have been reviewed and saved to permanent memory:
+> ⚔️ Tracking Eye — skill info (contributed by fails_8743)
+> 📊 Knowledge base: 35 facts | Custom facts queue: 0 pending
+> _Keep using `!addfact` or `!suggest` to contribute!_
+
+This ensures custom facts survive redeployments. Each fact sync counts as a patch version bump (e.g. 3.4.1 → 3.4.2) and gets its own CHANGELOG entry.
 
 ## Changelog Channel
 
-The bot posts release notes to #changelog (`1424784471395274803`) on every deploy. The `BOT_CHANGELOG` array in `bot.js` holds the current version's changes — update it each release.
+The bot posts release notes to #changelog (`1424784471395274803`) on every deploy. Version and release notes are automatically parsed from `CHANGELOG.md` — just update this file and the bot picks it up on startup. No need to touch `bot.js` for version bumps.
 
 ### Versioning convention
 

@@ -4,6 +4,17 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.4.2] - 2026-03-02
+
+### Updated fact sync workflow + docs
+
+- 📝 Fact sync workflow now includes posting a summary to **#arch-ai** so contributors know their facts were saved to permanent memory
+- 📝 Updated README with full sync steps (7 steps including both Discord notifications)
+- 📝 README updated with `!grant` and `!setupreaction` commands in the command table
+- 📝 Corrected README to reflect CHANGELOG.md-based version/changelog (no more BOT_CHANGELOG reference)
+
+---
+
 ## [3.4.1] - 2026-03-02
 
 ### Fact sync: community contributions from fails_8743
@@ -13,6 +24,7 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 - 📚 **Archero Skills Wiki** URL — https://archero-2.game-vault.net/wiki/Skills (added to new `resources` section)
 - 💳 **Privilege Cards** — Permanent Ad-Free Card and Lifetime Supply Card with gem values and benefits (added to new `privilege_cards` section)
 - Structured data from custom facts into proper categories for better bot answers
+- 📦 Posted sync summary to #arch-ai and debug channel
 
 ---
 
