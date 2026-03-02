@@ -4,6 +4,19 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.4.0] - 2026-03-02
+
+### Reaction-role system + !grant command
+
+- 🤖 **Reaction-role system** — React with 🤖 on a designated message to auto-receive a role (logged to debug channel, DM confirmation sent)
+- 🎫 **!grant @user** — Admins can manually assign the reaction role to any user
+- 📌 **!setupreaction** — Admins can post a reaction-role message in any channel (bot adds the emoji and starts tracking)
+- ⚙️ Configurable role name, emoji, and tracked message IDs via `CONFIG.reactionRole`
+- 🧩 Added `Partials` support so reactions on older/uncached messages still work
+- 🧪 Currently set to **Beta Tester** role for testing — will switch to **AI Enabled** for production
+
+---
+
 ## [3.3.3] - 2026-03-02
 
 ### Single source of truth for version + changelog

@@ -19,7 +19,7 @@
  * See docs/ENV-AND-CHANNELS.md for the full list.
  */
 
-const { Client, GatewayIntentBits, EmbedBuilder, WebhookClient } = require('discord.js');
+const { Client, GatewayIntentBits, Partials, EmbedBuilder, WebhookClient } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
@@ -65,6 +65,11 @@ const CONFIG = {
     generalChatNames: ['general', 'general-chat', 'main-chat', 'arch-2-addicts'],
     features: {
         tipOfTheDay: false,
+    },
+    reactionRole: {
+        emoji: '🤖',
+        roleName: 'Beta Tester',
+        messageIds: ['1477906768272166925'],
     },
 };
 
@@ -433,6 +438,54 @@ const client = new Client({
         GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildMessageReactions,
     ],
+    partials: [Partials.Message, Partials.Reaction, Partials.User],
+});
+
+// ── Reaction-role system ────────────────────────────────────────────────────
+
+const reactionRoleMessages = new Set();
+
+client.on('messageReactionAdd', async (reaction, user) => {
+    if (user.bot) return;
+    if (reaction.emoji.name !== '🤖') return;
+    if (!reactionRoleMessages.has(reaction.message.id)) return;
+
+    try {
+        if (reaction.partial) await reaction.fetch();
+        if (reaction.message.partial) await reaction.message.fetch();
+
+        const guild = reaction.message.guild;
+        if (!guild) return;
+
+        const roleName = CONFIG.reactionRole.roleName;
+        const role = guild.roles.cache.find(r => r.name === roleName);
+        if (!role) {
+            console.log(`⚠️  Role "${roleName}" not found — cannot assign via reaction`);
+            return;
+        }
+
+        const member = await guild.members.fetch(user.id);
+        if (member.roles.cache.has(role.id)) return;
+
+        await member.roles.add(role);
+        console.log(`🤖 Reaction-role: assigned "${roleName}" to ${user.username}`);
+
+        await sendToAdmin({
+            content: `🤖 **Reaction-role granted**\n` +
+                `User: **${user.username}** (${user.id})\n` +
+                `Role: **${roleName}**\n` +
+                `Via: reaction on message ${reaction.message.id}`,
+        });
+
+        try {
+            await user.send(
+                `You've been given the **${roleName}** role! ` +
+                `Head to <#${CONFIG.channels.archAi}> to start asking Archero 2 questions.`
+            );
+        } catch { /* DMs may be disabled */ }
+    } catch (e) {
+        console.error('❌ Reaction-role error:', e.message);
+    }
 });
 
 // ── Welcome message ─────────────────────────────────────────────────────────
@@ -524,6 +577,8 @@ client.on('messageCreate', async (message) => {
                         '`!suggestions` — Review pending suggestions\n' +
                         '`!approve <#>` — Approve a suggestion (adds as fact)\n' +
                         '`!reject <#> [reason]` — Reject a suggestion\n' +
+                        '`!grant @user` — Manually assign the reaction role\n' +
+                        '`!setupreaction` — Post a reaction-role message in current channel\n' +
                         '`!recruit` — Send guild recruitment now\n' +
                         '`!reset` — Send daily reset now'
                     )
@@ -684,6 +739,51 @@ client.on('messageCreate', async (message) => {
                 return message.reply(`🗑️ Suggestion #${rejectId} rejected. Reason: ${reason}`);
             }
 
+            case 'grant': {
+                if (!isAdmin(message.member)) {
+                    return message.reply('❌ This command requires the **XYIAN OFFICIAL** or **Admin** role.');
+                }
+                const mentioned = message.mentions.members?.first();
+                if (!mentioned) return message.reply('Usage: `!grant @user` — assigns the reaction role.');
+                const grantRoleName = CONFIG.reactionRole.roleName;
+                const grantRole = message.guild.roles.cache.find(r => r.name === grantRoleName);
+                if (!grantRole) return message.reply(`❌ Role "${grantRoleName}" not found in this server.`);
+                if (mentioned.roles.cache.has(grantRole.id)) {
+                    return message.reply(`${mentioned.user.username} already has the **${grantRoleName}** role.`);
+                }
+                await mentioned.roles.add(grantRole);
+                await sendToAdmin({
+                    content: `🤖 **Role manually granted**\nUser: **${mentioned.user.username}** (${mentioned.id})\nRole: **${grantRoleName}**\nGranted by: ${message.author.username}`,
+                });
+                return message.reply(`✅ Assigned **${grantRoleName}** to ${mentioned.user.username}.`);
+            }
+
+            case 'setupreaction': {
+                if (!isOwner(message.author.id) && !isAdmin(message.member)) {
+                    return message.reply('❌ This command requires Admin access.');
+                }
+                const roleName = CONFIG.reactionRole.roleName;
+                const emoji = CONFIG.reactionRole.emoji;
+                const setupEmbed = new EmbedBuilder()
+                    .setTitle(`${emoji} **Reaction Role Test — ${roleName}**`)
+                    .setDescription(
+                        `This is a test of the reaction-role system.\n\n` +
+                        `React with ${emoji} below and you should automatically receive the **${roleName}** role.\n\n` +
+                        `Once confirmed working, this same system will be used for the **AI Enabled** role announcement.\n\n` +
+                        `*This is a test — the role will be assigned automatically when you react.*`
+                    )
+                    .setColor(0x9b59b6)
+                    .setTimestamp()
+                    .setFooter({ text: 'XYIAN Bot — Reaction Role System' });
+                const posted = await message.channel.send({ embeds: [setupEmbed] });
+                await posted.react(emoji);
+                reactionRoleMessages.add(posted.id);
+                await sendToAdmin({
+                    content: `📌 **Reaction-role message posted**\nChannel: <#${message.channel.id}>\nMessage ID: ${posted.id}\nRole: **${roleName}**\nEmoji: ${emoji}`,
+                });
+                return message.reply(`✅ Reaction-role message posted! Message ID: \`${posted.id}\``);
+            }
+
             default:
                 if (isAIChannel || isDM) {
                     return message.reply('Unknown command. Try `!help`.');
@@ -814,6 +914,12 @@ client.once('ready', async () => {
             .setTimestamp()
             .setFooter({ text: 'XYIAN Bot — Changelog' });
         await sendToChangelog({ embeds: [embed] });
+    }
+
+    // Seed known reaction-role message IDs so reactions work after restart
+    if (CONFIG.reactionRole.messageIds) {
+        CONFIG.reactionRole.messageIds.forEach(id => reactionRoleMessages.add(id));
+        console.log(`📌 Tracking ${CONFIG.reactionRole.messageIds.length} reaction-role message(s)`);
     }
 
     setupDailyResetMessaging();
