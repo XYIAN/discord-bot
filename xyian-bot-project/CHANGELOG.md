@@ -4,6 +4,18 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.5.0] - 2026-03-02
+
+### AI Enabled reaction-role goes live + welcome message upgrade
+
+- 🤖 Reaction-role switched from "Beta Tester" to **AI Enabled** — now live in #lobby
+- 📢 **Announcement posted** in #lobby — react with 🤖 to get AI Enabled role automatically
+- 👋 **Welcome messages** now include 🤖 reaction — new members can tap it to get AI access instantly
+- 🎯 `!setupreaction` updated with the real announcement text (no longer test copy)
+- 📌 Lobby announcement message tracked for reaction-role across restarts
+
+---
+
 ## [3.4.2] - 2026-03-02
 
 ### Updated fact sync workflow + docs
