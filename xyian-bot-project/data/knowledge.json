@@ -237,6 +237,38 @@
   "blessings": {},
   "game_modes": {},
   "tips": {},
+  "skills": {
+    "tracking_eye": {
+      "name": "Tracking Eye",
+      "description": "Your projectiles gain the ability to track enemies. Reduces DMG dealt by 10% (doesn't affect Sprites or elemental damage). Reduces main weapon and Strike projectile speed by 50%. Works best with Oracle Staff or when combined with Piercing Arrow or Energy Beam.",
+      "added_by": "fails_8743"
+    }
+  },
+  "resources": {
+    "archero_skills_wiki": {
+      "name": "Archero Skills Wiki",
+      "url": "https://archero-2.game-vault.net/wiki/Skills",
+      "description": "The best source to learn more in-depth information on Archero 2 skills.",
+      "added_by": "fails_8743"
+    }
+  },
+  "privilege_cards": {
+    "description": "Privilege Cards provide improved pay-to-play benefits to enhance daily progress.",
+    "permanent_ad_free_card": {
+      "name": "Permanent Ad-Free Card",
+      "gems_on_purchase": 1200,
+      "gems_per_day": 20,
+      "benefit": "Skip ad videos for resources. Best value long term.",
+      "added_by": "fails_8743"
+    },
+    "lifetime_supply_card": {
+      "name": "Lifetime Supply Card",
+      "gems_on_purchase": 3900,
+      "gems_per_day": 800,
+      "benefit": "Highly recommended one-time purchase for speeding up progression.",
+      "added_by": "fails_8743"
+    }
+  },
   "custom_facts": [
     {
       "text": "Guild donations: You can donate 5 times per day. The first donation is free, and the remaining 4 cost 50 gems each (200 gems total). Always do at least the free donation daily!",
