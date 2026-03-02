@@ -4,6 +4,18 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.4.1] - 2026-03-02
+
+### Fact sync: community contributions from fails_8743
+
+- 📥 Synced 3 community-contributed facts from live bot into the repo
+- ⚔️ **Tracking Eye** skill — full description with damage reduction, speed effects, and best combos (added to new `skills` section)
+- 📚 **Archero Skills Wiki** URL — https://archero-2.game-vault.net/wiki/Skills (added to new `resources` section)
+- 💳 **Privilege Cards** — Permanent Ad-Free Card and Lifetime Supply Card with gem values and benefits (added to new `privilege_cards` section)
+- Structured data from custom facts into proper categories for better bot answers
+
+---
+
 ## [3.4.0] - 2026-03-02
 
 ### Reaction-role system + !grant command
