@@ -1,324 +1,187 @@
 {
-  "gear_sets": {
-    "oracle": {
-      "description": "Best for PvE and mixed builds",
-      "bonuses": {
-        "2_piece": "Bonus damage",
-        "4_piece": "Full set bonus"
-      },
-      "best_pieces": ["amulet", "ring", "chestplate", "boots"],
-      "use_cases": ["PvE", "Mixed PvP builds"]
+  "star_system": {
+    "max_stars": 7,
+    "shards_to_acquire": 50,
+    "shards_to_first_star": 50,
+    "star_pattern": {
+      "0": "Character acquired + Skill Level 1",
+      "1": "Character-specific stat boost",
+      "2": "Skill Level 2",
+      "3": "+1 Resonance slot",
+      "4": "Character-specific stat boost (same as star 1)",
+      "5": "Skill Level 3",
+      "6": "+1 Resonance slot",
+      "7": "Skill Level 4"
     },
-    "dragoon": {
-      "description": "Strong for PvP, needs mixing with Oracle",
-      "bonuses": {
-        "2_piece": "Bonus stats",
-        "4_piece": "Full dragoon bonus"
-      },
-      "best_pieces": ["crossbow/xbow", "helmet", "boots"],
-      "use_cases": ["PvP when mixed", "Guild battles"]
-    },
-    "griffin": {
-      "description": "Top tier for PvP with Thor",
-      "bonuses": {
-        "2_piece": "Critical damage",
-        "4_piece": "Griffin combo bonus"
-      },
-      "best_pieces": ["amulet", "ring"],
-      "use_cases": ["High-end PvP", "Thor builds"]
-    },
-    "mixed_set": {
-      "description": "Best overall build at mythic level - beats full Dragoon",
-      "pieces": {
-        "weapon": "Dragoon Crossbow (Xbow)",
-        "amulet": "Oracle or Griffin amulet",
-        "ring": "Oracle or Dragoon ring",
-        "chest": "Oracle chestplate",
-        "helmet": "Dragoon helmet",
-        "boots": "Oracle or Dragoon boots"
-      },
-      "use_cases": ["Best for PvE", "Best for PvP", "EndGame"],
-      "note": "Mixed set beats full Dragoon at mythic level. Xbow and boots are most important pieces."
-    }
+    "skill_level_unlocks": "Skill Lv1 at 0 stars (just owning the character), Skill Lv2 at 2 stars, Skill Lv3 at 5 stars, Skill Lv4 at 7 stars. Skill level is separate from star/character level.",
+    "note": "Stars 1 and 4 give the same stat boost per character (e.g. Alex gets +3% HP each time). Stars 3 and 6 each unlock a resonance slot."
   },
-  "runes": {
-    "meteor": {
-      "type": "offensive",
-      "effect": "Meteor damage with giant meteor, meteor potion, star of time, star of fury",
-      "best_for": ["PvP", "Guild battles (GvG)", "Peak Arena"],
-      "combinations": ["potion", "elemental", "meteor_split_etched"],
-      "popular_build": "Meteor + potion + elemental crit + meteor split etched",
-      "note": "Amazing in Peak & GvG"
-    },
-    "boss_damage": {
-      "type": "offensive",
-      "effect": "Increases damage dealt to bosses",
-      "best_for": ["PvE only", "Guild boss battles", "Daily boss fights"],
-      "pvp_effect": "Does NOT affect PvP damage - PvE only",
-      "note": "Boss DMG % rune blessings are specifically PvE only - they do not work in PvP modes"
-    },
-    "sprite": {
-      "type": "offensive",
-      "effect": "Summon sprites for extra damage",
-      "best_for": ["Oracle users", "PvP", "PvE"],
-      "etched": "Sprite's Awe (legendary skill is important)",
-      "note": "Double sprite etched good for full Oracle users in PvP"
-    },
-    "circles": {
-      "type": "offensive_aoe",
-      "effect": "Pulsing orb/circle damage - auto attack",
-      "best_for": ["Shackled Jungle", "PvE", "Close range", "Boss fights"],
-      "etched": "Circle etched (Pulsing Orb) from fishing events - GAME CHANGER",
-      "note": "Don't use circles without circle etched rune. Needs laser energy rings."
-    },
-    "frost": {
-      "type": "elemental_control",
-      "effect": "Frostshock - slows and freezes enemies",
-      "best_for": ["Control", "Boss fights", "Preventing boss attacks"],
-      "combinations": ["meteor", "elemental"],
-      "note": "Freeze/paralyze prevents stone golem fast boulder attacks"
-    },
-    "poison": {
-      "type": "elemental_dot",
-      "effect": "Poison damage over time",
-      "best_for": ["Sustained damage", "Boss fights"]
-    },
-    "flame": {
-      "type": "elemental_burst",
-      "effect": "Flamenox fire damage",
-      "best_for": ["Burst damage", "Elemental builds"]
-    },
-    "elemental": {
-      "type": "elemental_boost",
-      "effect": "Boosts all elemental rune damage and crit",
-      "best_for": ["Meteor builds", "Elemental crit builds"],
-      "note": "Lucky shadow blessing gives elementals base crit"
-    }
+  "resonance": {
+    "description": "Resonance allows characters to equip skills from other characters you own.",
+    "unlock_at": "Star 3 (+1 slot) and Star 6 (+1 slot, 2 total)",
+    "how_it_works": "A 6-star character can equip 2 borrowed skills from other characters in addition to their own skill. The borrowed skill uses the level from the character who owns it.",
+    "example": "A 6-star Dracoola can equip Hou Yi's Sun Piercer and Nyanja's Cloudfooted if you own those characters.",
+    "pvp_note": "Phynx's Desert Tribunal is widely considered the best resonance skill for PvP."
   },
   "characters": {
-    "thor": {
-      "role": "Versatile DPS/Tank",
-      "stars_needed": "0 stars viable, higher is better",
-      "best_for": ["PvE (most versatile)", "PvP", "Griffin close range combo", "F2P friendly"],
-      "skins": {
-        "mjolnir": "NOT RECOMMENDED - very low value",
-        "other_thor_skin": "NOT RECOMMENDED",
-        "priority": "Character skins (Otta Nian, Duck Helix) >>> Thor weapon skins"
-      },
-      "builds": ["Griffin combo with close range + mythic griffin amulet", "Mixed set support", "Resonance character"],
-      "note": "Most versatile hero especially for PvE. Worth getting on F2P. Makes game more fun."
-    },
-    "otta": {
-      "role": "PvP META powerhouse",
-      "stars_needed": {
-        "0": "Basic unlock - great for PvE bosses",
-        "1": "Decent",
-        "2": "PvP VIABLE - TOP PRIORITY - Very good for PvE too",
-        "3": "Resonance bonus (not worth rushing)",
-        "4": "+4% crit (not worth rushing)"
-      },
-      "skins": {
-        "nian": "ESSENTIAL TOP PRIORITY - Every star on Nian Otta skin beats Thor skins",
-        "priority": "4 star Nian Otta is the goal. Each star >>> any Thor skin"
-      },
-      "best_for": ["PvP META", "Arena", "Guild Wars (GvG)", "Peak Arena", "PvE bosses"],
-      "farming": "5 shards per week from Thunderbound Guild Wars shop",
-      "runes": "Pairs well with meteor + potion runes",
-      "note": "Otta 2 with Nian skin is current META. Use with Thor + Helix 6 stars for PvP."
-    },
-    "helix": {
-      "role": "PvP resonance character - easy to level",
-      "stars_needed": "6-7 stars for full power",
-      "skins": {
-        "ducklix": "Good for PvP - 1 star is sufficient",
-        "hare": "BUGGED - attacks own summons, gives healing but draws aggro. Wait for fix."
-      },
-      "best_for": ["PvP resonance slot", "Easy to level (common character)", "Griffin close range builds"],
-      "builds": ["Griffin close range with Thor", "Circles (no griffin)", "Decisiveness"],
-      "note": "Most common resonance pick due to ease of leveling to 6 stars. Pairs with Otta 2 + Thor."
-    },
-    "atreus": {
-      "role": "Arena specialist",
-      "best_for": ["Arena (for sure)", "Peak Arena"],
-      "note": "Atreus in Arena for sure. In GvG it depends on your setup."
-    },
-    "dk": {
-      "role": "PvP endgame character",
-      "best_for": ["Arena (strong)", "Peak PvP", "Whale builds"],
-      "note": "Strong but Thor is more versatile for F2P. DK + Otta 2 + Thor is whale PvP combo."
-    },
-    "loki": {
-      "role": "PvP potential (currently broken)",
-      "stars_needed": "2+ stars",
-      "skins": {"status": "BUGGED - Loki skin does literally nothing currently. Devs haven't acknowledged."},
-      "note": "When fixed: Loki skin with Griffin would be best combo ever. Don't invest until fixed."
-    },
-    "rolla": {
-      "role": "PvE speed clear specialist",
-      "skins": {"ice_diva": "Great skin at level 5 - might be good for PvP too"},
-      "best_for": ["PvE boss speed clears", "Expedition", "Guild boss damage"],
-      "strategy": "Use Rolla and don't move for some bosses (standing still strategy)",
-      "note": "Pairs with Nyanja 6 stars for PvE"
+    "alex": {
+      "rarity": "rare",
+      "aka": [],
+      "skill_name": "Braveheart",
+      "stat_boost": "+3% Health (at stars 1 and 4)"
     },
     "nyanja": {
-      "role": "PvE character",
-      "stars_needed": "6 stars recommended",
-      "best_for": ["PvE with Rolla + Thor"],
-      "note": "Good PvE combo with Rolla"
+      "rarity": "rare",
+      "aka": [],
+      "skill_name": "Cloudfooted"
     },
-    "drac": {
-      "role": "Unknown/situational",
-      "note": "Can crit. Viability in Peak/GvG unclear."
+    "helix": {
+      "rarity": "rare",
+      "aka": [],
+      "skill_name": "Absolute Counter"
     },
-    "ebonroth": {
-      "role": "Druid class character",
-      "stars": "Focus on getting to 2+ stars for viability",
-      "best_for": ["PvE progression", "Level 21+ content"],
-      "builds": {
-        "druid_build": "Focus on nature/poison damage, area control abilities",
-        "progression": "Use Oracle set for consistent damage, Dragoon for burst"
+    "hela": {
+      "rarity": "rare",
+      "aka": [],
+      "skill_name": "Hadean Blessing"
+    },
+    "mymu": {
+      "rarity": "rare",
+      "aka": [],
+      "skill_name": "Immortal Curse"
+    },
+    "hou_yi": {
+      "rarity": "rare",
+      "aka": ["hou yi"],
+      "skill_name": "Sun Piercer",
+      "skill_levels": {
+        "1": "Gain 1 Sunpiercer stack per boss defeated. Each stack increases attack speed by 4% (max 9 stacks).",
+        "2": "Each Sunpiercer stack additionally increases attack by 4%.",
+        "3": "Gain 2 Sunpiercer stacks per boss defeated and 1 stack per elite defeated.",
+        "4": "Gain 2 Sunpiercer stacks when entering battle. Each stack additionally increases crit damage by 4%."
       },
-      "note": "Ebonroth Druid build for level 21+ progression: Focus on Oracle set for consistent damage, get to 2+ stars minimum, use nature/poison runes for area control"
+      "note": "Newest rare character"
+    },
+    "seraph": {
+      "rarity": "epic",
+      "aka": [],
+      "skill_name": "Divine Favor",
+      "skill_levels": {
+        "1": "50% chance to encounter Valkyrie at the start."
+      }
+    },
+    "dracoola": {
+      "rarity": "epic",
+      "aka": ["drac"],
+      "skill_name": "Lifesteal",
+      "skill_levels": {
+        "1": "Chance to absorb enemy HP during attacks.",
+        "2": "Excess healing will be converted into damage on next attack.",
+        "3": "When HP >50%, movement speed +20%.",
+        "4": "At full HP, power +40%."
+      }
+    },
+    "rolla": {
+      "rarity": "epic",
+      "aka": [],
+      "skill_name": "Frostsinger",
+      "skill_levels": {
+        "1": "Attacks are imbued with ice.",
+        "2": "Enemy attack is reduced for 5s after being unfrozen.",
+        "3": "Attacks are imbued with formidable ice element.",
+        "4": "Summons frost meteor when attacking frozen enemies."
+      }
+    },
+    "loki": {
+      "rarity": "epic",
+      "aka": [],
+      "skill_name": "Fervent Rhythm",
+      "skill_levels": {
+        "1": "When moving, there is a chance to enter [Focus State] increasing attack by 20% for 3s."
+      }
+    },
+    "phynx": {
+      "rarity": "epic",
+      "aka": [],
+      "skill_name": "Desert Tribunal",
+      "skill_levels": {
+        "1": "Mix sand into the elements. Elemental damage now also inflicts [Bleed] dealing 15% bleed damage every 0.15s.",
+        "2": "Every 10 bleed hits increases elemental damage by 5% for 5s (max 5 stacks).",
+        "3": "Against burning or poisoned enemies, +50% bleed damage dealt. Their burn and poison debuffs also tick 20% faster.",
+        "4": "If enemy takes lightning or ice damage, all remaining bleed ticks are resolved immediately."
+      },
+      "note": "Widely considered the best resonance skill for PvP"
+    },
+    "nezha": {
+      "rarity": "epic",
+      "aka": [],
+      "skill_name": "Cosmic Hoop",
+      "skill_levels": {
+        "1": "The character's movement path will burn for an extended duration.",
+        "2": "Main weapon attacks have a chance to fire 2 Cosmic Hoops at a target.",
+        "3": "Cosmic Hoops gain fiery path and track targets."
+      }
+    },
+    "otta": {
+      "rarity": "legendary",
+      "aka": [],
+      "skill_name": "Brutality",
+      "skill_levels": {
+        "1": "The higher the enemy's HP, the easier it is to land a crit.",
+        "2": "After taking damage, gain +40% crit rate and +60% crit damage for 5s.",
+        "3": "Crit hits can insta-kill minions below 30% HP.",
+        "4": "The farther the range (distance from enemy), the higher the crit rate, up to 15%."
+      }
+    },
+    "demon_king_atreus": {
+      "rarity": "legendary",
+      "aka": ["atreus", "dk", "demon king"],
+      "skill_name": "Demon King Energy",
+      "skill_levels": {
+        "1": "Starts with a shield equal to 50% HP. When shield is active, elemental damage +10%, crit damage +30%.",
+        "2": "Chance to summon dark energy orbs when enemies are hit; can pull hate. Energy orbs release energy rings to attack nearby enemies. Up to 3 orbs can be present.",
+        "3": "When HP below 50%, absorbs dark energy orbs on the map to restore HP (each restores 10%). Only triggers 1 time per game.",
+        "4": "Dark energy orbs form a binding field when destroyed. Enemies caught in the field have their projectiles slowed and damage taken increased. Field lasts 10s."
+      }
+    },
+    "thor": {
+      "rarity": "legendary",
+      "aka": [],
+      "skill_name": "Storm's Judgement",
+      "skill_levels": {
+        "1": "Weapon detaches and auto-attacks.",
+        "2": "When moving, there is a chance to summon Mjolnir (aka hammers/Thor hammers) that home in on enemies dealing 100% damage.",
+        "3": "Attacks deal lightning damage. Mjolnir inherits the hero's crit rate. After dealing a critical hit, there is a chance to paralyze enemies for 0.5s.",
+        "4": "When paralyzing enemies, fire 3 additional mini-Mjolnirs (mini hammers)."
+      }
+    },
+    "cleo": {
+      "rarity": "legendary",
+      "aka": [],
+      "skill_name": "Ember Throne",
+      "skill_levels": {
+        "1": "Attacks are greatly enhanced by fire.",
+        "2": "For every 20 fire hits, mark the enemy with the highest percentage HP on the field. After 1s, trigger a cross-shaped explosion and remove the mark, dealing 300% damage and leaving behind a burning trail.",
+        "3": "Trigger a cross-shaped explosion at your location after marking a target dealing 300% damage and leaving a burning trail. Attack +40% for 3s after marking an enemy.",
+        "4": "Marking an enemy frightens them. Marked enemies suffer -50% attack before exploding. Marked Players suffer -33% attack instead of -50% (PvP vs PvE difference)."
+      }
+    },
+    "wukong": {
+      "rarity": "legendary",
+      "aka": [],
+      "skill_name": "Monkey Brethren",
+      "skill_levels": {
+        "1": "Summon 3 permanent Monkey Mirages after entering battle.",
+        "2": "When attacking or taking damage, chance to summon 1 Monkey Mirage for 10s. Up to 6 can exist."
+      }
     }
   },
-  "weapons": {
-    "crossbow": {
-      "aka": "xbow",
-      "type": "ranged",
-      "best_for": ["Mixed set MAIN weapon", "PvP", "PvE"],
-      "priority": "Get mythic crossbow FIRST before other gear",
-      "gear_set": "Dragoon Crossbow is the #1 weapon for mixed sets",
-      "skins": {
-        "epic": "Epic 0 star recommended - good value",
-        "legendary": "NOT worth over character skins"
-      },
-      "pvp_rating": "S-tier - Best overall PVP weapon for most builds",
-      "note": "Xbow and dragoon boots are THE most important gear pieces. Can crit with griffin ring. Dragoon Crossbow specifically is meta for PVP."
-    },
-    "griffin_claws": {
-      "type": "melee",
-      "pvp_rating": "S-tier - BROKEN OP at chaotic tier",
-      "gear_set": "Requires full Griffin set to be effective",
-      "best_for": ["High-end PvP", "Chaotic tier builds"],
-      "note": "Griffin Claws with full Griffin set is BROKEN OP at chaotic tier for PVP - absolutely dominates when properly built"
-    },
-    "dragoon_bow": {
-      "type": "ranged",
-      "pvp_rating": "A-tier - Great for Dragoon builds",
-      "gear_set": "Works well with Dragoon set",
-      "best_for": ["Dragoon builds", "PvP", "PvE"],
-      "note": "Solid choice for Dragoon-focused builds, good alternative to crossbow"
-    },
-    "bow": {
-      "aka": "dragoon bow",
-      "type": "ranged",
-      "best_for": ["Bounce builds", "PvP Dragoon builds", "Multi-target damage"],
-      "mechanics": "Attacks can bounce to multiple targets unlike beam",
-      "gear_set": "Pairs well with Dragoon set for PVP",
-      "pvp_rating": "A-tier - Excellent for PVP with bounce mechanics",
-      "note": "Dragoon Bow is a strong PVP choice, especially for full Dragoon builds. Bounce attacks hit multiple targets."
-    },
-    "staff": {
-      "aka": "oracle spear",
-      "type": "magic",
-      "rating": "WEAKEST weapon - one of most useless gear",
-      "note": "Don't prioritize. Only useful with maxed legendary weapon skin. Xbow >>> Staff."
-    },
-    "scythe": {
-      "type": "melee",
-      "note": "Situational use"
-    },
-    "claw": {
-      "aka": "griffin claws",
-      "type": "melee",
-      "best_for": ["Peak Arena front row", "Griffin set PvP", "Close-range builds"],
-      "gear_set": "Griffin Claws - pairs perfectly with Griffin set",
-      "pvp_rating": "S-tier for Griffin builds - Top tier PVP weapon with Griffin set",
-      "combinations": ["Griffin amulet + ring", "Thor", "Close range tactics"],
-      "note": "Griffin Claws with full Griffin set is BROKEN OP at chaotic tier. Can be used with oracle helm if you have mythic circles for Peak Arena front row. Extremely strong for PVP when built correctly."
-    }
-  },
-  "blessings": {
-    "lucky_shadow": {
-      "effect": "Dodge bonus + gives elementals base crit chance",
-      "use_with": "Dragoon boots for PvP Oracle builds",
-      "runes": "Boosts elemental rune builds",
-      "note": "Popular blessing for dodge + elemental synergy"
-    },
-    "guardian": {
-      "effect": "Resilience / damage reduction",
-      "use_with": "Oracle gear OR Thor close range + griffin ammy",
-      "note": "Defensive option - preference vs lucky_shadow"
-    },
-    "revive": {
-      "effect": "Resurrection chance on death",
-      "rarity": "Legendary revive is important",
-      "note": "PvP trump card - if both players revive, can burn them down. Helix invincible if revives first."
-    }
-  },
-  "game_modes": {
-    "peak_arena": {
-      "best_build": {
-        "gear": "Chaotic: dragoon weapon/helm/boots + griffin amulet/ring + oracle armor. OR Griffin Claws + oracle helm if mythic circles.",
-        "weapons": {
-          "option_1": "Dragoon Crossbow - Standard best choice",
-          "option_2": "Griffin Claws - Front row with mythic circles",
-          "option_3": "Dragoon Bow - Alternative ranged option"
-        },
-        "characters": "Thor + Otta 2 with Nian + Helix/DK",
-        "distance": "Close range ONLY with Thor + mythic griffin amulet. Otherwise not worth.",
-        "runes": "Meteor/potion OR circles (with etched)",
-        "fusion": "Balance fusion bonus with strong build. 10 fusion can beat 2x power with good build."
-      },
-      "note": "3 character teams. Characters, gear, runes all matter. Griffin Claws shine in front row builds."
-    },
-    "arena": {
-      "best_builds": {
-        "oracle": "Double sprite etched OR potion spring + swords (if Otta 2 high star)",
-        "dragoon_mixed": "Meteor + elemental build with Dragoon Crossbow or Dragoon Bow",
-        "griffin": "Griffin Claws + Griffin amulet/ring with Thor + Otta Nian + Helix",
-        "full_griffin": "Griffin Claws + full Griffin set - Broken OP at chaotic tier (not mythic)"
-      },
-      "best_weapons": {
-        "s_tier": ["Griffin Claws (with Griffin set)", "Dragoon Crossbow (mixed set)"],
-        "a_tier": ["Dragoon Bow (Dragoon builds)"],
-        "explanation": "Griffin Claws dominate with Griffin set. Dragoon Crossbow is best for mixed sets. Dragoon Bow excels with full Dragoon."
-      },
-      "meta": "Griffin > Mixed Dragoon/Oracle > Full Oracle > Full Dragoon",
-      "note": "1v1 battles. Atreus strong here. Weapon choice matters - Griffin Claws with Griffin set or Dragoon Crossbow/Bow for other builds."
-    },
-    "guild_wars": {
-      "aka": "GvG",
-      "best_builds": "Meteor runes (all of them including star of time)",
-      "characters": "Depends on setup - can use 2nd/3rd options",
-      "resonance": "Works in GvG",
-      "rewards": "5 Otta shards per week from shop",
-      "rune_presets": "Can't change character/rune preset 1 hour before battle starts"
-    },
-    "shackled_jungle": {
-      "best_runes": "Circles etched (pulsing orb) from fishing events - ESSENTIAL",
-      "alternative": "Sprites awe (legendary) if no circles etched",
-      "skills": "Prioritize main weapon skills, pick circle skills if no better option. Need laser energy rings.",
-      "no_freeze": "Don't use paralyze/freeze - resets crab and gets annoying",
-      "rating": "Purple debuff is -30% from orange attack",
-      "bugs": "Rune rating check is buggy - can skip levels and lose enchantium. Unequip runes to avoid."
-    },
-    "expedition": {
-      "best_character": "Rolla for speed clears"
-    }
-  },
-  "tips": {
-    "gear_priority": "1. Mythic Xbow, 2. Dragoon boots, 3. Mixed set pieces, 4. Everything else",
-    "character_priority": "1. Otta 2 + Nian skin, 2. Thor (F2P), 3. Helix to 6 stars, 4. DK (if whale)",
-    "skin_priority": "1. Nian Otta to 4 stars, 2. Duck Helix 1 star, 3. DON'T buy Thor/weapon skins",
-    "chest_strategy": "Open Dragoon chests after Oracle mythic. Mixed set is endgame goal.",
-    "f2p_path": "Get Thor first (most versatile), then save for Otta 2, level Helix to 6 stars",
-    "pvp_meta": "Griffin > Mixed set > Full Oracle > Full Dragoon",
-    "pvp_weapons": "Best PVP weapons: Griffin Claws (with Griffin set), Dragoon Crossbow (mixed sets), Dragoon Bow (Dragoon builds)",
-    "rune_farming": "Grab blessed runes weekly from guild shop. Etched runes from fishing events.",
-    "dont_waste": "Don't buy weapon skins, don't buy Thor skins, don't level Otta past 2 until late game",
-    "weapon_guide": "For PVP: Griffin Claws dominate with Griffin set (chaotic tier). Dragoon Crossbow is best overall. Dragoon Bow works for Dragoon builds."
-  },
+  "gear_sets": {},
+  "weapons": {},
+  "runes": {},
+  "blessings": {},
+  "game_modes": {},
+  "tips": {},
   "custom_facts": [
     {
       "text": "Guild donations: You can donate 5 times per day. The first donation is free, and the remaining 4 cost 50 gems each (200 gems total). Always do at least the free donation daily!",
@@ -332,6 +195,3 @@
     }
   ]
 }
-
-
-
