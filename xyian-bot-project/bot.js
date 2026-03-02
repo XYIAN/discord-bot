@@ -25,14 +25,14 @@ const path = require('path');
 const express = require('express');
 require('dotenv').config();
 
-const BOT_VERSION = '3.3.0';
+const BOT_VERSION = '3.3.2';
 
 const BOT_CHANGELOG = [
-    '🆕 **AI Enabled role** — Non-guild members can now ask questions in #arch-ai with the AI Enabled role',
-    '💡 **!suggest command** — Anyone with AI access can suggest corrections or new info for admin review',
-    '📋 **Suggestion queue** — Admins can review, approve, or reject suggestions (`!suggestions`, `!approve`, `!reject`)',
-    '🔒 Guild knowledge (`!listfacts`, `!faq`) stays restricted to verified guild roles',
-    '📝 Q&A answers show a *"use !suggest to report incorrect info"* hint for AI Enabled users',
+    '🎮 **All 17 characters fully verified** — Skill names, stat boosts, and all 4 skill levels extracted from in-game screenshots',
+    '🧹 **Scorched earth data reset** — Cleared all unverified scraped data; only verified facts remain',
+    '⭐ **Star system & resonance documented** — Shard costs, star progression, resonance mechanics all in knowledge base',
+    '🔥 **Cleo fix** — Corrected Ember Throne Lv.4 marked player penalty to -35% ATK (was -33%)',
+    '🐒 **Wukong alias** — "wk" now recognized as Wukong',
 ];
 
 // ── Config ──────────────────────────────────────────────────────────────────
