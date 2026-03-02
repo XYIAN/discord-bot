@@ -68,8 +68,8 @@ const CONFIG = {
     },
     reactionRole: {
         emoji: '🤖',
-        roleName: 'Beta Tester',
-        messageIds: ['1477906768272166925'],
+        roleName: 'AI Enabled',
+        messageIds: ['1477906768272166925', '1478172709719380081'],
     },
 };
 
@@ -499,22 +499,33 @@ client.on('guildMemberAdd', async (member) => {
     }
 
     try {
+        const emoji = CONFIG.reactionRole.emoji;
+        const roleName = CONFIG.reactionRole.roleName;
         const embed = new EmbedBuilder()
             .setTitle(`Welcome to Arch 2 Addicts, ${member.user.username}!`)
             .setDescription(
                 `Hey ${member}! Glad to have you here.\n\n` +
                 '**Get started:**\n' +
-                '• Head to **#arch-ai** to ask any Archero 2 question\n' +
                 '• Check out the community channels and say hi\n' +
                 '• Use `!help` to see bot commands\n\n' +
+                `**${emoji} Want AI access?**\n` +
+                `React with ${emoji} on this message to get the **${roleName}** role and start asking Archero 2 questions in <#${CONFIG.channels.archAi}>!\n\n` +
                 '**About XYIAN OFFICIAL (Guild ID: 213797):**\n' +
                 'We\'re an active Archero 2 guild always looking for dedicated players. 1M+ power recommended.'
             )
             .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
             .setColor(0x00ff88)
             .setTimestamp()
-            .setFooter({ text: 'Arch 2 Addicts — Welcome!' });
-        await sendToGeneral({ embeds: [embed] });
+            .setFooter({ text: 'Arch 2 Addicts — React 🤖 for AI access!' });
+        const welcomeMsg = await sendToGeneral({ embeds: [embed] });
+        if (welcomeMsg?.id) {
+            reactionRoleMessages.add(welcomeMsg.id);
+            const channel = await client.channels.fetch(CONFIG.channels.general);
+            if (channel) {
+                const fetched = await channel.messages.fetch(welcomeMsg.id);
+                await fetched.react(emoji);
+            }
+        }
     } catch (e) {
         console.error('❌ Welcome error:', e.message);
     }
@@ -765,23 +776,29 @@ client.on('messageCreate', async (message) => {
                 const roleName = CONFIG.reactionRole.roleName;
                 const emoji = CONFIG.reactionRole.emoji;
                 const setupEmbed = new EmbedBuilder()
-                    .setTitle(`${emoji} **Reaction Role Test — ${roleName}**`)
+                    .setTitle(`${emoji} Introducing: Arch AI (Alpha)`)
                     .setDescription(
-                        `This is a test of the reaction-role system.\n\n` +
-                        `React with ${emoji} below and you should automatically receive the **${roleName}** role.\n\n` +
-                        `Once confirmed working, this same system will be used for the **AI Enabled** role announcement.\n\n` +
-                        `*This is a test — the role will be assigned automatically when you react.*`
+                        `We're building an AI-powered Q&A bot for Archero 2 right here in this server. It can answer questions about characters, skills, star-ups, resonance, privilege cards, and more — all powered by verified in-game data.\n\n` +
+                        `**Want access?**\n` +
+                        `React with ${emoji} below and you'll get the **${roleName}** role automatically.\n\n` +
+                        `**How to use it:**\n` +
+                        `Head to <#${CONFIG.channels.archAi}> and just type your question — no command needed.\n` +
+                        `*Examples: "What does Phynx's Desert Tribunal do?" • "How does resonance work?" • "What are Cleo's skill levels?"*\n\n` +
+                        `**See something wrong?**\n` +
+                        `Type \`!suggest <text>\` to submit a correction — it goes to the team for review.\n\n` +
+                        `**Commands:** \`!help\` for the full list • \`!ping\` for bot status\n\n` +
+                        `*This is an alpha — answers won't always be perfect. Your questions and suggestions help make it better.*`
                     )
-                    .setColor(0x9b59b6)
+                    .setColor(0x00ff88)
                     .setTimestamp()
-                    .setFooter({ text: 'XYIAN Bot — Reaction Role System' });
+                    .setFooter({ text: 'XYIAN Bot — React 🤖 for access!' });
                 const posted = await message.channel.send({ embeds: [setupEmbed] });
                 await posted.react(emoji);
                 reactionRoleMessages.add(posted.id);
                 await sendToAdmin({
                     content: `📌 **Reaction-role message posted**\nChannel: <#${message.channel.id}>\nMessage ID: ${posted.id}\nRole: **${roleName}**\nEmoji: ${emoji}`,
                 });
-                return message.reply(`✅ Reaction-role message posted! Message ID: \`${posted.id}\``);
+                return message.reply(`✅ Reaction-role message posted! Message ID: \`${posted.id}\`\n⚠️ Add this ID to \`CONFIG.reactionRole.messageIds\` so it persists across restarts.`);
             }
 
             default:
