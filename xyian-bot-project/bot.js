@@ -46,6 +46,9 @@ const CONFIG = {
     },
     ignoreChannelNames: ['guild-recruit-chat', 'xyian-guild', 'guild-chat', 'recruit', 'guild-recruit'],
     generalChatNames: ['general', 'general-chat', 'main-chat', 'arch-2-addicts'],
+    features: {
+        tipOfTheDay: false,
+    },
 };
 
 const webhooks = {
@@ -337,7 +340,6 @@ async function sendGeneralResetMessage() {
     if (resetLock) return;
     resetLock = true;
     try {
-        const tip = getRandomFact();
         const embed = new EmbedBuilder()
             .setTitle('🔄 Daily Reset Reminder!')
             .setDescription(
@@ -360,8 +362,9 @@ async function sendGeneralResetMessage() {
                     inline: false,
                 },
             );
-        if (tip) {
-            embed.addFields({ name: '💡 Tip of the Day', value: tip, inline: false });
+        if (CONFIG.features.tipOfTheDay) {
+            const tip = getRandomFact();
+            if (tip) embed.addFields({ name: '💡 Arch AI Alpha — Tip of the Day', value: tip, inline: false });
         }
         embed.setColor(0x00ff88).setTimestamp().setFooter({ text: 'Arch 2 Addicts — Daily Reset' });
         await sendToGeneral({ embeds: [embed] });
