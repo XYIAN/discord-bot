@@ -4,6 +4,18 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.3.2] - 2026-03-02
+
+### Complete character data: all 17 characters verified from in-game screenshots
+
+- All 17 characters now have verified `stat_boost` and full `skill_levels` (Lv.1–Lv.4) extracted directly from in-game star-up screens
+- Characters completed: Alex, Nyanja, Helix, Hela, Mymu, Hou Yi, Seraph, Dracoola, Rolla, Loki, Phynx, Nezha, Otta, Demon King Atreus, Thor, Cleo, Wukong
+- Fixed Cleo's Lv.4 text: marked players suffer -35% ATK (was incorrectly -33% from manual dictation)
+- Added "wk" as alias for Wukong
+- Data captured via mirrored iPhone screenshots, read and transcribed into `knowledge.json`
+
+---
+
 ## [3.3.0] - 2026-03-01
 
 ### AI Enabled role + suggestion system

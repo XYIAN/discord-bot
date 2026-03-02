@@ -11,10 +11,10 @@
       "4": "Character-specific stat boost (same as star 1)",
       "5": "Skill Level 3",
       "6": "+1 Resonance slot",
-      "7": "Skill Level 4"
+      "7": "Character-specific stat boost + Skill Level 4"
     },
     "skill_level_unlocks": "Skill Lv1 at 0 stars (just owning the character), Skill Lv2 at 2 stars, Skill Lv3 at 5 stars, Skill Lv4 at 7 stars. Skill level is separate from star/character level.",
-    "note": "Stars 1 and 4 give the same stat boost per character (e.g. Alex gets +3% HP each time). Stars 3 and 6 each unlock a resonance slot."
+    "note": "Stars 1, 4, and 7 give the same stat boost per character (e.g. Alex gets [All] Max HP +3% each time). Stars 3 and 6 each unlock a resonance slot. Star 7 gives both a stat boost AND skill level 4."
   },
   "resonance": {
     "description": "Resonance allows characters to equip skills from other characters you own.",
@@ -28,32 +28,67 @@
       "rarity": "rare",
       "aka": [],
       "skill_name": "Braveheart",
-      "stat_boost": "+3% Health (at stars 1 and 4)"
+      "stat_boost": "[All] Max HP +3% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "Increases Red Heart drops.",
+        "2": "ATK SPD +10% for 10s after a CRIT.",
+        "3": "In-match EXP gain +10%.",
+        "4": "Guarantees a CRIT on the next attack after taking DMG."
+      }
     },
     "nyanja": {
       "rarity": "rare",
       "aka": [],
-      "skill_name": "Cloudfooted"
+      "skill_name": "Cloudfooted",
+      "stat_boost": "[All] MOV SPD +2% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "MOV SPD +10% and periodically releases Swift Wind to push back and damage enemies.",
+        "2": "Increases Swift Wind range and doubles Swift Wind DMG.",
+        "3": "Swift Wind triggers an explosion on enemy contact.",
+        "4": "Significantly reduces Swift Wind cycle."
+      }
     },
     "helix": {
       "rarity": "rare",
       "aka": [],
-      "skill_name": "Absolute Counter"
+      "skill_name": "Absolute Counter",
+      "stat_boost": "[All] ATK PWR +3% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "Lower HP increases ATK. ATK SPD +20% for 5s after taking DMG.",
+        "2": "ATK SPD +20% for 5s after taking DMG.",
+        "3": "ATK PWR +20% for 10s after taking DMG.",
+        "4": "ATK SPD +20% when HP is <50%."
+      }
     },
     "hela": {
       "rarity": "rare",
       "aka": [],
-      "skill_name": "Hadean Blessing"
+      "skill_name": "Hadean Blessing",
+      "stat_boost": "[All] Max HP +3% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "Hela increases her own and all nearby allies' ATK by 5%.",
+        "2": "Hela restores 1% HP to herself and all nearby allies over time.",
+        "3": "Hela increases her own and all nearby allies' CRIT Rate by 5%.",
+        "4": "Hela increases her own and all nearby allies' CRIT DMG by 20%."
+      }
     },
     "mymu": {
       "rarity": "rare",
       "aka": [],
-      "skill_name": "Immortal Curse"
+      "skill_name": "Immortal Curse",
+      "stat_boost": "[All] ATK PWR +3% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "When HP reaches 0 for the first time, 60% chance to enter [Overdraw], consuming 50%-100% of ATK. Increased ATK and MOV SPD when in [Overdraw].",
+        "2": "Defeating monsters has a small chance of removing [Overdraw].",
+        "3": "When [Overdraw] is active, -30% ATK and MOV SPD to surrounding monsters.",
+        "4": "When entering [Overdraw], Overdraw HP drain range increases to [100%-150%]."
+      }
     },
     "hou_yi": {
       "rarity": "rare",
       "aka": ["hou yi"],
       "skill_name": "Sun Piercer",
+      "stat_boost": "[All] ATK PWR +3% (at stars 1, 4, and 7)",
       "skill_levels": {
         "1": "Gain 1 Sunpiercer stack per boss defeated. Each stack increases attack speed by 4% (max 9 stacks).",
         "2": "Each Sunpiercer stack additionally increases attack by 4%.",
@@ -66,49 +101,60 @@
       "rarity": "epic",
       "aka": [],
       "skill_name": "Divine Favor",
+      "stat_boost": "[All] CRIT DMG REDUC +15% (at stars 1, 4, and 7)",
       "skill_levels": {
-        "1": "50% chance to encounter Valkyrie at the start."
+        "1": "50% chance to encounter the Valkyrie at the start.",
+        "2": "Chance to get another skill when Healing is selected during Angel encounter.",
+        "3": "Chance that Max HP is not reduced when making Devil Pact.",
+        "4": "Easier to get higher-quality skills when acquiring new skills."
       }
     },
     "dracoola": {
       "rarity": "epic",
       "aka": ["drac"],
       "skill_name": "Lifesteal",
+      "stat_boost": "[All] Gears' Base Stats Increase +5% (at stars 1, 4, and 7)",
       "skill_levels": {
         "1": "Chance to absorb enemy HP during attacks.",
-        "2": "Excess healing will be converted into damage on next attack.",
-        "3": "When HP >50%, movement speed +20%.",
-        "4": "At full HP, power +40%."
+        "2": "Excess healing will be converted into damage on the next attack.",
+        "3": "When HP is >50%, MOV SPD +20%.",
+        "4": "At full HP, ATK PWR +40%."
       }
     },
     "rolla": {
       "rarity": "epic",
       "aka": [],
       "skill_name": "Frostsinger",
+      "stat_boost": "[All] CRIT DMG +10% (at stars 1, 4, and 7)",
       "skill_levels": {
         "1": "Attacks are imbued with ice.",
-        "2": "Enemy attack is reduced for 5s after being unfrozen.",
-        "3": "Attacks are imbued with formidable ice element.",
-        "4": "Summons frost meteor when attacking frozen enemies."
+        "2": "Enemy ATK is reduced for 5s after being unfrozen.",
+        "3": "Attacks are imbued with the formidable ice element.",
+        "4": "Summons Frost Meteor when attacking frozen enemies."
       }
     },
     "loki": {
       "rarity": "epic",
       "aka": [],
       "skill_name": "Fervent Rhythm",
+      "stat_boost": "[All] More damage VS players +5% (at stars 1, 4, and 7)",
       "skill_levels": {
-        "1": "When moving, there is a chance to enter [Focus State] increasing attack by 20% for 3s."
+        "1": "When moving, there is a chance to enter [Focus State] increasing ATK by 20% for 3s.",
+        "2": "After entering [Focus State] 2 times, the next time this state is active, ATK SPD is increased by 30%, and duration is doubled.",
+        "3": "When [Focus State] fades, there is 30% chance to enter this state again.",
+        "4": "When battling players, if [Focus State] is active, there is a chance to gain immunity to all Control effects."
       }
     },
     "phynx": {
       "rarity": "epic",
       "aka": [],
       "skill_name": "Desert Tribunal",
+      "stat_boost": "[All] CRIT Rate +2% (at stars 1, 4, and 7)",
       "skill_levels": {
-        "1": "Mix sand into the elements. Elemental damage now also inflicts [Bleed] dealing 15% bleed damage every 0.15s.",
-        "2": "Every 10 bleed hits increases elemental damage by 5% for 5s (max 5 stacks).",
-        "3": "Against burning or poisoned enemies, +50% bleed damage dealt. Their burn and poison debuffs also tick 20% faster.",
-        "4": "If enemy takes lightning or ice damage, all remaining bleed ticks are resolved immediately."
+        "1": "Mix sand into the elements. Elemental damage now also inflicts [Bleed] dealing 15% Bleed DMG every 0.15s.",
+        "2": "Every 10 Bleed hits increases Elemental DMG by 5% for 5s (Max 5 stacks).",
+        "3": "Against Burning or Poisoned enemies, +50% Bleed DMG dealt. Their Burn and Poison debuffs also tick 20% faster.",
+        "4": "If enemy takes Lightning or Ice DMG, all remaining Bleed ticks are resolved instantly."
       },
       "note": "Widely considered the best resonance skill for PvP"
     },
@@ -116,63 +162,72 @@
       "rarity": "epic",
       "aka": [],
       "skill_name": "Cosmic Hoop",
+      "stat_boost": "[All] CRIT DMG REDUC +15% (at stars 1, 4, and 7)",
       "skill_levels": {
         "1": "The character's movement path will burn for an extended duration.",
-        "2": "Main weapon attacks have a chance to fire 2 Cosmic Hoops at a target.",
-        "3": "Cosmic Hoops gain fiery path and track targets."
+        "2": "Main Weapon attacks have a chance to fire 2 [Cosmic Hoops] at target.",
+        "3": "[Cosmic Hoops] gain [Fiery Path] effect and can track enemies.",
+        "4": "Main Weapon attacks have a chance to fire 3 [Cosmic Hoops] at target, with a chance to chain-fire."
       }
     },
     "otta": {
       "rarity": "legendary",
       "aka": [],
       "skill_name": "Brutality",
+      "stat_boost": "[All] CRIT Rate +4% (at stars 1, 4, and 7)",
       "skill_levels": {
-        "1": "The higher the enemy's HP, the easier it is to land a crit.",
-        "2": "After taking damage, gain +40% crit rate and +60% crit damage for 5s.",
-        "3": "Crit hits can insta-kill minions below 30% HP.",
-        "4": "The farther the range (distance from enemy), the higher the crit rate, up to 15%."
+        "1": "The higher the enemy's HP, the easier it is to land a CRIT.",
+        "2": "After taking damage, gain +40% Crit Rate and +60% Crit DMG for 5s.",
+        "3": "CRIT hits can insta-kill minions below 30% HP.",
+        "4": "The farther the range, the higher the CRIT Rate, up to 15%."
       }
     },
     "demon_king_atreus": {
       "rarity": "legendary",
       "aka": ["atreus", "dk", "demon king"],
       "skill_name": "Demon King Energy",
+      "stat_boost": "[All] Shield HP +10% (at stars 1, 4, and 7)",
       "skill_levels": {
-        "1": "Starts with a shield equal to 50% HP. When shield is active, elemental damage +10%, crit damage +30%.",
+        "1": "Starts off with shield equal to 50% HP. When shield is active, elemental DMG +10%, CRIT DMG +30%.",
         "2": "Chance to summon dark energy orbs when enemies are hit; can pull hate. Energy orbs release energy rings to attack nearby enemies. Up to 3 orbs can be present.",
-        "3": "When HP below 50%, absorbs dark energy orbs on the map to restore HP (each restores 10%). Only triggers 1 time per game.",
-        "4": "Dark energy orbs form a binding field when destroyed. Enemies caught in the field have their projectiles slowed and damage taken increased. Field lasts 10s."
+        "3": "When HP is below 50%, absorbs dark energy orbs on the map to restore shield HP (each orb restores 10% HP). Only triggers 1 time per game.",
+        "4": "Dark energy orbs will form a binding field when destroyed. Enemies caught in the field will have their projectiles slowed and DMG taken increased. Field lasts 10s."
       }
     },
     "thor": {
       "rarity": "legendary",
       "aka": [],
-      "skill_name": "Storm's Judgement",
+      "skill_name": "Storm's Judgment",
+      "stat_boost": "[All] Lightning DMG +30% (at stars 1, 4, and 7)",
       "skill_levels": {
         "1": "Weapon detaches and auto-attacks.",
-        "2": "When moving, there is a chance to summon Mjolnir (aka hammers/Thor hammers) that home in on enemies dealing 100% damage.",
-        "3": "Attacks deal lightning damage. Mjolnir inherits the hero's crit rate. After dealing a critical hit, there is a chance to paralyze enemies for 0.5s.",
-        "4": "When paralyzing enemies, fire 3 additional mini-Mjolnirs (mini hammers)."
+        "2": "When moving, there is a chance to summon Mjolnir, homing in on enemies and dealing 100% DMG.",
+        "3": "Attacks deal Lightning damage. Mjolnir inherits the hero's CRIT Rate. After dealing a critical hit, there is a chance to paralyze enemies for 0.5s.",
+        "4": "When paralyzing enemies, fires 3 additional Mini-Mjolnirs."
       }
     },
     "cleo": {
       "rarity": "legendary",
       "aka": [],
       "skill_name": "Ember Throne",
+      "stat_boost": "[All] Flame DMG +30% (at stars 1, 4, and 7)",
       "skill_levels": {
-        "1": "Attacks are greatly enhanced by fire.",
-        "2": "For every 20 fire hits, mark the enemy with the highest percentage HP on the field. After 1s, trigger a cross-shaped explosion and remove the mark, dealing 300% damage and leaving behind a burning trail.",
-        "3": "Trigger a cross-shaped explosion at your location after marking a target dealing 300% damage and leaving a burning trail. Attack +40% for 3s after marking an enemy.",
-        "4": "Marking an enemy frightens them. Marked enemies suffer -50% attack before exploding. Marked Players suffer -33% attack instead of -50% (PvP vs PvE difference)."
+        "1": "Attacks are greatly enhanced by Fire.",
+        "2": "For every 20 Fire hits, mark the enemy with the highest percentage HP on the field. After 1s, trigger a cross-shaped explosion and remove the mark, dealing 300% DMG and leaving behind a burning trail.",
+        "3": "Trigger a cross-shaped explosion at your location after marking a target, dealing 300% DMG and leaving behind a burning trail. ATK +40% for 3s after marking.",
+        "4": "Marking an enemy also Frightens them. Marked enemies suffer -50% ATK before exploding. Marked players suffer -35% ATK before exploding."
       }
     },
     "wukong": {
       "rarity": "legendary",
-      "aka": [],
+      "aka": ["wk"],
       "skill_name": "Monkey Brethren",
+      "stat_boost": "[All] CRIT DMG +20% (at stars 1, 4, and 7)",
       "skill_levels": {
-        "1": "Summon 3 permanent Monkey Mirages after entering battle.",
-        "2": "When attacking or taking damage, chance to summon 1 Monkey Mirage for 10s. Up to 6 can exist."
+        "1": "Summon 3 permanent [Monkey Mirages] after entering battle.",
+        "2": "When attacking or taking damage, chance to summon 1 [Monkey Mirage] for 10s. Up to 6 [Monkey Mirages] can exist.",
+        "3": "For each [Monkey Mirage] on the map, increase ATK, DMG REDUC, and Control RES by 3.5%.",
+        "4": "[Monkey Mirages] have a chance to steal nearby enemy Hearts and Potions, increasing Wukong's ATK by 20% for 7s."
       }
     }
   },
