@@ -6,13 +6,24 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 ## [3.3.2] - 2026-03-02
 
-### Complete character data: all 17 characters verified from in-game screenshots
+### Complete character data: verified from in-game screenshots
 
-- All 17 characters now have verified `stat_boost` and full `skill_levels` (Lv.1–Lv.4) extracted directly from in-game star-up screens
-- Characters completed: Alex, Nyanja, Helix, Hela, Mymu, Hou Yi, Seraph, Dracoola, Rolla, Loki, Phynx, Nezha, Otta, Demon King Atreus, Thor, Cleo, Wukong
+- Added verified `stat_boost` and full `skill_levels` (Lv.1–Lv.4) for remaining characters via mirrored iPhone screenshots: Thor, Cleo, Wukong
 - Fixed Cleo's Lv.4 text: marked players suffer -35% ATK (was incorrectly -33% from manual dictation)
 - Added "wk" as alias for Wukong
-- Data captured via mirrored iPhone screenshots, read and transcribed into `knowledge.json`
+- Updated `BOT_CHANGELOG` and `BOT_VERSION` in bot.js — changelog channel will now show current release notes instead of stale 3.3.0 content
+
+---
+
+## [3.3.1] - 2026-03-01
+
+### Scorched earth + character roster rebuild
+
+- **Data reset:** Cleared all unverified scraped data from `knowledge.json` (gear sets, weapons, runes, blessings, game modes, tips)
+- **Character roster:** Established verified list of 17 characters across 3 tiers (Rare, Epic, Legendary) with correct names and aliases
+- **Star system:** Documented 7-star progression, shard costs, skill level unlocks, and resonance mechanics
+- **Skill data (batch 1):** Added `stat_boost` and `skill_levels` for 14 characters from user dictation and in-game screenshots: Alex, Nyanja, Helix, Hela, Mymu, Hou Yi, Seraph, Dracoola, Rolla, Loki, Phynx, Nezha, Otta, Demon King Atreus
+- Removed fake characters (DK, Ebonroth), corrected "Drac" to "Dracoola"
 
 ---
 
