@@ -25,15 +25,32 @@ const path = require('path');
 const express = require('express');
 require('dotenv').config();
 
-const BOT_VERSION = '3.3.2';
+// Single source of truth: version + changelog are parsed from CHANGELOG.md
+function parseChangelog() {
+    try {
+        const md = fs.readFileSync(path.join(__dirname, 'CHANGELOG.md'), 'utf-8');
+        const versionMatch = md.match(/^## \[(\d+\.\d+\.\d+)\]/m);
+        const version = versionMatch ? versionMatch[1] : '0.0.0';
 
-const BOT_CHANGELOG = [
-    '🎮 **All 17 characters fully verified** — Skill names, stat boosts, and all 4 skill levels extracted from in-game screenshots',
-    '🧹 **Scorched earth data reset** — Cleared all unverified scraped data; only verified facts remain',
-    '⭐ **Star system & resonance documented** — Shard costs, star progression, resonance mechanics all in knowledge base',
-    '🔥 **Cleo fix** — Corrected Ember Throne Lv.4 marked player penalty to -35% ATK (was -33%)',
-    '🐒 **Wukong alias** — "wk" now recognized as Wukong',
-];
+        const firstEntry = md.indexOf('## [');
+        const secondEntry = md.indexOf('## [', firstEntry + 1);
+        const section = secondEntry > -1
+            ? md.slice(firstEntry, secondEntry)
+            : md.slice(firstEntry);
+
+        const lines = section
+            .split('\n')
+            .filter(l => /^- /.test(l.trim()))
+            .map(l => l.trim().replace(/^- /, ''));
+
+        return { version, lines };
+    } catch (e) {
+        console.error('⚠️  Could not parse CHANGELOG.md:', e.message);
+        return { version: '0.0.0', lines: [] };
+    }
+}
+
+const { version: BOT_VERSION, lines: BOT_CHANGELOG } = parseChangelog();
 
 // ── Config ──────────────────────────────────────────────────────────────────
 

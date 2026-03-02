@@ -4,6 +4,17 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.3.3] - 2026-03-02
+
+### Single source of truth for version + changelog
+
+- 🔗 Bot version and Discord changelog are now auto-parsed from this file on startup — no more hardcoded `BOT_VERSION` or `BOT_CHANGELOG` in bot.js
+- 📝 Just update `CHANGELOG.md` and the bot picks up both the version number and release notes automatically
+- 🎮 All 17 characters fully verified with skill names, stat boosts, and all 4 skill levels from in-game screenshots
+- ⭐ Star system, resonance mechanics, and shard costs documented in knowledge base
+
+---
+
 ## [3.3.2] - 2026-03-02
 
 ### Complete character data: verified from in-game screenshots
@@ -11,7 +22,6 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 - Added verified `stat_boost` and full `skill_levels` (Lv.1–Lv.4) for remaining characters via mirrored iPhone screenshots: Thor, Cleo, Wukong
 - Fixed Cleo's Lv.4 text: marked players suffer -35% ATK (was incorrectly -33% from manual dictation)
 - Added "wk" as alias for Wukong
-- Updated `BOT_CHANGELOG` and `BOT_VERSION` in bot.js — changelog channel will now show current release notes instead of stale 3.3.0 content
 
 ---
 
