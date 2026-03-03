@@ -4,13 +4,26 @@ Discord bot for the Arch 2 Addicts server and XYIAN OFFICIAL guild (ID: 213797).
 
 ## What it does
 
-- **Q&A in #arch-ai** — Ask any Archero 2 question; the bot answers using OpenAI + curated facts (verified roles + AI Enabled)
+- **Q&A in #arch-ai** — Ask any Archero 2 question; the bot answers using OpenAI + curated facts
+- **Reputation-based role tiers** — Contributors earn roles (Arch Scholar, Arch Sage) by getting suggestions approved
+- **Reaction-role access** — React with 🤖 in #lobby or on welcome messages to get AI Enabled
+- **Personal DMs** — Users get notified when suggestions are approved/rejected, roles are granted, or tiers are earned
 - **Daily reset reminder** — 4pm Pacific every day in general chat
 - **Guild recruitment** — Every other day in the recruit channel
-- **Welcome message** — Greets new members in general chat
-- **Knowledge management** — Admins can add/remove facts via Discord commands
+- **Welcome message** — Greets new members with 🤖 react-for-access
+- **Knowledge management** — Tiered access to add/remove facts
 - **Feedback** — Thumbs-up/down reactions on Q&A answers, logged for review
-- **Debug channel** — Errors and events go to admin webhook
+- **Debug channel** — Errors, events, role changes, and deploy notifications
+
+## Role Tiers
+
+| Tier | Role | How to earn | Access |
+|------|------|-------------|--------|
+| 1 | 🤖 **AI Enabled** | React with 🤖 in #lobby or welcome message | Q&A in #arch-ai, `!suggest` |
+| 2 | 🎓 **Arch Scholar** | 5 approved suggestions | + `!addfact`, `!faq`, `!listfacts` |
+| 3 | 🧙 **Arch Sage** | 15 approved suggestions | + `!removefact` |
+
+Tier upgrades happen automatically when an admin approves a suggestion. The contributor gets a personal DM congratulating them and explaining their new abilities. Admins and verified guild members bypass tier checks.
 
 ## Commands
 
@@ -18,18 +31,34 @@ Discord bot for the Arch 2 Addicts server and XYIAN OFFICIAL guild (ID: 213797).
 |---------|-----|------|
 | `!ping` | Everyone | Bot status |
 | `!help` / `!menu` | Everyone | Command list |
-| `!suggest <text>` | AI Enabled / Verified | Suggest a correction or new info |
-| `!faq` | Verified role | Topics the bot knows about |
-| `!listfacts` | Verified role | Browse custom facts |
-| `!addfact <text>` | XYIAN OFFICIAL / Admin | Add a fact |
-| `!removefact <n>` | XYIAN OFFICIAL / Admin | Remove a custom fact by number |
+| `!contributors` | Everyone | Leaderboard of top contributors |
+| `!suggest <text>` | 🤖 AI Enabled+ | Suggest a correction or new info |
+| `!addfact <text>` | 🎓 Arch Scholar+ | Add a fact to the knowledge base |
+| `!faq` | 🎓 Arch Scholar+ | View knowledge categories |
+| `!listfacts` | 🎓 Arch Scholar+ | Browse custom facts |
+| `!removefact <n>` | 🧙 Arch Sage | Remove a custom fact by number |
 | `!suggestions` | XYIAN OFFICIAL / Admin | Review pending suggestions |
-| `!approve <#>` | XYIAN OFFICIAL / Admin | Approve suggestion → adds as fact |
-| `!reject <#> [reason]` | XYIAN OFFICIAL / Admin | Reject a suggestion |
-| `!grant @user` | XYIAN OFFICIAL / Admin | Manually assign the reaction role |
-| `!setupreaction` | XYIAN OFFICIAL / Admin | Post a reaction-role message in current channel |
+| `!approve <#>` | XYIAN OFFICIAL / Admin | Approve suggestion → adds as fact, DMs user |
+| `!reject <#> [reason]` | XYIAN OFFICIAL / Admin | Reject suggestion, DMs user with reason |
+| `!grant @user` | XYIAN OFFICIAL / Admin | Manually assign a role, DMs user |
+| `!setupreaction` | XYIAN OFFICIAL / Admin | Post a reaction-role message |
 | `!recruit` | XYIAN OFFICIAL / Admin | Send recruitment now |
 | `!reset` | XYIAN OFFICIAL / Admin | Send daily reset now |
+
+## Personal DMs
+
+The bot sends personal DMs to users on key events:
+
+| Event | DM Content |
+|-------|-----------|
+| React for role | Welcome + how to use #arch-ai |
+| `!grant` by admin | Onboarding + commands + tier path |
+| Suggestion approved | Which text was approved, progress to next tier |
+| Suggestion rejected | The text, reason, encouragement to try again |
+| Tier → Arch Scholar | Congratulations + new abilities + teases Arch Sage |
+| Tier → Arch Sage | Celebration + full access explained |
+
+All DMs fail gracefully if the user has DMs disabled.
 
 ## Setup
 
@@ -75,9 +104,11 @@ The bot posts release notes to #changelog (`1424784471395274803`) on every deplo
 ## Files
 
 - `bot.js` — The bot (single file)
-- `data/knowledge.json` — Game facts (curated + custom)
+- `data/knowledge.json` — Game facts (characters, skills, resources, custom facts)
+- `data/suggestions.json` — User suggestion queue (auto-created)
 - `data/feedback.json` — Q&A feedback log (auto-created)
-- `docs/` — ENV reference, restart plan, changelog
+- `CHANGELOG.md` — Release history (bot reads version + notes from this on startup)
+- `docs/` — ENV reference, restart plan
 
 ## Deployment
 
