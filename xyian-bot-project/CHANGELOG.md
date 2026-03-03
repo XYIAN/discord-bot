@@ -4,6 +4,16 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.6.2] - 2026-03-03
+
+### Changelog dedup — single source of truth
+
+- 🔒 **Changelog channel dedup** — Bot now checks the last post in #changelog before posting; if the version was already announced, it skips instead of posting duplicates
+- 📋 **Deploy notification includes changelog status** — Debug message now shows whether the changelog was posted, skipped (already exists), or failed, so debug and changelog stay visibly in sync
+- 🧹 Cleaned up 2 duplicate v3.6.1 posts from #changelog
+
+---
+
 ## [3.6.1] - 2026-03-02
 
 ### Personal DMs for all user-facing events

@@ -1067,24 +1067,46 @@ client.once('ready', async () => {
         console.log(`⚠️  Could not resolve general channel: ${e.message}`);
     }
 
-    // Deploy notification → debug channel
+    // Release notes → changelog channel (only if version is new)
+    let changelogStatus = '⏭️ no changelog entries';
+    if (BOT_CHANGELOG.length > 0 && CONFIG.channels.changelog) {
+        try {
+            const changelogChannel = await client.channels.fetch(CONFIG.channels.changelog);
+            if (changelogChannel) {
+                const recent = await changelogChannel.messages.fetch({ limit: 1 });
+                const lastPost = recent.first();
+                const lastTitle = lastPost?.embeds?.[0]?.title || '';
+                const alreadyPosted = lastTitle.includes(`v${BOT_VERSION}`);
+
+                if (alreadyPosted) {
+                    changelogStatus = `⏭️ v${BOT_VERSION} already posted — skipped`;
+                    console.log(`📋 Changelog v${BOT_VERSION} already posted — skipping`);
+                } else {
+                    const embed = new EmbedBuilder()
+                        .setTitle(`📦 XYIAN Bot v${BOT_VERSION}`)
+                        .setDescription(BOT_CHANGELOG.map(line => `• ${line}`).join('\n'))
+                        .setColor(0x00ff88)
+                        .setTimestamp()
+                        .setFooter({ text: 'XYIAN Bot — Changelog' });
+                    await changelogChannel.send({ embeds: [embed] });
+                    changelogStatus = `📋 v${BOT_VERSION} posted to #changelog`;
+                    console.log(changelogStatus);
+                }
+            }
+        } catch (e) {
+            changelogStatus = `⚠️ changelog post failed: ${e.message}`;
+            console.log(`⚠️  Could not post to changelog: ${e.message}`);
+        }
+    }
+
+    // Deploy notification → debug channel (includes changelog status)
     await sendToAdmin({
         content: `🚀 **Bot deployed!** v${BOT_VERSION}\n` +
             `📊 ${countFacts()} facts loaded\n` +
             `🤖 OpenAI: ${openai ? '✅ ready' : '❌ not configured'}\n` +
+            `${changelogStatus}\n` +
             `⏰ ${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })} Pacific`,
     });
-
-    // Release notes → changelog channel
-    if (BOT_CHANGELOG.length > 0) {
-        const embed = new EmbedBuilder()
-            .setTitle(`📦 XYIAN Bot v${BOT_VERSION}`)
-            .setDescription(BOT_CHANGELOG.map(line => `• ${line}`).join('\n'))
-            .setColor(0x00ff88)
-            .setTimestamp()
-            .setFooter({ text: 'XYIAN Bot — Changelog' });
-        await sendToChangelog({ embeds: [embed] });
-    }
 
     // Seed known reaction-role message IDs so reactions work after restart
     if (CONFIG.reactionRole.messageIds) {
