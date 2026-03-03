@@ -1,5 +1,19 @@
 # XYIAN Bot — Archero 2 Community Bot
 
+## Why this exists
+
+If you've played Archero 2, you know how hard it is to find real, accurate information about the game. There's no official wiki that's kept up to date, guides are scattered across random posts and Discord messages, and half the info out there is for the wrong Archero game entirely. I got tired of that.
+
+I built this on my own time and my own dime because I believe the community deserves better. The goal is simple: create a knowledge base that actually has correct, verified game info — and make it accessible to everyone through a Discord bot that can answer your questions instantly. No ads, no paywalls, no gatekeeping.
+
+But here's the thing — I can't do it alone. The bot gets smarter when real players contribute what they know. Every suggestion you submit, every fact you add, every correction you make — it all gets reviewed and becomes part of the bot's permanent memory. The more people help, the better it gets for everyone.
+
+This is a community project. I just built the foundation. You all are building the knowledge.
+
+— XYIAN
+
+---
+
 Discord bot for the Arch 2 Addicts server and XYIAN OFFICIAL guild (ID: 213797).
 
 ## What it does
