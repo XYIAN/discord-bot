@@ -71,6 +71,11 @@ const CONFIG = {
         roleName: 'AI Enabled',
         messageIds: ['1477906768272166925', '1478172709719380081'],
     },
+    roleTiers: [
+        { name: 'AI Enabled',   threshold: 0,  canAsk: true,  canSuggest: true,  canAddFact: false, canRemoveFact: false, canListFacts: false },
+        { name: 'Arch Scholar',  threshold: 5,  canAsk: true,  canSuggest: true,  canAddFact: true,  canRemoveFact: false, canListFacts: true  },
+        { name: 'Arch Sage',    threshold: 15, canAsk: true,  canSuggest: true,  canAddFact: true,  canRemoveFact: true,  canListFacts: true  },
+    ],
 };
 
 const webhooks = {
@@ -238,7 +243,74 @@ function hasVerifiedRole(member) {
 
 function hasAIAccess(member) {
     if (!member || !member.roles) return false;
-    return hasVerifiedRole(member) || member.roles.cache.some(r => r.name === 'AI Enabled');
+    return hasVerifiedRole(member) || member.roles.cache.some(r =>
+        CONFIG.roleTiers.some(t => t.name === r.name)
+    );
+}
+
+function getMemberTier(member) {
+    if (!member || !member.roles) return null;
+    for (let i = CONFIG.roleTiers.length - 1; i >= 0; i--) {
+        if (member.roles.cache.some(r => r.name === CONFIG.roleTiers[i].name)) {
+            return CONFIG.roleTiers[i];
+        }
+    }
+    return null;
+}
+
+function canMemberDo(member, permission) {
+    if (isAdmin(member)) return true;
+    if (hasVerifiedRole(member)) return true;
+    const tier = getMemberTier(member);
+    return tier ? tier[permission] === true : false;
+}
+
+function getApprovedCountForUser(userId) {
+    const suggestions = loadSuggestions();
+    return suggestions.filter(s => s.status === 'approved' && s.userId === userId).length;
+}
+
+async function checkTierUpgrade(guild, userId, username) {
+    const count = getApprovedCountForUser(userId);
+    const member = await guild.members.fetch(userId).catch(() => null);
+    if (!member) return;
+
+    const tierMessages = {
+        'Arch Scholar': {
+            dm: `🎓 **Congratulations, you've been promoted to Arch Scholar!**\n\n` +
+                `You've had **5 suggestions approved** — that means the community trusts your knowledge.\n\n` +
+                `**New abilities unlocked:**\n` +
+                `• \`!addfact <text>\` — Add facts directly to the knowledge base\n` +
+                `• \`!faq\` — View all knowledge categories\n` +
+                `• \`!listfacts\` — Browse all custom facts\n\n` +
+                `Keep contributing and at **15 approved suggestions** you'll reach **Arch Sage** status!`,
+            debug: `🎓 **Tier upgrade: Arch Scholar**\nUser: **${username}** (${userId})\nApproved suggestions: ${count}\nNew access: !addfact, !faq, !listfacts`,
+        },
+        'Arch Sage': {
+            dm: `🧙 **You've achieved Arch Sage — the highest community rank!**\n\n` +
+                `With **15 approved suggestions**, you've proven yourself as a trusted expert.\n\n` +
+                `**New abilities unlocked:**\n` +
+                `• \`!removefact <n>\` — Remove incorrect facts from the knowledge base\n` +
+                `• Full knowledge management access\n\n` +
+                `You're now one of the guardians of the bot's knowledge. Thank you for making it better for everyone!`,
+            debug: `🧙 **Tier upgrade: Arch Sage**\nUser: **${username}** (${userId})\nApproved suggestions: ${count}\nNew access: !removefact (full knowledge management)`,
+        },
+    };
+
+    for (const tier of CONFIG.roleTiers) {
+        if (tier.threshold === 0) continue;
+        if (count >= tier.threshold && !member.roles.cache.some(r => r.name === tier.name)) {
+            const role = guild.roles.cache.find(r => r.name === tier.name);
+            if (!role) continue;
+            await member.roles.add(role);
+
+            const msgs = tierMessages[tier.name];
+            if (msgs) {
+                await sendToAdmin({ content: msgs.debug });
+                try { await member.user.send(msgs.dm); } catch { /* DMs disabled */ }
+            }
+        }
+    }
 }
 
 // ── Webhook senders (with stale-message cleanup) ────────────────────────────
@@ -575,21 +647,23 @@ client.on('messageCreate', async (message) => {
                     .setDescription(
                         '**Everyone:**\n' +
                         '`!ping` — Bot status\n' +
-                        '`!help` / `!menu` — This message\n\n' +
-                        '**AI Enabled / Verified roles** (in **#arch-ai**):\n' +
+                        '`!help` / `!menu` — This message\n' +
+                        '`!contributors` — Leaderboard of top contributors\n\n' +
+                        '**🤖 AI Enabled** (in **#arch-ai**):\n' +
                         'Just type your Archero 2 question — no command needed!\n' +
                         '`!suggest <text>` — Suggest a correction or new info\n\n' +
-                        '**Verified roles only:**\n' +
-                        '`!faq` — Common topics\n' +
-                        '`!listfacts` — Browse custom facts\n\n' +
-                        '**XYIAN OFFICIAL / Admin:**\n' +
+                        '**🎓 Arch Scholar** (5 approved suggestions):\n' +
                         '`!addfact <text>` — Add a fact to the knowledge base\n' +
-                        '`!removefact <number>` — Remove a custom fact by number\n' +
+                        '`!faq` — View knowledge categories\n' +
+                        '`!listfacts` — Browse custom facts\n\n' +
+                        '**🧙 Arch Sage** (15 approved suggestions):\n' +
+                        '`!removefact <number>` — Remove a custom fact\n\n' +
+                        '**XYIAN OFFICIAL / Admin:**\n' +
                         '`!suggestions` — Review pending suggestions\n' +
                         '`!approve <#>` — Approve a suggestion (adds as fact)\n' +
                         '`!reject <#> [reason]` — Reject a suggestion\n' +
-                        '`!grant @user` — Manually assign the reaction role\n' +
-                        '`!setupreaction` — Post a reaction-role message in current channel\n' +
+                        '`!grant @user` — Manually assign a role\n' +
+                        '`!setupreaction` — Post a reaction-role message\n' +
                         '`!recruit` — Send guild recruitment now\n' +
                         '`!reset` — Send daily reset now'
                     )
@@ -598,6 +672,9 @@ client.on('messageCreate', async (message) => {
             }
 
             case 'faq': {
+                if (!canMemberDo(message.member, 'canListFacts') && !isDM) {
+                    return message.reply('❌ You need the **Arch Scholar** role or higher to use this command. Earn it by getting 5 suggestions approved!');
+                }
                 const categories = Object.keys(knowledge).filter(k => k !== 'custom_facts');
                 const list = categories.map(c => `• **${c.replace(/_/g, ' ')}** (${typeof knowledge[c] === 'object' ? Object.keys(knowledge[c]).length : 1} entries)`).join('\n');
                 const embed = new EmbedBuilder()
@@ -607,9 +684,32 @@ client.on('messageCreate', async (message) => {
                 return message.reply({ embeds: [embed] });
             }
 
+            case 'contributors': {
+                const allSuggestions = loadSuggestions();
+                const approved = allSuggestions.filter(s => s.status === 'approved');
+                if (!approved.length) return message.reply('No approved contributions yet. Be the first — use `!suggest`!');
+                const counts = {};
+                approved.forEach(s => {
+                    const key = s.by || 'Unknown';
+                    counts[key] = (counts[key] || 0) + 1;
+                });
+                const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+                const medals = ['🥇', '🥈', '🥉'];
+                const leaderboard = sorted.map(([name, count], i) => {
+                    const medal = medals[i] || `**${i + 1}.**`;
+                    const tierLabel = count >= 15 ? ' 🧙 Sage' : count >= 5 ? ' 🎓 Scholar' : '';
+                    return `${medal} **${name}** — ${count} approved${tierLabel}`;
+                }).join('\n');
+                const embed = new EmbedBuilder()
+                    .setTitle('🏆 Top Contributors')
+                    .setDescription(leaderboard + '\n\n*Get 5 approved suggestions → **Arch Scholar**\nGet 15 approved suggestions → **Arch Sage***')
+                    .setColor(0xf39c12).setTimestamp().setFooter({ text: 'XYIAN Bot — !suggest to contribute' });
+                return message.reply({ embeds: [embed] });
+            }
+
             case 'listfacts': {
-                if (!hasVerifiedRole(message.member) && !isDM) {
-                    return message.reply('❌ You need a verified role to use this command.');
+                if (!canMemberDo(message.member, 'canListFacts') && !isDM) {
+                    return message.reply('❌ You need the **Arch Scholar** role or higher to use this command. Earn it by getting 5 suggestions approved!');
                 }
                 const facts = knowledge.custom_facts || [];
                 if (!facts.length) return message.reply('No custom facts yet. Admins can add some with `!addfact <text>`.');
@@ -622,8 +722,8 @@ client.on('messageCreate', async (message) => {
             }
 
             case 'addfact': {
-                if (!isAdmin(message.member)) {
-                    return message.reply('❌ This command requires the **XYIAN OFFICIAL** or **Admin** role.');
+                if (!canMemberDo(message.member, 'canAddFact')) {
+                    return message.reply('❌ You need the **Arch Scholar** role or higher to add facts. Earn it by getting 5 suggestions approved!');
                 }
                 if (!argText || argText.length < 10) {
                     return message.reply('Usage: `!addfact <fact text>` (at least 10 characters)');
@@ -639,8 +739,8 @@ client.on('messageCreate', async (message) => {
             }
 
             case 'removefact': {
-                if (!isAdmin(message.member)) {
-                    return message.reply('❌ This command requires the **XYIAN OFFICIAL** or **Admin** role.');
+                if (!canMemberDo(message.member, 'canRemoveFact')) {
+                    return message.reply('❌ You need the **Arch Sage** role to remove facts. Earn it by getting 15 suggestions approved!');
                 }
                 const idx = parseInt(argText, 10);
                 const facts = knowledge.custom_facts || [];
@@ -729,7 +829,14 @@ client.on('messageCreate', async (message) => {
                 });
                 saveKnowledge();
                 saveSuggestions(suggestions);
-                return message.reply(`✅ Suggestion #${approveId} approved and added as a fact!\n> ${target.text.substring(0, 200)}\n**${countFacts()}** facts total.`);
+
+                // Check if the contributor earned a tier upgrade
+                if (target.userId && message.guild) {
+                    await checkTierUpgrade(message.guild, target.userId, target.by);
+                }
+
+                const approvedCount = getApprovedCountForUser(target.userId);
+                return message.reply(`✅ Suggestion #${approveId} approved and added as a fact!\n> ${target.text.substring(0, 200)}\n**${countFacts()}** facts total. (${target.by} now has ${approvedCount} approved)`);
             }
 
             case 'reject': {

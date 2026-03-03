@@ -4,6 +4,22 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.6.0] - 2026-03-02
+
+### Reputation-based role tiers: Arch Scholar & Arch Sage
+
+- 🎓 **Arch Scholar** role (5 approved suggestions) — unlocks `!addfact`, `!faq`, `!listfacts`
+- 🧙 **Arch Sage** role (15 approved suggestions) — unlocks `!removefact` (full knowledge management)
+- 🤖 **AI Enabled** remains the entry tier — Q&A access + `!suggest`
+- 🔄 **Auto-upgrade** — When an admin approves a suggestion with `!approve`, the bot checks if the contributor hit a tier threshold and auto-assigns the role
+- 💬 **Personal DMs** on tier promotion — contributors get a custom congratulations message explaining their new abilities
+- 📊 **Debug notifications** on every tier change for admin visibility
+- 🏆 **!contributors** — New leaderboard command showing top contributors with medal rankings and tier badges
+- 📝 Updated `!help` menu to show the full tier system with thresholds
+- 🔒 Permission checks updated: `!addfact`/`!faq`/`!listfacts` now require Arch Scholar+, `!removefact` requires Arch Sage (admins/verified bypass as always)
+
+---
+
 ## [3.5.0] - 2026-03-02
 
 ### AI Enabled reaction-role goes live + welcome message upgrade
