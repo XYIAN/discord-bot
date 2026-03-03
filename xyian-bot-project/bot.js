@@ -835,6 +835,25 @@ client.on('messageCreate', async (message) => {
                     await checkTierUpgrade(message.guild, target.userId, target.by);
                 }
 
+                // DM the contributor
+                if (target.userId) {
+                    try {
+                        const contributor = await client.users.fetch(target.userId);
+                        const approvedTotal = getApprovedCountForUser(target.userId);
+                        const nextTier = CONFIG.roleTiers.find(t => t.threshold > approvedTotal);
+                        const progressLine = nextTier
+                            ? `You now have **${approvedTotal}** approved suggestion${approvedTotal === 1 ? '' : 's'}. ${nextTier.threshold - approvedTotal} more until **${nextTier.name}**!`
+                            : `You now have **${approvedTotal}** approved suggestions. You've reached the highest tier!`;
+                        await contributor.send(
+                            `✅ **Your suggestion was approved!**\n\n` +
+                            `> ${target.text.substring(0, 300)}\n\n` +
+                            `This is now part of the bot's knowledge base and will be used to answer questions.\n\n` +
+                            `${progressLine}\n\n` +
+                            `*Thank you for making the bot smarter for everyone!*`
+                        );
+                    } catch { /* DMs disabled */ }
+                }
+
                 const approvedCount = getApprovedCountForUser(target.userId);
                 return message.reply(`✅ Suggestion #${approveId} approved and added as a fact!\n> ${target.text.substring(0, 200)}\n**${countFacts()}** facts total. (${target.by} now has ${approvedCount} approved)`);
             }
@@ -854,6 +873,21 @@ client.on('messageCreate', async (message) => {
                 rejTarget.reviewed_by = message.author.username;
                 rejTarget.reviewed_at = new Date().toISOString();
                 saveSuggestions(rejSuggestions);
+
+                // DM the contributor about the rejection
+                if (rejTarget.userId) {
+                    try {
+                        const contributor = await client.users.fetch(rejTarget.userId);
+                        await contributor.send(
+                            `📝 **Update on your suggestion:**\n\n` +
+                            `> ${rejTarget.text.substring(0, 300)}\n\n` +
+                            `This one wasn't added to the knowledge base.\n` +
+                            `**Reason:** ${reason}\n\n` +
+                            `Don't be discouraged — your contributions matter! Feel free to submit again with \`!suggest\`.`
+                        );
+                    } catch { /* DMs disabled */ }
+                }
+
                 return message.reply(`🗑️ Suggestion #${rejectId} rejected. Reason: ${reason}`);
             }
 
@@ -873,6 +907,18 @@ client.on('messageCreate', async (message) => {
                 await sendToAdmin({
                     content: `🤖 **Role manually granted**\nUser: **${mentioned.user.username}** (${mentioned.id})\nRole: **${grantRoleName}**\nGranted by: ${message.author.username}`,
                 });
+                try {
+                    await mentioned.user.send(
+                        `🤖 **You've been granted the ${grantRoleName} role!**\n\n` +
+                        `An admin has given you access to the Arch AI bot.\n\n` +
+                        `Head to <#${CONFIG.channels.archAi}> and ask any Archero 2 question — no command needed!\n\n` +
+                        `**Useful commands:**\n` +
+                        `• \`!suggest <text>\` — Submit a correction or new info\n` +
+                        `• \`!help\` — See all commands\n` +
+                        `• \`!contributors\` — See the leaderboard\n\n` +
+                        `*Get 5 suggestions approved to reach **Arch Scholar** and unlock more abilities!*`
+                    );
+                } catch { /* DMs disabled */ }
                 return message.reply(`✅ Assigned **${grantRoleName}** to ${mentioned.user.username}.`);
             }
 
