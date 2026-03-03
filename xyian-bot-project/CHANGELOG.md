@@ -4,6 +4,17 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.6.1] - 2026-03-02
+
+### Personal DMs for all user-facing events
+
+- ✅ **Suggestion approved** — DM tells the user which suggestion was added, shows their approved count, and how many more until the next tier
+- ❌ **Suggestion rejected** — DM shows the specific suggestion, the reason, and encourages them to try again
+- 🤖 **!grant** — DM welcomes the user, explains how to use #arch-ai, lists useful commands, and teases the Arch Scholar path
+- All DMs fail gracefully if the user has DMs disabled
+
+---
+
 ## [3.6.0] - 2026-03-02
 
 ### Reputation-based role tiers: Arch Scholar & Arch Sage
