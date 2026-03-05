@@ -126,7 +126,7 @@ This ensures custom facts survive redeployments. Each fact sync counts as a patc
 | #community-rules-and-safety | Community guidelines, prohibited behavior, violation consequences |
 | #arch-ai-privacy-policy | AI data disclosure, OpenAI processing, what's not private |
 | #community-ai-discussion | Quick-reference guide (commands, tiers) + 🤖 reaction-role |
-| #gear-rune-loadouts | Forum: Complete Character List (17 verified characters) |
+| #arch-wiki | Forum: Complete Character List (17 verified characters) |
 | #changelog | Auto-posted release notes (deduped by version) |
 
 ## Changelog Channel
