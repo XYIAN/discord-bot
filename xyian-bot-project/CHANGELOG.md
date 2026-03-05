@@ -8,8 +8,9 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 ### Forum cleanup — deleted old guides, posted verified Character List
 
-- 🗑️ Deleted all 18 outdated/duplicate forum threads from **#gear-rune-loadouts** (failed guide attempt from Oct 2025)
+- 🗑️ Deleted all 18 outdated/duplicate forum threads from the wiki forum (failed guide attempt from Oct 2025)
 - 📋 Created new **Complete Character List** forum post — all 17 verified characters organized by rarity (Rare, Epic, Legendary) with skill names, stat boosts, all 4 skill levels, and star system / resonance reference
+- 📝 Renamed forum channel from **#gear-rune-loadouts** → **#arch-wiki**
 
 ---
 
