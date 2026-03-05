@@ -24,10 +24,13 @@ Discord bot for the Arch 2 Addicts server and XYIAN OFFICIAL guild (ID: 213797).
 - **Personal DMs** — Users get notified when suggestions are approved/rejected, roles are granted, or tiers are earned
 - **Daily reset reminder** — 4pm Pacific every day in general chat
 - **Guild recruitment** — Every other day in the recruit channel
-- **Welcome message** — Greets new members with 🤖 react-for-access
+- **Welcome system** — Greets new members in #general with channel links, auto-assigns ArchAddict role, sends a personal DM with full community rundown, and ⚔️ guild verification request
 - **Knowledge management** — Tiered access to add/remove facts
+- **Forum guides** — Verified character list in #gear-rune-loadouts with all 17 characters, skills, and star system
+- **Channel content** — Guild requirements, community rules, and AI privacy policy all posted as embeds
+- **Changelog dedup** — Bot checks #changelog before posting; skips if version already announced
 - **Feedback** — Thumbs-up/down reactions on Q&A answers, logged for review
-- **Debug channel** — Errors, events, role changes, and deploy notifications
+- **Debug channel** — Errors, events, role changes, deploy notifications, and changelog post status
 
 ## Role Tiers
 
@@ -65,12 +68,14 @@ The bot sends personal DMs to users on key events:
 
 | Event | DM Content |
 |-------|-----------|
-| React for role | Welcome + how to use #arch-ai |
+| New member joins | Full community rundown, channels, AI access, tiers, commands, ⚔️ guild verification, and thank-you |
+| React 🤖 for role | Welcome + how to use #arch-ai |
+| React ⚔️ on welcome DM | Guild verification request sent to admin, confirmation DM to user |
 | `!grant` by admin | Onboarding + commands + tier path |
 | Suggestion approved | Which text was approved, progress to next tier |
 | Suggestion rejected | The text, reason, encouragement to try again |
-| Tier → Arch Scholar | Congratulations + new abilities + teases Arch Sage |
-| Tier → Arch Sage | Celebration + full access explained |
+| Tier → Arch Scholar | Personal message acknowledging contributions, new abilities, teases Arch Sage |
+| Tier → Arch Sage | Special message: "There are no more tiers. You've reached the top." |
 
 All DMs fail gracefully if the user has DMs disabled.
 
@@ -105,9 +110,28 @@ The #arch-ai notification is important — it lets users know their `!addfact` c
 
 This ensures custom facts survive redeployments. Each fact sync counts as a patch version bump (e.g. 3.4.1 → 3.4.2) and gets its own CHANGELOG entry.
 
+## New Member Flow
+
+1. **Join** → Auto-receive **ArchAddict** role (purple community identity)
+2. **#general** → Welcome embed with channel links (#lobby, #community-ai-discussion, #clips-and-highlights) + 🤖 react
+3. **DM** → Personal welcome with community intro, channels, AI access, role tiers, commands, ⚔️ guild verification, and thank-you
+4. **React 🤖** → AI Enabled role + confirmation DM
+5. **React ⚔️** (on welcome DM) → Guild verification request sent to admin + confirmation DM
+
+## Server Channels (Bot-Managed Content)
+
+| Channel | Content |
+|---------|---------|
+| #guild-requirements | Power minimum (1.5M+), daily boss battles, donation requirements and costs |
+| #community-rules-and-safety | Community guidelines, prohibited behavior, violation consequences |
+| #arch-ai-privacy-policy | AI data disclosure, OpenAI processing, what's not private |
+| #community-ai-discussion | Quick-reference guide (commands, tiers) + 🤖 reaction-role |
+| #gear-rune-loadouts | Forum: Complete Character List (17 verified characters) |
+| #changelog | Auto-posted release notes (deduped by version) |
+
 ## Changelog Channel
 
-The bot posts release notes to #changelog (`1424784471395274803`) on every deploy. Version and release notes are automatically parsed from `CHANGELOG.md` — just update this file and the bot picks it up on startup. No need to touch `bot.js` for version bumps.
+The bot posts release notes to #changelog (`1424784471395274803`) on every deploy. Version and release notes are automatically parsed from `CHANGELOG.md` — just update this file and the bot picks it up on startup. If the version was already posted, it skips to avoid duplicates. No need to touch `bot.js` for version bumps.
 
 ### Versioning convention
 
