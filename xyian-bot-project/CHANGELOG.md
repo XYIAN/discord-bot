@@ -4,6 +4,18 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.8.2] - 2026-03-03
+
+### Conversational memory — per-user context for follow-up questions
+
+- 💬 **Per-user conversation history** — The bot remembers the last 3 exchanges (question + answer) per user so follow-up questions work naturally (e.g. "what does Phynx do?" → "what about for PvP?")
+- 🔒 **Isolated per user** — Each user's context is independent; other users' questions don't interfere with your conversation thread
+- ⏰ **Auto-expires after 10 minutes** of inactivity — starts fresh if you come back later
+- 🧠 **In-memory only** — resets on deploy, which is intentional (short-term conversational flow, not long-term memory)
+- 📝 System prompt updated to instruct the AI to use conversation history for context
+
+---
+
 ## [3.8.1] - 2026-03-03
 
 ### PvP meta knowledge — resonance combos, skins placeholder
