@@ -156,7 +156,7 @@
         "3": "Against Burning or Poisoned enemies, +50% Bleed DMG dealt. Their Burn and Poison debuffs also tick 20% faster.",
         "4": "If enemy takes Lightning or Ice DMG, all remaining Bleed ticks are resolved instantly."
       },
-      "note": "Widely considered the best resonance skill for PvP"
+      "note": "Widely considered the best resonance skill for PvP. Pairs with Cleo (S-tier P2P) or Helix/Rolla/Mymu (F2P alternatives). See pvp_meta for full combo rankings."
     },
     "nezha": {
       "rarity": "epic",
@@ -230,6 +230,45 @@
         "4": "[Monkey Mirages] have a chance to steal nearby enemy Hearts and Potions, increasing Wukong's ATK by 20% for 7s."
       }
     }
+  },
+  "pvp_meta": {
+    "best_resonance_combos": {
+      "description": "PvP resonance pairings ranked by effectiveness. Resonance requires characters at 3-star (1 slot) or 6-star (2 slots).",
+      "s_tier_p2p": {
+        "combo": "Phynx (Desert Tribunal) + Cleo (Ember Throne)",
+        "note": "Best PvP resonance combo in the game. Phynx bleeds stack with Cleo's fire marks for devastating damage. Expensive to build — both are epic/legendary and need high star levels.",
+        "cost": "P2P (pay to play) — high investment"
+      },
+      "a_tier_f2p": [
+        {
+          "combo": "Helix (Absolute Counter) + Phynx (Desert Tribunal)",
+          "note": "Strong F2P option. Helix does more damage as he takes damage, and Phynx adds bleed on top of that."
+        },
+        {
+          "combo": "Rolla (Frostsinger) + Phynx (Desert Tribunal)",
+          "note": "Freeze + bleed synergy. Phynx Lv3 deals +50% bleed against enemies with elemental debuffs like ice."
+        },
+        {
+          "combo": "Mymu (Immortal Curse) + Phynx (Desert Tribunal)",
+          "note": "Mymu's Overdraw acts as a revive, buying time for Phynx bleeds to stack. Mymu needs 5-star+ and his skin to be effective."
+        }
+      ],
+      "budget_f2p": [
+        {
+          "combo": "Mymu (Immortal Curse) + Helix (Absolute Counter)",
+          "note": "Cheapest competitive option. Both are rare = easier to star up. Mymu revives, Helix ramps damage when hurt."
+        },
+        {
+          "combo": "Mymu (Immortal Curse) + Nyanja (Cloudfooted)",
+          "note": "Budget option. Mymu revive + Nyanja speed. Both rare and easy to acquire."
+        }
+      ],
+      "important_note": "Mymu's Immortal Curse is only effective at 5-star+ with his character skin equipped. Without the skin, the revive mechanic is unreliable."
+    }
+  },
+  "skins": {
+    "_placeholder": "Each character has skins with unique abilities and 5 star levels that upgrade the skin's stats. Data to be filled in later.",
+    "mymu_skin_note": "Mymu's skin is critical for PvP — it makes his Immortal Curse (revive) reliable. Without it, Mymu is not recommended for competitive play."
   },
   "gear_sets": {},
   "weapons": {},
