@@ -524,7 +524,8 @@ async function askAI(question, username, userId) {
     } catch (e) {
         console.error('❌ OpenAI error:', e.message);
         await sendToAdmin({ content: `🚨 OpenAI error: ${e.message}` });
-        return null;
+        const isRateLimit = e.status === 429 || e.message?.includes('rate') || e.message?.includes('quota') || e.message?.includes('billing');
+        return isRateLimit ? '__RATE_LIMITED__' : null;
     }
 }
 
@@ -1175,11 +1176,32 @@ client.on('messageCreate', async (message) => {
         await message.channel.sendTyping();
         const answer = await askAI(message.content, message.author.username, message.author.id);
 
-        if (!answer) {
+        if (answer === '__RATE_LIMITED__') {
+            const rateLimitMessages = [
+                "I've been answering questions all day and my circuits are... warm. Very warm. I need a minute. Try again shortly.",
+                "Turns out even a cybernetic wizard has limits. I've hit mine for the moment — give me a bit and I'll be back at full power.",
+                "My knowledge is vast. My API budget is not. I've been temporarily throttled — try again in a few minutes.",
+                "I just tried to think and got a 'please hold' message from my own brain. That's new. Check back in a bit.",
+            ];
+            const msg = rateLimitMessages[Math.floor(Math.random() * rateLimitMessages.length)];
             const embed = new EmbedBuilder()
-                .setTitle('❓ Archero 2 Q&A')
-                .setDescription('Sorry, I couldn\'t generate an answer. Try rephrasing your question, or ask an admin to add more facts with `!addfact`.')
-                .setColor(0xff6b6b).setTimestamp().setFooter({ text: 'XYIAN Bot' });
+                .setTitle('🧙 Arch AI is recharging...')
+                .setDescription(msg)
+                .setColor(0xf39c12).setTimestamp().setFooter({ text: 'Arch AI — Back shortly' });
+            return message.reply({ embeds: [embed] });
+        }
+
+        if (!answer) {
+            const failMessages = [
+                "I searched every corner of my memory and came up blank on that one. Try rephrasing, or if you know the answer — `!suggest` it and help a wizard out.",
+                "That question stumped me. Either I don't have the data yet, or I need more coffee. Try asking differently, or use `!suggest` to add what you know.",
+                "I... genuinely don't know. And I'm not going to pretend I do. If you have the answer, `!suggest` it — the guild will thank you.",
+            ];
+            const msg = failMessages[Math.floor(Math.random() * failMessages.length)];
+            const embed = new EmbedBuilder()
+                .setTitle('🧙 Arch AI')
+                .setDescription(msg)
+                .setColor(0xff6b6b).setTimestamp().setFooter({ text: 'Arch AI — !suggest to help fill the gaps' });
             return message.reply({ embeds: [embed] });
         }
 

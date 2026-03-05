@@ -4,6 +4,17 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.8.3] - 2026-03-03
+
+### Persona-themed error messages — rate limits and failures
+
+- 🧙 **Rate limit detection** — Bot detects OpenAI rate limits (429, quota, billing errors) and shows a persona-themed "recharging" message instead of a generic error
+- 💬 **4 rate limit messages** — Randomized, on-brand responses ("My knowledge is vast. My API budget is not.")
+- ❓ **3 failure messages** — When the bot can't answer, it responds in character and nudges toward `!suggest`
+- 🔧 Both error types still log to debug channel for admin visibility
+
+---
+
 ## [3.8.2] - 2026-03-03
 
 ### Conversational memory — per-user context for follow-up questions
