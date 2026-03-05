@@ -18,11 +18,11 @@ Discord bot for the Arch 2 Addicts server and XYIAN OFFICIAL guild (ID: 213797).
 
 ## What it does
 
-- **Q&A in #arch-ai** — Ask any Archero 2 question; the bot answers using OpenAI + curated facts
+- **Q&A in #arch-ai** — Ask any Archero 2 question; the bot answers using OpenAI + curated facts, in the Arch AI persona voice (cybernetic wizard with dry wit)
 - **Reputation-based role tiers** — Contributors earn roles (Arch Scholar, Arch Sage) by getting suggestions approved
 - **Reaction-role access** — React with 🤖 in #lobby or on welcome messages to get AI Enabled
 - **Personal DMs** — Users get notified when suggestions are approved/rejected, roles are granted, or tiers are earned
-- **Daily reset reminder** — 4pm Pacific every day in general chat
+- **Daily reset reminder** — 4pm Pacific every day in general chat, with Arch AI's daily knowledge gap question
 - **Guild recruitment** — Every other day in the recruit channel
 - **Welcome system** — Greets new members in #general with channel links, auto-assigns ArchAddict role, sends a personal DM with full community rundown, and ⚔️ guild verification request
 - **Knowledge management** — Tiered access to add/remove facts
@@ -146,7 +146,7 @@ The bot posts release notes to #changelog (`1424784471395274803`) on every deplo
 - `data/suggestions.json` — User suggestion queue (auto-created)
 - `data/feedback.json` — Q&A feedback log (auto-created)
 - `CHANGELOG.md` — Release history (bot reads version + notes from this on startup)
-- `docs/` — ENV reference, restart plan
+- `docs/` — ENV reference, restart plan, persona guide
 
 ## Deployment
 

@@ -4,6 +4,19 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.8.0] - 2026-03-03
+
+### Arch AI persona — the bot has a voice now
+
+- 🧙 **System prompt overhaul** — Q&A answers now use the Arch AI persona: cybernetic wizard with Gandalf-level dry wit and Robin Williams/Flubber energy. Answers are knowledgeable first, entertaining second.
+- 🔍 **Knowledge gap scanner** — Scans `knowledge.json` for empty categories and incomplete character data on every daily message
+- 💬 **Daily message hijack** — Arch AI appends a question to the daily reset, driven by real knowledge gaps, using randomized persona-voiced templates across 5 categories: confused wizard, casual ask, movie reference, nerdy deep dive, and deadpan Gandalf
+- 📋 **15 question templates** — Each category has 2-3 templates that wrap around whatever gap the scanner found, always linking back to `#arch-ai` and `!suggest`
+- 🚫 When no gaps remain, the hijack section simply doesn't appear — no filler
+- 📝 **Persona doc** updated with name reveal concept (future milestone) and Robin Williams inspiration
+
+---
+
 ## [3.7.2] - 2026-03-03
 
 ### Forum cleanup — deleted old guides, posted verified Character List
