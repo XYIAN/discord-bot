@@ -4,6 +4,14 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.8.4] - 2026-03-03
+
+### Knowledge: gold, gear levels vs tiers
+
+- 💰 Added **gold** section — two main uses (gear leveling, general store), explanation of how gear levels are slot-based not item-based, and gear tiers vs levels distinction
+
+---
+
 ## [3.8.3] - 2026-03-03
 
 ### Persona-themed error messages — rate limits and failures
