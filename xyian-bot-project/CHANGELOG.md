@@ -4,6 +4,17 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.7.1] - 2026-03-03
+
+### Channel content — Guild requirements, community rules, AI privacy policy
+
+- ⚔️ **#guild-requirements** — Posted requirements: 1.5M+ power, 2x daily guild boss, 2x daily donations, daily activity, and full donation cost breakdown
+- 📜 **#community-rules-and-safety** — Posted community guidelines: respect, no explicit content, no account trading/selling, no personal info sharing, no cheats/exploits
+- 🔒 **#arch-ai-privacy-policy** — Posted AI data disclosure: what the bot sees, how data is used, what's not private, what we don't do, and OpenAI third-party processing notice
+- 📊 **Fixed donation data** in knowledge.json — corrected gem costs from flat 50 to incremental (free → 20 → 40 → 60 → 80)
+
+---
+
 ## [3.7.0] - 2026-03-03
 
 ### Welcome overhaul — DM, auto-role, guild verification, tier messages

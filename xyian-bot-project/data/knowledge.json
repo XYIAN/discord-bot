@@ -271,7 +271,7 @@
   },
   "custom_facts": [
     {
-      "text": "Guild donations: You can donate 5 times per day. The first donation is free, and the remaining 4 cost 50 gems each (200 gems total). Always do at least the free donation daily!",
+      "text": "Guild donations: You can donate 5 times per day. The first donation is free, then costs increase by 20 gems each (free → 20 → 40 → 60 → 80). Donations are how guilds level up.",
       "added_by": "xyian",
       "added_at": "2026-03-01"
     },
