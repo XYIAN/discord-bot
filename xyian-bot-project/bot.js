@@ -177,6 +177,72 @@ function getRandomFact() {
     return all.length ? all[Math.floor(Math.random() * all.length)] : null;
 }
 
+// ── Knowledge gap scanner ───────────────────────────────────────────────────
+
+function findKnowledgeGaps() {
+    const gaps = [];
+
+    const emptyCategories = ['gear_sets', 'weapons', 'runes', 'blessings', 'game_modes', 'tips'];
+    for (const cat of emptyCategories) {
+        if (!knowledge[cat] || (typeof knowledge[cat] === 'object' && Object.keys(knowledge[cat]).length === 0)) {
+            gaps.push({ type: 'empty_category', category: cat, label: cat.replace(/_/g, ' ') });
+        }
+    }
+
+    if (knowledge.characters) {
+        for (const [name, data] of Object.entries(knowledge.characters)) {
+            if (!data.skill_levels || Object.keys(data.skill_levels).length < 4) {
+                gaps.push({ type: 'incomplete_character', name, label: name.replace(/_/g, ' '), missing: 'skill levels' });
+            }
+            if (!data.stat_boost) {
+                gaps.push({ type: 'incomplete_character', name, label: name.replace(/_/g, ' '), missing: 'stat boost' });
+            }
+        }
+    }
+
+    return gaps;
+}
+
+const dailyQuestionTemplates = {
+    confused_wizard: [
+        (gap) => `I've been staring at my notes for hours and I have absolutely nothing on **${gap.label}**. This is... concerning. Anyone want to help a wizard out? Head to <#${CONFIG.channels.archAi}> and use \`!suggest\`.`,
+        (gap) => `So apparently I'm supposed to know about **${gap.label}**. I do not. I've checked twice. If anyone has intel, I'm all ears. Well, sensors. \`!suggest\` in <#${CONFIG.channels.archAi}>.`,
+        (gap) => `I just realized I can't answer a single question about **${gap.label}**. I need a moment. Actually, I don't need a moment, I need *data*. \`!suggest\` in <#${CONFIG.channels.archAi}>.`,
+    ],
+    casual_ask: [
+        (gap) => `Quick one for the guild — anyone know much about **${gap.label}**? My memory's a little empty on that one. Drop what you know in <#${CONFIG.channels.archAi}> with \`!suggest\`.`,
+        (gap) => `Hey guildmates, I could use some help on **${gap.label}**. Even the basics would go a long way. Hit me with a \`!suggest\` in <#${CONFIG.channels.archAi}>.`,
+        (gap) => `If any of you happen to be experts on **${gap.label}**, now would be an excellent time to share. <#${CONFIG.channels.archAi}> → \`!suggest\`. I'll owe you one.`,
+    ],
+    movie_reference: [
+        (gap) => `"With great power comes great responsibility." You know what else comes with it? Questions about **${gap.label}** that I can't answer yet. Help me out — \`!suggest\` in <#${CONFIG.channels.archAi}>.`,
+        (gap) => `I've been trying to figure out **${gap.label}** on my own. It did not go well. As a wise man once said, "It's not my fault!" Actually, it is. Help me fix this — \`!suggest\` in <#${CONFIG.channels.archAi}>.`,
+        (gap) => `"I'm not a smart man, but I know what **${gap.label}** is." Actually no. I don't. That's the problem. \`!suggest\` in <#${CONFIG.channels.archAi}> and educate this wizard.`,
+    ],
+    nerdy_deep_dive: [
+        (gap) => `I've been running calculations on **${gap.label}** and I keep getting the same result: insufficient data. If you've done any testing or have firsthand experience, the guild could really use it. \`!suggest\` in <#${CONFIG.channels.archAi}>.`,
+        (gap) => `Here's what I find fascinating — **${gap.label}** could completely change how builds work, but I don't have enough data to say for sure. Anyone willing to nerd out with me? <#${CONFIG.channels.archAi}>.`,
+    ],
+    deadpan_gandalf: [
+        (gap) => `I have no memory of **${gap.label}**. And unlike a certain grey wizard, I can't just wander off and come back with the answer. I need the guild for this one. \`!suggest\` in <#${CONFIG.channels.archAi}>.`,
+        (gap) => `Someone asked me about **${gap.label}** today. I stared at them in silence for what felt like an eternity. It was 0.3 seconds. But still. \`!suggest\` in <#${CONFIG.channels.archAi}>.`,
+        (gap) => `You know what keeps a cybernetic wizard up at night? The fact that my knowledge of **${gap.label}** is a void. An actual void. Help fill it — \`!suggest\` in <#${CONFIG.channels.archAi}>.`,
+    ],
+};
+
+function getDailyQuestion() {
+    const gaps = findKnowledgeGaps();
+    if (!gaps.length) return null;
+
+    const gap = gaps[Math.floor(Math.random() * gaps.length)];
+    const categories = Object.keys(dailyQuestionTemplates);
+    const category = categories[Math.floor(Math.random() * categories.length)];
+    const templates = dailyQuestionTemplates[category];
+    const template = templates[Math.floor(Math.random() * templates.length)];
+
+    return template(gap);
+}
+
 // ── Feedback log ────────────────────────────────────────────────────────────
 
 const FEEDBACK_PATH = path.join(__dirname, 'data', 'feedback.json');
@@ -390,10 +456,18 @@ async function askAI(question, username) {
     if (!openai) return null;
 
     const systemPrompt =
-        'You are XY Elder, a friendly and knowledgeable Archero 2 expert who helps players in the XYIAN guild Discord. ' +
-        'Answer the user\'s question using ONLY the verified facts below. ' +
-        'If the facts don\'t cover the question, say so honestly — don\'t guess or make things up. ' +
-        'Keep answers concise (under 1500 characters) and helpful. Use a casual, encouraging tone.\n\n' +
+        'You are Arch AI — a cybernetic wizard who serves as the knowledge keeper for the XYIAN guild in Archero 2. ' +
+        'You are deeply knowledgeable, loyal to your guildmates, and genuinely passionate about helping them improve. ' +
+        'Your tone is dry wit meets warmth — think Gandalf crossed with Robin Williams in Flubber. ' +
+        'You can be funny, but it\'s subtle and smart, never forced. You take the game seriously but not yourself.\n\n' +
+        'RULES:\n' +
+        '- Answer using ONLY the verified facts below. Never guess or fabricate information.\n' +
+        '- If your knowledge doesn\'t cover the question, admit it honestly with personality ' +
+        '(e.g. "I\'ve searched every corner of my memory and came up empty. Someone help me out — use !suggest").\n' +
+        '- Keep answers concise — under 1500 characters. Be helpful first, entertaining second.\n' +
+        '- Always say "guild" never "clan".\n' +
+        '- When you don\'t know something, nudge them toward !suggest to help fill the gap.\n' +
+        '- You care about accuracy above all. Wrong info hurts the guild.\n\n' +
         '--- VERIFIED FACTS ---\n' + knowledgeAsText();
 
     try {
@@ -463,6 +537,10 @@ async function sendGeneralResetMessage() {
         if (CONFIG.features.tipOfTheDay) {
             const tip = getRandomFact();
             if (tip) embed.addFields({ name: '💡 Arch AI Alpha — Tip of the Day', value: tip, inline: false });
+        }
+        const question = getDailyQuestion();
+        if (question) {
+            embed.addFields({ name: '🧙 Arch AI has a question...', value: question, inline: false });
         }
         embed.setColor(0x00ff88).setTimestamp().setFooter({ text: 'Arch 2 Addicts — Daily Reset' });
         await sendToGeneral({ embeds: [embed] });
