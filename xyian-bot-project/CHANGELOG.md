@@ -4,6 +4,15 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.7.2] - 2026-03-03
+
+### Forum cleanup — deleted old guides, posted verified Character List
+
+- 🗑️ Deleted all 18 outdated/duplicate forum threads from **#gear-rune-loadouts** (failed guide attempt from Oct 2025)
+- 📋 Created new **Complete Character List** forum post — all 17 verified characters organized by rarity (Rare, Epic, Legendary) with skill names, stat boosts, all 4 skill levels, and star system / resonance reference
+
+---
+
 ## [3.7.1] - 2026-03-03
 
 ### Channel content — Guild requirements, community rules, AI privacy policy
