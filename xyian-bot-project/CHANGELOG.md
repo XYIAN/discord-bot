@@ -4,6 +4,17 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.8.1] - 2026-03-03
+
+### PvP meta knowledge — resonance combos, skins placeholder
+
+- ⚔️ **PvP resonance combos** added to knowledge base — S-tier (Phynx + Cleo, P2P), A-tier F2P (Helix/Rolla/Mymu + Phynx), and budget options (Mymu + Helix, Mymu + Nyanja)
+- 🎭 **Skins system** placeholder added — each character has skins with abilities and 5 star levels (data TBD)
+- 📝 Mymu's skin requirement noted as critical for PvP viability (5-star+ with skin)
+- 🔗 Phynx character entry updated with cross-reference to pvp_meta combos
+
+---
+
 ## [3.8.0] - 2026-03-03
 
 ### Arch AI persona — the bot has a voice now
