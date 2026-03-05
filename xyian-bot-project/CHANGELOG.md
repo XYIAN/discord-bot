@@ -4,6 +4,16 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.6.3] - 2026-03-03
+
+### AI community channel setup
+
+- 📖 Posted **quick-reference guide** to the AI community channel — commands list, role tiers, and how it all works in one concise embed
+- 🤖 Posted **reaction-role message** in the AI community channel — users can react with 🤖 to get AI Enabled access
+- 📌 New reaction-role message ID (`1478934754848931930`) added to tracked config
+
+---
+
 ## [3.6.2] - 2026-03-03
 
 ### Changelog dedup — single source of truth

@@ -69,7 +69,7 @@ const CONFIG = {
     reactionRole: {
         emoji: '🤖',
         roleName: 'AI Enabled',
-        messageIds: ['1477906768272166925', '1478172709719380081'],
+        messageIds: ['1477906768272166925', '1478172709719380081', '1478934754848931930'],
     },
     roleTiers: [
         { name: 'AI Enabled',   threshold: 0,  canAsk: true,  canSuggest: true,  canAddFact: false, canRemoveFact: false, canListFacts: false },
