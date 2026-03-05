@@ -277,23 +277,27 @@ async function checkTierUpgrade(guild, userId, username) {
 
     const tierMessages = {
         'Arch Scholar': {
-            dm: `🎓 **Congratulations, you've been promoted to Arch Scholar!**\n\n` +
-                `You've had **5 suggestions approved** — that means the community trusts your knowledge.\n\n` +
-                `**New abilities unlocked:**\n` +
+            dm: `🎓 **You've earned the rank of Arch Scholar.**\n\n` +
+                `${username}, **${count} of your suggestions** have been reviewed, approved, and added to the bot's permanent knowledge. That's not nothing — that's real contributions that every player in this community benefits from.\n\n` +
+                `You've gone from asking questions to shaping the answers. That's a big deal.\n\n` +
+                `**What's new for you:**\n` +
                 `• \`!addfact <text>\` — Add facts directly to the knowledge base\n` +
                 `• \`!faq\` — View all knowledge categories\n` +
                 `• \`!listfacts\` — Browse all custom facts\n\n` +
-                `Keep contributing and at **15 approved suggestions** you'll reach **Arch Sage** status!`,
+                `And this isn't the end — at **15 approved suggestions**, you'll reach **Arch Sage**, the highest rank in the community. Keep going.`,
             debug: `🎓 **Tier upgrade: Arch Scholar**\nUser: **${username}** (${userId})\nApproved suggestions: ${count}\nNew access: !addfact, !faq, !listfacts`,
         },
         'Arch Sage': {
-            dm: `🧙 **You've achieved Arch Sage — the highest community rank!**\n\n` +
-                `With **15 approved suggestions**, you've proven yourself as a trusted expert.\n\n` +
-                `**New abilities unlocked:**\n` +
-                `• \`!removefact <n>\` — Remove incorrect facts from the knowledge base\n` +
-                `• Full knowledge management access\n\n` +
-                `You're now one of the guardians of the bot's knowledge. Thank you for making it better for everyone!`,
-            debug: `🧙 **Tier upgrade: Arch Sage**\nUser: **${username}** (${userId})\nApproved suggestions: ${count}\nNew access: !removefact (full knowledge management)`,
+            dm: `🧙 **${username}, you are now an Arch Sage.**\n\n` +
+                `This is the highest rank a community member can achieve — and you earned it. **${count} approved suggestions.** Every single one made the bot smarter, more accurate, and more useful for players who will never even know your name but will benefit from what you built.\n\n` +
+                `There are no more tiers. No more thresholds. You've reached the top.\n\n` +
+                `From here, you have full access to manage the knowledge base:\n` +
+                `• \`!addfact\` — Add facts\n` +
+                `• \`!removefact\` — Remove incorrect info\n` +
+                `• \`!listfacts\` / \`!faq\` — Full visibility into everything the bot knows\n\n` +
+                `You're not just a contributor anymore — you're a guardian of this community's knowledge. We built this together, and it wouldn't be the same without you.\n\n` +
+                `Thank you. Genuinely.`,
+            debug: `🧙 **Tier upgrade: Arch Sage** 🎉\nUser: **${username}** (${userId})\nApproved suggestions: ${count}\nNew access: !removefact (full knowledge management)\n*Highest community rank achieved.*`,
         },
     };
 
@@ -516,9 +520,28 @@ const client = new Client({
 // ── Reaction-role system ────────────────────────────────────────────────────
 
 const reactionRoleMessages = new Set();
+const welcomeDmMessages = new Map();
 
 client.on('messageReactionAdd', async (reaction, user) => {
     if (user.bot) return;
+
+    // ⚔️ Guild verification request via DM
+    if (reaction.emoji.name === '⚔️' && welcomeDmMessages.has(reaction.message.id)) {
+        const info = welcomeDmMessages.get(reaction.message.id);
+        welcomeDmMessages.delete(reaction.message.id);
+        try {
+            await sendToAdmin({
+                content: `⚔️ **Guild verification request**\n` +
+                    `User: **${info.username}** (<@${info.userId}>)\n` +
+                    `They reacted to their welcome DM — verify they're in XYIAN OFFICIAL and use \`!grant @user\` to assign the role.`,
+            });
+            await user.send('⚔️ Your guild verification request has been sent! An admin will review it shortly.');
+        } catch (e) {
+            console.error('❌ Guild verify request error:', e.message);
+        }
+        return;
+    }
+
     if (reaction.emoji.name !== '🤖') return;
     if (!reactionRoleMessages.has(reaction.message.id)) return;
 
@@ -571,19 +594,26 @@ client.on('guildMemberAdd', async (member) => {
     }
 
     try {
+        // Auto-assign ArchAddict role on join
+        const addictRole = member.guild.roles.cache.find(r => r.name === 'ArchAddict');
+        if (addictRole && !member.roles.cache.has(addictRole.id)) {
+            await member.roles.add(addictRole);
+        }
+
         const emoji = CONFIG.reactionRole.emoji;
         const roleName = CONFIG.reactionRole.roleName;
         const embed = new EmbedBuilder()
             .setTitle(`Welcome to Arch 2 Addicts, ${member.user.username}!`)
             .setDescription(
                 `Hey ${member}! Glad to have you here.\n\n` +
-                '**Get started:**\n' +
-                '• Check out the community channels and say hi\n' +
-                '• Use `!help` to see bot commands\n\n' +
+                '**Where to go:**\n' +
+                '💬 <#1425322796820725760> — **Start here!** Main hangout for day-to-day chat\n' +
+                `🤖 <#1424785709914521701> — AI-powered Q&A for Archero 2\n` +
+                '🎬 <#1419944149410648116> — Share your best clips and highlights\n\n' +
                 `**${emoji} Want AI access?**\n` +
                 `React with ${emoji} on this message to get the **${roleName}** role and start asking Archero 2 questions in <#${CONFIG.channels.archAi}>!\n\n` +
                 '**About XYIAN OFFICIAL (Guild ID: 213797):**\n' +
-                'We\'re an active Archero 2 guild always looking for dedicated players. 1M+ power recommended.'
+                'We\'re an active Archero 2 guild — daily activity and 1.5M+ power required.'
             )
             .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
             .setColor(0x00ff88)
@@ -598,6 +628,42 @@ client.on('guildMemberAdd', async (member) => {
                 await fetched.react(emoji);
             }
         }
+
+        // Personal welcome DM
+        const dmEmbed = new EmbedBuilder()
+            .setTitle(`Welcome to Arch 2 Addicts!`)
+            .setDescription(
+                `Hey ${member.user.username}, thanks for joining — seriously. This community is small but it's full of people who genuinely help each other out, and that's what makes it special.\n\n` +
+                `We're building something here that doesn't really exist for Archero 2 — a real, accurate knowledge base powered by the players themselves. No outdated wikis, no scattered info, no guesswork. Every fact in the bot was verified by someone in this community. And we'd love your help making it even better.\n\n` +
+                '**Where to hang out:**\n' +
+                '💬 <#1425322796820725760> — Main chat, jump in anytime\n' +
+                '🤖 <#1424785709914521701> — AI community discussion\n' +
+                '🎬 <#1419944149410648116> — Clips and highlights\n\n' +
+                `**Getting AI access:**\n` +
+                `React with ${emoji} on the welcome message in the server (or in <#1425322796820725760>) to get the **${roleName}** role. Once you have it, head to <#${CONFIG.channels.archAi}> and just ask any Archero 2 question — no command needed.\n\n` +
+                '**Role tiers — contribute and level up:**\n' +
+                `🤖 **AI Enabled** — React with ${emoji} to unlock. Ask questions + \`!suggest\`\n` +
+                '🎓 **Arch Scholar** (5 approved suggestions) — Unlock `!addfact`, `!faq`, `!listfacts`\n' +
+                '🧙 **Arch Sage** (15 approved suggestions) — Unlock `!removefact`\n\n' +
+                '**Useful commands:**\n' +
+                '`!suggest <text>` — Submit a correction or new info\n' +
+                '`!help` — Full command list\n' +
+                '`!contributors` — See top contributors\n\n' +
+                '⚔️ **Already in XYIAN OFFICIAL?**\n' +
+                'React with ⚔️ on this message to request **guild verification**. An admin will confirm and get you set up.\n\n' +
+                '*Thank you in advance for being here. Whether you ask a question, drop a suggestion, or just hang out — you\'re making this community better.*'
+            )
+            .setColor(0x5a017a)
+            .setFooter({ text: 'Arch 2 Addicts — Built by the community, for the community' });
+        try {
+            const dmMsg = await member.user.send({ embeds: [dmEmbed] });
+            await dmMsg.react('⚔️');
+            welcomeDmMessages.set(dmMsg.id, { userId: member.id, username: member.user.username });
+            if (welcomeDmMessages.size > 500) {
+                const oldest = welcomeDmMessages.keys().next().value;
+                welcomeDmMessages.delete(oldest);
+            }
+        } catch { /* DMs disabled */ }
     } catch (e) {
         console.error('❌ Welcome error:', e.message);
     }

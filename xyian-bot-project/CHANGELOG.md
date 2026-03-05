@@ -4,6 +4,20 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.7.0] - 2026-03-03
+
+### Welcome overhaul — DM, auto-role, guild verification, tier messages
+
+- 🏠 **Updated welcome embed** — "Where to go" section with clickable links to #lobby (main chat), #community-ai-discussion (AI Q&A), and #clips-and-highlights
+- 🎨 **Auto-assign ArchAddict role** on join — new members immediately get the community identity role (purple name)
+- 📬 **Personal welcome DM** — Full rundown of the community, channels, AI access, role tiers, commands, and a genuine thank-you message
+- ⚔️ **Guild verification requests** — React with ⚔️ on the welcome DM to request XYIAN Guild Verified; admin gets notified in debug, user gets confirmation DM
+- 🎓 **Upgraded Arch Scholar DM** — Personal, warm message acknowledging their contributions and teasing Arch Sage
+- 🧙 **Upgraded Arch Sage DM** — Special message for the highest rank: "There are no more tiers. You've reached the top."
+- 💪 Guild requirement updated to 1.5M+ power, daily activity
+
+---
+
 ## [3.6.3] - 2026-03-03
 
 ### AI community channel setup
