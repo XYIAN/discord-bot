@@ -450,9 +450,40 @@ async function sendToChangelog(content) {
     }
 }
 
-// ── OpenAI Q&A ──────────────────────────────────────────────────────────────
+// ── OpenAI Q&A (with per-user conversation memory) ──────────────────────────
 
-async function askAI(question, username) {
+const conversationHistory = new Map();
+const CONTEXT_MAX_EXCHANGES = 3;
+const CONTEXT_EXPIRY_MS = 10 * 60 * 1000;
+
+function getUserContext(userId) {
+    const entry = conversationHistory.get(userId);
+    if (!entry) return [];
+    if (Date.now() - entry.lastActive > CONTEXT_EXPIRY_MS) {
+        conversationHistory.delete(userId);
+        return [];
+    }
+    return entry.messages;
+}
+
+function storeExchange(userId, question, answer) {
+    const entry = conversationHistory.get(userId) || { messages: [], lastActive: 0 };
+    entry.messages.push(
+        { role: 'user', content: question },
+        { role: 'assistant', content: answer },
+    );
+    while (entry.messages.length > CONTEXT_MAX_EXCHANGES * 2) {
+        entry.messages.splice(0, 2);
+    }
+    entry.lastActive = Date.now();
+    conversationHistory.set(userId, entry);
+    if (conversationHistory.size > 200) {
+        const oldest = conversationHistory.keys().next().value;
+        conversationHistory.delete(oldest);
+    }
+}
+
+async function askAI(question, username, userId) {
     if (!openai) return null;
 
     const systemPrompt =
@@ -467,21 +498,28 @@ async function askAI(question, username) {
         '- Keep answers concise — under 1500 characters. Be helpful first, entertaining second.\n' +
         '- Always say "guild" never "clan".\n' +
         '- When you don\'t know something, nudge them toward !suggest to help fill the gap.\n' +
-        '- You care about accuracy above all. Wrong info hurts the guild.\n\n' +
+        '- You care about accuracy above all. Wrong info hurts the guild.\n' +
+        '- The user may ask follow-up questions. Use the conversation history to understand context.\n\n' +
         '--- VERIFIED FACTS ---\n' + knowledgeAsText();
+
+    const priorContext = getUserContext(userId);
 
     try {
         const res = await openai.chat.completions.create({
             model: 'gpt-4o-mini',
             messages: [
                 { role: 'system', content: systemPrompt },
+                ...priorContext,
                 { role: 'user', content: question },
             ],
             max_tokens: 600,
             temperature: 0.4,
         });
         const answer = res.choices[0]?.message?.content?.trim();
-        if (answer && answer.length > 5) return answer;
+        if (answer && answer.length > 5) {
+            storeExchange(userId, question, answer);
+            return answer;
+        }
         return null;
     } catch (e) {
         console.error('❌ OpenAI error:', e.message);
@@ -1135,7 +1173,7 @@ client.on('messageCreate', async (message) => {
 
     try {
         await message.channel.sendTyping();
-        const answer = await askAI(message.content, message.author.username);
+        const answer = await askAI(message.content, message.author.username, message.author.id);
 
         if (!answer) {
             const embed = new EmbedBuilder()
