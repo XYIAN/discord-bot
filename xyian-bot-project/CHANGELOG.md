@@ -4,6 +4,15 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.8.5] - 2026-03-03
+
+### Documentation: Knowledge Guide + README docs table
+
+- 📖 **New `docs/KNOWLEDGE-GUIDE.md`** — Complete guide for adding data to knowledge.json: category reference table, format examples for characters/weapons/custom facts, data quality rules, fact sync workflow, validation steps, and how the bot uses the data
+- 📝 **README updated** — New Documentation table linking all docs (Knowledge Guide, Persona, ENV, Restart Plan, Changelog)
+
+---
+
 ## [3.8.4] - 2026-03-03
 
 ### Knowledge: gold, gear levels vs tiers
