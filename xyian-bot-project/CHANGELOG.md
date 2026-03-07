@@ -4,6 +4,17 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.8.7] - 2026-03-07
+
+### Knowledge: Campaign farming strategy, profile experience, gold for cards
+
+- 🎮 **Campaign strategy** in `game_modes` — 50-floor vs 6-min/endless (5 boss battles vs 2 for more drops), two types of 50-floor (door vs same-map), Serenity Pool as same-map farming example; campaign only source of profile experience
+- 📊 **Profile experience** — New category: profile level separate from hero stars, earned only in campaign; every 10 levels unlock 10 cards for gold (random bonuses, keep forever); card effects include Health, skill refresh, Red heart healing+, speed, etc.
+- 💰 **Gold** — Added `profile_level_cards`: gold can buy profile-level-up cards at each 10th level (10 cards per level, random, can be expensive)
+- 📖 **Knowledge Guide** — Category table updated: `game_modes` and new `profile_experience` marked Active
+
+---
+
 ## [3.8.6] - 2026-03-03
 
 ### Documentation: Release Guide

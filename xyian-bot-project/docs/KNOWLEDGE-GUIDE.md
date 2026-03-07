@@ -20,11 +20,12 @@ How to add, update, and maintain data in `data/knowledge.json` — the single so
 | `weapons` | Weapon stats and recommendations | Empty |
 | `runes` | Rune effects and combinations | Empty |
 | `blessings` | Blessing descriptions and strategies | Empty |
-| `game_modes` | PvE, PvP, events, expeditions | Empty |
+| `game_modes` | PvE, PvP, events, expeditions (campaign farming strategy) | Active |
 | `tips` | General gameplay tips | Empty |
 | `skills` | In-game skills (not character skills) | Started |
 | `resources` | Useful links and references | Started |
 | `privilege_cards` | Premium cards and their benefits | Active |
+| `profile_experience` | Profile level, 10-level cards for gold, campaign-only source | Active |
 | `custom_facts` | One-off facts added via `!addfact` | Active |
 
 ## How to Add Data

@@ -274,13 +274,28 @@
     "description": "Gold is the primary currency in Archero 2. It has two main uses: buying items in the general store and leveling up gear.",
     "gear_leveling": "The main use of gold. Gear levels are tied to the equipment slot, not the individual item. For example, if your boots are level 148, every pair of boots you equip will be level 148 — whether they're Mythic Griffin or Legendary Oracle. This means upgrading gear level benefits any item in that slot. Gets very expensive at higher levels.",
     "general_store": "Gold can be used to purchase items from the general store.",
+    "profile_level_cards": "Gold can also be used to buy profile-level-up cards when you reach each 10th profile level. You can buy 10 cards per level; they are randomly generated (e.g. Health increase, skill refresh, Red heart healing+, speed bonus). This is a rarer, sometimes expensive use of gold.",
     "gear_tiers_vs_levels": "Gear tier is specific to the individual piece of equipment (e.g. Rare, Epic, Legendary, Mythic). Gear level is specific to the slot (boots, weapon, armor, etc.) and applies to whatever item is equipped in that slot."
   },
   "gear_sets": {},
   "weapons": {},
   "runes": {},
   "blessings": {},
-  "game_modes": {},
+  "game_modes": {
+    "campaign": {
+      "overview": "Campaign is one of the main PvE modes. Many expert players don't run it often because later levels get very difficult, but for leveling fast or maximizing rewards there are specific strategies.",
+      "farming_drops": "To optimize gear, runes, and scroll drops: choose campaign levels that have 50 floors, not the 6-minute or endless versions. 50-floor runs have 5 boss battles (one every 10th floor), so more boss drops per run. 6-minute or endless runs have only 2 boss battles total, so fewer drops per run.",
+      "fifty_floor_types": "There are two types of 50-floor campaign levels. One type requires walking through a door to change floors each time. The other type uses the same map for all 50 floors — e.g. Serenity Pool — so you never have to move; you can leave your character in one spot and farm easily. Same-map 50-floor levels like Serenity Pool are ideal for farming.",
+      "profile_exp_note": "Campaign is the only way to earn profile experience. See profile_experience category."
+    }
+  },
+  "profile_experience": {
+    "description": "Profile experience is your general account or profile level, separate from character or hero stars. It is earned only by playing campaign mode.",
+    "example": "A player might be profile level 59. When you level up, every 10 levels you unlock the ability to buy cards for gold.",
+    "cards_per_10_levels": "At each 10th profile level you can buy 10 cards for gold. You keep the cards forever. The cards are randomly generated.",
+    "card_effects": "Card bonuses include things like Health increase, extra skill refresh, Red heart healing+, speed bonus, and many more. Each purchase gives random rolls.",
+    "gold_note": "Buying these cards uses gold and can be expensive. This is a rarer use of gold compared to gear leveling and the general store."
+  },
   "tips": {},
   "skills": {
     "tracking_eye": {
