@@ -139,14 +139,23 @@ The bot posts release notes to #changelog (`1424784471395274803`) on every deplo
 - **Minor** (3.X.0) — New features (commands, channels, integrations)
 - **Patch** (3.2.X) — Fact syncs, bug fixes, doc updates, knowledge base growth
 
+## Documentation
+
+| Doc | What it covers |
+|-----|---------------|
+| [`docs/KNOWLEDGE-GUIDE.md`](docs/KNOWLEDGE-GUIDE.md) | How to add data to knowledge.json — formats, categories, quality rules, fact sync workflow |
+| [`docs/PERSONA.md`](docs/PERSONA.md) | Arch AI's voice, tone, humor style, and inspiration references |
+| [`docs/ENV-AND-CHANNELS.md`](docs/ENV-AND-CHANNELS.md) | Environment variables and Discord channel IDs |
+| [`docs/RESTART-PLAN.md`](docs/RESTART-PLAN.md) | Original restart plan from the rebuild |
+| [`CHANGELOG.md`](CHANGELOG.md) | Full release history (bot reads version + notes from this on startup) |
+
 ## Files
 
 - `bot.js` — The bot (single file)
-- `data/knowledge.json` — Game facts (characters, skills, resources, custom facts)
+- `data/knowledge.json` — Game facts (characters, skills, resources, custom facts) — see [Knowledge Guide](docs/KNOWLEDGE-GUIDE.md)
 - `data/suggestions.json` — User suggestion queue (auto-created)
 - `data/feedback.json` — Q&A feedback log (auto-created)
 - `CHANGELOG.md` — Release history (bot reads version + notes from this on startup)
-- `docs/` — ENV reference, restart plan, persona guide
 
 ## Deployment
 
