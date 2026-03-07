@@ -4,6 +4,15 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.8.6] - 2026-03-03
+
+### Documentation: Release Guide
+
+- 📦 **New `docs/RELEASE-GUIDE.md`** — Complete commit, push & deploy protocol: what to update before pushing (CHANGELOG, README, docs, JSON validation), what happens on deploy, per-scenario guides, copy-paste checklist, and what not to do
+- 📝 README docs table updated with Release Guide at the top
+
+---
+
 ## [3.8.5] - 2026-03-03
 
 ### Documentation: Knowledge Guide + README docs table
