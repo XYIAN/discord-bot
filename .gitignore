@@ -22,6 +22,9 @@ pids
 *.pid.lock
 .bot.lock
 
+# Local testing (screenshots, etc.)
+screenshots/
+
 # Coverage directory used by tools like istanbul
 coverage/
 
