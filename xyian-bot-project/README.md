@@ -144,6 +144,7 @@ The bot posts release notes to #changelog (`1424784471395274803`) on every deplo
 | Doc | What it covers |
 |-----|---------------|
 | [`docs/RELEASE-GUIDE.md`](docs/RELEASE-GUIDE.md) | Commit, push & deploy protocol — checklist, what to update before pushing, what happens on deploy |
+| [`docs/FACT-SYNC.md`](docs/FACT-SYNC.md) | Syncing live facts into the repo — script usage, full workflow, role tiers, troubleshooting |
 | [`docs/KNOWLEDGE-GUIDE.md`](docs/KNOWLEDGE-GUIDE.md) | How to add data to knowledge.json — formats, categories, quality rules, fact sync workflow |
 | [`docs/PERSONA.md`](docs/PERSONA.md) | Arch AI's voice, tone, humor style, and inspiration references |
 | [`docs/ENV-AND-CHANNELS.md`](docs/ENV-AND-CHANNELS.md) | Environment variables and Discord channel IDs |

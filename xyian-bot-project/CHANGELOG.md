@@ -15,6 +15,17 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 ---
 
+## [3.9.0] - 2026-03-03
+
+### Fact sync script + documentation
+
+- 🔧 **New `scripts/sync-facts.js`** — Automated script to pull live `!addfact` facts and approved suggestions from Discord into `knowledge.json`. Three modes: dry run, apply, apply + notify Discord
+- 📖 **New `docs/FACT-SYNC.md`** — Complete guide for any agent: script usage, full step-by-step workflow, how roles/promotions work, tier reference table, and troubleshooting
+- 🧠 Script uses deep matching — checks all categories (not just custom_facts) to avoid false positives when facts have been restructured into proper sections
+- ✅ Ran sync — all 7 live `!addfact` entries confirmed already in repo. Knowledge base at 49 entries.
+
+---
+
 ## [3.8.6] - 2026-03-03
 
 ### Documentation: Release Guide
