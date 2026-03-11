@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "text": "there are 2 main uses for gold. Leveling up weapons and purchasing talent cards. \n\nAs of the most recent update, Weapon max level will raise to 200 from 150.\n\nTalent cards can be bought every 10 level",
+    "by": "fails_8743",
+    "userId": "392511835984756738",
+    "at": "2026-03-10T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 2,
+    "text": "Privilege Cards are a great way to provide improved pay-to-play benefits to enhance daily progress. \n\nPermanent Ad-Free Card: grants 1200 gems on initial purchase +20 more more per day, but most impor",
+    "by": "fails_8743",
+    "userId": "392511835984756738",
+    "at": "2026-03-02T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 3,
+    "text": "The best source to learn more in depth information on Archero skills is at this URL: https://archero-2.game-vault.net/wiki/Skills",
+    "by": "fails_8743",
+    "userId": "392511835984756738",
+    "at": "2026-03-02T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 4,
+    "text": "Tracking Eye: Your projectiles gain the ability to track enemies. Reduces DMG dealt by 10% (doesn't affect Sprites or elemental damage). Reduces main weapon and Strike projectile speed by 50%. Works b",
+    "by": "fails_8743",
+    "userId": "392511835984756738",
+    "at": "2026-03-02T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 5,
+    "text": "the max guild level is 11",
+    "by": "_xyian",
+    "userId": "528059607826825226",
+    "at": "2026-03-01T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 6,
+    "text": "Guild donations: You can donate 5 times per day. The first donation is free, and the remaining 4 cost 50 gems each (200 gems total). Always do at least the free donation daily!",
+    "by": "_xyian",
+    "userId": "528059607826825226",
+    "at": "2026-03-01T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 7,
+    "text": "The first guild donation of the day is free",
+    "by": "_xyian",
+    "userId": "528059607826825226",
+    "at": "2026-03-01T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  }
+]
