@@ -4,6 +4,18 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.9.1] - 2026-02-16
+
+### Contributor credit in fact sync
+
+- 🎖️ **Sync script now credits contributors** — every `!addfact` contribution is tracked in `suggestions.json` as an approved entry, so it counts toward role tier progression (Arch Scholar @ 5, Arch Sage @ 15)
+- 🔄 **Retroactive credits** — all existing `!addfact` contributions from `fails_8743` (4) and `_xyian` (3) have been credited
+- 📬 **DM notifications** — `--notify` mode now DMs contributors about their newly credited contributions with tier progress info
+- 📖 **Updated `FACT-SYNC.md`** — documents the credit system, how it works, troubleshooting for uncredited contributors, and the two credit paths (`!suggest` → `!approve` vs `!addfact` → fact sync)
+- ✨ New `approvedVia: "fact_sync"` field distinguishes sync-credited entries from standard approvals
+
+---
+
 ## [3.8.7] - 2026-03-07
 
 ### Knowledge: Campaign farming strategy, profile experience, gold for cards
