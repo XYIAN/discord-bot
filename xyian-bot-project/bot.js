@@ -3,7 +3,7 @@
  * XYIAN Bot - Archero 2 community bot
  *
  * Features:
- *   - Daily reset reminder (4pm Pacific) → general chat
+ *   - Daily reset reminder (5pm Pacific) → general chat
  *   - Guild recruitment (every other day) → recruit channel
  *   - OpenAI-powered Q&A in #arch-ai (verified roles + AI Enabled)
  *   - !addfact / !removefact / !listfacts for admins
@@ -397,18 +397,27 @@ async function sendViaWebhook(webhookUrl, channelId, trackingKey, content) {
     try {
         const wh = new WebhookClient({ url: webhookUrl });
 
-        // If we previously sent a message AND the channel's most recent
-        // message is still ours, delete it so the new one looks fresh.
+        // Delete our previous message before sending so the channel stays tidy.
+        // - recruit: always delete our last post so only one recruitment message is visible.
+        // - general: only delete if we're still the latest (don't remove if users replied).
         if (trackingKey && lastBotMessage[trackingKey] && channelId && client.isReady()) {
             try {
-                const channel = await client.channels.fetch(channelId);
-                if (channel) {
-                    const recent = await channel.messages.fetch({ limit: 1 });
-                    const latest = recent.first();
-                    if (latest && latest.id === lastBotMessage[trackingKey]) {
-                        await wh.deleteMessage(lastBotMessage[trackingKey]);
-                        console.log(`🗑️ Deleted stale ${trackingKey} message ${lastBotMessage[trackingKey]}`);
+                let shouldDelete = false;
+                if (trackingKey === 'recruit') {
+                    shouldDelete = true;
+                } else {
+                    const channel = await client.channels.fetch(channelId);
+                    if (channel) {
+                        const recent = await channel.messages.fetch({ limit: 1 });
+                        const latest = recent.first();
+                        if (latest && latest.id === lastBotMessage[trackingKey]) {
+                            shouldDelete = true;
+                        }
                     }
+                }
+                if (shouldDelete) {
+                    await wh.deleteMessage(lastBotMessage[trackingKey]);
+                    console.log(`🗑️ Deleted previous ${trackingKey} message ${lastBotMessage[trackingKey]}`);
                 }
             } catch (e) {
                 console.log(`⚠️  Could not clean old ${trackingKey} message: ${e.message}`);
@@ -534,16 +543,25 @@ async function askAI(question, username, userId) {
 function setupDailyResetMessaging() {
     const schedule = () => {
         const now = new Date();
-        const pacific = new Date(now.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
-        const next = new Date(pacific);
-        next.setHours(16, 0, 0, 0);
-        if (next <= pacific) next.setDate(next.getDate() + 1);
-        const ms = next.getTime() - pacific.getTime();
-        console.log(`⏰ Next daily reset: ${next.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`);
+        // Target next 5:00 PM America/Los_Angeles. In PST that's 01:00 UTC (next day), in PDT that's 00:00 UTC.
+        let next = null;
+        for (const utcHour of [0, 1]) {
+            const candidate = new Date(now);
+            candidate.setUTCHours(utcHour, 0, 0, 0);
+            if (candidate <= now) candidate.setUTCDate(candidate.getUTCDate() + 1);
+            const laHour = candidate.toLocaleString('en-US', { timeZone: 'America/Los_Angeles', hour: '2-digit', hour12: false });
+            if (laHour === '17') {
+                next = candidate;
+                break;
+            }
+        }
+        if (!next) next = new Date(now.getTime() + 60 * 60 * 1000); // fallback: 1 hour from now
+        const ms = Math.max(0, next.getTime() - now.getTime());
+        console.log(`⏰ Next daily reset: ${next.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })} (5pm Pacific)`);
         setTimeout(() => { sendGeneralResetMessage(); schedule(); }, ms);
     };
     schedule();
-    console.log('✅ Daily reset scheduled (4pm Pacific)');
+    console.log('✅ Daily reset scheduled (5:00 PM Pacific Standard Time / 1:00 AM UTC)');
 }
 
 let resetLock = false;
@@ -554,7 +572,7 @@ async function sendGeneralResetMessage() {
         const embed = new EmbedBuilder()
             .setTitle('🔄 Daily Reset Reminder!')
             .setDescription(
-                '**Daily reset is here! Complete your daily tasks before 4pm Pacific!**\n\n' +
+                '**Daily reset is here! Complete your daily tasks before 5:00 PM Pacific Standard Time (1:00 AM UTC).**\n\n' +
                 '✨ **What\'s new today:**\n' +
                 '• Fresh daily quests with great rewards\n' +
                 '• New challenges to conquer\n' +
@@ -613,7 +631,7 @@ async function sendGuildRecruitment() {
             '**We\'re looking for dedicated players to join our elite community!**\n\n' +
             '✨ **What we offer:**\n• Active daily community\n• Expert strategies and guides\n• Guild events and challenges\n• 10% discount on guild shop items\n• Supportive and friendly environment\n\n' +
             '🎯 **Requirements:**\n• Daily participation in guild activities\n• 2 Boss Battles per day\n• 1 Guild Donation per day\n• Active in Discord community\n\n' +
-            '💪 **Power Level:** 1M+ recommended\n\n**Ready to join the elite? Apply now!**'
+            '💪 **Power Level:** 1.5M+ required\n\n**Ready to join the elite? Apply now!**'
         )
         .setColor(0xffa500)
         .setTimestamp()
@@ -724,7 +742,7 @@ client.on('guildMemberAdd', async (member) => {
             .setDescription(
                 `Hey ${member}! Glad to have you here.\n\n` +
                 '**Where to go:**\n' +
-                '💬 <#1425322796820725760> — **Start here!** Main hangout for day-to-day chat\n' +
+                '💬 <#1425322796820725760> — **Start here!** cross-server day-to-day chat\n' +
                 `🤖 <#1424785709914521701> — AI-powered Q&A for Archero 2\n` +
                 '🎬 <#1419944149410648116> — Share your best clips and highlights\n\n' +
                 `**${emoji} Want AI access?**\n` +
@@ -753,13 +771,13 @@ client.on('guildMemberAdd', async (member) => {
                 `Hey ${member.user.username}, thanks for joining — seriously. This community is small but it's full of people who genuinely help each other out, and that's what makes it special.\n\n` +
                 `We're building something here that doesn't really exist for Archero 2 — a real, accurate knowledge base powered by the players themselves. No outdated wikis, no scattered info, no guesswork. Every fact in the bot was verified by someone in this community. And we'd love your help making it even better.\n\n` +
                 '**Where to hang out:**\n' +
-                '💬 <#1425322796820725760> — Main chat, jump in anytime\n' +
-                '🤖 <#1424785709914521701> — AI community discussion\n' +
+                '💬 <#1425322796820725760> — cross-server, jump in anytime\n' +
+                '🤖 <#1424785709914521701> — **Community AI discussion** (get AI access here)\n' +
                 '🎬 <#1419944149410648116> — Clips and highlights\n\n' +
                 `**Getting AI access:**\n` +
-                `React with ${emoji} on the welcome message in the server (or in <#1425322796820725760>) to get the **${roleName}** role. Once you have it, head to <#${CONFIG.channels.archAi}> and just ask any Archero 2 question — no command needed.\n\n` +
+                `Go to **<#1424785709914521701>** (community AI discussion) and react with ${emoji} on the message there to get the **${roleName}** role. Once you have it, head to <#${CONFIG.channels.archAi}> and ask any Archero 2 question — no command needed.\n\n` +
                 '**Role tiers — contribute and level up:**\n' +
-                `🤖 **AI Enabled** — React with ${emoji} to unlock. Ask questions + \`!suggest\`\n` +
+                `🤖 **AI Enabled** — Get it by reacting in <#1424785709914521701>. Then ask questions + \`!suggest\`\n` +
                 '🎓 **Arch Scholar** (5 approved suggestions) — Unlock `!addfact`, `!faq`, `!listfacts`\n' +
                 '🧙 **Arch Sage** (15 approved suggestions) — Unlock `!removefact`\n\n' +
                 '**Useful commands:**\n' +
@@ -848,6 +866,7 @@ client.on('messageCreate', async (message) => {
                         '`!grant @user` — Manually assign a role\n' +
                         '`!setupreaction` — Post a reaction-role message\n' +
                         '`!recruit` — Send guild recruitment now\n' +
+                        '`!post-guild-requirements` — Post guild requirements embed (for #guild-requirements)\n' +
                         '`!reset` — Send daily reset now'
                     )
                     .setColor(0x9b59b6).setTimestamp().setFooter({ text: 'XYIAN Bot' });
@@ -941,6 +960,26 @@ client.on('messageCreate', async (message) => {
                 }
                 await sendGuildRecruitment();
                 return message.reply('🏰 Guild recruitment sent!');
+            }
+
+            case 'post-guild-requirements': {
+                if (!isAdmin(message.member)) {
+                    return message.reply('❌ This command requires the **XYIAN OFFICIAL** or **Admin** role.');
+                }
+                const reqEmbed = new EmbedBuilder()
+                    .setTitle('🏰 XYIAN OFFICIAL — Guild Requirements')
+                    .setDescription('**Requirements for active members (Guild ID: 213797)**')
+                    .addFields(
+                        { name: '💪 Power Level', value: '**1.5M+ required**\n• Minimum power to join and stay active', inline: false },
+                        { name: '⚔️ Daily Boss Battles', value: '**2 per day**\n• Required for active status\n• Tracked automatically', inline: false },
+                        { name: '💰 Guild Donations', value: '**1 per day**\n• First donation of the day is free\n• Next 4 cost 20 → 40 → 60 → 80 gems (200 gems total if all 5)\n• Tracked automatically', inline: false },
+                        { name: '📊 Activity', value: '**Daily participation in Discord**\n• Inactive players may be removed\n• Exceptions for valid reasons', inline: false }
+                    )
+                    .setColor(0xFFD700)
+                    .setTimestamp()
+                    .setFooter({ text: 'XYIAN OFFICIAL — Arch 2 Addicts' });
+                await message.channel.send({ embeds: [reqEmbed] });
+                return message.reply('✅ Guild requirements embed posted. You can delete the old message and this reply.');
             }
 
             case 'reset': {

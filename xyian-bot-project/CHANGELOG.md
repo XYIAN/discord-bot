@@ -4,6 +4,53 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.9.3] - 2025-02-03
+
+### Guild requirements: 1.5M+ everywhere
+
+- 💪 **Power level** — All guild requirement copy updated to **1.5M+** (was 1M): guild recruitment embed, welcome embed (already 1.5M).
+- 📋 **#guild-requirements** — New command `!post-guild-requirements` for in-channel post. Script run once: old bot message deleted and new requirements embed (1.5M+ power, 2 boss battles, 1 donation/day, donation cost breakdown) posted to #guild-requirements.
+- 📖 **Help** — `!help` / admin section now lists `!post-guild-requirements`.
+
+---
+
+### Lobby renamed to #cross-server (suggestion: Wilbro Baggins)
+
+- 📝 **Channel rename** — #lobby has been renamed to **#cross-server** in Discord. Docs and bot copy updated (README, CHANGELOG, ENV-AND-CHANNELS, welcome embed/DM).
+- 📬 **Thank-you DM** — Wilbro Baggins was DMed with a mention and channel link for suggesting the name.
+
+---
+
+### Guild recruit channel: always delete previous bot message
+
+- 🗑️ **Recruit stale cleanup** — When posting guild recruitment, the bot now **always** deletes its previous message in that channel (if any) before sending the new one, so only one recruitment post is visible. Previously it only deleted when the channel’s latest message was still ours, so if anyone had posted after the last recruitment the old post stayed.
+
+---
+
+### Welcome DM: AI reaction only in #community-ai-discussion
+
+- 📬 **Welcome DM still active** — New members still get a personal welcome DM with channels, tier info, and ⚔️ for guild verification.
+- 🤖 **AI Enabled in DM copy** — The DM no longer tells users to react on the welcome message or in #cross-server. It now directs them to **#community-ai-discussion** to react with 🤖 there to get the AI Enabled role, so the reaction lives in that channel.
+
+---
+
+### Daily reset: 5pm Pacific Standard Time + UTC in message
+
+- ⏰ **Reset time** — Daily reset runs at **5:00 PM Pacific Standard Time** (1:00 AM UTC). Schedule targets 5pm America/Los_Angeles regardless of server timezone (fixes 4pm firing on some deploys).
+- 📝 **Message** — Reset text: "before 5:00 PM Pacific Standard Time (1:00 AM UTC)" so the game’s UTC reset is shown.
+
+---
+
+## [3.9.2] - 2025-02-03
+
+### Fact sync: DM template + verifiable DMs
+
+- 📬 **DM template** — Sync script `--notify` DMs now include **which fact(s) were added**, in the same style as the bot’s `!approve` DM (quoted fact text, up to 400 chars per fact). Template documented in `docs/FACT-SYNC.md`.
+- 📋 **Verify who got DMs** — Debug channel post after sync now includes **"DMs sent to:"** and **"DM failed:"** so you can confirm e.g. that fails_8743 received the thank-you DM.
+- 🐛 **DM API fix** — Removed invalid `POST /channels/@me` call; DMs are sent only via `POST /users/@me/channels`.
+
+---
+
 ## [3.9.1] - 2026-02-16
 
 ### Contributor credit in fact sync
@@ -136,7 +183,7 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 ### Welcome overhaul — DM, auto-role, guild verification, tier messages
 
-- 🏠 **Updated welcome embed** — "Where to go" section with clickable links to #lobby (main chat), #community-ai-discussion (AI Q&A), and #clips-and-highlights
+- 🏠 **Updated welcome embed** — "Where to go" section with clickable links to #cross-server (main chat), #community-ai-discussion (AI Q&A), and #clips-and-highlights
 - 🎨 **Auto-assign ArchAddict role** on join — new members immediately get the community identity role (purple name)
 - 📬 **Personal welcome DM** — Full rundown of the community, channels, AI access, role tiers, commands, and a genuine thank-you message
 - ⚔️ **Guild verification requests** — React with ⚔️ on the welcome DM to request XYIAN Guild Verified; admin gets notified in debug, user gets confirmation DM
@@ -197,11 +244,11 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 ### AI Enabled reaction-role goes live + welcome message upgrade
 
-- 🤖 Reaction-role switched from "Beta Tester" to **AI Enabled** — now live in #lobby
-- 📢 **Announcement posted** in #lobby — react with 🤖 to get AI Enabled role automatically
+- 🤖 Reaction-role switched from "Beta Tester" to **AI Enabled** — now live in #cross-server
+- 📢 **Announcement posted** in #cross-server — react with 🤖 to get AI Enabled role automatically
 - 👋 **Welcome messages** now include 🤖 reaction — new members can tap it to get AI access instantly
 - 🎯 `!setupreaction` updated with the real announcement text (no longer test copy)
-- 📌 Lobby announcement message tracked for reaction-role across restarts
+- 📌 cross-server announcement message tracked for reaction-role across restarts
 
 ---
 

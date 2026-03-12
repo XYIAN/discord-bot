@@ -1,6 +1,6 @@
 # Env vars and channel IDs (single reference)
 
-Use this when setting up `.env` or Railway. See **RESTART-PLAN.md** for how each is used.
+Use this when setting up `.env` / `.env.local` or Railway. Scripts and the bot load `.env` then `.env.local` (`.env.local` overrides); keep secrets in `.env.local`. See **RESTART-PLAN.md** for how each is used.
 
 ## Required to run the skeleton bot
 
@@ -31,7 +31,9 @@ Use this when setting up `.env` or Railway. See **RESTART-PLAN.md** for how each
 | Purpose | Channel name | ID |
 |---------|--------------|-----|
 | Main Q&A (only channel we reply to for normal messages) | arch-ai | `1424322391160393790` |
+| cross-server (main/day-to-day chat; was Lobby) | cross-server | `1425322796820725760` |
 | Guild recruit (never reply; only cron sends) | (your recruit channel) | `1419944464608268410` |
+| Guild requirements (embed posted via !post-guild-requirements or script) | guild-requirements | `1425139641199235133` |
 | Changelog (bot posts release notes on deploy) | changelog | `1424784471395274803` |
 
 To get a channel ID: Discord → User Settings → App Settings → Developer Mode ON → right‑click channel → Copy ID.
