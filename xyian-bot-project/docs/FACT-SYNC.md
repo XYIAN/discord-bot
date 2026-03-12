@@ -101,8 +101,33 @@ The fact sync interacts with the role tier system:
 - The script syncs facts that were added via `!addfact` (direct adds by Arch Scholar+)
 - Approved suggestions are already in the live `knowledge.json` — the script catches any that aren't in the repo yet
 - **Contributor credit**: the script scans ALL `!addfact` messages and creates matching approved entries in `suggestions.json` for any that aren't already tracked. This means `!addfact` contributions count toward tier progression just like `!suggest` → `!approve` ones.
-- With `--notify`, the script DMs contributors about their newly credited contributions and tier progress
+- With `--notify`, the script DMs contributors about their newly credited contributions and tier progress (see [DM template](#dm-template-for-sync-notify) below)
 - Role promotions themselves happen on the next bot deploy when `checkTierUpgrade()` runs, or can be triggered manually
+
+### DM template for sync (--notify)
+
+When a contributor has newly credited facts, the script sends them a single DM (same idea as the bot’s `!approve` DM). Template:
+
+```
+✅ **Your contributions have been synced!**
+
+N of your facts have been reviewed and added to the bot's permanent knowledge base.
+
+**Fact(s) added to the knowledge base:**
+
+> First fact text (up to 400 chars)…
+> Second fact text (if multiple)…
+
+You now have **X** approved contribution(s). Y more until **Arch Scholar**!   (or "You've reached the highest tier!")
+
+*Thank you for making the bot smarter for everyone!*
+```
+
+- **Who gets the DM:** Every contributor who had at least one fact credited in this run, except the owner (`OWNER_ID`).
+- **Verifying DMs:** The script posts to **#debug-logs** after sending DMs. The message includes:
+  - **DMs sent to:** list of usernames who received the DM
+  - **DM failed:** list of usernames where the DM could not be sent (e.g. DMs disabled)
+- So after a sync you can confirm e.g. that `fails_8743` was notified by checking the debug post for "DMs sent to: fails_8743".
 
 ## Role Tier Reference
 
@@ -126,8 +151,7 @@ Admins and verified guild members bypass all tier checks.
 - Credits are tagged with `approvedVia: "fact_sync"` to distinguish them from regular `!suggest` → `!approve` entries.
 
 **DISCORD_TOKEN not set:**
-- Make sure `.env` exists in `xyian-bot-project/` with the real token.
-- The script loads from `.env` relative to its location.
+- Scripts load env from `xyian-bot-project/`: `.env` then `.env.local` (`.env.local` overrides). Put the bot token in `.env.local` or `.env` so the app sends as the bot.
 
 **JSON validation failed after sync:**
 - Run `node -e "require('./data/knowledge.json'); console.log('✅ Valid')"` to check.

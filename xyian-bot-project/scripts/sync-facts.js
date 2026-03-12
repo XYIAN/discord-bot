@@ -13,9 +13,11 @@
  *   node scripts/sync-facts.js --notify  # Apply + post sync summary + DM contributors
  */
 
-require('dotenv').config({ path: require('path').join(__dirname, '..', '.env'), override: true });
-const fs = require('fs');
 const path = require('path');
+const envDir = path.join(__dirname, '..');
+require('dotenv').config({ path: path.join(envDir, '.env') });
+require('dotenv').config({ path: path.join(envDir, '.env.local'), override: true });
+const fs = require('fs');
 const https = require('https');
 
 const KNOWLEDGE_PATH = path.join(__dirname, '..', 'data', 'knowledge.json');
@@ -282,13 +284,55 @@ function isAlreadySynced(text, existingTexts) {
     const afterCount = countFacts(knowledge);
     console.log(`\n📊 Before: ${beforeCount} entries → After: ${afterCount} entries`);
 
-    // ── Notify Discord ──
+    // ── DM credited contributors (always when we credited; not opt-in) ──
+    let dmSentTo = [];
+    let dmFailed = [];
+    if (applyMode && uncreditedContributions.length > 0) {
+        for (const [username, data] of Object.entries(creditByUser)) {
+            if (data.userId === OWNER_ID) continue;
+            if (data.uncredited === 0) continue;
+            const totalApproved = (existingApprovedByUser[username] || 0) + data.uncredited;
+            const nextTier = TIER_THRESHOLDS.find(t => t.threshold > totalApproved);
+            const progressLine = nextTier
+                ? `You now have **${totalApproved}** approved contribution${totalApproved === 1 ? '' : 's'}. ${nextTier.threshold - totalApproved} more until **${nextTier.name}**!`
+                : `You now have **${totalApproved}** approved contributions. You've reached the highest tier!`;
+
+            const userFacts = uncreditedContributions.filter(c => c.username === username);
+            const factLines = userFacts.map(c => `> ${c.text.substring(0, 400)}${c.text.length > 400 ? '…' : ''}`).join('\n\n');
+            const factsSection = userFacts.length > 0
+                ? `**Fact(s) added to the knowledge base:**\n\n${factLines}\n\n`
+                : '';
+
+            const dmBody = `✅ **Your contributions have been synced!**\n\n` +
+                `${data.uncredited} of your facts have been reviewed and added to the bot's permanent knowledge base.\n\n` +
+                factsSection +
+                `${progressLine}\n\n` +
+                `*Thank you for making the bot smarter for everyone!*`;
+            const dmContent = dmBody.length > 2000 ? dmBody.substring(0, 1990) + '\n\n…_(message truncated)_' : dmBody;
+
+            try {
+                const dmChannel = await discordRequest('POST', '/users/@me/channels', { recipient_id: data.userId });
+                if (dmChannel && dmChannel.id) {
+                    await discordRequest('POST', `/channels/${dmChannel.id}/messages`, { content: dmContent });
+                    dmSentTo.push(username);
+                    console.log(`📬 DM sent to ${username}`);
+                } else {
+                    dmFailed.push(username);
+                    console.log(`⚠️  Could not open DM with ${username}`);
+                }
+            } catch (e) {
+                dmFailed.push(username);
+                console.log(`⚠️  Could not DM ${username}: ${e.message || 'DMs disabled'}`);
+            }
+        }
+    }
+
+    // ── Notify Discord channels (optional: only with --notify) ──
     if (notifyMode) {
         const contributors = [...new Set(allContributions.map(c => c.username))].filter(u => u !== '_xyian');
         const totalSynced = newFacts.length + newFromSuggestions.length;
         const totalCredited = uncreditedContributions.length;
 
-        // Post to #arch-ai
         if (totalSynced > 0 || totalCredited > 0) {
             const parts = [];
             if (totalSynced > 0) parts.push(`${totalSynced} fact${totalSynced === 1 ? '' : 's'} saved to permanent memory`);
@@ -304,7 +348,6 @@ function isAlreadySynced(text, existingTexts) {
             console.log('📢 Sync summary posted to #arch-ai');
         }
 
-        // Post to debug
         await discordRequest('POST', `/channels/${DEBUG_CHANNEL}/messages`, {
             content: `📦 **Fact sync completed**\n` +
                 `Facts added: ${newFacts.length + newFromSuggestions.length}\n` +
@@ -314,37 +357,11 @@ function isAlreadySynced(text, existingTexts) {
                 Object.entries(creditByUser).map(([u, d]) => {
                     const total = (existingApprovedByUser[u] || 0) + d.uncredited;
                     return `  ${u}: ${total} approved`;
-                }).join('\n'),
+                }).join('\n') +
+                (dmSentTo.length > 0 ? `\n📬 **DMs sent to:** ${dmSentTo.join(', ')}` : '') +
+                (dmFailed.length > 0 ? `\n⚠️ **DM failed:** ${dmFailed.join(', ')}` : ''),
         });
         console.log('🔧 Sync confirmation posted to #debug-logs');
-
-        // DM contributors about their credited contributions (skip owner)
-        for (const [username, data] of Object.entries(creditByUser)) {
-            if (data.userId === OWNER_ID) continue;
-            if (data.uncredited === 0) continue;
-            const totalApproved = (existingApprovedByUser[username] || 0) + data.uncredited;
-            const nextTier = TIER_THRESHOLDS.find(t => t.threshold > totalApproved);
-            const progressLine = nextTier
-                ? `You now have **${totalApproved}** approved contribution${totalApproved === 1 ? '' : 's'}. ${nextTier.threshold - totalApproved} more until **${nextTier.name}**!`
-                : `You now have **${totalApproved}** approved contributions. You've reached the highest tier!`;
-
-            try {
-                await discordRequest('POST', `/channels/@me`, { recipient_id: data.userId });
-                // DM via the user endpoint
-                const dmChannel = await discordRequest('POST', '/users/@me/channels', { recipient_id: data.userId });
-                if (dmChannel.id) {
-                    await discordRequest('POST', `/channels/${dmChannel.id}/messages`, {
-                        content: `✅ **Your contributions have been synced!**\n\n` +
-                            `${data.uncredited} of your facts have been reviewed and added to the bot's permanent knowledge base.\n\n` +
-                            `${progressLine}\n\n` +
-                            `*Thank you for making the bot smarter for everyone!*`,
-                    });
-                    console.log(`📬 DM sent to ${username}`);
-                }
-            } catch (e) {
-                console.log(`⚠️  Could not DM ${username}: ${e.message || 'DMs disabled'}`);
-            }
-        }
     }
 
     console.log('\n🎯 Next steps:');

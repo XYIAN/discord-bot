@@ -20,7 +20,7 @@ Discord bot for the Arch 2 Addicts server and XYIAN OFFICIAL guild (ID: 213797).
 
 - **Q&A in #arch-ai** — Ask any Archero 2 question; the bot answers using OpenAI + curated facts, in the Arch AI persona voice (cybernetic wizard with dry wit)
 - **Reputation-based role tiers** — Contributors earn roles (Arch Scholar, Arch Sage) by getting suggestions approved
-- **Reaction-role access** — React with 🤖 in #lobby or on welcome messages to get AI Enabled
+- **Reaction-role access** — React with 🤖 in #cross-server or on welcome messages to get AI Enabled
 - **Personal DMs** — Users get notified when suggestions are approved/rejected, roles are granted, or tiers are earned
 - **Daily reset reminder** — 4pm Pacific every day in general chat, with Arch AI's daily knowledge gap question
 - **Guild recruitment** — Every other day in the recruit channel
@@ -36,7 +36,7 @@ Discord bot for the Arch 2 Addicts server and XYIAN OFFICIAL guild (ID: 213797).
 
 | Tier | Role | How to earn | Access |
 |------|------|-------------|--------|
-| 1 | 🤖 **AI Enabled** | React with 🤖 in #lobby or welcome message | Q&A in #arch-ai, `!suggest` |
+| 1 | 🤖 **AI Enabled** | React with 🤖 in #cross-server or welcome message | Q&A in #arch-ai, `!suggest` |
 | 2 | 🎓 **Arch Scholar** | 5 approved suggestions | + `!addfact`, `!faq`, `!listfacts` |
 | 3 | 🧙 **Arch Sage** | 15 approved suggestions | + `!removefact` |
 
@@ -60,6 +60,7 @@ Tier upgrades happen automatically when an admin approves a suggestion. The cont
 | `!grant @user` | XYIAN OFFICIAL / Admin | Manually assign a role, DMs user |
 | `!setupreaction` | XYIAN OFFICIAL / Admin | Post a reaction-role message |
 | `!recruit` | XYIAN OFFICIAL / Admin | Send recruitment now |
+| `!post-guild-requirements` | XYIAN OFFICIAL / Admin | Post guild requirements embed in current channel (for #guild-requirements) |
 | `!reset` | XYIAN OFFICIAL / Admin | Send daily reset now |
 
 ## Personal DMs
@@ -113,7 +114,7 @@ This ensures custom facts survive redeployments. Each fact sync counts as a patc
 ## New Member Flow
 
 1. **Join** → Auto-receive **ArchAddict** role (purple community identity)
-2. **#general** → Welcome embed with channel links (#lobby, #community-ai-discussion, #clips-and-highlights) + 🤖 react
+2. **#general** → Welcome embed with channel links (#cross-server, #community-ai-discussion, #clips-and-highlights) + 🤖 react
 3. **DM** → Personal welcome with community intro, channels, AI access, role tiers, commands, ⚔️ guild verification, and thank-you
 4. **React 🤖** → AI Enabled role + confirmation DM
 5. **React ⚔️** (on welcome DM) → Guild verification request sent to admin + confirmation DM
