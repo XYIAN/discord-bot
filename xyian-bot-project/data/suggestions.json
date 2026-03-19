@@ -61,5 +61,203 @@
     "at": "2026-03-01T00:00:00.000Z",
     "status": "approved",
     "approvedVia": "fact_sync"
+  },
+  {
+    "id": 8,
+    "text": "Runes:\n\nBlessing, Enhancement and Ability Runes also have another layer of Enchantment Stats. Enchantment Stats have multiple categories depending on the type of rune with only one enchantment selecti",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-19T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 9,
+    "text": "Runes:\nBlessing Runes Quality Skills:\n\nRevive\n    Rare: Max HP +240\n    Epic: 50% Chance to revive upon death, with half of HP restored\n    Legendary: Increases ATK PWR by 20% after revival\n    Mythic",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-19T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 10,
+    "text": "Runes:\nEtched Runes Quality Skills:\n\nElemental:\n        Elemental Domain\n            Common: Elemental DMG+100\n            Fine: ATK PWR+100\n            Rare: Elemental skills have increased chance to",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-19T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 11,
+    "text": "Runes:\nEtched Runes Quality Skills:\n\nCircles:\n        Pulsing Orb\n            Common: Circle DMG+100\n            Fine: ATK PWR+100\n            Rare: Circle skills have increased chance to spawn\n      ",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-19T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 12,
+    "text": "Runes:\nEtched Runes Quality Skills:\n\nMeteors:\n        Meteor Split\n            Common: Meteor DMG+100\n            Fine: ATK PWR+100\n            Rare: Meteor skills have increased chance to spawn\n     ",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-19T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 13,
+    "text": "Runes:\nEtched Runes Quality Skills:\n\nStrikes:\n        Sword Strike Split\n            Common: Strike DMG+100\n            Fine: ATK PWR+100\n            Rare: Sword Strike skills have increased chance to",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-19T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 14,
+    "text": "Runes:\n\nEtched Runes Quality Skills:\n    Main Weapon:\n        Arrow of Echoes\n            Common: Main Weapon DMG+100\n            Fine: ATK PWR+100\n            Rare: Main weapon skills have increased ",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-19T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 15,
+    "text": "Runes:\nThere are 4 different types of equipable runes, etched runes, blessing runes, enhancement runes, ability runes. A player can equip a max of 3 etched, 2 blessing, 4 enhancement and 4 ability at ",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-19T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 16,
+    "text": "weapons category\nThe Griffin Quality Skills:\n\nGriffin Armor\nFine: Max HP+5%\nRare: Barrage DMG REDUC+5%\nEpic: Deals DMG over time to enemies within 7m\nEpic +1: No additional buff\nEpic +2: No additional",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-19T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 17,
+    "text": "weapons category\nThe Griffin Quality Skills:\n\nGriffin Ring\nFine: ATK PWR+5%\nRare: CRIT Rate+3%\nEpic: The more enemies in melee range, the higher the CRIT Rate. Max Rate is reached when 3 enemies are p",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-19T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 18,
+    "text": "weapons category\nThe Griffin Quality Skills: \n\nGriffin Claw\nBase: High ATK SPD. DMG decreases beyond range.\nFine: ATK PWR+5%\nRare: Deal more DMG at closer distances, up to 10%\nEpic: Higher CRIT Rate a",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-19T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 19,
+    "text": "weapons category\nThe Oracle Quality Skills: \n\nOracle Boots\nFine: Max HP+5%\nRare: Dodge+5%\nEpic: CRIT DMG +32% after 30 combo hits\nEpic +1: No additional buff\nEpic +2: No additional buff\nLegendary: Max",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-18T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 20,
+    "text": "weapons category\nThe Oracle Quality Skills: \n\nOracle Helmet\nFine: Max HP+5%\nRare: Red Heart Heal+20%\nEpic: Gain 2x combo hits on CRIT\nEpic +1: No additional buff\nEpic +2: No additional buff\nLegendary:",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-18T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 21,
+    "text": "weapons category\nThe Oracle Quality Skills: \n\nOracle Ring\nFine: ATK PWR+5%\nRare: CRIT Rate+3%\nEpic: For every 5 combo hits, ATK SPD +2%, up to 8%\nEpic +1: No additional buff\nEpic +2: No additional buf",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-18T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 22,
+    "text": "weapons category\nThe Oracle Quality Skills: \n\nOracle Spear\nBase: Fires a powerful piercing beam\nFine: ATK PWR+5%\nRare: DMG increases with combo hits, up to 10%\nEpic: For every 5 combo hits, CRIT Rate ",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-18T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 23,
+    "text": "weapons category\nThe Dragoon Quality Skills: \nDragoon Helmet\nFine: Max HP+5%\nRare: Red Heart Heal+20%\nEpic: For every 1 enemy defeated or after every 5s, the next attack ignites an area explosion\nEpic",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-18T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 24,
+    "text": "weapons category\nThe Dragoon Quality Skills: \nDragoon Amulet\nFine: ATK PWR+5%\nRare: CRIT DMG+12%\nEpic: Randomly detonates 2 enemies on the field every 2s\nEpic +1: No additional buff\nEpic +2: No additi",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-18T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 25,
+    "text": "weapons category\nThe Dragoon Quality Skills: \n\nDragoon Crossbow\nBase: Fires a powerful bolt\nFine: ATK PWR+5%\nRare: 50% chance to trigger area explosion on hit\nEpic: Explosion damage up, Meteor convert",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-18T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 26,
+    "text": "weapons category\nThe Dragoon Pieces are: \nDragoon Crossbow\nDragoon Amulet\nDragoon Ring\nDragoon Helmet\nDragoon Armor\nDragoon Boots\nThe Oracle Pieces are:\nOracle Spear\nOracle Amulet\nOracle Ring\nOracle H",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-18T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 27,
+    "text": "weapons category\nThere are 3 S-Rank Weapon Categories: Dragoon, Oracle, and Griffin. Each category has 6 unique gear pieces split into Weapon, Amulet, Ring, Helmet, Armor, and Boots. The weapon, amule",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-18T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 28,
+    "text": "On Godforge, you will need Gear Essence and Crystals to upgrade your gear. You need to salvage any gear (excluding S-tier) to get Gear Essence and you also need to salvage the corresponding S-tier set",
+    "by": "faria88pt",
+    "userId": "1429274216657719368",
+    "at": "2026-03-18T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 29,
+    "text": "When selecting a start time for All Star cup, Habby surprised us all and made the time slots ACTUALLY localized",
+    "by": "fails_8743",
+    "userId": "392511835984756738",
+    "at": "2026-03-13T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
   }
 ]
