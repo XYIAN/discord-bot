@@ -78,12 +78,17 @@ Add a patch entry:
 
 ### Step 5: Commit and push
 ```bash
-git add data/knowledge.json CHANGELOG.md
-git commit -m "vX.Y.Z: Fact sync — N new facts from community"
-git push
+git add -A && git commit -m "vX.Y.Z: Fact sync" && git push
 ```
 
-### Step 6: Verify deploy
+### Step 6: Deploy and changelog post (required)
+**Every knowledge-base update must result in a #changelog post.** The bot posts release notes to `#changelog` on startup when the version in `CHANGELOG.md` is new. So after pushing:
+
+1. **Deploy** the app (e.g. trigger a Railway deploy or restart the bot).
+2. On startup the bot will post the new version’s bullets to `#changelog` (or skip if that version was already posted).
+3. If you don’t deploy, the changelog channel will not be updated — add a reminder to deploy after any fact sync or audit that changes `knowledge.json`.
+
+### Step 7: Verify deploy
 Check `#debug-logs` for the deploy notification and `#changelog` for the version post.
 
 ## How Roles and Promotions Work

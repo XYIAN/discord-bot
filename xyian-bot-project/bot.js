@@ -182,7 +182,7 @@ function getRandomFact() {
 function findKnowledgeGaps() {
     const gaps = [];
 
-    const emptyCategories = ['gear_sets', 'weapons', 'runes', 'blessings', 'game_modes', 'tips'];
+    const emptyCategories = ['blessings', 'tips'];
     for (const cat of emptyCategories) {
         if (!knowledge[cat] || (typeof knowledge[cat] === 'object' && Object.keys(knowledge[cat]).length === 0)) {
             gaps.push({ type: 'empty_category', category: cat, label: cat.replace(/_/g, ' ') });
@@ -914,7 +914,9 @@ client.on('messageCreate', async (message) => {
                     return message.reply('❌ You need the **Arch Scholar** role or higher to use this command. Earn it by getting 5 suggestions approved!');
                 }
                 const facts = knowledge.custom_facts || [];
-                if (!facts.length) return message.reply('No custom facts yet. Admins can add some with `!addfact <text>`.');
+                if (!facts.length) {
+                    return message.reply('No entries in the **custom facts** queue right now — most knowledge lives in categories (weapons, runes, guild, gold, etc.). Try `!faq` for the full topic list. Admins can still add overflow facts with `!addfact <text>`.');
+                }
                 const list = facts.map((f, i) => `**${i + 1}.** ${f.text}`).join('\n');
                 const embed = new EmbedBuilder()
                     .setTitle(`📋 Custom Facts (${facts.length})`)
