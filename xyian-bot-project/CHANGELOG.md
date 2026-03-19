@@ -4,6 +4,39 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.9.7] - 2025-02-03
+
+### Full #arch-ai audit + recovered !suggest (damage stats)
+
+- 🔬 **`scripts/audit-arch-ai-full.js`** — Fetches **all** messages in #arch-ai (unlimited pagination), compares every `!addfact` and `!suggest` to `knowledge.json` / `suggestions.json`. Fixes: `!suggestions` no longer misclassified as `!suggest`; typo normalize `it'as` ↔ `it's` for matching.
+- 📊 **Audit result** — 188 messages; **30** `!addfact` (sync had 29 earlier — one more in history) all covered in knowledge; **6** `!suggest` rows, including **4** from faria88pt that were never on the live suggestion queue — **recovered**.
+- 📦 **Repo** — Added **4** `custom_facts` + **`damage_terminology`** block in `knowledge.json`; **suggestions #30–33** (`approvedVia: arch_ai_audit`, Discord message ids noted). Minor typo fix: `it's` in stored text vs Discord `it'as`.
+- 📬 **DM** — faria88pt notified that #30–33 were recovered and approved.
+- 📖 **`docs/ARCH-AI-AUDIT.md`** — Runbook + snapshot. README links to audit script.
+- 📜 **`sync-facts.js`** — Logs Discord message fetch count each run (25 pages max).
+- 🚀 **Deploy** — After pull, redeploy/restart the bot on Railway so production loads this repo’s `knowledge.json` and `suggestions.json` (through **#33**).
+
+---
+
+## [3.9.6] - 2025-02-03
+
+### Manual approval: all suggestions saved as facts + DMs
+
+- 📋 **Suggestions → facts** — All 29 approved entries in `suggestions.json` were checked; **24 new facts** were added to `knowledge.json` `custom_facts` (5 were already represented). Total custom_facts: 6 → 30.
+- 📬 **Approval DMs** — Ran approval flow as if admin approved: DMs sent to **fails_8743**, **_xyian**, **faukkss**, **faria88pt** with their approved fact(s) and tier progress.
+- 🔧 **Script** — `scripts/approve-all-suggestions.js` (one-off) adds every approved suggestion as a fact and sends DMs; supports `--dry-run`.
+
+---
+
+## [3.9.5] - 2025-02-03
+
+### Fact sync: fetch more messages + how to approve suggestions
+
+- 📜 **Sync scope** — `sync-facts.js` now fetches up to **25 pages** (2500 messages) from #arch-ai so we don’t miss older `!addfact` posts (e.g. if the channel has hundreds of messages).
+- 📖 **README** — Added “How to see and approve suggestions (Discord)”: use `!suggestions` to list pending, `!approve <#>` to approve, `!reject <#> [reason]` to reject. Clarified that pending queue comes from `!suggest`, not from the sync script.
+
+---
+
 ## [3.9.4] - 2025-02-03
 
 ### Fact sync: community contributions from #arch-ai

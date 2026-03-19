@@ -58,6 +58,22 @@ Tier upgrades happen automatically when an admin approves a suggestion. The cont
 | `!approve <#>` | XYIAN OFFICIAL / Admin | Approve suggestion → adds as fact, DMs user |
 | `!reject <#> [reason]` | XYIAN OFFICIAL / Admin | Reject suggestion, DMs user with reason |
 | `!grant @user` | XYIAN OFFICIAL / Admin | Manually assign a role, DMs user |
+
+### How to see and approve suggestions (Discord)
+
+1. **See pending suggestions** — In any channel the bot reads, run:  
+   `!suggestions`  
+   The bot replies with an embed listing the last 15 pending items (ID, username, and a short preview of the text).
+
+2. **Approve one** — Run:  
+   `!approve <number>`  
+   Example: `!approve 8` approves suggestion #8. The bot adds that text to the knowledge base, DMs the contributor, and updates their tier if they hit 5 or 15 approved.
+
+3. **Reject one** — Run:  
+   `!reject <number> [reason]`  
+   Example: `!reject 9 Off-topic`. The user gets a DM with the reason.
+
+Pending suggestions are stored in the bot’s `data/suggestions.json` (on Railway for the live bot). The sync script only credits **!addfact** from #arch-ai into that file; it does not create “pending” items. So the queue you see with `!suggestions` is only from users who used **!suggest** in Discord.
 | `!setupreaction` | XYIAN OFFICIAL / Admin | Post a reaction-role message |
 | `!recruit` | XYIAN OFFICIAL / Admin | Send recruitment now |
 | `!post-guild-requirements` | XYIAN OFFICIAL / Admin | Post guild requirements embed in current channel (for #guild-requirements) |
@@ -110,6 +126,17 @@ The #arch-ai notification is important — it lets users know their `!addfact` c
 > _Keep using `!addfact` or `!suggest` to contribute!_
 
 This ensures custom facts survive redeployments. Each fact sync counts as a patch version bump (e.g. 3.4.1 → 3.4.2) and gets its own CHANGELOG entry.
+
+### Full #arch-ai audit (every message)
+
+To verify **no** `!addfact` or `!suggest` was missed (e.g. live bot lost `suggestions.json`):
+
+```bash
+node scripts/audit-arch-ai-full.js        # summary in terminal
+node scripts/audit-arch-ai-full.js --json   # + data/arch-ai-audit-report.json
+```
+
+See **`docs/ARCH-AI-AUDIT.md`** for what it checks and the latest snapshot.
 
 ## New Member Flow
 
