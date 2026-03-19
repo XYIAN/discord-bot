@@ -4,6 +4,38 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.9.8] - 2026-03-19
+
+### Welcome flow: #general guaranteed + admin logging
+
+- 📢 **#general welcome** — Public welcome in #general is explicitly part of the flow (comment + structure). Role add, channel send, and DM are separated so a failure in one does not block the others.
+- 👋 **Admin logs** — On join: success → "Welcome #general" with user and message id; webhook null → "Welcome #general failed" with hint to check GENERAL_CHAT_WEBHOOK; exception → "Welcome #general error" with message. Role add failure also reported to admin.
+- 🛡️ **React fallback** — If adding 🤖 to the welcome message fails (e.g. wrong channel), error is logged to admin; welcome embed still remains in #general.
+
+---
+
+## [3.9.9] - 2025-02-03
+
+### Knowledge: zero custom_facts + guild category + contributor hint
+
+- **Categorized remaining `custom_facts`** — Moved guild, gold cap/talent cards, All Star cup, privilege summary, resources note into **`guild`**, **`gold`**, **`game_modes`**, **`privilege_cards`**, **`resources`**. **`custom_facts` is now `[]`** so `!faq` reflects real categories; duplicates removed (Tracking Eye / wiki already in **skills** / **resources**).
+- **README** — New **“Categorizing new facts”** table (where to file topics) + optional user prefix hint (`weapons:`, `runes:`, etc.).
+- **scripts/README.md** — Lists maintained scripts; removed one-off **`post-arch-ai-howto.js`**.
+- **#arch-ai** — Bot posted a short **XY Elder** note: optional category prefix on `!addfact` / `!suggest` to help filing (not required).
+- **bot.js** — Knowledge-gap scanner only treats **blessings** and **tips** as empty-category nags (weapons/runes/gear_sets/game_modes are no longer assumed empty).
+
+---
+
+## [3.9.8] - 2025-02-03
+
+### !faq categories fix + changelog post required
+
+- **!faq was showing 0 for weapons, runes, gear sets** — Community-added facts were only in `custom_facts`, so categories like `weapons`, `runes`, `gear_sets` stayed empty. Moved categorizable content from `custom_facts` into **weapons** (12 entries), **runes** (8 entries), **gear_sets** (1: Godforge). `!faq` now shows correct entry counts; RAG still has the same text via `knowledgeAsText()`.
+- **Script** — `scripts/categorize-knowledge.js` (one-off) moved "weapons category" and "Runes:" facts into the right top-level categories; damage stats remain in `damage_terminology` and uncategorized facts stay in `custom_facts` (9 remaining).
+- **Changelog post required** — Fact sync and any knowledge-base update must be followed by deploy so the bot posts to **#changelog**. Added note in `sync-facts.js` and **Step 6** in `docs/FACT-SYNC.md`: update CHANGELOG → commit → push → **deploy** (bot posts release notes on startup when version is new).
+
+---
+
 ## [3.9.7] - 2025-02-03
 
 ### Full #arch-ai audit + recovered !suggest (damage stats)
@@ -15,6 +47,7 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 - 📖 **`docs/ARCH-AI-AUDIT.md`** — Runbook + snapshot. README links to audit script.
 - 📜 **`sync-facts.js`** — Logs Discord message fetch count each run (25 pages max).
 - 🚀 **Deploy** — After pull, redeploy/restart the bot on Railway so production loads this repo’s `knowledge.json` and `suggestions.json` (through **#33**).
+- 📌 **#arch-ai-community-discussion** — Posted a how-to message (suggest, approve, tiers) to channel `1424785709914521701` (one-off bot post; script removed in v3.9.9).
 
 ---
 

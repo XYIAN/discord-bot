@@ -7,6 +7,9 @@
  * Also credits contributors in suggestions.json so their approved count
  * is accurate for the role tier system (Arch Scholar @ 5, Arch Sage @ 15).
  *
+ * Required after any knowledge-base update: update CHANGELOG.md, commit, push,
+ * and deploy (or restart the bot) so it posts release notes to #changelog.
+ *
  * Usage:
  *   node scripts/sync-facts.js           # Dry run — shows what would be added/credited
  *   node scripts/sync-facts.js --apply   # Write to knowledge.json + suggestions.json
@@ -369,5 +372,6 @@ function isAlreadySynced(text, existingTexts) {
     console.log('\n🎯 Next steps:');
     console.log('   1. Review the changes: git diff data/');
     console.log('   2. Update CHANGELOG.md with a patch entry');
-    console.log('   3. Commit and push: git add -A && git commit -m "vX.Y.Z: Fact sync" && git push');
+    console.log('   3. Commit and push');
+    console.log('   4. Deploy (or restart the bot) so it posts release notes to #changelog — required for every knowledge-base update (same as DMs/notify).');
 })();

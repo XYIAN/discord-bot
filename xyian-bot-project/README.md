@@ -127,6 +127,28 @@ The #arch-ai notification is important — it lets users know their `!addfact` c
 
 This ensures custom facts survive redeployments. Each fact sync counts as a patch version bump (e.g. 3.4.1 → 3.4.2) and gets its own CHANGELOG entry.
 
+### Categorizing new facts (for contributors & maintainers)
+
+The bot’s **`!faq`** counts entries per **top-level key** in `data/knowledge.json` (e.g. **weapons**, **runes**, **guild**, **gold**). Facts that only live in **`custom_facts`** do not increase those category counts — so prefer putting data in the right category when possible.
+
+| Topic | Prefer this key in `knowledge.json` |
+|-------|-------------------------------------|
+| S-tier pieces, Dragoon/Oracle/Griffin quality skills | `weapons` |
+| Rune types, etched/blessing quality lines | `runes` |
+| Godforge, salvage, crystals | `gear_sets` |
+| Guild donations, guild level | `guild` |
+| Gold uses, weapon level cap | `gold` |
+| All Star cup, campaign quirks | `game_modes` |
+| ATK vs DMG vs main weapon DMG | `damage_terminology` |
+| Wiki links | `resources` |
+| Individual skills | `skills` |
+| Privilege cards | `privilege_cards` |
+| Truly one-off trivia | `custom_facts` (last resort) |
+
+**Optional for users:** When using **`!addfact`** or **`!suggest`**, you can start the line with a short hint so maintainers know where to file it, e.g. `weapons: Griffin Claw epic effect is…` or `guild: donation costs are…`. Plain questions in **#arch-ai** do not need a prefix.
+
+Maintainers: after sync, run **`node scripts/categorize-knowledge.js`** only when bulk `custom_facts` need moving into **weapons** / **runes** / **gear_sets** (see script header). See also **`docs/KNOWLEDGE-GUIDE.md`**.
+
 ### Full #arch-ai audit (every message)
 
 To verify **no** `!addfact` or `!suggest` was missed (e.g. live bot lost `suggestions.json`):
