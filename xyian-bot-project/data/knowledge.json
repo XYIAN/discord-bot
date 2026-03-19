@@ -86,7 +86,9 @@
     },
     "hou_yi": {
       "rarity": "rare",
-      "aka": ["hou yi"],
+      "aka": [
+        "hou yi"
+      ],
       "skill_name": "Sun Piercer",
       "stat_boost": "[All] ATK PWR +3% (at stars 1, 4, and 7)",
       "skill_levels": {
@@ -111,7 +113,9 @@
     },
     "dracoola": {
       "rarity": "epic",
-      "aka": ["drac"],
+      "aka": [
+        "drac"
+      ],
       "skill_name": "Lifesteal",
       "stat_boost": "[All] Gears' Base Stats Increase +5% (at stars 1, 4, and 7)",
       "skill_levels": {
@@ -184,7 +188,11 @@
     },
     "demon_king_atreus": {
       "rarity": "legendary",
-      "aka": ["atreus", "dk", "demon king"],
+      "aka": [
+        "atreus",
+        "dk",
+        "demon king"
+      ],
       "skill_name": "Demon King Energy",
       "stat_boost": "[All] Shield HP +10% (at stars 1, 4, and 7)",
       "skill_levels": {
@@ -220,7 +228,9 @@
     },
     "wukong": {
       "rarity": "legendary",
-      "aka": ["wk"],
+      "aka": [
+        "wk"
+      ],
       "skill_name": "Monkey Brethren",
       "stat_boost": "[All] CRIT DMG +20% (at stars 1, 4, and 7)",
       "skill_levels": {
@@ -339,6 +349,26 @@
       "text": "The max guild level is 11",
       "added_by": "xyian",
       "added_at": "2026-03-01"
+    },
+    {
+      "text": "Runes:\nThere are 4 different types of equipable runes, etched runes, blessing runes, enhancement runes, ability runes. A player can equip a max of 3 etched, 2 blessing, 4 enhancement and 4 ability at a time with all slots unlocked. Each rune has special abilities based off of its quality and enchantment stats.\n\nEtched Runes (13):\n    Main Weapon:\n        Arrow of Echoes\n        Echo Scythe\n    Sprites:\n        Sprite’s Awe\n        Sprite Assist\n    Strikes:\n        Sword Strike Split\n        Swordstrike Aerie\n    Meteors:\n        Meteor Split\n        Potion Spring \n    Circles:\n        Pulsing Orb\n        Orbital Orb\n    Elemental:\n        Elemental Domain\n        Elemental Crit\n    Plants:\n        Life Surge\n\nBlessing Runes (7):\n    Revive\n    Lucky Shadow\n    Intelligence\n    Rabbit’s Foot\n    Guardian\n    Devil Pact\n    Resilience\n\nEnhancement Runes (13):\nMain Weapon:    \nSharp Arrow\nElemental:\n    Flame-Poison Seal\n    Frost-Thunder Seal\nCircle:\n    Rotating SPD Up\n    Sawblade Circle\nMeteors:\n    Giant Meteor\n    Potion Magnet\nSprites:\n    Sprite Multishot\n    Sprite Link\nStrikes:\n    Dragonflight Sword\n    Ricocheting Strike\nPlants:\n    Rootguard\n    Vine Bind\n\nAbility Runes (13):\n    Main Weapon:\n        Arrow Rain\nElemental:\n    Flame-Poison Touch\n    Frost-Thunder Touch\nCircle:\n    Ring of Agony\n    Circle\nMeteors:\n    Star of Fury\n    Star of Time\nSprites:\n    Healing Sprite\n    Melee Sprite\nStrikes:\n    Sword of Time\n    Strike Potion\nPlants:\n    Plant Summon\n    Equinox Bloom",
+      "added_by": "faukkss",
+      "added_at": "2026-03-19"
+    },
+    {
+      "text": "weapons category\nThe Dragoon Pieces are: \nDragoon Crossbow\nDragoon Amulet\nDragoon Ring\nDragoon Helmet\nDragoon Armor\nDragoon Boots\nThe Oracle Pieces are:\nOracle Spear\nOracle Amulet\nOracle Ring\nOracle Helmet\nOracle Armor\nOracle Boots\nThe Griffin Pieces are:\nGriffin Claw\nGriffin Amulet\nGriffin Ring\nGriffin Helmet\nGriffin Armor\nGriffin Boots",
+      "added_by": "faukkss",
+      "added_at": "2026-03-18"
+    },
+    {
+      "text": "On Godforge, you will need Gear Essence and Crystals to upgrade your gear. You need to salvage any gear (excluding S-tier) to get Gear Essence and you also need to salvage the corresponding S-tier set pieces to get Crystals. You can only salvage S-tier pieces that you have already on Chaotic lvl.",
+      "added_by": "faria88pt",
+      "added_at": "2026-03-18"
+    },
+    {
+      "text": "When selecting a start time for All Star cup, Habby surprised us all and made the time slots ACTUALLY localized",
+      "added_by": "fails_8743",
+      "added_at": "2026-03-13"
     }
   ]
 }

@@ -4,6 +4,17 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.9.4] - 2025-02-03
+
+### Fact sync: community contributions from #arch-ai
+
+- 📦 **4 new facts** added to `knowledge.json` (runes, Dragoon pieces, Godforge, All Star cup time slots)
+- 🎖️ **22 contributions credited** in `suggestions.json`: faukkss (20), faria88pt (1), fails_8743 (1). _xyian already credited.
+- 📬 DMs sent to faukkss, faria88pt, fails_8743. Sync summary posted to #arch-ai and #debug-logs.
+- 📊 Knowledge base: 49 → 53 entries
+
+---
+
 ## [3.9.3] - 2025-02-03
 
 ### Guild requirements: 1.5M+ everywhere
