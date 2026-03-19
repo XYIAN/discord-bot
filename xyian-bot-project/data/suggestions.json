@@ -259,5 +259,46 @@
     "at": "2026-03-13T00:00:00.000Z",
     "status": "approved",
     "approvedVia": "fact_sync"
+  },
+  {
+    "id": 30,
+    "text": "Attack Power (also ATK or ATK PWR): Affects all sources of damage as they all calculate their baseline damage value as N x Attack Power. There are some skills that claim to affect ATK, but don't (like Swift Arrow and all the source specific buffs), and some skills that say they affect something else, but really they change Attack Power (like Stand Strong).",
+    "by": "faria88pt",
+    "userId": "1429274216657719368",
+    "at": "2026-03-18T14:55:49.998Z",
+    "status": "approved",
+    "approvedVia": "arch_ai_audit",
+    "discordMessageId": "1483841365598015579"
+  },
+  {
+    "id": 31,
+    "text": "Main weapon DMG: Only affects non-elemental part of main weapon damage and doesn't affect explosion damage coming from bow/crossbow either. Affected by: Front Arrow, Sharp Arrow rune, Chaotic Dragoon crossbow effect.",
+    "by": "faria88pt",
+    "userId": "1429274216657719368",
+    "at": "2026-03-18T14:56:39.264Z",
+    "status": "approved",
+    "approvedVia": "arch_ai_audit",
+    "discordMessageId": "1483841572234592378",
+    "note": "Same text was also posted again at msg 1483842153791619175"
+  },
+  {
+    "id": 32,
+    "text": "DMG: it's a mixed bag. Some skills affect a lot of damage sources (like Swift Arrow, Tracking Eye, Bane of Bosses), some only one.",
+    "by": "faria88pt",
+    "userId": "1429274216657719368",
+    "at": "2026-03-18T14:57:44.956Z",
+    "status": "approved",
+    "approvedVia": "arch_ai_audit",
+    "discordMessageId": "1483841847767076986"
+  },
+  {
+    "id": 33,
+    "text": "As explained before, Attack Power, Main weapon DMG and just DMG are not the same thing, but multiply between each other",
+    "by": "faria88pt",
+    "userId": "1429274216657719368",
+    "at": "2026-03-18T15:00:36.690Z",
+    "status": "approved",
+    "approvedVia": "arch_ai_audit",
+    "discordMessageId": "1483842568071417948"
   }
 ]

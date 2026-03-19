@@ -62,7 +62,8 @@ function discordRequest(method, apiPath, body) {
     });
 }
 
-async function fetchAllMessages(channelId, maxPages = 5) {
+// Fetches up to maxPages × 100 messages (e.g. 25 → 2500 messages) so we don't miss older !addfact
+async function fetchAllMessages(channelId, maxPages = 25) {
     let all = [];
     let before = null;
     for (let i = 0; i < maxPages; i++) {
@@ -136,6 +137,7 @@ function isAlreadySynced(text, existingTexts) {
     // ── Pull !addfact messages from #arch-ai ──
     console.log('🔍 Scanning #arch-ai for !addfact messages...');
     const messages = await fetchAllMessages(ARCH_AI_CHANNEL);
+    console.log(`   Fetched ${messages.length} messages from Discord (up to 25 pages × 100)`);
     const addFactMsgs = messages.filter(m => m.content.startsWith('!addfact ') && m.content.length > 20);
 
     // Build contribution list from ALL !addfact messages (for credit tracking)
