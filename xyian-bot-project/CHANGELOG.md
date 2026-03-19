@@ -14,6 +14,14 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 ---
 
+## [3.9.10] - 2025-02-03
+
+### Welcome flow restored (isolated steps + admin logging)
+
+- **bot.js** — Re-applies the intended `guildMemberAdd` behavior: ArchAddict role, #general welcome, and DM are **separate** steps (failure on one does not block the others). Admin channel gets notices for role failures, #general send/react failures, and successful welcome posts. Uses safe `channels.fetch(…).catch(() => null)` for reaction step.
+
+---
+
 ## [3.9.9] - 2025-02-03
 
 ### Knowledge: zero custom_facts + guild category + contributor hint

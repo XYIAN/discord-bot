@@ -719,6 +719,8 @@ client.on('messageReactionAdd', async (reaction, user) => {
 });
 
 // ── Welcome message ─────────────────────────────────────────────────────────
+// Flow: (1) ArchAddict role, (2) public welcome in #general (required), (3) personal DM.
+// Each step is isolated — a failure on one must not block the others.
 
 const processedMembers = new Set();
 client.on('guildMemberAdd', async (member) => {
@@ -734,38 +736,60 @@ client.on('guildMemberAdd', async (member) => {
         if (addictRole && !member.roles.cache.has(addictRole.id)) {
             await member.roles.add(addictRole);
         }
+    } catch (e) {
+        console.error('❌ Welcome role error:', e.message);
+        await sendToAdmin({ content: `⚠️ **Welcome role** — Failed to add ArchAddict for ${member.user.username} (${member.id}): ${e.message}` });
+    }
 
-        const emoji = CONFIG.reactionRole.emoji;
-        const roleName = CONFIG.reactionRole.roleName;
-        const embed = new EmbedBuilder()
-            .setTitle(`Welcome to Arch 2 Addicts, ${member.user.username}!`)
-            .setDescription(
-                `Hey ${member}! Glad to have you here.\n\n` +
-                '**Where to go:**\n' +
-                '💬 <#1425322796820725760> — **Start here!** cross-server day-to-day chat\n' +
-                `🤖 <#1424785709914521701> — AI-powered Q&A for Archero 2\n` +
-                '🎬 <#1419944149410648116> — Share your best clips and highlights\n\n' +
-                `**${emoji} Want AI access?**\n` +
-                `React with ${emoji} on this message to get the **${roleName}** role and start asking Archero 2 questions in <#${CONFIG.channels.archAi}>!\n\n` +
-                '**About XYIAN OFFICIAL (Guild ID: 213797):**\n' +
-                'We\'re an active Archero 2 guild — daily activity and 1.5M+ power required.'
-            )
-            .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
-            .setColor(0x00ff88)
-            .setTimestamp()
-            .setFooter({ text: 'Arch 2 Addicts — React 🤖 for AI access!' });
+    const emoji = CONFIG.reactionRole.emoji;
+    const roleName = CONFIG.reactionRole.roleName;
+    const embed = new EmbedBuilder()
+        .setTitle(`Welcome to Arch 2 Addicts, ${member.user.username}!`)
+        .setDescription(
+            `Hey ${member}! Glad to have you here.\n\n` +
+            '**Where to go:**\n' +
+            '💬 <#1425322796820725760> — **Start here!** cross-server day-to-day chat\n' +
+            `🤖 <#1424785709914521701> — AI-powered Q&A for Archero 2\n` +
+            '🎬 <#1419944149410648116> — Share your best clips and highlights\n\n' +
+            `**${emoji} Want AI access?**\n` +
+            `React with ${emoji} on this message to get the **${roleName}** role and start asking Archero 2 questions in <#${CONFIG.channels.archAi}>!\n\n` +
+            '**About XYIAN OFFICIAL (Guild ID: 213797):**\n' +
+            'We\'re an active Archero 2 guild — daily activity and 1.5M+ power required.'
+        )
+        .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
+        .setColor(0x00ff88)
+        .setTimestamp()
+        .setFooter({ text: 'Arch 2 Addicts — React 🤖 for AI access!' });
+
+    try {
         const welcomeMsg = await sendToGeneral({ embeds: [embed] });
         if (welcomeMsg?.id) {
             reactionRoleMessages.add(welcomeMsg.id);
-            const channel = await client.channels.fetch(CONFIG.channels.general);
+            const channel = CONFIG.channels.general ? await client.channels.fetch(CONFIG.channels.general).catch(() => null) : null;
             if (channel) {
-                const fetched = await channel.messages.fetch(welcomeMsg.id);
-                await fetched.react(emoji);
+                try {
+                    const fetched = await channel.messages.fetch(welcomeMsg.id);
+                    await fetched.react(emoji);
+                } catch (reactErr) {
+                    await sendToAdmin({ content: `⚠️ **Welcome react** — Could not add ${emoji} to welcome msg for ${member.user.username}: ${reactErr.message}` });
+                }
             }
+            await sendToAdmin({ content: `👋 **Welcome #general** — <@${member.id}> (${member.user.username}) — msg \`${welcomeMsg.id}\`` });
+        } else {
+            await sendToAdmin({
+                content: `❌ **Welcome #general failed** — No message sent for <@${member.id}> (${member.user.username}). ` +
+                    `Webhook or send returned null. Check GENERAL_CHAT_WEBHOOK and bot logs.`,
+            });
         }
+    } catch (e) {
+        console.error('❌ Welcome #general error:', e.message);
+        await sendToAdmin({
+            content: `❌ **Welcome #general error** — <@${member.id}> (${member.user.username}): ${e.message}`,
+        });
+    }
 
-        // Personal welcome DM
-        const dmEmbed = new EmbedBuilder()
+    // Personal welcome DM
+    const dmEmbed = new EmbedBuilder()
             .setTitle(`Welcome to Arch 2 Addicts!`)
             .setDescription(
                 `Hey ${member.user.username}, thanks for joining — seriously. This community is small but it's full of people who genuinely help each other out, and that's what makes it special.\n\n` +
@@ -790,18 +814,15 @@ client.on('guildMemberAdd', async (member) => {
             )
             .setColor(0x5a017a)
             .setFooter({ text: 'Arch 2 Addicts — Built by the community, for the community' });
-        try {
-            const dmMsg = await member.user.send({ embeds: [dmEmbed] });
-            await dmMsg.react('⚔️');
-            welcomeDmMessages.set(dmMsg.id, { userId: member.id, username: member.user.username });
-            if (welcomeDmMessages.size > 500) {
-                const oldest = welcomeDmMessages.keys().next().value;
-                welcomeDmMessages.delete(oldest);
-            }
-        } catch { /* DMs disabled */ }
-    } catch (e) {
-        console.error('❌ Welcome error:', e.message);
-    }
+    try {
+        const dmMsg = await member.user.send({ embeds: [dmEmbed] });
+        await dmMsg.react('⚔️');
+        welcomeDmMessages.set(dmMsg.id, { userId: member.id, username: member.user.username });
+        if (welcomeDmMessages.size > 500) {
+            const oldest = welcomeDmMessages.keys().next().value;
+            welcomeDmMessages.delete(oldest);
+        }
+    } catch { /* DMs disabled */ }
 });
 
 // ── Message handler ─────────────────────────────────────────────────────────
