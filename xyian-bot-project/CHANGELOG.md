@@ -4,6 +4,17 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.9.11] - 2026-03-22
+
+### Fact sync: contributor credits (no new knowledge rows)
+
+- 📦 **`scripts/sync-facts.js --notify`** — Pulled **241** messages from #arch-ai; **43** `!addfact` posts; all **43** already present in `knowledge.json` (**0** new `custom_facts`).
+- 🎖️ **`suggestions.json`** — Added **14** approved rows (`approvedVia: fact_sync`) for **faukkss** so tier credit matches every channel `!addfact` (collectibles + runes + weapon quality blocks were uncredited).
+- 📢 **Discord** — Memory sync summary posted to #arch-ai; confirmation + DM result to #debug-logs; DM sent to faukkss.
+- 🔍 **Post-sync check** — Re-ran **`isAlreadySynced`** from the script against all **43** `!addfact` bodies → **0** gaps.
+
+---
+
 ## [3.9.8] - 2026-03-19
 
 ### Welcome flow: #general guaranteed + admin logging
