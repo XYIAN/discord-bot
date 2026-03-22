@@ -300,5 +300,131 @@
     "status": "approved",
     "approvedVia": "arch_ai_audit",
     "discordMessageId": "1483842568071417948"
+  },
+  {
+    "id": 34,
+    "text": "Collectables:\nCollectibles (found on the main screen via the Goblet Icon in the bottom toolbar) splice into two categories: Talent Cards & Artifacts\n\nTalent Cards:\nTalent Cards are cards that you are ",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-21T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 35,
+    "text": "Runes:\nAbility Runes\n\nPlants:\nPlant Summon\n    Common: Plant damage +5\n        Fine: Plant damage +10\n        Rare: Max HP +200\n        Epic: Summons 1 Plant Guardian around the player every 8s\n      ",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-21T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 36,
+    "text": "Runes\nAbility Runes\n\nStrikes:\nSword of Time\n    Common: Strike damage +5\n        Fine: Strike damage +10\n        Rare: Max HP +200\n        Epic: Initial Ability: Summon 1 Strike every 3s\n        Epic ",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-21T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 37,
+    "text": "Runes:\nAbility Runes\n\nSprites:\nHealing Sprite\n    Common: Sprite damage +5\n        Fine: Sprite damage +10\n        Rare: Max HP +200\n        Epic: Start with a Healing Sprite that deals 0.5x ATK PWR a",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-21T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 38,
+    "text": "Runes:\nAbility Runes\n\nMeteors:\nStar of Fury\n    Common: Meteor damage +5\n        Fine: Meteor damage +10\n        Rare: Max HP +200\n        Epic: Initial Ability: Upon taking DMG, summon 3 Meteors to r",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-21T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 39,
+    "text": "Runes:\nAbility Runes\n\nCircles:\n    Ring of Agony\n        Common: Circle damage +5\n        Fine: Circle damage +10\n        Rare: Max HP +200\n        Epic: Start with Ring of Agony. Monsters within the ",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-21T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 40,
+    "text": "Runes:\nAbility Runes\n\nThe quality upgrades for each are as follows:\nMain Weapon:\nArrow Rain\n    Common: Main Weapon damage +5\n        Fine: Main Weapon damage +10\n        Rare: Max HP +200\n        Epi",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-21T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 41,
+    "text": "Runes:\nAbility Runes\n\nThere are currently 13 ability runes:\nArrow Rain\nFlamenox Touch\nFrostshock  Touch\nRing of Agony\nCircle\nStar of Fury\nStar of Time\nHealing Sprite\nMelee Sprite\nSword of Time\nStrike ",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-21T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 42,
+    "text": "Runes:\nEnhancement Runes\n\nPlants:\nRootguard\nCommon: Plant damage +5\n        Fine: Plant damage +10\n        Rare: ATK PWR +50\n        Epic: Gain a shield while standing still. The more Plant Guardians ",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-21T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 43,
+    "text": "Runes:\nEnhancement Runes\n\nStrikes:\nDragonflight Sword\n    Common: Strike damage +5\n        Fine: Strike damage +10\n        Rare: ATK PWR +50\n        Epic: Strikes have a 35% chance to become Dragon St",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-21T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 44,
+    "text": "Runes:\nEnhancement Runes\n\nSprites:\nSprite Multishot\n    Common: Sprite damage +5\n        Fine: Sprite damage +10\n        Rare: Sprite damage +10\n        Epic:Sprites have a 30% chance to fire multiple",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-21T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 45,
+    "text": "Runes:\n\nEnhancement Runes\nCircles:\nSawblade Circle\n    Common: Meteor damage +5\n        Fine: Circle damage +10\n        Rare: ATK PWR +50\n        Epic: Circles become Sawblade Circle\n        Epic +1: ",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-21T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 46,
+    "text": "Runes:\n\nEnhancement Runes\nElemental:\nFlamenox Seal\n    Common: Fire damage +5\n        Fine: Poison damage +10\n        Rare: ATK PWR +50\n        Epic: Fire DMG +50%\n        Epic +1: No additional buff\n",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-21T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 47,
+    "text": "Runes:\n\nEnhancement Runes:\nThere are currently 13 enhancement runes:\nSharp Arrow\nFlamenox Seal\nFrostshock Seal\nSpin SPD Up\nSawblade Circle\nGiant Meteor\nPotion Magnet\nSprite Multishot\nSprite Link\nDrago",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-21T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
   }
 ]
