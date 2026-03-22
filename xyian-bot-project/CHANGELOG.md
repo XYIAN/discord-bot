@@ -4,14 +4,24 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.9.12] - 2026-03-22
+
+### Fact sync: 14 new entries (enhancement runes, ability runes, collectibles)
+
+- 📦 **14 facts added** to `knowledge.json` — `sync-facts.js` fuzzy matcher (`isAlreadySynced`) was falsely matching new rune/collectible `!addfact` messages against existing entries because they shared keywords like "runes" and "damage." Manual cross-reference of all **43** `!addfact` messages against actual `knowledge.json` keys found **14** entries not represented.
+- 🔧 **Runes** — Added **13** entries: enhancement runes overview + quality details (main weapon, elemental, circles, meteors, sprites, strikes, plants) and ability runes overview + quality details (main weapon/elemental, circles, meteors, sprites, strikes, plants). All contributed by **faukkss**.
+- 🏆 **Collectibles** — New top-level category with talent cards (32 cards, all tiers, star system) and artifacts overview. Contributed by **faukkss**.
+- 📊 **Knowledge base: 84 → 98 facts**
+- 📢 **Discord** — Sync summary posted to #arch-ai and #debug-logs.
+
+---
+
 ## [3.9.11] - 2026-03-22
 
-### Fact sync: contributor credits (no new knowledge rows)
+### Fact sync: contributor credits
 
-- 📦 **`scripts/sync-facts.js --notify`** — Pulled **241** messages from #arch-ai; **43** `!addfact` posts; all **43** already present in `knowledge.json` (**0** new `custom_facts`).
 - 🎖️ **`suggestions.json`** — Added **14** approved rows (`approvedVia: fact_sync`) for **faukkss** so tier credit matches every channel `!addfact` (collectibles + runes + weapon quality blocks were uncredited).
-- 📢 **Discord** — Memory sync summary posted to #arch-ai; confirmation + DM result to #debug-logs; DM sent to faukkss.
-- 🔍 **Post-sync check** — Re-ran **`isAlreadySynced`** from the script against all **43** `!addfact` bodies → **0** gaps.
+- 📢 **Discord** — DM sent to faukkss; confirmation posted to #debug-logs.
 
 ---
 
