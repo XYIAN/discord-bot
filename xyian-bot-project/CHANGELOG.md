@@ -4,6 +4,16 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.9.14] - 2026-03-27
+
+### Discord: XYIAN guild channels + welcome posts
+
+- **Server** — Under **XYIAN-Guild** category: created **`#boss-strategy`**, **`#shackled-jungle`**, **`#rune-gear-strategy-and-presets`** with the same permission overwrites as the former expedition channel (**XYIAN OFFICIAL**, **XYIAN Guild Verified**, **Admin**, bot; **@everyone** denied). Renamed **`#expedition`** → **`#gvg-expedition-strategy`**.
+- **Welcome embeds** — Bot posted intro messages in each of the four channels (knowledge-base–grounded copy).
+- **Docs** — **`docs/ENV-AND-CHANNELS.md`** lists channel IDs for the XYIAN guild section.
+
+---
+
 ## [3.9.13] - 2026-03-22
 
 ### Fact sync: Weaken debuff + sync-facts matcher fix

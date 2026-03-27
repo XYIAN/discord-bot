@@ -36,4 +36,15 @@ Use this when setting up `.env` / `.env.local` or Railway. Scripts and the bot l
 | Guild requirements (embed posted via !post-guild-requirements or script) | guild-requirements | `1425139641199235133` |
 | Changelog (bot posts release notes on deploy) | changelog | `1424784471395274803` |
 
+### XYIAN Guild category (`XYIAN-Guild`)
+
+Private to **XYIAN OFFICIAL**, **XYIAN Guild Verified**, **Admin**, and the bot (same overwrite pattern). Not listed in bot code unless a webhook is added later.
+
+| Channel | ID |
+|---------|-----|
+| gvg-expedition-strategy (renamed from `expedition`) | `1424147322811580518` |
+| boss-strategy | `1487167727608266863` |
+| shackled-jungle | `1487167728556052752` |
+| rune-gear-strategy-and-presets | `1487167729910677564` |
+
 To get a channel ID: Discord → User Settings → App Settings → Developer Mode ON → right‑click channel → Copy ID.
