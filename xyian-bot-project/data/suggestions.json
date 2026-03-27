@@ -426,5 +426,24 @@
     "at": "2026-03-21T00:00:00.000Z",
     "status": "approved",
     "approvedVia": "fact_sync"
+  },
+  {
+    "id": 48,
+    "text": "Weaken is a \"hidden\" debuff that is applied to enemies via some special enchantments and character skins. Weaken causes the affected enemy to deal 20% less damage. Main sources of weakness include the unique rune enchantments for Arrow rain and Alex's Duck skin, and the Chaotic level Aura from the Griffin Armor",
+    "by": "fails_8743",
+    "userId": "392511835984756738",
+    "at": "2026-03-22T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync",
+    "discordMessageId": "1486412329007579156"
+  },
+  {
+    "id": 49,
+    "text": "Etched Runes Quality Skills:\n    Main Weapon:\n        Arrow of Echoes\n            Common: Main Weapon DMG+100\n            Fine: ATK PWR+100\n            Rare: Main weapon skills have increased chance t",
+    "by": "faukkss",
+    "userId": "707312657782538281",
+    "at": "2026-03-19T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
   }
 ]

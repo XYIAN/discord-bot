@@ -4,6 +4,17 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.9.13] - 2026-03-22
+
+### Fact sync: Weaken debuff + sync-facts matcher fix
+
+- 📦 **Knowledge (99 facts)** — Added **`skills.weaken`** from new `!addfact` in #arch-ai (Weaken debuff — 20% less enemy damage; Arrow Rain enchant, Alex Duck skin, Griffin Armor Chaotic aura). **`gold.community_weapon_cap`** text aligned to the channel message so the script does not re-queue it as a duplicate `custom_fact`.
+- 🎖️ **`suggestions.json`** — Rows **48** (Weaken, fails_8743) and **49** (etched Arrow of Echoes block credit for faukkss).
+- 🔧 **`scripts/sync-facts.js`** — **`isAlreadySynced`**: removed keyword 3-of-5 overlap (source of false “already synced” for distinct rune posts); kept first-40 / containment checks; added Unicode apostrophe normalize + `stripFactPrefixes`. **`!addfact`** filter accepts newline after the command. **`SKIP_APPROVED_SUGGESTION_IDS`** `{30–33}` so audit `!suggest` rows already folded into **`damage_terminology`** are not pushed again as `custom_facts`.
+- 📢 **`--notify`** — Credit-only sync posted to #arch-ai / #debug-logs; DM to faukkss.
+
+---
+
 ## [3.9.12] - 2026-03-22
 
 ### Fact sync: 14 new entries (enhancement runes, ability runes, collectibles)

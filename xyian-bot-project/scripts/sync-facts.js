@@ -29,6 +29,9 @@ const ARCH_AI_CHANNEL = '1424322391160393790';
 const DEBUG_CHANNEL = '1424329611969433703';
 const OWNER_ID = process.env.OWNER_ID || '528059607826825226';
 
+/** Approved suggestion rows already represented in structured knowledge (verbatim text differs from `damage_terminology` keys). */
+const SKIP_APPROVED_SUGGESTION_IDS = new Set([30, 31, 32, 33]);
+
 const TIER_THRESHOLDS = [
     { name: 'Arch Scholar', threshold: 5 },
     { name: 'Arch Sage', threshold: 15 },
@@ -118,12 +121,44 @@ function flattenTexts(knowledge) {
     return texts;
 }
 
+/** Strip common !addfact prefixes so Discord copy matches structured knowledge keys */
+function stripFactPrefixes(s) {
+    return s
+        .replace(/^weapons category\s*/i, '')
+        .replace(/^collectables?:\s*/i, '')
+        .replace(/^runes:\s*/i, '')
+        .replace(/^runes\s+/i, '')
+        .trim();
+}
+
+function normalizeUnicode(s) {
+    return s.replace(/\u2019/g, "'").replace(/\u2018/g, "'");
+}
+
+/**
+ * True if this fact text is already represented in knowledge.json.
+ * Uses substring overlap (same as pre-3.9.12) so structured entries (e.g. skills.tracking_eye
+ * without the "Tracking Eye:" label) still match the channel message.
+ * Does NOT use the old keyword 3-of-5 heuristic — that caused false positives when many
+ * rune lines shared words like "damage" / "rune" but were different facts.
+ */
 function isAlreadySynced(text, existingTexts) {
-    const normalized = text.toLowerCase().trim();
-    const keywords = normalized.split(/\s+/).filter(w => w.length > 4).slice(0, 5);
-    return existingTexts.some(existing =>
-        existing.includes(normalized.substring(0, 40)) || normalized.includes(existing.substring(0, 40))
-    ) || (keywords.length >= 3 && keywords.filter(kw => existingTexts.some(t => t.includes(kw))).length >= 3);
+    const normalized = normalizeUnicode(text.toLowerCase().trim());
+    if (!normalized.length) return true;
+    const stripped = stripFactPrefixes(normalized);
+    const variants = [normalized];
+    if (stripped.length >= 20 && stripped !== normalized) variants.push(stripped);
+
+    return existingTexts.some(existing => {
+        const e = normalizeUnicode(existing);
+        if (e.length < 12) return false;
+        for (const n of variants) {
+            if (e.includes(n)) return true;
+            if (n.includes(e) && e.length > 40) return true;
+            if (e.includes(n.substring(0, 40)) || n.includes(e.substring(0, 40))) return true;
+        }
+        return false;
+    });
 }
 
 (async () => {
@@ -141,7 +176,10 @@ function isAlreadySynced(text, existingTexts) {
     console.log('🔍 Scanning #arch-ai for !addfact messages...');
     const messages = await fetchAllMessages(ARCH_AI_CHANNEL);
     console.log(`   Fetched ${messages.length} messages from Discord (up to 25 pages × 100)`);
-    const addFactMsgs = messages.filter(m => m.content.startsWith('!addfact ') && m.content.length > 20);
+    const addFactMsgs = messages.filter(m => {
+        const c = m.content || '';
+        return /^\!addfact(\s|$)/i.test(c.trim()) && c.replace(/^\!addfact\s*/i, '').trim().length > 10;
+    });
 
     // Build contribution list from ALL !addfact messages (for credit tracking)
     const allContributions = addFactMsgs.map(msg => ({
@@ -160,6 +198,7 @@ function isAlreadySynced(text, existingTexts) {
     const suggestions = loadJSON(SUGGESTIONS_PATH) || [];
     const approvedSuggestions = suggestions.filter(s => s.status === 'approved');
     const newFromSuggestions = approvedSuggestions.filter(s =>
+        !SKIP_APPROVED_SUGGESTION_IDS.has(s.id) &&
         !isAlreadySynced(s.text, existingTexts) &&
         !newFacts.some(f => f.text.toLowerCase().includes(s.text.toLowerCase().substring(0, 40)))
     );
