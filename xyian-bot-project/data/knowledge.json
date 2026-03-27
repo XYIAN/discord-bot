@@ -286,7 +286,7 @@
     "general_store": "Gold can be used to purchase items from the general store.",
     "profile_level_cards": "Gold can also be used to buy profile-level-up cards when you reach each 10th profile level. You can buy 10 cards per level; they are randomly generated (e.g. Health increase, skill refresh, Red heart healing+, speed bonus). This is a rarer, sometimes expensive use of gold.",
     "gear_tiers_vs_levels": "Gear tier is specific to the individual piece of equipment (e.g. Rare, Epic, Legendary, Mythic). Gear level is specific to the slot (boots, weapon, armor, etc.) and applies to whatever item is equipped in that slot.",
-    "community_weapon_cap": "As of a recent update, weapon max level was raised to 200 from 150. Two main uses of gold: leveling weapons and purchasing talent cards (profile level-up cards every 10 levels).",
+    "community_weapon_cap": "There are 2 main uses for gold. Leveling up weapons and purchasing talent cards. As of the most recent update, Weapon max level will raise to 200 from 150. Talent cards can be bought every 10 levels but max out at level 50 currently. With level 60 add, we will see if they add more",
     "added_by_community": "fails_8743"
   },
   "guild": {
@@ -358,6 +358,11 @@
     "tracking_eye": {
       "name": "Tracking Eye",
       "description": "Your projectiles gain the ability to track enemies. Reduces DMG dealt by 10% (doesn't affect Sprites or elemental damage). Reduces main weapon and Strike projectile speed by 50%. Works best with Oracle Staff or when combined with Piercing Arrow or Energy Beam.",
+      "added_by": "fails_8743"
+    },
+    "weaken": {
+      "name": "Weaken (debuff)",
+      "description": "Weaken is a \"hidden\" debuff that is applied to enemies via some special enchantments and character skins. Weaken causes the affected enemy to deal 20% less damage. Main sources of weakness include the unique rune enchantments for Arrow Rain and Alex's Duck skin, and the Chaotic level Aura from the Griffin Armor.",
       "added_by": "fails_8743"
     }
   },

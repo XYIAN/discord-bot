@@ -19,6 +19,8 @@ The script automates what was previously a manual process:
 6. Optionally posts a sync summary to `#arch-ai` and `#debug-logs`
 7. Optionally DMs contributors about their credited contributions with tier progress
 
+**Duplicate detection (`isAlreadySynced`):** Uses substring overlap (first 40 chars, full containment, optional stripping of `weapons category` / `Runes:` / `Collectables:` prefixes) and Unicode apostrophe normalization. It does **not** use a “any 3 of 5 long keywords” rule — that caused false positives when many rune posts shared words like “damage.” Approved suggestion IDs **30–33** are skipped when pushing to `custom_facts` because that text is already represented under **`damage_terminology`** (wording differs from the archived `!suggest` lines).
+
 ### Usage
 
 ```bash
