@@ -47,4 +47,24 @@ Private to **XYIAN OFFICIAL**, **XYIAN Guild Verified**, **Admin**, and the bot 
 | shackled-jungle | `1487167728556052752` |
 | rune-gear-strategy-and-presets | `1487167729910677564` |
 
+### Strategy category (`Strategy`)
+
+Public channels (no permission overwrites — @everyone can view and post). Welcome embeds posted in each.
+
+| Channel | ID |
+|---------|-----|
+| arch2-wiki (forum) | `1421930658737164531` |
+| umbral-tempest | `1419944602651197511` |
+| arena-pvp | `1421948149827895498` |
+| fishing-event | `1429496650627551332` |
+| gem-spending | `1487582830702759936` |
+| campaign-and-hard-mode | `1487582836327186482` |
+| peak-arena | `1487582841507151883` |
+| sky-tower-and-challenges | `1487582846548971620` |
+| abyssal-tide | `1487582851808624731` |
+| boss-strategy | `1487582856732606596` |
+| rune-and-gear-builds | `1487582861912444979` |
+| event-guides | `1487582867822215300` |
+| all-star-cup | `1487582873094721789` |
+
 To get a channel ID: Discord → User Settings → App Settings → Developer Mode ON → right‑click channel → Copy ID.
