@@ -4,6 +4,24 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.9.16] - 2026-03-28
+
+### Knowledge base: game modes, Sacred Hall, PvE vs PvP rankings
+
+- 📖 **Game modes taxonomy** — Full breakdown added: Campaign, Arena (Main Arena, Peak Arena, Rumble Ladder, All Star Cup), Challenge (Sky Tower, Seal Battle, Magic Plant Defense), Dungeon (Gold Cave, Ruin Ruins, Shackled Jungle, Abyssal Tide)
+- ⚔️ **PvE vs PvP gear rankings** — Oracle > Dragoon > Griffin for PvE; Griffin > Dragoon > Oracle for PvP; Dragoon is the happy medium
+- 🏔️ **Peak Arena** — 3v3 mode: unique loadouts per character give ~25% ATK/HP bonus; duplicate loadouts penalized
+- 🏛️ **Sacred Hall** — Building Effect (ATK + HP per level), tier upgrades, resonance/skin interaction
+- 🎣 **Fishing event** — Monthly recurring event, main source of etched runes
+- 🏆 **All Star Cup expanded** — 12-day seasons with rotating rune/loadout bonuses
+- 📊 **20 new knowledge entries** total
+
+### Discord: 9 public strategy channels + welcome posts
+
+- 📢 Created 9 new channels under **Strategy** category: `gem-spending`, `campaign-and-hard-mode`, `peak-arena`, `sky-tower-and-challenges`, `abyssal-tide`, `boss-strategy`, `rune-and-gear-builds`, `event-guides`, `all-star-cup`
+- 💬 Posted knowledge-grounded welcome embeds in all 9 new channels + existing `arena-pvp` and `fishing-event` (11 total)
+- 📝 Updated `ENV-AND-CHANNELS.md` with all Strategy category channel IDs
+
 ## [3.9.14] - 2026-03-27
 
 ### Discord: XYIAN guild channels + welcome posts

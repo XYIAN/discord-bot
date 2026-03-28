@@ -310,7 +310,9 @@
     "dragoon_helmet": "The Dragoon Quality Skills: \nDragoon Helmet\nFine: Max HP+5%\nRare: Red Heart Heal+20%\nEpic: For every 1 enemy defeated or after every 5s, the next attack ignites an area explosion\nEpic",
     "dragoon_amulet": "The Dragoon Quality Skills: \nDragoon Amulet\nFine: ATK PWR+5%\nRare: CRIT DMG+12%\nEpic: Randomly detonates 2 enemies on the field every 2s\nEpic +1: No additional buff\nEpic +2: No additi",
     "dragoon_crossbow": "The Dragoon Quality Skills: \n\nDragoon Crossbow\nBase: Fires a powerful bolt\nFine: ATK PWR+5%\nRare: 50% chance to trigger area explosion on hit\nEpic: Explosion damage up, Meteor convert",
-    "s_rank_overview": "There are 3 S-Rank Weapon Categories: Dragoon, Oracle, and Griffin. Each category has 6 unique gear pieces split into Weapon, Amulet, Ring, Helmet, Armor, and Boots. The weapon, amule"
+    "s_rank_overview": "There are 3 S-Rank Weapon Categories: Dragoon, Oracle, and Griffin. Each category has 6 unique gear pieces split into Weapon, Amulet, Ring, Helmet, Armor, and Boots. The weapon, amule",
+    "pve_vs_pvp_rankings": "Gear set rankings differ drastically between PvE and PvP. For PvE/campaign: Oracle is best, then Dragoon, then Griffin. For PvP: Griffin is best, then Dragoon, then Oracle. Dragoon is the best of both worlds and the perfect happy medium — if you want to optimize for one mode, lean Oracle (PvE) or Griffin (PvP).",
+    "added_by_pve_pvp": "_xyian"
   },
   "runes": {
     "overview_4_types": "There are 4 different types of equipable runes, etched runes, blessing runes, enhancement runes, ability runes. A player can equip a max of 3 etched, 2 blessing, 4 enhancement and 4 ability at a time with all slots unlocked. Each rune has special abilities based off of its quality and enchantment stats.\n\nEtched Runes (13):\n    Main Weapon:\n        Arrow of Echoes\n        Echo Scythe\n    Sprites:\n        Sprite’s Awe\n        Sprite Assist\n    Strikes:\n        Sword Strike Split\n        Swordstrike Aerie\n    Meteors:\n        Meteor Split\n        Potion Spring \n    Circles:\n        Pulsing Orb\n        Orbital Orb\n    Elemental:\n        Elemental Domain\n        Elemental Crit\n    Plants:\n        Life Surge\n\nBlessing Runes (7):\n    Revive\n    Lucky Shadow\n    Intelligence\n    Rabbit’s Foot\n    Guardian\n    Devil Pact\n    Resilience\n\nEnhancement Runes (13):\nMain Weapon:    \nSharp Arrow\nElemental:\n    Flame-Poison Seal\n    Frost-Thunder Seal\nCircle:\n    Rotating SPD Up\n    Sawblade Circle\nMeteors:\n    Giant Meteor\n    Potion Magnet\nSprites:\n    Sprite Multishot\n    Sprite Link\nStrikes:\n    Dragonflight Sword\n    Ricocheting Strike\nPlants:\n    Rootguard\n    Vine Bind\n\nAbility Runes (13):\n    Main Weapon:\n        Arrow Rain\nElemental:\n    Flame-Poison Touch\n    Frost-Thunder Touch\nCircle:\n    Ring of Agony\n    Circle\nMeteors:\n    Star of Fury\n    Star of Time\nSprites:\n    Healing Sprite\n    Melee Sprite\nStrikes:\n    Sword of Time\n    Strike Potion\nPlants:\n    Plant Summon\n    Equinox Bloom",
@@ -337,14 +339,38 @@
   },
   "blessings": {},
   "game_modes": {
+    "overview": "There are four main game-mode categories: Campaign, Arena, Challenge, and Dungeon. Each contains sub-modes with different mechanics and rewards.",
     "campaign": {
-      "overview": "Campaign is one of the main PvE modes. Many expert players don't run it often because later levels get very difficult, but for leveling fast or maximizing rewards there are specific strategies.",
+      "overview": "Campaign is the main PvE mode where you fight against computer enemies. It is vastly different from PvP — bonuses, gear rankings, and strategies change drastically between the two.",
       "farming_drops": "To optimize gear, runes, and scroll drops: choose campaign levels that have 50 floors, not the 6-minute or endless versions. 50-floor runs have 5 boss battles (one every 10th floor), so more boss drops per run. 6-minute or endless runs have only 2 boss battles total, so fewer drops per run.",
       "fifty_floor_types": "There are two types of 50-floor campaign levels. One type requires walking through a door to change floors each time. The other type uses the same map for all 50 floors — e.g. Serenity Pool — so you never have to move; you can leave your character in one spot and farm easily. Same-map 50-floor levels like Serenity Pool are ideal for farming.",
-      "profile_exp_note": "Campaign is the only way to earn profile experience. See profile_experience category."
+      "profile_exp_note": "Campaign is the only way to earn profile experience. See profile_experience category.",
+      "hard_mode_note": "Later campaign levels introduce hard-mode mechanics that require Sky Tower progression to unlock (e.g. campaign 126 requires Sky Tower 1525 cleared)."
     },
-    "all_star_cup": "When selecting a start time for All Star cup, Habby made the time slots actually localized for players.",
-    "all_star_added_by": "fails_8743"
+    "arena": {
+      "overview": "Arena is the PvP category. Sub-modes: Main Arena, Peak Arena, Rumble Ladder, and All Star Cup.",
+      "main_arena": "The main arena has multiple tiers (Supreme is the top). Standard 1v1 PvP.",
+      "peak_arena": "Peak Arena is a 3v3 mode where you use three of your own characters against three of your opponent's. You pick separate loadouts for each character. If each character has unique/different gear and runes (e.g. one Circle build, one Meteor build, one Sprite build), you get a large bonus (~25% ATK and HP). Duplicate loadouts across characters give little to no bonus — the game rewards variety.",
+      "rumble_ladder": "Rumble Ladder is a PvP ladder mode.",
+      "all_star_cup": "All Star Cup is one of the most recent PvP additions. Each season lasts about 12 days and features different bonuses for different runes and loadouts. Depending on the current season's bonuses and your loadout, you could dominate or struggle — adapting your build to the season's modifiers is key. When selecting a start time, Habby made the time slots actually localized for players.",
+      "all_star_added_by": "fails_8743"
+    },
+    "challenge": {
+      "overview": "Challenge modes: Sky Tower, Seal Battle, and Magic Plant Defense.",
+      "sky_tower": "Sky Tower is linked to campaign progression. It unlocks higher campaign levels — for example, campaign level 126 requires clearing Sky Tower 1525. Sky Tower gates what campaign content you can access, usually becoming relevant around campaign level 50+.",
+      "seal_battle": "Seal Battle is a boss battle mode where the goal is to deal the most damage to a boss.",
+      "magic_plant_defense": "Magic Plant Defense is a newer mode where you defend a magic plant across different levels. Max level is 195 until you clear Campaign Mode 140, which unlocks levels up to 250."
+    },
+    "events": {
+      "fishing": "Fishing is one of the most recurring events, happening almost every month. It is one of the main ways to obtain etched runes. Players should prioritize fishing events when they appear."
+    },
+    "dungeon": {
+      "overview": "Dungeon modes: Gold Cave, Ruin Ruins, Shackled Jungle, and Abyssal Tide.",
+      "gold_cave": "Gold Cave is a simple dungeon with a max level of 150. Accessible to most players.",
+      "ruin_ruins": "Ruin Ruins gives you keys to unlock chests that contain runes. Most keys come from events or purchases.",
+      "shackled_jungle": "Shackled Jungle is focused on runes and your rune setup. You defeat waves of enemies, picking skills along the way. If you pick skills that synergize with your runes (good rune synergy), you'll do well; without synergy, it's very difficult.",
+      "abyssal_tide": "Abyssal Tide is an endless dungeon with different bonuses and negatives that rotate weekly (randomized, e.g. Meteor bonus, Sprite bonus, reverse controls, poison for standing still). It gives currency to level up your Sacred Hall."
+    }
   },
   "profile_experience": {
     "description": "Profile experience is your general account or profile level, separate from character or hero stars. It is earned only by playing campaign mode.",
@@ -393,6 +419,13 @@
       "benefit": "Highly recommended one-time purchase for speeding up progression.",
       "added_by": "fails_8743"
     }
+  },
+  "sacred_hall": {
+    "overview": "Sacred Hall is a profile-wide progression system that gives permanent bonuses to all your characters. It is leveled up using currency earned from Abyssal Tide.",
+    "building_effect": "The main upgrade path is the Building Effect. Each level gives an attack increase and a health increase.",
+    "tier_upgrades": "Separate from building levels, there are tier upgrades that unlock special bonuses. Higher tiers can unlock extra skin slots, which ties into Resonance.",
+    "resonance_skin_interaction": "At base level, Resonance is only the ability of a specific character. But if that character has a skin, and your Sacred Hall tier is high enough, you can also get their skin bonus in resonance — not just the ability. This means Sacred Hall tier determines whether resonance includes just abilities or abilities + skins.",
+    "added_by": "_xyian"
   },
   "custom_facts": [],
   "damage_terminology": {
