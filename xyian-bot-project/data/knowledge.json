@@ -427,7 +427,18 @@
     "resonance_skin_interaction": "At base level, Resonance is only the ability of a specific character. But if that character has a skin, and your Sacred Hall tier is high enough, you can also get their skin bonus in resonance — not just the ability. This means Sacred Hall tier determines whether resonance includes just abilities or abilities + skins.",
     "added_by": "_xyian"
   },
-  "custom_facts": [],
+  "custom_facts": [
+    {
+      "text": "don't for get to use all your plant defense eggs each week. Can confirm that if you have a certain amount you DO NOT get the 3 tickets replinished",
+      "added_by": "fails_8743",
+      "added_at": "2026-03-30"
+    },
+    {
+      "text": "When selecting a start time for All Star cup, Habby surprised us all and made the time slots ACTUALLY localized",
+      "added_by": "fails_8743",
+      "added_at": "2026-03-13"
+    }
+  ],
   "damage_terminology": {
     "note": "Community-sourced from #arch-ai !suggest (recovered in full-channel audit). Attack Power, Main weapon DMG, and generic DMG are different stats that multiply together.",
     "attack_power": "Attack Power (ATK / ATK PWR): baseline multiplier N × Attack Power for damage. Some skills claim to buff ATK but don't (e.g. Swift Arrow, source-specific buffs); others change ATK while describing something else (e.g. Stand Strong).",

@@ -445,5 +445,14 @@
     "at": "2026-03-19T00:00:00.000Z",
     "status": "approved",
     "approvedVia": "fact_sync"
+  },
+  {
+    "id": 50,
+    "text": "don't for get to use all your plant defense eggs each week. Can confirm that if you have a certain amount you DO NOT get the 3 tickets replinished",
+    "by": "fails_8743",
+    "userId": "392511835984756738",
+    "at": "2026-03-30T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
   }
 ]

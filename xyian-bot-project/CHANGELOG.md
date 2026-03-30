@@ -4,6 +4,13 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.9.17] - 2026-03-29
+
+### Fact sync
+
+- 📦 Synced **2** community `!addfact` entries from #arch-ai into `custom_facts` (Magic Plant Defense weekly eggs / tickets; All Star Cup start times localized by Habby)
+- 🎖️ Contributor: **fails_8743** — credited in `suggestions.json` (id 50, `approvedVia: fact_sync`)
+
 ## [3.9.16] - 2026-03-28
 
 ### Knowledge base: game modes, Sacred Hall, PvE vs PvP rankings
