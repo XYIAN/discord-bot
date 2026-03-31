@@ -76,6 +76,27 @@ const CONFIG = {
         { name: 'Arch Scholar',  threshold: 5,  canAsk: true,  canSuggest: true,  canAddFact: true,  canRemoveFact: false, canListFacts: true  },
         { name: 'Arch Sage',    threshold: 15, canAsk: true,  canSuggest: true,  canAddFact: true,  canRemoveFact: true,  canListFacts: true  },
     ],
+    activityTiers: [
+        { name: 'Arch Tactician', threshold: 100,  color: 0x7289DA },
+        { name: 'Arch Veteran',   threshold: 350,  color: 0x2ECC71 },
+        { name: 'Arch Warlord',   threshold: 750,  color: 0xFFD700 },
+        { name: 'Arch Legend',     threshold: 1500, color: 0x00FFFF },
+    ],
+    activityChannelIds: new Set([
+        '1421930658737164531', // arch2-wiki
+        '1419944602651197511', // umbral-tempest
+        '1421948149827895498', // arena-pvp
+        '1429496650627551332', // fishing-event
+        '1487582830702759936', // gem-spending
+        '1487582836327186482', // campaign-and-hard-mode
+        '1487582841507151883', // peak-arena
+        '1487582846548971620', // sky-tower-and-challenges
+        '1487582851808624731', // abyssal-tide
+        '1487582856732606596', // boss-strategy
+        '1487582861912444979', // rune-and-gear-builds
+        '1487582867822215300', // event-guides
+        '1487582873094721789', // all-star-cup
+    ]),
 };
 
 const webhooks = {
@@ -288,6 +309,77 @@ function recordSuggestion(userId) {
     tracker.count++;
     tracker.lastAt = now;
     suggestCooldown.set(userId, tracker);
+}
+
+// ── Activity leveling system ────────────────────────────────────────────────
+
+const ACTIVITY_PATH = path.join(__dirname, 'data', 'activity.json');
+const ACTIVITY_COOLDOWN_MS = 60_000;
+
+function loadActivity() {
+    try { return JSON.parse(fs.readFileSync(ACTIVITY_PATH, 'utf8')); } catch { return {}; }
+}
+
+function saveActivity(data) {
+    try { fs.writeFileSync(ACTIVITY_PATH, JSON.stringify(data, null, 2)); } catch { /* best effort */ }
+}
+
+function awardActivityPoint(userId, username) {
+    const data = loadActivity();
+    const now = Date.now();
+    const entry = data[userId] || { points: 0, lastPointAt: 0, username };
+    if (now - entry.lastPointAt < ACTIVITY_COOLDOWN_MS) return null;
+    entry.points++;
+    entry.lastPointAt = now;
+    entry.username = username;
+    data[userId] = entry;
+    saveActivity(data);
+    return entry.points;
+}
+
+async function checkActivityTierUpgrade(guild, userId, username, points) {
+    const member = await guild.members.fetch(userId).catch(() => null);
+    if (!member) return;
+
+    const tierDMs = {
+        'Arch Tactician': {
+            dm: `⚔️ **You've earned the rank of Arch Tactician!**\n\n` +
+                `${username}, your activity in the strategy channels has been noticed. **${points} messages** of real discussion — that puts you above the crowd.\n\n` +
+                `Keep contributing and you'll climb even higher. Next rank: **Arch Veteran** at 350 points.`,
+            debug: `⚔️ **Activity tier: Arch Tactician**\nUser: **${username}** (${userId})\nActivity points: ${points}`,
+        },
+        'Arch Veteran': {
+            dm: `🛡️ **${username}, you are now an Arch Veteran.**\n\n` +
+                `**${points} messages** in the strategy channels. You're one of the most consistent contributors in this community. People are learning from what you share.\n\n` +
+                `Next rank: **Arch Warlord** at 750 points. Keep going.`,
+            debug: `🛡️ **Activity tier: Arch Veteran**\nUser: **${username}** (${userId})\nActivity points: ${points}`,
+        },
+        'Arch Warlord': {
+            dm: `👑 **${username}, you've reached Arch Warlord.**\n\n` +
+                `**${points} messages.** You are among the elite strategists in this community. Your knowledge and dedication are shaping how people play.\n\n` +
+                `One more tier remains: **Arch Legend** at 1500 points. Only the most dedicated reach it.`,
+            debug: `👑 **Activity tier: Arch Warlord**\nUser: **${username}** (${userId})\nActivity points: ${points}`,
+        },
+        'Arch Legend': {
+            dm: `🌟 **${username}, you are now an Arch Legend.**\n\n` +
+                `**${points} messages.** This is the highest activity rank in the community. There are no more tiers — you've reached the top.\n\n` +
+                `You've been one of the most active and helpful voices in the strategy channels. The community is better because of you. Thank you.`,
+            debug: `🌟 **Activity tier: Arch Legend** 🎉\nUser: **${username}** (${userId})\nActivity points: ${points}\n*Highest activity rank achieved.*`,
+        },
+    };
+
+    for (const tier of CONFIG.activityTiers) {
+        if (points >= tier.threshold && !member.roles.cache.some(r => r.name === tier.name)) {
+            const role = guild.roles.cache.find(r => r.name === tier.name);
+            if (!role) continue;
+            await member.roles.add(role);
+            const msgs = tierDMs[tier.name];
+            if (msgs) {
+                await sendToAdmin({ content: msgs.debug });
+                try { await member.user.send(msgs.dm); } catch { /* DMs disabled */ }
+            }
+        }
+    }
 }
 
 // ── Role helpers ────────────────────────────────────────────────────────────
@@ -832,6 +924,14 @@ const spamTracker = new Map();
 client.on('messageCreate', async (message) => {
     if (message.author.bot) return;
 
+    // Activity XP: award a point for non-command messages in strategy channels
+    if (message.guild && CONFIG.activityChannelIds.has(message.channel.id) && !message.content.startsWith('!')) {
+        const newPoints = awardActivityPoint(message.author.id, message.author.username);
+        if (newPoints !== null) {
+            await checkActivityTierUpgrade(message.guild, message.author.id, message.author.username, newPoints);
+        }
+    }
+
     const isCommand = message.content.startsWith('!');
     const isDM = message.channel.type === 1;
     const isAIChannel = message.channel.id === CONFIG.channels.archAi;
@@ -870,7 +970,9 @@ client.on('messageCreate', async (message) => {
                         '**Everyone:**\n' +
                         '`!ping` — Bot status\n' +
                         '`!help` / `!menu` — This message\n' +
-                        '`!contributors` — Leaderboard of top contributors\n\n' +
+                        '`!contributors` — Leaderboard of top contributors\n' +
+                        '`!rank` / `!level` — Check your activity rank and progress\n' +
+                        '`!leaderboard` / `!lb` — Top 10 strategy channel contributors\n\n' +
                         '**🤖 AI Enabled** (in **#arch-ai**):\n' +
                         'Just type your Archero 2 question — no command needed!\n' +
                         '`!suggest <text>` — Suggest a correction or new info\n\n' +
@@ -928,6 +1030,75 @@ client.on('messageCreate', async (message) => {
                     .setDescription(leaderboard + '\n\n*Get 5 approved suggestions → **Arch Scholar**\nGet 15 approved suggestions → **Arch Sage***')
                     .setColor(0xf39c12).setTimestamp().setFooter({ text: 'XYIAN Bot — !suggest to contribute' });
                 return message.reply({ embeds: [embed] });
+            }
+
+            case 'rank':
+            case 'level': {
+                const targetUser = message.mentions.users.first() || message.author;
+                const activity = loadActivity();
+                const entry = activity[targetUser.id];
+                const pts = entry ? entry.points : 0;
+
+                let currentTier = 'ArchAddict';
+                let currentColor = 0x808080;
+                let nextTier = CONFIG.activityTiers[0];
+                for (const tier of CONFIG.activityTiers) {
+                    if (pts >= tier.threshold) {
+                        currentTier = tier.name;
+                        currentColor = tier.color;
+                        nextTier = CONFIG.activityTiers[CONFIG.activityTiers.indexOf(tier) + 1] || null;
+                    }
+                }
+
+                let progressLine;
+                if (!nextTier) {
+                    progressLine = '██████████ MAX — You\'ve reached the highest rank!';
+                } else {
+                    const prevThreshold = CONFIG.activityTiers.find(t => t.name === currentTier)?.threshold || 0;
+                    const range = nextTier.threshold - prevThreshold;
+                    const progress = pts - prevThreshold;
+                    const filled = Math.floor((progress / range) * 10);
+                    const bar = '█'.repeat(filled) + '░'.repeat(10 - filled);
+                    progressLine = `${bar} ${pts}/${nextTier.threshold} → next: **${nextTier.name}** (${nextTier.threshold - pts} to go)`;
+                }
+
+                const rankEmbed = new EmbedBuilder()
+                    .setTitle(`🏅 ${targetUser.username} — ${currentTier}`)
+                    .setDescription(`**${pts}** activity points\n\n${progressLine}`)
+                    .setColor(currentColor)
+                    .setThumbnail(targetUser.displayAvatarURL({ dynamic: true }))
+                    .setTimestamp()
+                    .setFooter({ text: 'XYIAN Bot — Earn points by chatting in strategy channels' });
+                return message.reply({ embeds: [rankEmbed] });
+            }
+
+            case 'leaderboard':
+            case 'lb': {
+                const activity = loadActivity();
+                const sorted = Object.entries(activity)
+                    .sort(([, a], [, b]) => b.points - a.points)
+                    .slice(0, 10);
+
+                if (!sorted.length) return message.reply('No activity recorded yet. Start chatting in the strategy channels!');
+
+                const medals = ['🥇', '🥈', '🥉'];
+                const lines = sorted.map(([, entry], i) => {
+                    const medal = medals[i] || `**${i + 1}.**`;
+                    let tierLabel = '';
+                    for (const tier of CONFIG.activityTiers) {
+                        if (entry.points >= tier.threshold) tierLabel = ` ${tier.name}`;
+                    }
+                    if (!tierLabel) tierLabel = ' ArchAddict';
+                    return `${medal} **${entry.username}** — ${entry.points} pts (${tierLabel.trim()})`;
+                }).join('\n');
+
+                const lbEmbed = new EmbedBuilder()
+                    .setTitle('🏆 Strategy Activity Leaderboard')
+                    .setDescription(lines + '\n\n*Earn points by posting in strategy channels (1 pt/min cooldown)*')
+                    .setColor(0x00FFFF)
+                    .setTimestamp()
+                    .setFooter({ text: 'XYIAN Bot — !rank to check your own progress' });
+                return message.reply({ embeds: [lbEmbed] });
             }
 
             case 'listfacts': {
