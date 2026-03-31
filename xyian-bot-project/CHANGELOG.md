@@ -11,6 +11,19 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 - 📦 Synced **2** community `!addfact` entries from #arch-ai into `custom_facts` (Magic Plant Defense weekly eggs / tickets; All Star Cup start times localized by Habby)
 - 🎖️ Contributor: **fails_8743** — credited in `suggestions.json` (id 50, `approvedVia: fact_sync`)
 
+## [3.10.0] - 2026-03-28
+
+### Strategy channel activity leveling system
+
+- ⚔️ **Activity XP** — Users earn 1 point per message in strategy channels (60s cooldown between points)
+- 🏅 **4 new activity tiers** — Arch Tactician (100 pts), Arch Veteran (350 pts), Arch Warlord (750 pts), Arch Legend (1500 pts)
+- 🎨 **Color-coded roles** — Steel blue → Emerald → Gold → Bright cyan progression, created in Discord
+- 📊 **`!rank` / `!level`** — Check your activity points, current tier, and progress bar to next tier
+- 🏆 **`!leaderboard` / `!lb`** — Top 10 strategy channel contributors with tier labels
+- 💬 **Auto-promotion** — DM notification + admin webhook log when a user hits a new tier
+- 📁 **`data/activity.json`** — Persistent point storage with cooldown tracking
+- 📝 **13 strategy channels tracked** — All channels in the Strategy category award activity points
+
 ## [3.9.16] - 2026-03-28
 
 ### Knowledge base: game modes, Sacred Hall, PvE vs PvP rankings

@@ -67,4 +67,20 @@ Public channels (no permission overwrites — @everyone can view and post). Welc
 | event-guides | `1487582867822215300` |
 | all-star-cup | `1487582873094721789` |
 
+### Strategy Activity Tiers
+
+Activity-based leveling system for strategy channels. Users earn 1 XP per message (60s cooldown). All 13 Strategy channels award points.
+
+| Tier | Threshold | Role Name | Color |
+|------|-----------|-----------|-------|
+| Base | 0 | ArchAddict | (existing) |
+| 1 | 100 | Arch Tactician | `#7289DA` (Steel blue) |
+| 2 | 350 | Arch Veteran | `#2ECC71` (Emerald) |
+| 3 | 750 | Arch Warlord | `#FFD700` (Gold) |
+| 4 | 1500 | Arch Legend | `#00FFFF` (Bright cyan) |
+
+Role IDs: Arch Tactician `1488667635326386226`, Arch Veteran `1488667640384979012`, Arch Warlord `1488667645741105203`, Arch Legend `1488667650841116693`.
+
+Commands: `!rank` / `!level` (check progress), `!leaderboard` / `!lb` (top 10).
+
 To get a channel ID: Discord → User Settings → App Settings → Developer Mode ON → right‑click channel → Copy ID.
