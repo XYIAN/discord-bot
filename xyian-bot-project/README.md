@@ -42,6 +42,18 @@ Discord bot for the Arch 2 Addicts server and XYIAN OFFICIAL guild (ID: 213797).
 
 Tier upgrades happen automatically when an admin approves a suggestion. The contributor gets a personal DM congratulating them and explaining their new abilities. Admins and verified guild members bypass tier checks.
 
+## Activity Leveling (Strategy Channels)
+
+| Tier | Role | Points | Color |
+|------|------|--------|-------|
+| Base | **ArchAddict** | 0 (auto on join) | -- |
+| 1 | ⚔️ **Arch Tactician** | 100 | Steel blue |
+| 2 | 🛡️ **Arch Veteran** | 350 | Emerald |
+| 3 | 👑 **Arch Warlord** | 750 | Gold |
+| 4 | 🌟 **Arch Legend** | 1500 | Bright cyan |
+
+Users earn 1 XP per message in any of the 13 Strategy channels (60-second cooldown). Tiers auto-promote with a DM and admin log. Separate from the AI suggestion tiers — users can hold both. Roles stack.
+
 ## Commands
 
 | Command | Who | What |
@@ -49,6 +61,8 @@ Tier upgrades happen automatically when an admin approves a suggestion. The cont
 | `!ping` | Everyone | Bot status |
 | `!help` / `!menu` | Everyone | Command list |
 | `!contributors` | Everyone | Leaderboard of top contributors |
+| `!rank` / `!level` | Everyone | Check activity rank and progress |
+| `!leaderboard` / `!lb` | Everyone | Top 10 strategy channel contributors |
 | `!suggest <text>` | 🤖 AI Enabled+ | Suggest a correction or new info |
 | `!addfact <text>` | 🎓 Arch Scholar+ | Add a fact to the knowledge base |
 | `!faq` | 🎓 Arch Scholar+ | View knowledge categories |
@@ -183,6 +197,15 @@ See **`docs/ARCH-AI-AUDIT.md`** for what it checks and the latest snapshot.
 
 The bot posts release notes to #changelog (`1424784471395274803`) on every deploy. Version and release notes are automatically parsed from `CHANGELOG.md` — just update this file and the bot picks it up on startup. If the version was already posted, it skips to avoid duplicates. No need to touch `bot.js` for version bumps.
 
+### ⚠️ CRITICAL: Changelog Rules
+
+> **Every push to main = a Railway deploy. The bot parses `CHANGELOG.md` to get the version and release notes. If the changelog is wrong or missing, the deploy is INVISIBLE — no debug log, no release notes, no notification.**
+
+1. **ALWAYS update CHANGELOG.md before pushing.** Every single time. No exceptions.
+2. **Newest version MUST be the first `## [x.x.x]` entry.** The bot regex grabs the first match. If an older version is above a newer one, the wrong version is used.
+3. **Semver order: newest → oldest, top → bottom.** `3.10.0` comes before `3.9.17` (10 > 9).
+4. **Verify after push:** #changelog and #debug-logs should show the new version within ~60 seconds.
+
 ### Versioning convention
 
 - **Major** (X.0.0) — Breaking changes or full rebuilds
@@ -205,6 +228,7 @@ The bot posts release notes to #changelog (`1424784471395274803`) on every deplo
 
 - `bot.js` — The bot (single file)
 - `data/knowledge.json` — Game facts (characters, skills, resources, custom facts) — see [Knowledge Guide](docs/KNOWLEDGE-GUIDE.md)
+- `data/activity.json` — Strategy channel XP tracking (auto-created)
 - `data/suggestions.json` — User suggestion queue (auto-created)
 - `data/feedback.json` — Q&A feedback log (auto-created)
 - `CHANGELOG.md` — Release history (bot reads version + notes from this on startup)

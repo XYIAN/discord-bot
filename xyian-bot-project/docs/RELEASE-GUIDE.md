@@ -110,9 +110,22 @@ Copy this for each release:
 3. Update `README.md` if a new channel was filled
 4. Commit, push
 
+## ⚠️ CRITICAL: Version Ordering in CHANGELOG.md
+
+The bot uses `md.match(/^## \[(\d+\.\d+\.\d+)\]/m)` to parse the version — it grabs the **first** `## [x.x.x]` entry. If an older version is listed above a newer one, the bot will think it's running the old version and may skip the changelog post entirely.
+
+**Rules:**
+- Newest version is ALWAYS the first `## [x.x.x]` entry in the file
+- Entries go newest → oldest, top → bottom
+- `3.10.0` comes before `3.9.17` in semver (10 > 9) — be careful with double-digit minor versions
+- If you're adding a patch after a minor bump, the patch number must be higher than the current top entry
+
+**What happens when this breaks:** The bot deploys with the wrong version, the changelog post is skipped (thinks it's a duplicate), and no debug notification shows the real version. The deploy becomes invisible.
+
 ## What NOT to Do
 
 - **Don't push without updating CHANGELOG.md** — The deploy notification will show the old version and `#changelog` will skip (since it's a duplicate). This makes it impossible to trace what changed.
+- **Don't break semver ordering in CHANGELOG.md** — Newest version must always be first. A v3.9.x entry above a v3.10.x entry will cause the bot to parse the wrong version.
 - **Don't edit `bot.js` version manually** — Version comes from `CHANGELOG.md` only.
 - **Don't push broken JSON** — This will crash the bot. Always validate first.
 - **Don't push secrets** — `.env` is gitignored. Never commit tokens or API keys.

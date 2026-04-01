@@ -4,12 +4,12 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
-## [3.9.17] - 2026-03-29
+## [3.10.1] - 2026-03-29
 
-### Fact sync
+### Fix: CHANGELOG version ordering + agent guardrails
 
-- 📦 Synced **2** community `!addfact` entries from #arch-ai into `custom_facts` (Magic Plant Defense weekly eggs / tickets; All Star Cup start times localized by Habby)
-- 🎖️ Contributor: **fails_8743** — credited in `suggestions.json` (id 50, `approvedVia: fact_sync`)
+- 🐛 **Changelog ordering fix** — v3.9.17 was listed above v3.10.0 in CHANGELOG.md, causing the bot to parse BOT_VERSION as 3.9.17 instead of 3.10.0. The v3.10.0 activity leveling changelog never posted to #changelog as a result. Fixed by correcting entry order (highest semver first).
+- 🚨 **Agent guardrails** — Added mandatory CHANGELOG rules to `.cursorrules`, README, and bot.js header: newest version MUST be first entry, semver ordering must never be broken, changelog must be updated on EVERY push to main.
 
 ## [3.10.0] - 2026-03-28
 
@@ -23,6 +23,13 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 - 💬 **Auto-promotion** — DM notification + admin webhook log when a user hits a new tier
 - 📁 **`data/activity.json`** — Persistent point storage with cooldown tracking
 - 📝 **13 strategy channels tracked** — All channels in the Strategy category award activity points
+
+## [3.9.17] - 2026-03-29
+
+### Fact sync
+
+- 📦 Synced **2** community `!addfact` entries from #arch-ai into `custom_facts` (Magic Plant Defense weekly eggs / tickets; All Star Cup start times localized by Habby)
+- 🎖️ Contributor: **fails_8743** — credited in `suggestions.json` (id 50, `approvedVia: fact_sync`)
 
 ## [3.9.16] - 2026-03-28
 

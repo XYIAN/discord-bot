@@ -31,6 +31,17 @@
 
 ## Workflow
 
-- Update changelog after every completed task (`xyian-bot-project/CHANGELOG.md`).
 - Keep bot.js as a single file. Only split into modules if it exceeds ~600 lines.
 - Add docs to `xyian-bot-project/docs/` as needed.
+
+## ⚠️ CRITICAL: Changelog & Version Rules (NEVER SKIP)
+
+**Every single push to main triggers a Railway deploy. The bot parses CHANGELOG.md on startup to determine the version and post release notes. If the changelog is wrong, the deploy is invisible — no debug log, no release notes, nothing.**
+
+1. **ALWAYS update `xyian-bot-project/CHANGELOG.md` before committing.** No exceptions. Not for "small" changes. Not for "just docs." Every push to main = a new changelog entry.
+2. **Newest version MUST be the FIRST `## [x.x.x]` entry in the file.** The bot's `parseChangelog()` uses `md.match(/^## \[(\d+\.\d+\.\d+)\]/m)` which grabs the first match. If an older version is above a newer one, the bot will use the wrong version and skip posting.
+3. **Semver ordering must never be broken.** Entries go newest → oldest, top → bottom. `3.10.0` comes before `3.9.17` (because 10 > 9). If you add a patch, make sure its number is higher than the current top entry.
+4. **Bump the version correctly:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs.
+5. **After pushing, verify:** The bot should post to `#changelog` and `#debug-logs` within ~60 seconds. If nothing appears, something is wrong.
+
+**What happens when you forget:** The bot deploys silently — no changelog post, no debug notification. The team has no idea what changed or that a deploy even happened. This has caused real confusion and must never happen again.
