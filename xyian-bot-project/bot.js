@@ -8,11 +8,19 @@
  *   - OpenAI-powered Q&A in #arch-ai (verified roles + AI Enabled)
  *   - !addfact / !removefact / !listfacts for admins
  *   - !suggest for community corrections → admin review queue
+ *   - Activity leveling in strategy channels (XP per message → tier roles)
+ *   - !rank / !leaderboard for activity progress
  *   - Welcome message for new members
  *   - Thumbs-up/down feedback on Q&A replies
  *   - Deploy notification → admin webhook on startup
  *   - Auto-delete stale scheduled messages when no user activity
  *   - Debug/errors → admin webhook
+ *
+ * ⚠️  CHANGELOG RULE: ALWAYS update CHANGELOG.md BEFORE pushing to main.
+ *     The bot parses CHANGELOG.md on startup to determine the version and
+ *     post release notes. Newest version MUST be the first ## [x.x.x] entry.
+ *     If the changelog is wrong, the deploy is invisible (no debug log, no
+ *     release notes). See .cursorrules and README for full rules.
  *
  * Env (required): DISCORD_TOKEN, GENERAL_CHAT_WEBHOOK, GUILD_RECRUIT_WEBHOOK, ADMIN_WEBHOOK
  * Env (optional): OPENAI_API_KEY, OWNER_ID, PORT
