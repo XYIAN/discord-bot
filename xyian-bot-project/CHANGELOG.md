@@ -4,6 +4,26 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.10.2] - 2026-04-09
+
+### New feature: `!opinion` — community opinions
+
+- 💬 **`!opinion <text>`** — Arch Scholar+ can now share gameplay opinions, theories, and unverified takes. Opinions are stored separately from facts and clearly labelled as "not verified" when the AI references them.
+- 📋 **`!listopinions`** — Browse all community opinions
+- 🗑️ **`!removeopinion <n>`** — Arch Sage can remove opinions
+- 🤖 **AI integration** — Opinions are included in the AI's context as "COMMUNITY OPINIONS (not verified)" so answers distinguish between confirmed facts and player takes
+- 📚 **`!faq`** and **`!help`** updated to show opinion commands and counts
+
+### Knowledge reorganization
+
+- 🏷️ Moved 2 `custom_facts` into proper categories: plant defense egg/ticket info → `game_modes.challenge.magic_plant_defense`; All Star Cup localized times already in `game_modes.arena.all_star_cup`
+- 📦 `custom_facts` cleared after categorization
+
+### Fact sync (3.9.17)
+
+- 📦 Synced **2** community `!addfact` entries from #arch-ai into `custom_facts` (Magic Plant Defense weekly eggs / tickets; All Star Cup start times localized by Habby)
+- 🎖️ Contributor: **fails_8743** — credited in `suggestions.json` (id 50, `approvedVia: fact_sync`)
+
 ## [3.10.1] - 2026-03-29
 
 ### Fix: CHANGELOG version ordering + agent guardrails
@@ -24,22 +44,7 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 - 📁 **`data/activity.json`** — Persistent point storage with cooldown tracking
 - 📝 **13 strategy channels tracked** — All channels in the Strategy category award activity points
 
-## [3.10.0] - 2026-04-09
-
-### New feature: `!opinion` — community opinions
-
-- 💬 **`!opinion <text>`** — Arch Scholar+ can now share gameplay opinions, theories, and unverified takes. Opinions are stored separately from facts and clearly labelled as "not verified" when the AI references them.
-- 📋 **`!listopinions`** — Browse all community opinions
-- 🗑️ **`!removeopinion <n>`** — Arch Sage can remove opinions
-- 🤖 **AI integration** — Opinions are included in the AI's context as "COMMUNITY OPINIONS (not verified)" so answers distinguish between confirmed facts and player takes
-- 📚 **`!faq`** and **`!help`** updated to show opinion commands and counts
-
-### Knowledge reorganization
-
-- 🏷️ Moved 2 `custom_facts` into proper categories: plant defense egg/ticket info → `game_modes.challenge.magic_plant_defense`; All Star Cup localized times already in `game_modes.arena.all_star_cup`
-- 📦 `custom_facts` cleared after categorization
-
-## [3.9.17] - 2026-04-09
+## [3.9.16] - 2026-03-28
 
 ### Fact sync
 
