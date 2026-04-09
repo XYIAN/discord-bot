@@ -25,7 +25,7 @@ Discord bot for the Arch 2 Addicts server and XYIAN OFFICIAL guild (ID: 213797).
 - **Daily reset reminder** — 4pm Pacific every day in general chat, with Arch AI's daily knowledge gap question
 - **Guild recruitment** — Every other day in the recruit channel
 - **Welcome system** — Greets new members in #general with channel links, auto-assigns ArchAddict role, sends a personal DM with full community rundown, and ⚔️ guild verification request
-- **Knowledge management** — Tiered access to add/remove facts
+- **Knowledge management** — Tiered access to add/remove facts and community opinions
 - **Forum guides** — Verified character list in #gear-rune-loadouts with all 17 characters, skills, and star system
 - **Channel content** — Guild requirements, community rules, and AI privacy policy all posted as embeds
 - **Changelog dedup** — Bot checks #changelog before posting; skips if version already announced
@@ -65,9 +65,12 @@ Users earn 1 XP per message in any of the 13 Strategy channels (60-second cooldo
 | `!leaderboard` / `!lb` | Everyone | Top 10 strategy channel contributors |
 | `!suggest <text>` | 🤖 AI Enabled+ | Suggest a correction or new info |
 | `!addfact <text>` | 🎓 Arch Scholar+ | Add a fact to the knowledge base |
+| `!opinion <text>` | 🎓 Arch Scholar+ | Share a gameplay opinion or theory |
 | `!faq` | 🎓 Arch Scholar+ | View knowledge categories |
 | `!listfacts` | 🎓 Arch Scholar+ | Browse custom facts |
+| `!listopinions` | 🎓 Arch Scholar+ | Browse community opinions |
 | `!removefact <n>` | 🧙 Arch Sage | Remove a custom fact by number |
+| `!removeopinion <n>` | 🧙 Arch Sage | Remove an opinion by number |
 | `!suggestions` | XYIAN OFFICIAL / Admin | Review pending suggestions |
 | `!approve <#>` | XYIAN OFFICIAL / Admin | Approve suggestion → adds as fact, DMs user |
 | `!reject <#> [reason]` | XYIAN OFFICIAL / Admin | Reject suggestion, DMs user with reason |

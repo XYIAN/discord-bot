@@ -6,7 +6,8 @@
  *   - Daily reset reminder (5pm Pacific) → general chat
  *   - Guild recruitment (every other day) → recruit channel
  *   - OpenAI-powered Q&A in #arch-ai (verified roles + AI Enabled)
- *   - !addfact / !removefact / !listfacts for admins
+ *   - !addfact / !removefact / !listfacts for facts
+ *   - !opinion / !removeopinion / !listopinions for community opinions
  *   - !suggest for community corrections → admin review queue
  *   - Activity leveling in strategy channels (XP per message → tier roles)
  *   - !rank / !leaderboard for activity progress
@@ -80,9 +81,9 @@ const CONFIG = {
         messageIds: ['1477906768272166925', '1478172709719380081', '1478934754848931930'],
     },
     roleTiers: [
-        { name: 'AI Enabled',   threshold: 0,  canAsk: true,  canSuggest: true,  canAddFact: false, canRemoveFact: false, canListFacts: false },
-        { name: 'Arch Scholar',  threshold: 5,  canAsk: true,  canSuggest: true,  canAddFact: true,  canRemoveFact: false, canListFacts: true  },
-        { name: 'Arch Sage',    threshold: 15, canAsk: true,  canSuggest: true,  canAddFact: true,  canRemoveFact: true,  canListFacts: true  },
+        { name: 'AI Enabled',   threshold: 0,  canAsk: true,  canSuggest: true,  canAddFact: false, canAddOpinion: false, canRemoveFact: false, canListFacts: false },
+        { name: 'Arch Scholar',  threshold: 5,  canAsk: true,  canSuggest: true,  canAddFact: true,  canAddOpinion: true,  canRemoveFact: false, canListFacts: true  },
+        { name: 'Arch Sage',    threshold: 15, canAsk: true,  canSuggest: true,  canAddFact: true,  canAddOpinion: true,  canRemoveFact: true,  canListFacts: true  },
     ],
     activityTiers: [
         { name: 'Arch Tactician', threshold: 100,  color: 0x7289DA },
@@ -160,6 +161,12 @@ function knowledgeAsText() {
             }
             continue;
         }
+        if (category === 'opinions') {
+            if (Array.isArray(entries) && entries.length > 0) {
+                sections.push('COMMUNITY OPINIONS (not verified — present these as player opinions, not confirmed facts):\n' + entries.map(o => `- ${o.text} (by ${o.added_by})`).join('\n'));
+            }
+            continue;
+        }
         const lines = [];
         if (typeof entries === 'object' && entries !== null) {
             for (const [name, data] of Object.entries(entries)) {
@@ -180,7 +187,7 @@ function knowledgeAsText() {
 function countFacts() {
     let count = 0;
     for (const [key, val] of Object.entries(knowledge)) {
-        if (key === 'custom_facts') {
+        if (key === 'custom_facts' || key === 'opinions') {
             count += Array.isArray(val) ? val.length : 0;
         } else if (typeof val === 'object' && val !== null) {
             count += Object.keys(val).length;
@@ -192,7 +199,7 @@ function countFacts() {
 function getRandomFact() {
     const all = [];
     for (const [key, val] of Object.entries(knowledge)) {
-        if (key === 'custom_facts') {
+        if (key === 'custom_facts' || key === 'opinions') {
             if (Array.isArray(val)) val.forEach(f => all.push(f.text));
         } else if (key === 'tips' && typeof val === 'object') {
             Object.values(val).forEach(t => all.push(t));
@@ -448,19 +455,21 @@ async function checkTierUpgrade(guild, userId, username) {
                 `You've gone from asking questions to shaping the answers. That's a big deal.\n\n` +
                 `**What's new for you:**\n` +
                 `• \`!addfact <text>\` — Add facts directly to the knowledge base\n` +
+                `• \`!opinion <text>\` — Share gameplay opinions and theories\n` +
                 `• \`!faq\` — View all knowledge categories\n` +
-                `• \`!listfacts\` — Browse all custom facts\n\n` +
+                `• \`!listfacts\` — Browse all custom facts\n` +
+                `• \`!listopinions\` — Browse community opinions\n\n` +
                 `And this isn't the end — at **15 approved suggestions**, you'll reach **Arch Sage**, the highest rank in the community. Keep going.`,
-            debug: `🎓 **Tier upgrade: Arch Scholar**\nUser: **${username}** (${userId})\nApproved suggestions: ${count}\nNew access: !addfact, !faq, !listfacts`,
+            debug: `🎓 **Tier upgrade: Arch Scholar**\nUser: **${username}** (${userId})\nApproved suggestions: ${count}\nNew access: !addfact, !opinion, !faq, !listfacts, !listopinions`,
         },
         'Arch Sage': {
             dm: `🧙 **${username}, you are now an Arch Sage.**\n\n` +
                 `This is the highest rank a community member can achieve — and you earned it. **${count} approved suggestions.** Every single one made the bot smarter, more accurate, and more useful for players who will never even know your name but will benefit from what you built.\n\n` +
                 `There are no more tiers. No more thresholds. You've reached the top.\n\n` +
                 `From here, you have full access to manage the knowledge base:\n` +
-                `• \`!addfact\` — Add facts\n` +
-                `• \`!removefact\` — Remove incorrect info\n` +
-                `• \`!listfacts\` / \`!faq\` — Full visibility into everything the bot knows\n\n` +
+                `• \`!addfact\` / \`!opinion\` — Add facts or opinions\n` +
+                `• \`!removefact\` / \`!removeopinion\` — Remove incorrect info\n` +
+                `• \`!listfacts\` / \`!listopinions\` / \`!faq\` — Full visibility into everything the bot knows\n\n` +
                 `You're not just a contributor anymore — you're a guardian of this community's knowledge. We built this together, and it wouldn't be the same without you.\n\n` +
                 `Thank you. Genuinely.`,
             debug: `🧙 **Tier upgrade: Arch Sage** 🎉\nUser: **${username}** (${userId})\nApproved suggestions: ${count}\nNew access: !removefact (full knowledge management)\n*Highest community rank achieved.*`,
@@ -608,7 +617,8 @@ async function askAI(question, username, userId) {
         '- Always say "guild" never "clan".\n' +
         '- When you don\'t know something, nudge them toward !suggest to help fill the gap.\n' +
         '- You care about accuracy above all. Wrong info hurts the guild.\n' +
-        '- The user may ask follow-up questions. Use the conversation history to understand context.\n\n' +
+        '- The user may ask follow-up questions. Use the conversation history to understand context.\n' +
+        '- When referencing community opinions, clearly note they are opinions from players, not verified facts.\n\n' +
         '--- VERIFIED FACTS ---\n' + knowledgeAsText();
 
     const priorContext = getUserContext(userId);
@@ -902,8 +912,8 @@ client.on('guildMemberAdd', async (member) => {
                 `Go to **<#1424785709914521701>** (community AI discussion) and react with ${emoji} on the message there to get the **${roleName}** role. Once you have it, head to <#${CONFIG.channels.archAi}> and ask any Archero 2 question — no command needed.\n\n` +
                 '**Role tiers — contribute and level up:**\n' +
                 `🤖 **AI Enabled** — Get it by reacting in <#1424785709914521701>. Then ask questions + \`!suggest\`\n` +
-                '🎓 **Arch Scholar** (5 approved suggestions) — Unlock `!addfact`, `!faq`, `!listfacts`\n' +
-                '🧙 **Arch Sage** (15 approved suggestions) — Unlock `!removefact`\n\n' +
+                '🎓 **Arch Scholar** (5 approved suggestions) — Unlock `!addfact`, `!opinion`, `!faq`, `!listfacts`, `!listopinions`\n' +
+                '🧙 **Arch Sage** (15 approved suggestions) — Unlock `!removefact`, `!removeopinion`\n\n' +
                 '**Useful commands:**\n' +
                 '`!suggest <text>` — Submit a correction or new info\n' +
                 '`!help` — Full command list\n' +
@@ -986,10 +996,13 @@ client.on('messageCreate', async (message) => {
                         '`!suggest <text>` — Suggest a correction or new info\n\n' +
                         '**🎓 Arch Scholar** (5 approved suggestions):\n' +
                         '`!addfact <text>` — Add a fact to the knowledge base\n' +
+                        '`!opinion <text>` — Share a gameplay opinion or theory\n' +
                         '`!faq` — View knowledge categories\n' +
-                        '`!listfacts` — Browse custom facts\n\n' +
+                        '`!listfacts` — Browse custom facts\n' +
+                        '`!listopinions` — Browse community opinions\n\n' +
                         '**🧙 Arch Sage** (15 approved suggestions):\n' +
-                        '`!removefact <number>` — Remove a custom fact\n\n' +
+                        '`!removefact <number>` — Remove a custom fact\n' +
+                        '`!removeopinion <number>` — Remove an opinion\n\n' +
                         '**XYIAN OFFICIAL / Admin:**\n' +
                         '`!suggestions` — Review pending suggestions\n' +
                         '`!approve <#>` — Approve a suggestion (adds as fact)\n' +
@@ -1008,11 +1021,13 @@ client.on('messageCreate', async (message) => {
                 if (!canMemberDo(message.member, 'canListFacts') && !isDM) {
                     return message.reply('❌ You need the **Arch Scholar** role or higher to use this command. Earn it by getting 5 suggestions approved!');
                 }
-                const categories = Object.keys(knowledge).filter(k => k !== 'custom_facts');
+                const categories = Object.keys(knowledge).filter(k => k !== 'custom_facts' && k !== 'opinions');
                 const list = categories.map(c => `• **${c.replace(/_/g, ' ')}** (${typeof knowledge[c] === 'object' ? Object.keys(knowledge[c]).length : 1} entries)`).join('\n');
+                const factsCount = (knowledge.custom_facts || []).length;
+                const opinionsCount = (knowledge.opinions || []).length;
                 const embed = new EmbedBuilder()
                     .setTitle('📚 FAQ — What can I answer?')
-                    .setDescription(`I know about these topics:\n\n${list}\n\nPlus **${(knowledge.custom_facts || []).length} custom facts** added by admins.\n\nJust ask your question in **#arch-ai**!`)
+                    .setDescription(`I know about these topics:\n\n${list}\n\nPlus **${factsCount} custom facts** and **${opinionsCount} community opinions**.\n\nJust ask your question in **#arch-ai**!`)
                     .setColor(0x00bfff).setTimestamp().setFooter({ text: 'XYIAN Bot' });
                 return message.reply({ embeds: [embed] });
             }
@@ -1115,7 +1130,7 @@ client.on('messageCreate', async (message) => {
                 }
                 const facts = knowledge.custom_facts || [];
                 if (!facts.length) {
-                    return message.reply('No entries in the **custom facts** queue right now — most knowledge lives in categories (weapons, runes, guild, gold, etc.). Try `!faq` for the full topic list. Admins can still add overflow facts with `!addfact <text>`.');
+                    return message.reply('No entries in the **custom facts** queue right now — most knowledge lives in categories (weapons, runes, guild, gold, etc.). Try `!faq` for the full topic list. Use `!addfact <text>` for facts or `!opinion <text>` for gameplay theories.');
                 }
                 const list = facts.map((f, i) => `**${i + 1}.** ${f.text}`).join('\n');
                 const embed = new EmbedBuilder()
@@ -1154,6 +1169,53 @@ client.on('messageCreate', async (message) => {
                 const removed = facts.splice(idx - 1, 1)[0];
                 saveKnowledge();
                 return message.reply(`🗑️ Removed fact #${idx}: "${removed.text.substring(0, 80)}..."\n**${countFacts()}** facts remaining.`);
+            }
+
+            case 'opinion': {
+                if (!canMemberDo(message.member, 'canAddOpinion')) {
+                    return message.reply('❌ You need the **Arch Scholar** role or higher to share opinions. Earn it by getting 5 suggestions approved!');
+                }
+                if (!argText || argText.length < 10) {
+                    return message.reply('Usage: `!opinion <your take>` (at least 10 characters). Opinions are gameplay theories or preferences — things that might help others but aren\'t fully confirmed.');
+                }
+                if (!knowledge.opinions) knowledge.opinions = [];
+                knowledge.opinions.push({
+                    text: argText,
+                    added_by: message.author.username,
+                    added_at: new Date().toISOString().split('T')[0],
+                });
+                saveKnowledge();
+                return message.reply(`💬 Opinion logged! The community now has **${(knowledge.opinions || []).length}** opinions on file.`);
+            }
+
+            case 'listopinions': {
+                if (!canMemberDo(message.member, 'canListFacts') && !isDM) {
+                    return message.reply('❌ You need the **Arch Scholar** role or higher to use this command. Earn it by getting 5 suggestions approved!');
+                }
+                const opinions = knowledge.opinions || [];
+                if (!opinions.length) {
+                    return message.reply('No community opinions yet. Be the first — use `!opinion <your take>` to share a gameplay theory or preference!');
+                }
+                const opList = opinions.map((o, i) => `**${i + 1}.** ${o.text} *(${o.added_by})*`).join('\n');
+                const opEmbed = new EmbedBuilder()
+                    .setTitle('💬 Community Opinions')
+                    .setDescription(`These are player opinions and theories — not verified facts.\n\n${opList}`)
+                    .setColor(0xf39c12).setTimestamp().setFooter({ text: 'XYIAN Bot — opinions are not verified' });
+                return message.reply({ embeds: [opEmbed] });
+            }
+
+            case 'removeopinion': {
+                if (!canMemberDo(message.member, 'canRemoveFact')) {
+                    return message.reply('❌ You need the **Arch Sage** role to remove opinions. Earn it by getting 15 suggestions approved!');
+                }
+                const opIdx = parseInt(argText, 10);
+                const opinions = knowledge.opinions || [];
+                if (isNaN(opIdx) || opIdx < 1 || opIdx > opinions.length) {
+                    return message.reply(`Usage: \`!removeopinion <number>\` (1–${opinions.length}). Use \`!listopinions\` to see them.`);
+                }
+                const removedOp = opinions.splice(opIdx - 1, 1)[0];
+                saveKnowledge();
+                return message.reply(`🗑️ Removed opinion #${opIdx}: "${removedOp.text.substring(0, 80)}..."\n**${opinions.length}** opinions remaining.`);
             }
 
             case 'recruit': {

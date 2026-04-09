@@ -359,7 +359,7 @@
       "overview": "Challenge modes: Sky Tower, Seal Battle, and Magic Plant Defense.",
       "sky_tower": "Sky Tower is linked to campaign progression. It unlocks higher campaign levels — for example, campaign level 126 requires clearing Sky Tower 1525. Sky Tower gates what campaign content you can access, usually becoming relevant around campaign level 50+.",
       "seal_battle": "Seal Battle is a boss battle mode where the goal is to deal the most damage to a boss.",
-      "magic_plant_defense": "Magic Plant Defense is a newer mode where you defend a magic plant across different levels. Max level is 195 until you clear Campaign Mode 140, which unlocks levels up to 250."
+      "magic_plant_defense": "Magic Plant Defense is a newer mode where you defend a magic plant across different levels. Max level is 195 until you clear Campaign Mode 140, which unlocks levels up to 250. Use all your plant defense eggs each week — if you're over a certain threshold you do NOT get the 3 tickets replenished."
     },
     "events": {
       "fishing": "Fishing is one of the most recurring events, happening almost every month. It is one of the main ways to obtain etched runes. Players should prioritize fishing events when they appear."
@@ -427,18 +427,8 @@
     "resonance_skin_interaction": "At base level, Resonance is only the ability of a specific character. But if that character has a skin, and your Sacred Hall tier is high enough, you can also get their skin bonus in resonance — not just the ability. This means Sacred Hall tier determines whether resonance includes just abilities or abilities + skins.",
     "added_by": "_xyian"
   },
-  "custom_facts": [
-    {
-      "text": "don't for get to use all your plant defense eggs each week. Can confirm that if you have a certain amount you DO NOT get the 3 tickets replinished",
-      "added_by": "fails_8743",
-      "added_at": "2026-03-30"
-    },
-    {
-      "text": "When selecting a start time for All Star cup, Habby surprised us all and made the time slots ACTUALLY localized",
-      "added_by": "fails_8743",
-      "added_at": "2026-03-13"
-    }
-  ],
+  "custom_facts": [],
+  "opinions": [],
   "damage_terminology": {
     "note": "Community-sourced from #arch-ai !suggest (recovered in full-channel audit). Attack Power, Main weapon DMG, and generic DMG are different stats that multiply together.",
     "attack_power": "Attack Power (ATK / ATK PWR): baseline multiplier N × Attack Power for damage. Some skills claim to buff ATK but don't (e.g. Swift Arrow, source-specific buffs); others change ATK while describing something else (e.g. Stand Strong).",
