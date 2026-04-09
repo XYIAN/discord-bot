@@ -27,6 +27,7 @@ How to add, update, and maintain data in `data/knowledge.json` — the single so
 | `privilege_cards` | Premium cards and their benefits | Active |
 | `profile_experience` | Profile level, 10-level cards for gold, campaign-only source | Active |
 | `custom_facts` | One-off facts added via `!addfact` | Active |
+| `opinions` | Unverified player opinions/theories via `!opinion` | Active |
 
 ## How to Add Data
 
@@ -84,6 +85,22 @@ Custom facts are simple text entries in the `custom_facts` array:
 ```
 
 These are also added live by users via `!addfact` — see [Fact Sync Workflow](#fact-sync-workflow) below.
+
+### 5. Adding a community opinion
+
+Opinions are gameplay theories or preferences — things that might help players but aren't fully confirmed. They're stored in the `opinions` array:
+
+```json
+"opinions": [
+  {
+    "text": "Griffin Claw feels stronger than Oracle Spear in PvP if you can get close",
+    "added_by": "username",
+    "added_at": "2026-04-09"
+  }
+]
+```
+
+Users add opinions live via `!opinion` (Arch Scholar+). The AI references these as "community opinions, not verified" so answers stay honest.
 
 ### 4. Adding a new category
 

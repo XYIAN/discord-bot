@@ -24,7 +24,22 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 - 📁 **`data/activity.json`** — Persistent point storage with cooldown tracking
 - 📝 **13 strategy channels tracked** — All channels in the Strategy category award activity points
 
-## [3.9.17] - 2026-03-29
+## [3.10.0] - 2026-04-09
+
+### New feature: `!opinion` — community opinions
+
+- 💬 **`!opinion <text>`** — Arch Scholar+ can now share gameplay opinions, theories, and unverified takes. Opinions are stored separately from facts and clearly labelled as "not verified" when the AI references them.
+- 📋 **`!listopinions`** — Browse all community opinions
+- 🗑️ **`!removeopinion <n>`** — Arch Sage can remove opinions
+- 🤖 **AI integration** — Opinions are included in the AI's context as "COMMUNITY OPINIONS (not verified)" so answers distinguish between confirmed facts and player takes
+- 📚 **`!faq`** and **`!help`** updated to show opinion commands and counts
+
+### Knowledge reorganization
+
+- 🏷️ Moved 2 `custom_facts` into proper categories: plant defense egg/ticket info → `game_modes.challenge.magic_plant_defense`; All Star Cup localized times already in `game_modes.arena.all_star_cup`
+- 📦 `custom_facts` cleared after categorization
+
+## [3.9.17] - 2026-04-09
 
 ### Fact sync
 
