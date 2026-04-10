@@ -83,4 +83,29 @@ Role IDs: Arch Tactician `1488667635326386226`, Arch Veteran `148866764038497901
 
 Commands: `!rank` / `!level` (check progress), `!leaderboard` / `!lb` (top 10).
 
+### Read-only channels (Rules & Requirements category)
+
+These channels have `@everyone` denied SEND_MESSAGES, ADD_REACTIONS, and CREATE_THREADS. Only the bot (ADMINISTRATOR) can post.
+
+| Channel | ID |
+|---------|-----|
+| guild-requirements | `1425139641199235133` |
+| archero-addicts-community-rules-and-safety | `1425139850599731365` |
+| arch-ai-privacy-policy-and-disclosure | `1425139939758178375` |
+
+### Server roles reference
+
+| Role | ID | Purpose |
+|------|-----|---------|
+| XYIAN OFFICIAL | `1424144223501815808` | Guild leadership — admin bot commands, pin messages |
+| Admin | `1424144920096014448` | Full admin — kick/ban/manage channels/roles (AI channels protected) |
+| Moderator | `1492192809426620566` | Mod duties — kick, mute/timeout, delete messages, manage suggestions |
+| XYIAN Guild Verified | `1424146498475659415` | Verified guild members — Q&A access, bypasses tier checks |
+
+### AI channel protection
+
+Admin and Moderator roles are denied MANAGE_CHANNELS and MANAGE_ROLES on:
+- `#arch-ai` (`1424322391160393790`)
+- `#community-ai-discussion` (`1424785709914521701`)
+
 To get a channel ID: Discord → User Settings → App Settings → Developer Mode ON → right‑click channel → Copy ID.

@@ -37,10 +37,21 @@ Discord bot for the Arch 2 Addicts server and XYIAN OFFICIAL guild (ID: 213797).
 | Tier | Role | How to earn | Access |
 |------|------|-------------|--------|
 | 1 | 🤖 **AI Enabled** | React with 🤖 in #cross-server or welcome message | Q&A in #arch-ai, `!suggest` |
-| 2 | 🎓 **Arch Scholar** | 5 approved suggestions | + `!addfact`, `!faq`, `!listfacts` |
-| 3 | 🧙 **Arch Sage** | 15 approved suggestions | + `!removefact` |
+| 2 | 🎓 **Arch Scholar** | 5 approved suggestions | + `!addfact`, `!opinion`, `!faq`, `!listfacts`, `!listopinions` |
+| 3 | 🧙 **Arch Sage** | 15 approved suggestions | + `!removefact`, `!removeopinion` |
 
 Tier upgrades happen automatically when an admin approves a suggestion. The contributor gets a personal DM congratulating them and explaining their new abilities. Admins and verified guild members bypass tier checks.
+
+## Server Roles
+
+| Role | Discord Permissions | Bot Commands |
+|------|-------------------|-------------|
+| **XYIAN OFFICIAL** | Pin/delete messages in all channels | All admin bot commands |
+| **Admin** | Kick, ban, manage channels/roles/messages, mute/timeout (AI channels protected) | All admin bot commands |
+| **Moderator** | Kick, delete messages, mute/timeout, manage nicknames/threads | `!suggestions`, `!approve`, `!reject`, `!grant` |
+| **XYIAN Guild Verified** | Standard member | Bypasses tier checks for Q&A |
+
+AI channels (#arch-ai, #community-ai-discussion) are protected — Admin and Moderator cannot delete or modify them. Rules & Requirements channels (#guild-requirements, #community-rules, #privacy-policy) are read-only for everyone except the bot.
 
 ## Activity Leveling (Strategy Channels)
 

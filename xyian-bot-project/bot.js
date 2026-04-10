@@ -408,9 +408,14 @@ function isAdmin(member) {
     return member.roles.cache.some(r => r.name === 'XYIAN OFFICIAL' || r.name === 'Admin');
 }
 
+function isModerator(member) {
+    if (!member || !member.roles) return false;
+    return isAdmin(member) || member.roles.cache.some(r => r.name === 'Moderator');
+}
+
 function hasVerifiedRole(member) {
     if (!member || !member.roles) return false;
-    const allowed = ['XYIAN OFFICIAL', 'XYIAN Guild Verified', 'Admin', 'Server Booster'];
+    const allowed = ['XYIAN OFFICIAL', 'XYIAN Guild Verified', 'Admin', 'Moderator', 'Server Booster'];
     return member.roles.cache.some(r => allowed.includes(r.name));
 }
 
@@ -1003,14 +1008,15 @@ client.on('messageCreate', async (message) => {
                         '**🧙 Arch Sage** (15 approved suggestions):\n' +
                         '`!removefact <number>` — Remove a custom fact\n' +
                         '`!removeopinion <number>` — Remove an opinion\n\n' +
-                        '**XYIAN OFFICIAL / Admin:**\n' +
+                        '**Moderator+:**\n' +
                         '`!suggestions` — Review pending suggestions\n' +
                         '`!approve <#>` — Approve a suggestion (adds as fact)\n' +
                         '`!reject <#> [reason]` — Reject a suggestion\n' +
-                        '`!grant @user` — Manually assign a role\n' +
+                        '`!grant @user` — Manually assign a role\n\n' +
+                        '**XYIAN OFFICIAL / Admin:**\n' +
                         '`!setupreaction` — Post a reaction-role message\n' +
                         '`!recruit` — Send guild recruitment now\n' +
-                        '`!post-guild-requirements` — Post guild requirements embed (for #guild-requirements)\n' +
+                        '`!post-guild-requirements` — Post guild requirements embed\n' +
                         '`!reset` — Send daily reset now'
                     )
                     .setColor(0x9b59b6).setTimestamp().setFooter({ text: 'XYIAN Bot' });
@@ -1279,8 +1285,8 @@ client.on('messageCreate', async (message) => {
             }
 
             case 'suggestions': {
-                if (!isAdmin(message.member)) {
-                    return message.reply('❌ This command requires the **XYIAN OFFICIAL** or **Admin** role.');
+                if (!isModerator(message.member)) {
+                    return message.reply('❌ This command requires the **Moderator**, **XYIAN OFFICIAL**, or **Admin** role.');
                 }
                 const all = loadSuggestions();
                 const pending = all.filter(s => s.status === 'pending');
@@ -1297,8 +1303,8 @@ client.on('messageCreate', async (message) => {
             }
 
             case 'approve': {
-                if (!isAdmin(message.member)) {
-                    return message.reply('❌ This command requires the **XYIAN OFFICIAL** or **Admin** role.');
+                if (!isModerator(message.member)) {
+                    return message.reply('❌ This command requires the **Moderator**, **XYIAN OFFICIAL**, or **Admin** role.');
                 }
                 const suggestions = loadSuggestions();
                 const approveId = parseInt(argText, 10);
@@ -1345,8 +1351,8 @@ client.on('messageCreate', async (message) => {
             }
 
             case 'reject': {
-                if (!isAdmin(message.member)) {
-                    return message.reply('❌ This command requires the **XYIAN OFFICIAL** or **Admin** role.');
+                if (!isModerator(message.member)) {
+                    return message.reply('❌ This command requires the **Moderator**, **XYIAN OFFICIAL**, or **Admin** role.');
                 }
                 const rejSuggestions = loadSuggestions();
                 const parts = argText.split(/\s+/);
@@ -1378,8 +1384,8 @@ client.on('messageCreate', async (message) => {
             }
 
             case 'grant': {
-                if (!isAdmin(message.member)) {
-                    return message.reply('❌ This command requires the **XYIAN OFFICIAL** or **Admin** role.');
+                if (!isModerator(message.member)) {
+                    return message.reply('❌ This command requires the **Moderator**, **XYIAN OFFICIAL**, or **Admin** role.');
                 }
                 const mentioned = message.mentions.members?.first();
                 if (!mentioned) return message.reply('Usage: `!grant @user` — assigns the reaction role.');
