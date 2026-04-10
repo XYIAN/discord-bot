@@ -4,6 +4,18 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.10.3] - 2026-04-09
+
+### Moderator role + read-only channels + AI channel protection
+
+- 🛡️ **Moderator role created** (ID: `1492192809426620566`) — Kick, delete messages, mute/timeout, manage nicknames/threads, view audit log
+- 🔒 **Read-only channels** — `#guild-requirements`, `#community-rules-and-safety`, `#arch-ai-privacy-policy` are now locked: @everyone denied SEND_MESSAGES, ADD_REACTIONS, CREATE_THREADS
+- 🤖 **AI channel protection** — Admin and Moderator denied MANAGE_CHANNELS + MANAGE_ROLES on `#arch-ai` and `#community-ai-discussion`
+- 👮 **`isModerator()` in bot** — New role check; Moderators can run `!suggestions`, `!approve`, `!reject`, `!grant`
+- 📝 **`!help` updated** — Moderator commands shown separately from Admin-only commands
+- 📚 Docs: `ENV-AND-CHANNELS.md` updated with read-only channels, role reference, AI protection details
+- ⚠️ **Pending**: XYIAN OFFICIAL (pin messages) and Admin (full admin perms) updates require moving the `arch2` bot role above them in Discord Server Settings → Roles
+
 ## [3.10.2] - 2026-04-09
 
 ### New feature: `!opinion` — community opinions
