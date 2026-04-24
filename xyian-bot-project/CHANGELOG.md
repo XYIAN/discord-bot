@@ -4,6 +4,17 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.10.4] - 2026-04-24
+
+### Guild power requirement: 2M+ everywhere
+
+- 💪 **XYIAN power requirement raised 1.5M+ → 2M+** — Updated across all bot messaging and docs:
+  - Guild recruitment embed (`sendGuildRecruitment`) — scheduled every-other-day post
+  - New-member welcome embed (`welcomeNewMember`) — sent on join
+  - `!post-guild-requirements` command — `#guild-requirements` channel embed
+  - `README.md` server channels table
+- 📋 **Action needed** — Re-run `!post-guild-requirements` in `#guild-requirements` to update the pinned requirements embed with the new 2M+ minimum. Next scheduled recruit post will pick up the new copy automatically.
+
 ## [3.10.3] - 2026-04-09
 
 ### Moderator role + read-only channels + AI channel protection

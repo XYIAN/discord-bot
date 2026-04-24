@@ -746,7 +746,7 @@ async function sendGuildRecruitment() {
             '**We\'re looking for dedicated players to join our elite community!**\n\n' +
             '✨ **What we offer:**\n• Active daily community\n• Expert strategies and guides\n• Guild events and challenges\n• 10% discount on guild shop items\n• Supportive and friendly environment\n\n' +
             '🎯 **Requirements:**\n• Daily participation in guild activities\n• 2 Boss Battles per day\n• 1 Guild Donation per day\n• Active in Discord community\n\n' +
-            '💪 **Power Level:** 1.5M+ required\n\n**Ready to join the elite? Apply now!**'
+            '💪 **Power Level:** 2M+ required\n\n**Ready to join the elite? Apply now!**'
         )
         .setColor(0xffa500)
         .setTimestamp()
@@ -869,7 +869,7 @@ client.on('guildMemberAdd', async (member) => {
             `**${emoji} Want AI access?**\n` +
             `React with ${emoji} on this message to get the **${roleName}** role and start asking Archero 2 questions in <#${CONFIG.channels.archAi}>!\n\n` +
             '**About XYIAN OFFICIAL (Guild ID: 213797):**\n' +
-            'We\'re an active Archero 2 guild — daily activity and 1.5M+ power required.'
+            'We\'re an active Archero 2 guild — daily activity and 2M+ power required.'
         )
         .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
         .setColor(0x00ff88)
@@ -1240,7 +1240,7 @@ client.on('messageCreate', async (message) => {
                     .setTitle('🏰 XYIAN OFFICIAL — Guild Requirements')
                     .setDescription('**Requirements for active members (Guild ID: 213797)**')
                     .addFields(
-                        { name: '💪 Power Level', value: '**1.5M+ required**\n• Minimum power to join and stay active', inline: false },
+                        { name: '💪 Power Level', value: '**2M+ required**\n• Minimum power to join and stay active', inline: false },
                         { name: '⚔️ Daily Boss Battles', value: '**2 per day**\n• Required for active status\n• Tracked automatically', inline: false },
                         { name: '💰 Guild Donations', value: '**1 per day**\n• First donation of the day is free\n• Next 4 cost 20 → 40 → 60 → 80 gems (200 gems total if all 5)\n• Tracked automatically', inline: false },
                         { name: '📊 Activity', value: '**Daily participation in Discord**\n• Inactive players may be removed\n• Exceptions for valid reasons', inline: false }
