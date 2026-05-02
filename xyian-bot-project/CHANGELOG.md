@@ -4,6 +4,36 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.12.0] - 2026-04-30
+
+### New feature: 📸 Vision learning loop — screenshots can grow the knowledge base
+
+Builds on 3.11.0 (screenshot Q&A) by closing the loop: when a screenshot reveals concrete factual claims the bot doesn't already know, those claims now flow into the existing suggestion review queue. Admins review, edit, categorize, and approve — verified-facts integrity is preserved, but the knowledge base actually grows from real gameplay screenshots instead of evaporating after one reply.
+
+- 🧠 **Two-pass vision prompt** — `askAIWithVision()` now also returns a structured `=== CANDIDATES ===` block of new universal facts visible in the screenshot. User-specific values (rolls, upgrade levels, owned counts, personal currency, ranks) are explicitly excluded by the prompt rules. Each candidate ships with a proposed `category`, proposed `key`, and a `confidence` flag (high / medium / low).
+- 📥 **Auto-routing into suggestions** — Vision candidates land in `data/suggestions.json` as pending suggestions with `source: 'vision'`, the contributing user's id, and the original screenshot URL stored alongside for review. They flow through the same `!approve` / `!reject` lifecycle as text-based `!suggest` submissions.
+- 💬 **Transparent reply** — When candidates are queued, the wizard's in-character reply gets a short footer line: *"📸 I noticed N things I don't have on file yet — queued for admin review: [sample]."* Users see what they contributed.
+- 🔔 **Admin webhook notification** — `ADMIN_WEBHOOK` receives a structured ping per screenshot listing each candidate with its confidence, proposed category/key, and the suggestion ID, so mods don't need to poll `!suggestions`.
+- ✏️ **`!edit <#> <new text>`** — New Mod+ command. Replaces a pending suggestion's text in place, preserving the original under `original_text` for audit. Designed for fixing OCR errors on vision candidates before approval.
+- 🗂️ **Categorized approval — `!approve <#> [category] [key] [| override text]`** — Approving now files the fact into the right top-level category in `knowledge.json` (e.g., `runes.frostshard_rune`) instead of always dumping into `custom_facts`. Backwards compatible: `!approve <#>` with no args still works exactly as before. Vision candidates default to their AI-proposed category if the admin doesn't override. The optional `| override text` shortcut combines edit + approve in one command.
+- 🛡️ **Category whitelist** — Approval validates against the 20 known top-level categories (`runes`, `weapons`, `characters`, `gear_sets`, `pvp_meta`, etc.). Unknown categories are rejected with a helpful list. Key collisions are auto-resolved with a numeric suffix (`frostshard_rune_2`).
+- 📋 **`!suggestions` queue redesigned** — Each pending entry now shows badges: `📸` for vision source, confidence level, proposed category/key, edit indicator, and 🖼️ marker if a screenshot URL is attached.
+- 📨 **Approval DM updated** — Contributors who get a vision-sourced suggestion approved see *"(spotted from your screenshot — thanks for sharing!)"* and the locator (e.g. `runes.frostshard_rune`) the fact landed at. Tier progression still counts these the same as text suggestions.
+- 🆔 **Suggestion ID generation hardened** — Switched from `length + 1` to `max(id) + 1` so deletes/edits in `suggestions.json` don't cause ID collisions.
+- 📝 **`!help` updated** — Reflects the new `!edit` command and the categorized `!approve` syntax.
+
+## [3.11.0] - 2026-04-30
+
+### New feature: 📸 Screenshot vision — Arch AI can analyze your screenshots
+
+- 🖼️ **Image scanning in #arch-ai** — Attach an Archero 2 screenshot with (or without) a question and Arch AI will observe and analyze whatever is visible: hero/character, equipped gear, stats panel, active runes/blessings/skills, sacred hall, currency, event progress, PvP/peak-arena rank, and which menu is being shown.
+- 🔄 **Automatic detection** — No new command. The bot inspects `message.attachments` in `#arch-ai` and routes images through a new vision-capable flow. Text-only questions are unchanged.
+- 🧠 **Context-aware follow-ups** — The vision answer is folded into the user's conversation history (10-min window), so follow-ups like "should I upgrade this?" still know what was on screen even if the screenshot has scrolled away. Only the text summary is stored — Discord attachment URLs are not persisted because their signatures expire.
+- 💬 **In-character replies** — Vision mode keeps the cybernetic-wizard voice; observations are woven naturally into the answer rather than dumped as a structured table.
+- 🔐 **Same access tier as Q&A** — Anyone with the **AI Enabled** role (or higher) can use it. No new roles, no new commands.
+- ⚙️ **Implementation** — New `askAIWithVision()` function in `bot.js`. Uses the existing `gpt-4o-mini` model (already multimodal), so no new dependencies. Up to 4 images per message; non-image attachments are ignored. Same persona, same "ground advice in verified facts" rules, plus a vision-specific clause permitting observation of the screenshot itself.
+- 📝 **`!help` updated** — Adds a single line under "AI Enabled" pointing users at the new behavior.
+
 ## [3.10.4] - 2026-04-24
 
 ### Guild power requirement: 2M+ everywhere
