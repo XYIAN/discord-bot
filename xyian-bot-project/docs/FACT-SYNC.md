@@ -111,6 +111,17 @@ The fact sync interacts with the role tier system:
 - With `--notify`, the script DMs contributors about their newly credited contributions and tier progress (see [DM template](#dm-template-for-sync-notify) below)
 - Role promotions themselves happen on the next bot deploy when `checkTierUpgrade()` runs, or can be triggered manually
 
+## Vision-sourced approvals (v3.12.0+)
+
+When a moderator approves a suggestion that came from a screenshot (`source: 'vision'` in `suggestions.json`) using `!approve <#> <category> <key>`, the bot writes the entry into a structured top-level category (e.g. `runes.frostshard_rune`) rather than `custom_facts`. The sync script round-trips this correctly:
+
+- `flattenTexts()` reads the `.text` field from object entries so duplicate detection covers both curated and contributed entries.
+- `applyApprovedToKnowledge()` in [`scripts/sync-facts.js`](../scripts/sync-facts.js) mirrors the bot's logic: when an approved suggestion has `approved_category` and `approved_key`, the script files it under that locator using the unified `{ text, added_by, added_at, source }` shape.
+- Vision-sourced approvals show `source: 'vision'` in the synced entry; text-sourced approvals show `source: 'suggestion'`; bulk-credited `!addfact` rows show `source: 'addfact'`.
+- Approvals without a category (`!approve <#>` only) still land in `custom_facts` — the legacy path is fully preserved.
+
+If the script encounters an `approved_category` it doesn't recognize, it falls back to `custom_facts` with a warning rather than crashing. The bot's `KNOWLEDGE_CATEGORIES` whitelist is the strict gate at approval time.
+
 ### DM template for sync (--notify)
 
 When a contributor has newly credited facts, the script sends them a single DM (same idea as the bot’s `!approve` DM). Template:

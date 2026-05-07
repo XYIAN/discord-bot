@@ -117,6 +117,30 @@ If the data doesn't fit an existing category, add a new top-level key:
 
 The bot will automatically pick it up — `knowledgeAsText()` iterates all top-level keys.
 
+### 6. Approved-suggestion / vision entry shape
+
+When a moderator runs `!approve <#> <category> <key>` (added in v3.12.0), the bot files the entry into the named structured category using a unified shape:
+
+```json
+"runes": {
+  "frostshard_rune": {
+    "text": "Frostshard rune slows enemies on hit and stacks up to 3 times.",
+    "added_by": "stacey-fails (via suggestion)",
+    "added_at": "2026-05-06",
+    "source": "vision"
+  }
+}
+```
+
+Curated entries (objects with `skill_levels`, `rarity`, `aka`, etc.) and contributed entries (objects with `text`, `source`) coexist in the same category. `knowledgeAsText()` prefers the `.text` field when present and falls back to JSON-serializing structured entries that don't have one.
+
+`source` is one of:
+- `suggestion` — submitted via `!suggest`, approved by mod
+- `vision` — extracted from a screenshot in #arch-ai
+- `addfact` — committed via `!addfact` and synced via `scripts/sync-facts.js`
+
+`scripts/sync-facts.js` round-trips this shape automatically — when an approved suggestion has `approved_category` set, the script files it into the correct structured category instead of always landing in `custom_facts`.
+
 ## Data Quality Rules
 
 **Always:**
@@ -145,6 +169,16 @@ Users add facts via `!addfact` on the live bot, stored in `knowledge.json` on Ra
 6. Commit, push, and update CHANGELOG
 
 Each sync is a patch version bump with its own CHANGELOG entry.
+
+## `seeds/knowledge.json` — first-mount volume snapshot (v3.12.0+)
+
+`xyian-bot-project/seeds/knowledge.json` is a tracked snapshot of `data/knowledge.json` that gets baked into the Docker image. On startup, the bot's `seedDataFiles()` hook copies `seeds/knowledge.json` into `data/knowledge.json` **only when the live file is missing** — this exists so that attaching a Railway Volume at `data/` doesn't wipe curated knowledge on first mount (an empty volume would otherwise shadow the baked-in `data/knowledge.json`).
+
+**You don't normally edit `seeds/` directly.** It's kept in sync automatically:
+- `scripts/sync-facts.js` mirrors every `data/knowledge.json` write into `seeds/knowledge.json` (look for `🌱 seeds/knowledge.json refreshed` in the script output).
+- After any manual edit to `data/knowledge.json`, mirror it forward with: `cp xyian-bot-project/data/knowledge.json xyian-bot-project/seeds/knowledge.json` and commit both.
+
+If `seeds/` and `data/` ever drift, the active bot keeps using `data/` — `seeds/` only matters on the first boot after a fresh volume attach.
 
 ## Validation
 

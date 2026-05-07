@@ -24,6 +24,7 @@ const fs = require('fs');
 const https = require('https');
 
 const KNOWLEDGE_PATH = path.join(__dirname, '..', 'data', 'knowledge.json');
+const SEEDS_KNOWLEDGE_PATH = path.join(__dirname, '..', 'seeds', 'knowledge.json');
 const SUGGESTIONS_PATH = path.join(__dirname, '..', 'data', 'suggestions.json');
 const ARCH_AI_CHANNEL = '1424322391160393790';
 const DEBUG_CHANNEL = '1424329611969433703';
@@ -91,6 +92,20 @@ function saveJSON(filepath, data) {
     fs.writeFileSync(filepath, JSON.stringify(data, null, 2) + '\n');
 }
 
+// Mirror knowledge.json into seeds/ so the Railway first-mount volume seed
+// stays current. Called wherever we save KNOWLEDGE_PATH.
+function saveKnowledgeWithSeedMirror(knowledge) {
+    saveJSON(KNOWLEDGE_PATH, knowledge);
+    try {
+        const seedsDir = path.dirname(SEEDS_KNOWLEDGE_PATH);
+        if (!fs.existsSync(seedsDir)) fs.mkdirSync(seedsDir, { recursive: true });
+        saveJSON(SEEDS_KNOWLEDGE_PATH, knowledge);
+        console.log('🌱 seeds/knowledge.json refreshed (kept in sync with data/knowledge.json)');
+    } catch (e) {
+        console.error('⚠️  Could not refresh seeds/knowledge.json:', e.message);
+    }
+}
+
 function countFacts(knowledge) {
     let count = 0;
     for (const [key, val] of Object.entries(knowledge)) {
@@ -106,10 +121,20 @@ function countFacts(knowledge) {
 function flattenTexts(knowledge) {
     const texts = [];
     for (const [key, val] of Object.entries(knowledge)) {
-        if (key === 'custom_facts') {
-            if (Array.isArray(val)) val.forEach(f => texts.push(f.text.toLowerCase().trim()));
+        if (key === 'custom_facts' || key === 'opinions') {
+            if (Array.isArray(val)) val.forEach(f => {
+                if (f && typeof f.text === 'string') texts.push(f.text.toLowerCase().trim());
+            });
         } else if (typeof val === 'object' && val !== null) {
             const flatten = (obj) => {
+                // Approved/vision entries are { text, added_by, added_at, source }.
+                // Only push the .text so duplicate detection sees clean prose,
+                // not the metadata fields. Curated entries without .text
+                // (e.g. characters with skill_levels) recurse normally.
+                if (typeof obj.text === 'string' && obj.text.length > 0) {
+                    texts.push(obj.text.toLowerCase().trim());
+                    return;
+                }
                 for (const v of Object.values(obj)) {
                     if (typeof v === 'string') texts.push(v.toLowerCase().trim());
                     else if (typeof v === 'object' && v !== null) flatten(v);
@@ -119,6 +144,67 @@ function flattenTexts(knowledge) {
         }
     }
     return texts;
+}
+
+// Whitelist of structured top-level categories an approved suggestion can be
+// routed into. Mirrors KNOWLEDGE_CATEGORIES in bot.js so the round-trip path
+// uses the same shape. Keep these in sync if the bot's set ever changes.
+const KNOWLEDGE_CATEGORIES = new Set([
+    'star_system', 'resonance', 'characters', 'pvp_meta', 'skins', 'gold',
+    'guild', 'gear_sets', 'weapons', 'runes', 'blessings', 'game_modes',
+    'profile_experience', 'tips', 'skills', 'resources', 'privilege_cards',
+    'sacred_hall', 'damage_terminology', 'collectibles',
+]);
+
+function autoKey(text, fallbackId) {
+    const words = (text || '').toLowerCase()
+        .replace(/[^a-z0-9\s]/g, ' ')
+        .split(/\s+/)
+        .filter(w => w.length > 1 && !['the', 'and', 'for', 'with', 'this', 'that'].includes(w));
+    const slug = words.slice(0, 3).join('_').slice(0, 30);
+    return slug || `note_${fallbackId}`;
+}
+
+// Mirror of bot.js applyApprovedToKnowledge for the round-trip side.
+// Returns { ok, locator, error }. Mutates `knowledge` in place.
+function applyApprovedToKnowledge(knowledge, { category, key, text, by, suggestionId, source, addedAt }) {
+    const today = addedAt || new Date().toISOString().split('T')[0];
+    const credit = `${by} (via suggestion)`;
+    const entrySource = source || 'suggestion';
+
+    if (!category || category === 'custom_facts') {
+        if (!knowledge.custom_facts) knowledge.custom_facts = [];
+        knowledge.custom_facts.push({ text, added_by: credit, added_at: today, source: entrySource });
+        return { ok: true, locator: 'custom_facts' };
+    }
+    if (category === 'opinions') {
+        if (!knowledge.opinions) knowledge.opinions = [];
+        knowledge.opinions.push({ text, added_by: credit, added_at: today, source: entrySource });
+        return { ok: true, locator: 'opinions' };
+    }
+    if (!KNOWLEDGE_CATEGORIES.has(category)) {
+        // Fall back to custom_facts rather than crashing the sync. The router
+        // is intentionally forgiving here — the bot has the strict whitelist.
+        if (!knowledge.custom_facts) knowledge.custom_facts = [];
+        knowledge.custom_facts.push({ text, added_by: credit, added_at: today, source: entrySource });
+        return { ok: true, locator: 'custom_facts', warning: `Unknown category '${category}', filed in custom_facts` };
+    }
+    if (!knowledge[category] || typeof knowledge[category] !== 'object' || Array.isArray(knowledge[category])) {
+        knowledge[category] = {};
+    }
+    let finalKey = key || autoKey(text, suggestionId);
+    if (Object.prototype.hasOwnProperty.call(knowledge[category], finalKey)) {
+        let n = 2;
+        while (Object.prototype.hasOwnProperty.call(knowledge[category], `${finalKey}_${n}`)) n++;
+        finalKey = `${finalKey}_${n}`;
+    }
+    knowledge[category][finalKey] = {
+        text,
+        added_by: credit,
+        added_at: today,
+        source: entrySource,
+    };
+    return { ok: true, locator: `${category}.${finalKey}` };
 }
 
 /** Strip common !addfact prefixes so Discord copy matches structured knowledge keys */
@@ -280,6 +366,8 @@ function isAlreadySynced(text, existingTexts) {
     }
 
     // ── Apply: add new facts to knowledge.json ──
+    // !addfact contributions don't carry a category proposal, so they always
+    // land in custom_facts (pre-vision behavior, preserved verbatim).
     if (newFacts.length > 0) {
         if (!knowledge.custom_facts) knowledge.custom_facts = [];
         for (const fact of newFacts) {
@@ -287,9 +375,10 @@ function isAlreadySynced(text, existingTexts) {
                 text: fact.text,
                 added_by: fact.username,
                 added_at: fact.date,
+                source: 'addfact',
             });
         }
-        saveJSON(KNOWLEDGE_PATH, knowledge);
+        saveKnowledgeWithSeedMirror(knowledge);
         console.log(`✅ Added ${newFacts.length} facts to knowledge.json`);
     }
 
@@ -311,18 +400,29 @@ function isAlreadySynced(text, existingTexts) {
         console.log(`✅ Credited ${uncreditedContributions.length} contributions in suggestions.json`);
     }
 
-    // Also add new suggestion entries if any
+    // Also add new suggestion entries if any. Approved-via-Discord rows that
+    // carry approved_category / approved_key get routed to the structured
+    // category (mirrors bot.js applyApprovedToKnowledge); plain rows still
+    // fall through to custom_facts.
     if (newFromSuggestions.length > 0) {
-        if (!knowledge.custom_facts) knowledge.custom_facts = [];
+        const summary = { custom_facts: 0, structured: 0 };
         for (const s of newFromSuggestions) {
-            knowledge.custom_facts.push({
+            const result = applyApprovedToKnowledge(knowledge, {
+                category: s.approved_category || null,
+                key: s.approved_key || null,
                 text: s.text,
-                added_by: s.by,
-                added_at: s.at ? s.at.split('T')[0] : new Date().toISOString().split('T')[0],
+                by: s.by,
+                suggestionId: s.id,
+                source: s.source || (s.approvedVia === 'fact_sync' ? 'addfact' : 'suggestion'),
+                addedAt: s.at ? s.at.split('T')[0] : new Date().toISOString().split('T')[0],
             });
+            if (result.locator === 'custom_facts') summary.custom_facts++;
+            else summary.structured++;
+            if (result.warning) console.log(`   ⚠️  ${result.warning} (suggestion #${s.id})`);
+            console.log(`   → #${s.id} filed under ${result.locator}`);
         }
-        saveJSON(KNOWLEDGE_PATH, knowledge);
-        console.log(`✅ Added ${newFromSuggestions.length} approved suggestions to knowledge.json`);
+        saveKnowledgeWithSeedMirror(knowledge);
+        console.log(`✅ Added ${newFromSuggestions.length} approved suggestions to knowledge.json (${summary.structured} categorized, ${summary.custom_facts} into custom_facts)`);
     }
 
     const afterCount = countFacts(knowledge);

@@ -4,6 +4,45 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.12.0] - 2026-05-06
+
+### New feature: 📸 Screenshot Q&A + learning loop in #arch-ai
+
+Trusted contributors can now drop an Archero 2 screenshot in #arch-ai and Arch AI will analyze it (gear, stats, runes, builds, PvP rank, currency) using the same verified knowledge base. When a screenshot reveals universal facts the bot doesn't already know, those claims flow into the existing suggestion review queue — admins approve them into structured categories like `runes.frostshard_rune` instead of dumping everything into `custom_facts`. Cost-bound, role-gated, kill-switchable.
+
+**Vision Q&A (image attachments):**
+
+- 🖼️ **Image scanning in #arch-ai** — Attach a screenshot with (or without) a question and Arch AI will observe gear, stats panels, equipped runes/blessings/skills, sacred hall, event progress, leaderboard rank, and the active menu. Uses gpt-4o-mini's existing multimodal support — no new dependencies.
+- 🔐 **Trusted-roles-only** — Vision is gated to **XYIAN OFFICIAL · Admin · Moderator · Arch Legend**. Anyone else who attaches an image gets a redirect embed pointing at <#1424322391160393790> for text questions and <#1424785709914521701> for chat — **no OpenAI call is made**, so non-trusted users can't drive vision spend.
+- 💰 **Cost guardrails** — Max **2 images** per message, `detail: 'low'` (~85 tokens/image instead of thousands), per-user **60s cooldown** between vision calls. All wired to `CONFIG.features` so they can be tuned without redeploy logic changes.
+- 🧠 **Two-pass vision prompt** — `askAIWithVision()` returns the in-character reply plus a structured `=== CANDIDATES ===` block of new universal facts. User-specific values (rolls, upgrade levels, owned counts, personal currency, ranks, power level) are explicitly excluded by the prompt rules. Each candidate ships with a proposed `category`, `key`, and `confidence`.
+
+**Learning loop (vision → suggestion queue → knowledge):**
+
+- 📥 **Auto-routing into suggestions** — Vision candidates land in `data/suggestions.json` as pending entries with `source: 'vision'`, the contributing user, and the screenshot URL. They flow through the same `!approve` / `!reject` lifecycle as `!suggest`.
+- 💬 **Transparent reply** — When candidates are queued, the wizard's reply gets *"📸 I noticed N things I don't have on file yet — queued for admin review."*
+- 🔔 **Admin webhook notification** — `ADMIN_WEBHOOK` receives a per-screenshot ping listing each candidate with confidence, proposed category/key, and suggestion ID.
+- ✏️ **`!edit <#> <new text>`** — New Mod+ command. Replaces a pending suggestion's text in place, preserving the original under `original_text` for audit. Designed for fixing OCR errors before approval.
+- 🗂️ **Categorized approval — `!approve <#> [category] [key] [| override text]`** — Approving now files the fact into the right top-level category in `knowledge.json` (e.g., `runes.frostshard_rune`) instead of always dumping into `custom_facts`. **Backwards compatible**: `!approve <#>` with no args still files into `custom_facts` exactly as before. Optional `| override text` combines edit + approve in one shot.
+- 🛡️ **Category whitelist** — Approval validates against the 20 known top-level categories. Key collisions auto-resolve with a numeric suffix (`frostshard_rune_2`).
+- 📋 **`!suggestions` queue redesigned** — Pending entries show badges: 📸 for vision source, confidence level, proposed category/key, ✏️ edit indicator, 🖼️ if a screenshot URL is attached.
+- 📨 **Approval DM updated** — Vision-sourced approvals get *"(spotted from your screenshot — thanks for sharing!)"* and the locator (`runes.frostshard_rune`) where the fact landed.
+
+**Schema unification:**
+
+- 🧱 **Unified entry shape** — Approved suggestions filed into structured categories now write `{ text, added_by, added_at, source }` so curated entries (`characters.alex` with `skill_levels`) and contributed entries (`runes.frostshard_rune`) coexist cleanly. `knowledgeAsText()` prefers `.text` when present so the AI sees clean prose, never JSON dumps.
+- 🔁 **`scripts/sync-facts.js` round-trips structured categories** — Approved suggestions with `approved_category` are filed into the correct knowledge category by the sync script (mirroring the bot's `applyApprovedToKnowledge`). `flattenTexts()` reads `.text` from object entries so duplicate detection covers both shapes.
+
+**Owner kill switch:**
+
+- 🛑 **`!ai status` / `!ai on` / `!ai off`** — New owner-only command. `!ai off` makes #arch-ai reply with an offline embed (no OpenAI calls); `!ai on` restores. `!ai status` reports current flags, OpenAI-key state, and active vision cooldowns. State is in-memory and resets on Railway redeploy by design.
+
+**Hardening:**
+
+- 🆔 **Suggestion ID generation** — All call sites (`!suggest`, vision candidate queue) now use a shared `nextSuggestionId(suggestions)` helper based on `max(id) + 1`. Prevents ID collisions if rows are ever deleted from `suggestions.json`.
+- 📝 **`!help` updated** — Reflects the trusted-roles vision gate, the new `!edit` command, the categorized `!approve` syntax, and the owner-only `!ai` line.
+- 📦 **First-mount volume seeder** — New `seedDataFiles()` hook runs on startup. If `data/knowledge.json` is missing on disk (e.g. an empty Railway Volume just attached for the first time), the bot copies the baked-in snapshot from `seeds/knowledge.json` into the live data directory. Idempotent and non-destructive — never overwrites existing files. `scripts/sync-facts.js` now also mirrors every `data/knowledge.json` write into `seeds/knowledge.json` so the seed snapshot stays current. Unblocks attaching a Railway Volume at `xyian-bot-project/data/` for cross-deploy persistence without losing curated knowledge on first mount.
+
 ## [3.10.4] - 2026-04-24
 
 ### Guild power requirement: 2M+ everywhere
