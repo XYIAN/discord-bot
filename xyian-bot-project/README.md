@@ -19,6 +19,7 @@ Discord bot for the Arch 2 Addicts server and XYIAN OFFICIAL guild (ID: 213797).
 ## What it does
 
 - **Q&A in #arch-ai** — Ask any Archero 2 question; the bot answers using OpenAI + curated facts, in the Arch AI persona voice (cybernetic wizard with dry wit)
+- **Screenshot Q&A (vision)** — Trusted contributors (XYIAN OFFICIAL · Admin · Moderator · Arch Legend) can attach an Archero 2 screenshot in #arch-ai and Arch AI will read gear, stats, runes, and answer questions about what it sees. Universal facts spotted in the screenshot get queued for admin approval. Cost-bound: max 2 images, low detail, 60s per-user cooldown.
 - **Reputation-based role tiers** — Contributors earn roles (Arch Scholar, Arch Sage) by getting suggestions approved
 - **Reaction-role access** — React with 🤖 in #cross-server or on welcome messages to get AI Enabled
 - **Personal DMs** — Users get notified when suggestions are approved/rejected, roles are granted, or tiers are earned
@@ -30,6 +31,7 @@ Discord bot for the Arch 2 Addicts server and XYIAN OFFICIAL guild (ID: 213797).
 - **Channel content** — Guild requirements, community rules, and AI privacy policy all posted as embeds
 - **Changelog dedup** — Bot checks #changelog before posting; skips if version already announced
 - **Feedback** — Thumbs-up/down reactions on Q&A answers, logged for review
+- **Owner kill switch** — `!ai status` / `!ai on` / `!ai off` lets the owner pause the OpenAI-backed Q&A in #arch-ai instantly without a redeploy
 - **Debug channel** — Errors, events, role changes, deploy notifications, and changelog post status
 
 ## Role Tiers
@@ -41,6 +43,25 @@ Discord bot for the Arch 2 Addicts server and XYIAN OFFICIAL guild (ID: 213797).
 | 3 | 🧙 **Arch Sage** | 15 approved suggestions | + `!removefact`, `!removeopinion` |
 
 Tier upgrades happen automatically when an admin approves a suggestion. The contributor gets a personal DM congratulating them and explaining their new abilities. Admins and verified guild members bypass tier checks.
+
+## Screenshot Q&A access (vision)
+
+Image attachments in `#arch-ai` are gated tighter than text Q&A — they're the expensive path (~10–50× a text call on `gpt-4o-mini`). Only these roles can use vision:
+
+| Role | Vision access |
+|------|---------------|
+| **XYIAN OFFICIAL** | ✅ |
+| **Admin** | ✅ |
+| **Moderator** | ✅ |
+| **Arch Legend** (top activity tier, 1500 XP) | ✅ |
+| Everyone else | ❌ — gets a redirect embed pointing at <#1424322391160393790> for text questions and <#1424785709914521701> for chat. **No OpenAI call is made.** |
+
+Cost guardrails enforced in code:
+- **Max 2 images** per message
+- **`detail: 'low'`** (~85 tokens/image, vs. thousands at high detail)
+- **60-second per-user cooldown** between vision calls
+
+Owner can flip the master switch any time via `!ai off` (in-memory; resets on Railway redeploy).
 
 ## Server Roles
 
@@ -82,10 +103,12 @@ Users earn 1 XP per message in any of the 13 Strategy channels (60-second cooldo
 | `!listopinions` | 🎓 Arch Scholar+ | Browse community opinions |
 | `!removefact <n>` | 🧙 Arch Sage | Remove a custom fact by number |
 | `!removeopinion <n>` | 🧙 Arch Sage | Remove an opinion by number |
-| `!suggestions` | XYIAN OFFICIAL / Admin | Review pending suggestions |
-| `!approve <#>` | XYIAN OFFICIAL / Admin | Approve suggestion → adds as fact, DMs user |
-| `!reject <#> [reason]` | XYIAN OFFICIAL / Admin | Reject suggestion, DMs user with reason |
-| `!grant @user` | XYIAN OFFICIAL / Admin | Manually assign a role, DMs user |
+| `!suggestions` | Moderator+ | Review pending suggestions (📸 = vision-extracted, 🖼️ = has screenshot) |
+| `!edit <#> <text>` | Moderator+ | Replace a pending suggestion's text in place (preserves original) |
+| `!approve <#> [category] [key] [\| override]` | Moderator+ | Approve into the right knowledge category (no args → custom_facts) |
+| `!reject <#> [reason]` | Moderator+ | Reject suggestion, DMs user with reason |
+| `!grant @user` | Moderator+ | Manually assign a role, DMs user |
+| `!ai status` / `!ai on` / `!ai off` | Owner only | Master kill switch for OpenAI Q&A in #arch-ai |
 
 ### How to see and approve suggestions (Discord)
 

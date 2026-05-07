@@ -31,10 +31,35 @@ Use this when setting up `.env` / `.env.local` or Railway. Scripts and the bot l
 | Purpose | Channel name | ID |
 |---------|--------------|-----|
 | Main Q&A (only channel we reply to for normal messages) | arch-ai | `1424322391160393790` |
+| AI discussion + reaction-role (vision redirect target) | community-ai-discussion | `1424785709914521701` |
 | cross-server (main/day-to-day chat; was Lobby) | cross-server | `1425322796820725760` |
 | Guild recruit (never reply; only cron sends) | (your recruit channel) | `1419944464608268410` |
 | Guild requirements (embed posted via !post-guild-requirements or script) | guild-requirements | `1425139641199235133` |
 | Changelog (bot posts release notes on deploy) | changelog | `1424784471395274803` |
+
+## Feature flags (`CONFIG.features` in `bot.js`)
+
+In-memory feature flags. The owner can toggle some at runtime via `!ai on/off`. Static defaults live in `bot.js` and reset on every Railway redeploy.
+
+| Flag | Default | Owner-toggleable | What it controls |
+|------|---------|------------------|-------------------|
+| `aiEnabled` | `true` | Yes (`!ai on`/`!ai off`) | Master kill switch for ALL OpenAI Q&A in `#arch-ai` (text + vision). When off, users see an offline embed and no OpenAI call is made. |
+| `visionEnabled` | `true` | No (code only) | Vision-specific flag. If false but `aiEnabled` is true, image attachments are stripped and the question is answered text-only. |
+| `visionMaxImages` | `2` | No | Hard cap on images per vision call. |
+| `visionDetail` | `'low'` | No | OpenAI image-detail level. `'low'` ≈ 85 tokens/image; `'high'` is much pricier. |
+| `visionCooldownMs` | `60_000` | No | Per-user cooldown between vision calls (in milliseconds). |
+| `tipOfTheDay` | `false` | No | Adds a random fact to the daily reset embed. |
+
+## Vision trusted roles (`CONFIG.visionTrustedRoleNames` in `bot.js`)
+
+Image attachments in `#arch-ai` only trigger the vision pipeline for members holding one of these roles. Anyone else who attaches an image gets a redirect embed and no OpenAI call.
+
+| Role | Source |
+|------|--------|
+| `XYIAN OFFICIAL` | Server role |
+| `Admin` | Server role |
+| `Moderator` | Server role |
+| `Arch Legend` | Activity tier (1500 XP) |
 
 ### XYIAN Guild category (`XYIAN-Guild`)
 

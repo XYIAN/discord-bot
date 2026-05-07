@@ -66,6 +66,7 @@ const { version: BOT_VERSION, lines: BOT_CHANGELOG } = parseChangelog();
 const CONFIG = {
     channels: {
         archAi: '1424322391160393790',
+        archAiDiscussion: '1424785709914521701',
         guildRecruit: '1419944464608268410',
         changelog: '1424784471395274803',
         general: null,  // resolved on ready by channel name
@@ -74,7 +75,21 @@ const CONFIG = {
     generalChatNames: ['general', 'general-chat', 'main-chat', 'arch-2-addicts'],
     features: {
         tipOfTheDay: false,
+        // Master kill switch for the OpenAI-backed Q&A in #arch-ai (text + vision).
+        // Toggleable at runtime by the owner via !ai on / !ai off (in-memory only).
+        aiEnabled: true,
+        // Vision-specific flag. If false but aiEnabled is true, image attachments
+        // are stripped and the message is treated as a text-only question.
+        visionEnabled: true,
+        // Vision cost guardrails — keep these tight; gpt-4o-mini vision is
+        // ~10–50× the cost of text-only Q&A per call.
+        visionMaxImages: 2,
+        visionDetail: 'low',          // 'low' | 'high' | 'auto' — 'low' is ~85 tokens/image
+        visionCooldownMs: 60_000,     // per-user vision cooldown
     },
+    // Roles allowed to use vision (image attachments) in #arch-ai. Anyone else
+    // who attaches an image gets a redirect embed and zero OpenAI calls.
+    visionTrustedRoleNames: ['XYIAN OFFICIAL', 'Admin', 'Moderator', 'Arch Legend'],
     reactionRole: {
         emoji: '🤖',
         roleName: 'AI Enabled',
@@ -132,6 +147,40 @@ try {
 // ── Knowledge base ──────────────────────────────────────────────────────────
 
 const KNOWLEDGE_PATH = path.join(__dirname, 'data', 'knowledge.json');
+const DATA_DIR = path.join(__dirname, 'data');
+const SEEDS_DIR = path.join(__dirname, 'seeds');
+
+// First-mount volume seeder. Railway volumes mount empty on first attach and
+// shadow files baked into the image at the mount path, so files committed
+// under data/ would appear missing on the very first deploy. We keep an
+// authoritative snapshot of knowledge.json under seeds/ (outside any mount
+// path) and copy it in when the live file is missing. Idempotent and
+// non-destructive — never overwrites an existing target. Other data files
+// (suggestions/activity/feedback) already treat "missing" as empty, so they
+// don't need seeding.
+function seedDataFiles() {
+    if (!fs.existsSync(DATA_DIR)) {
+        try { fs.mkdirSync(DATA_DIR, { recursive: true }); }
+        catch (e) { console.error('❌ Could not create data dir:', e.message); return; }
+    }
+    if (!fs.existsSync(SEEDS_DIR)) return;
+    const seedables = ['knowledge.json'];
+    for (const filename of seedables) {
+        const target = path.join(DATA_DIR, filename);
+        const seed = path.join(SEEDS_DIR, filename);
+        if (fs.existsSync(target)) continue;
+        if (!fs.existsSync(seed)) continue;
+        try {
+            fs.copyFileSync(seed, target);
+            const bytes = fs.statSync(target).size;
+            console.log(`📦 Seeded ${filename} from seeds/ (${bytes} bytes) — first-mount volume hydration`);
+        } catch (e) {
+            console.error(`❌ Failed to seed ${filename}:`, e.message);
+        }
+    }
+}
+
+seedDataFiles();
 
 let knowledge = loadKnowledge();
 
@@ -172,8 +221,16 @@ function knowledgeAsText() {
             for (const [name, data] of Object.entries(entries)) {
                 if (typeof data === 'string') {
                     lines.push(`${name}: ${data}`);
-                } else if (typeof data === 'object') {
-                    lines.push(`${name}: ${JSON.stringify(data)}`);
+                } else if (typeof data === 'object' && data !== null) {
+                    // Approved/vision entries store { text, added_by, added_at, source }.
+                    // Prefer the human-readable .text so the AI sees clean prose
+                    // instead of a JSON dump. Curated entries without .text
+                    // (e.g. characters with skill_levels) still fall back to JSON.
+                    if (typeof data.text === 'string' && data.text.length > 0) {
+                        lines.push(`${name}: ${data.text}`);
+                    } else {
+                        lines.push(`${name}: ${JSON.stringify(data)}`);
+                    }
                 }
             }
         }
@@ -306,6 +363,14 @@ function saveSuggestions(suggestions) {
     try { fs.writeFileSync(SUGGESTIONS_PATH, JSON.stringify(suggestions, null, 2)); } catch { /* best effort */ }
 }
 
+// Generate the next suggestion ID. Always max(id) + 1 — never length + 1,
+// because deletes/edits would otherwise cause ID collisions across the
+// !suggest, vision-candidate, and sync-facts entry points.
+function nextSuggestionId(suggestions) {
+    if (!Array.isArray(suggestions) || suggestions.length === 0) return 1;
+    return suggestions.reduce((max, s) => Math.max(max, s.id || 0), 0) + 1;
+}
+
 function canSuggest(userId) {
     const now = Date.now();
     const tracker = suggestCooldown.get(userId) || { count: 0, firstAt: now, lastAt: 0 };
@@ -360,18 +425,29 @@ function autoKey(text, fallbackId) {
 
 // Apply an approved suggestion to the knowledge base in the right category.
 // Returns { ok: true, locator } on success, { ok: false, error } on failure.
-function applyApprovedToKnowledge({ category, key, text, by, suggestionId }) {
+//
+// Shape rules:
+//   - custom_facts / opinions stay arrays of { text, added_by, added_at }.
+//   - Structured top-level categories (weapons, runes, characters, ...) are
+//     keyed objects. Approved entries are written as
+//       { text, added_by, added_at, source }
+//     so they share one shape regardless of origin (suggestion / vision /
+//     addfact). Pre-existing curated entries (objects with skill_levels etc.)
+//     remain valid — knowledgeAsText() prefers .text when present and falls
+//     back to JSON-serializing the structured shape.
+function applyApprovedToKnowledge({ category, key, text, by, suggestionId, source }) {
     const today = new Date().toISOString().split('T')[0];
     const credit = `${by} (via suggestion)`;
+    const entrySource = source || 'suggestion';
 
     if (!category || category === 'custom_facts') {
         if (!knowledge.custom_facts) knowledge.custom_facts = [];
-        knowledge.custom_facts.push({ text, added_by: credit, added_at: today });
+        knowledge.custom_facts.push({ text, added_by: credit, added_at: today, source: entrySource });
         return { ok: true, locator: 'custom_facts' };
     }
     if (category === 'opinions') {
         if (!knowledge.opinions) knowledge.opinions = [];
-        knowledge.opinions.push({ text, added_by: credit, added_at: today });
+        knowledge.opinions.push({ text, added_by: credit, added_at: today, source: entrySource });
         return { ok: true, locator: 'opinions' };
     }
     if (!KNOWLEDGE_CATEGORIES.has(category)) {
@@ -387,7 +463,12 @@ function applyApprovedToKnowledge({ category, key, text, by, suggestionId }) {
         while (Object.prototype.hasOwnProperty.call(knowledge[category], `${finalKey}_${n}`)) n++;
         finalKey = `${finalKey}_${n}`;
     }
-    knowledge[category][finalKey] = text;
+    knowledge[category][finalKey] = {
+        text,
+        added_by: credit,
+        added_at: today,
+        source: entrySource,
+    };
     return { ok: true, locator: `${category}.${finalKey}` };
 }
 
@@ -488,6 +569,16 @@ function hasAIAccess(member) {
     if (!member || !member.roles) return false;
     return hasVerifiedRole(member) || member.roles.cache.some(r =>
         CONFIG.roleTiers.some(t => t.name === r.name)
+    );
+}
+
+// Vision (image attachments in #arch-ai) is gated tighter than text Q&A —
+// only trusted contributors per CONFIG.visionTrustedRoleNames. Keeps the
+// expensive multimodal calls out of reach for new / random members.
+function hasVisionAccess(member) {
+    if (!member || !member.roles) return false;
+    return member.roles.cache.some(r =>
+        CONFIG.visionTrustedRoleNames.includes(r.name)
     );
 }
 
@@ -723,8 +814,34 @@ async function askAI(question, username, userId) {
 // alongside the text question. The vision pass also returns a structured
 // CANDIDATES block of new facts the bot doesn't already know, which we route
 // into the suggestions queue for admin review.
+//
+// Cost shape on gpt-4o-mini vision: ~10–50× a text-only call per request.
+// Guardrails enforced here + at the messageCreate handler:
+//   - CONFIG.features.visionMaxImages    (cap images per call)
+//   - CONFIG.features.visionDetail       ('low' clamps each image to ~85 tokens)
+//   - CONFIG.features.visionCooldownMs   (per-user cooldown between vision calls)
+//   - hasVisionAccess(member)            (trusted-roles-only gate)
 
-const VISION_MAX_IMAGES = 4;
+// Per-user cooldown timestamps for vision calls. Keyed by Discord user ID.
+// In-memory only — resets on Railway redeploy, which is fine.
+const visionCooldown = new Map();
+
+// Returns 0 if the user can call vision now, or the remaining ms until they can.
+function getVisionCooldownRemainingMs(userId) {
+    const last = visionCooldown.get(userId);
+    if (!last) return 0;
+    const remaining = CONFIG.features.visionCooldownMs - (Date.now() - last);
+    return remaining > 0 ? remaining : 0;
+}
+
+function stampVisionCooldown(userId) {
+    visionCooldown.set(userId, Date.now());
+    // Bound the map to avoid unbounded growth across many distinct users.
+    if (visionCooldown.size > 500) {
+        const oldest = visionCooldown.keys().next().value;
+        visionCooldown.delete(oldest);
+    }
+}
 
 // Whitelist of categories a vision candidate can be filed under. Matches the
 // top-level keys in knowledge.json. Anything outside this list falls back to
@@ -839,8 +956,11 @@ async function askAIWithVision(question, imageUrls, username, userId) {
             ? trimmedQuestion
             : 'I shared a screenshot — tell me what you see and anything noteworthy about my setup.'
     });
-    for (const url of imageUrls.slice(0, VISION_MAX_IMAGES)) {
-        userContent.push({ type: 'image_url', image_url: { url, detail: 'auto' } });
+    for (const url of imageUrls.slice(0, CONFIG.features.visionMaxImages)) {
+        userContent.push({
+            type: 'image_url',
+            image_url: { url, detail: CONFIG.features.visionDetail },
+        });
     }
 
     try {
@@ -883,9 +1003,8 @@ function queueVisionCandidates(candidates, screenshotUrls, message) {
     const suggestions = loadSuggestions();
     const queued = [];
     for (const c of candidates) {
-        const newId = (suggestions.reduce((m, s) => Math.max(m, s.id || 0), 0)) + 1;
         const entry = {
-            id: newId,
+            id: nextSuggestionId(suggestions),
             text: c.text,
             by: message.author.username,
             userId: message.author.id,
@@ -1263,7 +1382,7 @@ client.on('messageCreate', async (message) => {
                         '`!leaderboard` / `!lb` — Top 10 strategy channel contributors\n\n' +
                         '**🤖 AI Enabled** (in **#arch-ai**):\n' +
                         'Just type your Archero 2 question — no command needed!\n' +
-                        '📸 **Or attach a screenshot** — Arch AI will read your gear, stats, runes, and answer questions about what it sees.\n' +
+                        '📸 *Screenshot Q&A:* limited to **XYIAN OFFICIAL · Admin · Moderator · Arch Legend** (cooldown applies). Everyone else, ask in text.\n' +
                         '`!suggest <text>` — Suggest a correction or new info\n\n' +
                         '**🎓 Arch Scholar** (5 approved suggestions):\n' +
                         '`!addfact <text>` — Add a fact to the knowledge base\n' +
@@ -1284,7 +1403,9 @@ client.on('messageCreate', async (message) => {
                         '`!setupreaction` — Post a reaction-role message\n' +
                         '`!recruit` — Send guild recruitment now\n' +
                         '`!post-guild-requirements` — Post guild requirements embed\n' +
-                        '`!reset` — Send daily reset now'
+                        '`!reset` — Send daily reset now\n\n' +
+                        '**Owner only:**\n' +
+                        '`!ai status` / `!ai on` / `!ai off` — Master kill switch for the OpenAI Q&A in #arch-ai'
                     )
                     .setColor(0x9b59b6).setTimestamp().setFooter({ text: 'XYIAN Bot' });
                 return message.reply({ embeds: [embed] });
@@ -1527,6 +1648,46 @@ client.on('messageCreate', async (message) => {
                 return message.reply('🔄 Daily reset message sent!');
             }
 
+            case 'ai': {
+                // Owner-only kill switch for the OpenAI-backed Q&A in #arch-ai.
+                // Toggles CONFIG.features.aiEnabled in-memory; resets to true on
+                // every Railway redeploy by design (the source of truth is code,
+                // not state). Use `!ai status` to verify before/after toggling.
+                if (!isOwner(message.author)) {
+                    return message.reply('❌ This command is owner-only.');
+                }
+                const sub = (argText || 'status').trim().toLowerCase();
+                const fmtBool = b => b ? '✅ on' : '❌ off';
+                if (sub === 'status') {
+                    const cooldownActive = visionCooldown.size;
+                    const lines = [
+                        '🤖 **AI subsystem status**',
+                        `• AI Q&A: ${fmtBool(CONFIG.features.aiEnabled)}`,
+                        `• Vision: ${fmtBool(CONFIG.features.visionEnabled)} (max ${CONFIG.features.visionMaxImages} img, detail \`${CONFIG.features.visionDetail}\`, ${CONFIG.features.visionCooldownMs / 1000}s cooldown)`,
+                        `• OpenAI key: ${openai ? '✅ loaded' : '❌ missing'}`,
+                        `• Users currently in vision cooldown: ${cooldownActive}`,
+                        '',
+                        '_Use_ `!ai on` _or_ `!ai off` _to toggle the master switch._',
+                    ];
+                    return message.reply(lines.join('\n'));
+                }
+                if (sub === 'on') {
+                    CONFIG.features.aiEnabled = true;
+                    await sendToAdmin({
+                        content: `🤖 **AI Q&A enabled** by ${message.author.username} via \`!ai on\`.`,
+                    });
+                    return message.reply('🤖 AI Q&A is now **on**. Try `!ai status` to confirm.');
+                }
+                if (sub === 'off') {
+                    CONFIG.features.aiEnabled = false;
+                    await sendToAdmin({
+                        content: `🤖 **AI Q&A disabled** by ${message.author.username} via \`!ai off\`. Users in #arch-ai will see the offline embed.`,
+                    });
+                    return message.reply('🤖 AI Q&A is now **off**. `#arch-ai` will reply with an offline notice. Re-enable with `!ai on`.');
+                }
+                return message.reply('Usage: `!ai status` · `!ai on` · `!ai off` (owner only)');
+            }
+
             case 'suggest': {
                 if (!hasAIAccess(message.member)) {
                     return message.reply('❌ You need the **AI Enabled** role or a verified guild role to use this.');
@@ -1538,7 +1699,7 @@ client.on('messageCreate', async (message) => {
                 if (!check.ok) return message.reply(`⏳ ${check.reason}`);
                 const suggestions = loadSuggestions();
                 suggestions.push({
-                    id: suggestions.length + 1,
+                    id: nextSuggestionId(suggestions),
                     text: argText,
                     by: message.author.username,
                     userId: message.author.id,
@@ -1626,6 +1787,7 @@ client.on('messageCreate', async (message) => {
                     text: finalText,
                     by: target.by,
                     suggestionId: target.id,
+                    source: target.source || 'suggestion',
                 });
                 if (!result.ok) {
                     return message.reply(`❌ ${result.error}`);
@@ -1805,7 +1967,17 @@ client.on('messageCreate', async (message) => {
         return message.reply({ embeds: [embed] });
     }
 
-    // Ask OpenAI
+    // Owner-controlled global kill switch (toggleable via !ai on / !ai off).
+    // Applies to everyone — including the owner — so the off-state is honest.
+    if (!CONFIG.features.aiEnabled) {
+        const embed = new EmbedBuilder()
+            .setTitle('🧙 Arch AI is offline')
+            .setDescription('AI Q&A is paused right now. The owner has temporarily disabled it — try again later.')
+            .setColor(0xff6b6b).setTimestamp().setFooter({ text: 'XYIAN Bot — !ai status' });
+        return message.reply({ embeds: [embed] });
+    }
+
+    // OpenAI not configured at all (no key, package missing, etc.).
     if (!openai) {
         const embed = new EmbedBuilder()
             .setTitle('❓ Archero 2 Q&A')
@@ -1814,20 +1986,66 @@ client.on('messageCreate', async (message) => {
         return message.reply({ embeds: [embed] });
     }
 
+    // ── Vision gating ──
+    // Vision is the expensive path (~10–50× a text call). Layer the gates
+    // before any OpenAI call: feature flag → trusted-roles → per-user cooldown.
+    let imageUrls = extractImageUrls(message);
+    let visionStripped = false;
+    if (imageUrls.length > 0) {
+        if (!CONFIG.features.visionEnabled) {
+            // Vision feature is paused. Strip images and answer the text-only
+            // portion (or a generic prompt if there is no text).
+            imageUrls = [];
+            visionStripped = true;
+        } else if (!hasVisionAccess(message.member)) {
+            // Non-trusted user attached an image — redirect, no OpenAI call.
+            const trustedList = CONFIG.visionTrustedRoleNames.map(n => `**${n}**`).join(', ');
+            const embed = new EmbedBuilder()
+                .setTitle('📸 Vision is for trusted contributors')
+                .setDescription(
+                    `Image analysis in <#${CONFIG.channels.archAi}> is currently limited to ${trustedList}.\n\n` +
+                    `Drop your **text** question here in <#${CONFIG.channels.archAi}> and I'll do my best, ` +
+                    `or chat about your screenshot in <#${CONFIG.channels.archAiDiscussion}>.`
+                )
+                .setColor(0xff6b6b).setTimestamp().setFooter({ text: 'XYIAN Bot — vision access' });
+            return message.reply({ embeds: [embed] });
+        } else {
+            // Trusted user — enforce the per-user cooldown.
+            const remainingMs = getVisionCooldownRemainingMs(message.author.id);
+            if (remainingMs > 0) {
+                const seconds = Math.ceil(remainingMs / 1000);
+                const embed = new EmbedBuilder()
+                    .setTitle('📸 Vision cooldown')
+                    .setDescription(
+                        `My circuits need a moment. Try the screenshot again in **${seconds}s**, ` +
+                        `or ask a text question now and I'll answer right away.`
+                    )
+                    .setColor(0xf39c12).setTimestamp().setFooter({ text: 'XYIAN Bot — vision cooldown' });
+                return message.reply({ embeds: [embed] });
+            }
+        }
+    }
+
     try {
         await message.channel.sendTyping();
 
-        // If the user attached image(s), route through the vision-capable path.
-        // Otherwise, behavior is unchanged from text-only Q&A.
-        const imageUrls = extractImageUrls(message);
+        // If the user attached image(s) AND vision is enabled AND they are
+        // trusted, route through the vision-capable path. Otherwise, behavior
+        // is unchanged from text-only Q&A.
         let answer;
         let visionCandidates = [];
         if (imageUrls.length > 0) {
+            // Stamp BEFORE the call so a duplicate within the OpenAI roundtrip
+            // window also gets gated.
+            stampVisionCooldown(message.author.id);
             const result = await askAIWithVision(message.content, imageUrls, message.author.username, message.author.id);
             answer = result.reply;
             visionCandidates = result.candidates || [];
         } else {
-            answer = await askAI(message.content, message.author.username, message.author.id);
+            const textQuestion = visionStripped && !message.content.trim()
+                ? 'I shared a screenshot, but vision is paused right now — anything general you can tell me?'
+                : message.content;
+            answer = await askAI(textQuestion, message.author.username, message.author.id);
         }
 
         if (answer === '__RATE_LIMITED__') {
@@ -1863,6 +2081,10 @@ client.on('messageCreate', async (message) => {
         // admin review and append a transparent footer to the wizard's reply.
         let queuedCandidates = [];
         let answerWithCandidates = answer;
+        if (visionStripped) {
+            answerWithCandidates =
+                `_Vision is paused right now — answering the text part only._\n\n` + answer;
+        }
         if (visionCandidates.length > 0) {
             queuedCandidates = queueVisionCandidates(visionCandidates, imageUrls, message);
             if (queuedCandidates.length > 0) {

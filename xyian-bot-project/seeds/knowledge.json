@@ -1,0 +1,443 @@
+{
+  "star_system": {
+    "max_stars": 7,
+    "shards_to_acquire": 50,
+    "shards_to_first_star": 50,
+    "star_pattern": {
+      "0": "Character acquired + Skill Level 1",
+      "1": "Character-specific stat boost",
+      "2": "Skill Level 2",
+      "3": "+1 Resonance slot",
+      "4": "Character-specific stat boost (same as star 1)",
+      "5": "Skill Level 3",
+      "6": "+1 Resonance slot",
+      "7": "Character-specific stat boost + Skill Level 4"
+    },
+    "skill_level_unlocks": "Skill Lv1 at 0 stars (just owning the character), Skill Lv2 at 2 stars, Skill Lv3 at 5 stars, Skill Lv4 at 7 stars. Skill level is separate from star/character level.",
+    "note": "Stars 1, 4, and 7 give the same stat boost per character (e.g. Alex gets [All] Max HP +3% each time). Stars 3 and 6 each unlock a resonance slot. Star 7 gives both a stat boost AND skill level 4."
+  },
+  "resonance": {
+    "description": "Resonance allows characters to equip skills from other characters you own.",
+    "unlock_at": "Star 3 (+1 slot) and Star 6 (+1 slot, 2 total)",
+    "how_it_works": "A 6-star character can equip 2 borrowed skills from other characters in addition to their own skill. The borrowed skill uses the level from the character who owns it.",
+    "example": "A 6-star Dracoola can equip Hou Yi's Sun Piercer and Nyanja's Cloudfooted if you own those characters.",
+    "pvp_note": "Phynx's Desert Tribunal is widely considered the best resonance skill for PvP."
+  },
+  "characters": {
+    "alex": {
+      "rarity": "rare",
+      "aka": [],
+      "skill_name": "Braveheart",
+      "stat_boost": "[All] Max HP +3% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "Increases Red Heart drops.",
+        "2": "ATK SPD +10% for 10s after a CRIT.",
+        "3": "In-match EXP gain +10%.",
+        "4": "Guarantees a CRIT on the next attack after taking DMG."
+      }
+    },
+    "nyanja": {
+      "rarity": "rare",
+      "aka": [],
+      "skill_name": "Cloudfooted",
+      "stat_boost": "[All] MOV SPD +2% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "MOV SPD +10% and periodically releases Swift Wind to push back and damage enemies.",
+        "2": "Increases Swift Wind range and doubles Swift Wind DMG.",
+        "3": "Swift Wind triggers an explosion on enemy contact.",
+        "4": "Significantly reduces Swift Wind cycle."
+      }
+    },
+    "helix": {
+      "rarity": "rare",
+      "aka": [],
+      "skill_name": "Absolute Counter",
+      "stat_boost": "[All] ATK PWR +3% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "Lower HP increases ATK. ATK SPD +20% for 5s after taking DMG.",
+        "2": "ATK SPD +20% for 5s after taking DMG.",
+        "3": "ATK PWR +20% for 10s after taking DMG.",
+        "4": "ATK SPD +20% when HP is <50%."
+      }
+    },
+    "hela": {
+      "rarity": "rare",
+      "aka": [],
+      "skill_name": "Hadean Blessing",
+      "stat_boost": "[All] Max HP +3% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "Hela increases her own and all nearby allies' ATK by 5%.",
+        "2": "Hela restores 1% HP to herself and all nearby allies over time.",
+        "3": "Hela increases her own and all nearby allies' CRIT Rate by 5%.",
+        "4": "Hela increases her own and all nearby allies' CRIT DMG by 20%."
+      }
+    },
+    "mymu": {
+      "rarity": "rare",
+      "aka": [],
+      "skill_name": "Immortal Curse",
+      "stat_boost": "[All] ATK PWR +3% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "When HP reaches 0 for the first time, 60% chance to enter [Overdraw], consuming 50%-100% of ATK. Increased ATK and MOV SPD when in [Overdraw].",
+        "2": "Defeating monsters has a small chance of removing [Overdraw].",
+        "3": "When [Overdraw] is active, -30% ATK and MOV SPD to surrounding monsters.",
+        "4": "When entering [Overdraw], Overdraw HP drain range increases to [100%-150%]."
+      }
+    },
+    "hou_yi": {
+      "rarity": "rare",
+      "aka": [
+        "hou yi"
+      ],
+      "skill_name": "Sun Piercer",
+      "stat_boost": "[All] ATK PWR +3% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "Gain 1 Sunpiercer stack per boss defeated. Each stack increases attack speed by 4% (max 9 stacks).",
+        "2": "Each Sunpiercer stack additionally increases attack by 4%.",
+        "3": "Gain 2 Sunpiercer stacks per boss defeated and 1 stack per elite defeated.",
+        "4": "Gain 2 Sunpiercer stacks when entering battle. Each stack additionally increases crit damage by 4%."
+      },
+      "note": "Newest rare character"
+    },
+    "seraph": {
+      "rarity": "epic",
+      "aka": [],
+      "skill_name": "Divine Favor",
+      "stat_boost": "[All] CRIT DMG REDUC +15% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "50% chance to encounter the Valkyrie at the start.",
+        "2": "Chance to get another skill when Healing is selected during Angel encounter.",
+        "3": "Chance that Max HP is not reduced when making Devil Pact.",
+        "4": "Easier to get higher-quality skills when acquiring new skills."
+      }
+    },
+    "dracoola": {
+      "rarity": "epic",
+      "aka": [
+        "drac"
+      ],
+      "skill_name": "Lifesteal",
+      "stat_boost": "[All] Gears' Base Stats Increase +5% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "Chance to absorb enemy HP during attacks.",
+        "2": "Excess healing will be converted into damage on the next attack.",
+        "3": "When HP is >50%, MOV SPD +20%.",
+        "4": "At full HP, ATK PWR +40%."
+      }
+    },
+    "rolla": {
+      "rarity": "epic",
+      "aka": [],
+      "skill_name": "Frostsinger",
+      "stat_boost": "[All] CRIT DMG +10% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "Attacks are imbued with ice.",
+        "2": "Enemy ATK is reduced for 5s after being unfrozen.",
+        "3": "Attacks are imbued with the formidable ice element.",
+        "4": "Summons Frost Meteor when attacking frozen enemies."
+      }
+    },
+    "loki": {
+      "rarity": "epic",
+      "aka": [],
+      "skill_name": "Fervent Rhythm",
+      "stat_boost": "[All] More damage VS players +5% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "When moving, there is a chance to enter [Focus State] increasing ATK by 20% for 3s.",
+        "2": "After entering [Focus State] 2 times, the next time this state is active, ATK SPD is increased by 30%, and duration is doubled.",
+        "3": "When [Focus State] fades, there is 30% chance to enter this state again.",
+        "4": "When battling players, if [Focus State] is active, there is a chance to gain immunity to all Control effects."
+      }
+    },
+    "phynx": {
+      "rarity": "epic",
+      "aka": [],
+      "skill_name": "Desert Tribunal",
+      "stat_boost": "[All] CRIT Rate +2% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "Mix sand into the elements. Elemental damage now also inflicts [Bleed] dealing 15% Bleed DMG every 0.15s.",
+        "2": "Every 10 Bleed hits increases Elemental DMG by 5% for 5s (Max 5 stacks).",
+        "3": "Against Burning or Poisoned enemies, +50% Bleed DMG dealt. Their Burn and Poison debuffs also tick 20% faster.",
+        "4": "If enemy takes Lightning or Ice DMG, all remaining Bleed ticks are resolved instantly."
+      },
+      "note": "Widely considered the best resonance skill for PvP. Pairs with Cleo (S-tier P2P) or Helix/Rolla/Mymu (F2P alternatives). See pvp_meta for full combo rankings."
+    },
+    "nezha": {
+      "rarity": "epic",
+      "aka": [],
+      "skill_name": "Cosmic Hoop",
+      "stat_boost": "[All] CRIT DMG REDUC +15% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "The character's movement path will burn for an extended duration.",
+        "2": "Main Weapon attacks have a chance to fire 2 [Cosmic Hoops] at target.",
+        "3": "[Cosmic Hoops] gain [Fiery Path] effect and can track enemies.",
+        "4": "Main Weapon attacks have a chance to fire 3 [Cosmic Hoops] at target, with a chance to chain-fire."
+      }
+    },
+    "otta": {
+      "rarity": "legendary",
+      "aka": [],
+      "skill_name": "Brutality",
+      "stat_boost": "[All] CRIT Rate +4% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "The higher the enemy's HP, the easier it is to land a CRIT.",
+        "2": "After taking damage, gain +40% Crit Rate and +60% Crit DMG for 5s.",
+        "3": "CRIT hits can insta-kill minions below 30% HP.",
+        "4": "The farther the range, the higher the CRIT Rate, up to 15%."
+      }
+    },
+    "demon_king_atreus": {
+      "rarity": "legendary",
+      "aka": [
+        "atreus",
+        "dk",
+        "demon king"
+      ],
+      "skill_name": "Demon King Energy",
+      "stat_boost": "[All] Shield HP +10% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "Starts off with shield equal to 50% HP. When shield is active, elemental DMG +10%, CRIT DMG +30%.",
+        "2": "Chance to summon dark energy orbs when enemies are hit; can pull hate. Energy orbs release energy rings to attack nearby enemies. Up to 3 orbs can be present.",
+        "3": "When HP is below 50%, absorbs dark energy orbs on the map to restore shield HP (each orb restores 10% HP). Only triggers 1 time per game.",
+        "4": "Dark energy orbs will form a binding field when destroyed. Enemies caught in the field will have their projectiles slowed and DMG taken increased. Field lasts 10s."
+      }
+    },
+    "thor": {
+      "rarity": "legendary",
+      "aka": [],
+      "skill_name": "Storm's Judgment",
+      "stat_boost": "[All] Lightning DMG +30% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "Weapon detaches and auto-attacks.",
+        "2": "When moving, there is a chance to summon Mjolnir, homing in on enemies and dealing 100% DMG.",
+        "3": "Attacks deal Lightning damage. Mjolnir inherits the hero's CRIT Rate. After dealing a critical hit, there is a chance to paralyze enemies for 0.5s.",
+        "4": "When paralyzing enemies, fires 3 additional Mini-Mjolnirs."
+      }
+    },
+    "cleo": {
+      "rarity": "legendary",
+      "aka": [],
+      "skill_name": "Ember Throne",
+      "stat_boost": "[All] Flame DMG +30% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "Attacks are greatly enhanced by Fire.",
+        "2": "For every 20 Fire hits, mark the enemy with the highest percentage HP on the field. After 1s, trigger a cross-shaped explosion and remove the mark, dealing 300% DMG and leaving behind a burning trail.",
+        "3": "Trigger a cross-shaped explosion at your location after marking a target, dealing 300% DMG and leaving behind a burning trail. ATK +40% for 3s after marking.",
+        "4": "Marking an enemy also Frightens them. Marked enemies suffer -50% ATK before exploding. Marked players suffer -35% ATK before exploding."
+      }
+    },
+    "wukong": {
+      "rarity": "legendary",
+      "aka": [
+        "wk"
+      ],
+      "skill_name": "Monkey Brethren",
+      "stat_boost": "[All] CRIT DMG +20% (at stars 1, 4, and 7)",
+      "skill_levels": {
+        "1": "Summon 3 permanent [Monkey Mirages] after entering battle.",
+        "2": "When attacking or taking damage, chance to summon 1 [Monkey Mirage] for 10s. Up to 6 [Monkey Mirages] can exist.",
+        "3": "For each [Monkey Mirage] on the map, increase ATK, DMG REDUC, and Control RES by 3.5%.",
+        "4": "[Monkey Mirages] have a chance to steal nearby enemy Hearts and Potions, increasing Wukong's ATK by 20% for 7s."
+      }
+    }
+  },
+  "pvp_meta": {
+    "best_resonance_combos": {
+      "description": "PvP resonance pairings ranked by effectiveness. Resonance requires characters at 3-star (1 slot) or 6-star (2 slots).",
+      "s_tier_p2p": {
+        "combo": "Phynx (Desert Tribunal) + Cleo (Ember Throne)",
+        "note": "Best PvP resonance combo in the game. Phynx bleeds stack with Cleo's fire marks for devastating damage. Expensive to build — both are epic/legendary and need high star levels.",
+        "cost": "P2P (pay to play) — high investment"
+      },
+      "a_tier_f2p": [
+        {
+          "combo": "Helix (Absolute Counter) + Phynx (Desert Tribunal)",
+          "note": "Strong F2P option. Helix does more damage as he takes damage, and Phynx adds bleed on top of that."
+        },
+        {
+          "combo": "Rolla (Frostsinger) + Phynx (Desert Tribunal)",
+          "note": "Freeze + bleed synergy. Phynx Lv3 deals +50% bleed against enemies with elemental debuffs like ice."
+        },
+        {
+          "combo": "Mymu (Immortal Curse) + Phynx (Desert Tribunal)",
+          "note": "Mymu's Overdraw acts as a revive, buying time for Phynx bleeds to stack. Mymu needs 5-star+ and his skin to be effective."
+        }
+      ],
+      "budget_f2p": [
+        {
+          "combo": "Mymu (Immortal Curse) + Helix (Absolute Counter)",
+          "note": "Cheapest competitive option. Both are rare = easier to star up. Mymu revives, Helix ramps damage when hurt."
+        },
+        {
+          "combo": "Mymu (Immortal Curse) + Nyanja (Cloudfooted)",
+          "note": "Budget option. Mymu revive + Nyanja speed. Both rare and easy to acquire."
+        }
+      ],
+      "important_note": "Mymu's Immortal Curse is only effective at 5-star+ with his character skin equipped. Without the skin, the revive mechanic is unreliable."
+    }
+  },
+  "skins": {
+    "_placeholder": "Each character has skins with unique abilities and 5 star levels that upgrade the skin's stats. Data to be filled in later.",
+    "mymu_skin_note": "Mymu's skin is critical for PvP — it makes his Immortal Curse (revive) reliable. Without it, Mymu is not recommended for competitive play."
+  },
+  "gold": {
+    "description": "Gold is the primary currency in Archero 2. It has two main uses: buying items in the general store and leveling up gear.",
+    "gear_leveling": "The main use of gold. Gear levels are tied to the equipment slot, not the individual item. For example, if your boots are level 148, every pair of boots you equip will be level 148 — whether they're Mythic Griffin or Legendary Oracle. This means upgrading gear level benefits any item in that slot. Gets very expensive at higher levels.",
+    "general_store": "Gold can be used to purchase items from the general store.",
+    "profile_level_cards": "Gold can also be used to buy profile-level-up cards when you reach each 10th profile level. You can buy 10 cards per level; they are randomly generated (e.g. Health increase, skill refresh, Red heart healing+, speed bonus). This is a rarer, sometimes expensive use of gold.",
+    "gear_tiers_vs_levels": "Gear tier is specific to the individual piece of equipment (e.g. Rare, Epic, Legendary, Mythic). Gear level is specific to the slot (boots, weapon, armor, etc.) and applies to whatever item is equipped in that slot.",
+    "community_weapon_cap": "There are 2 main uses for gold. Leveling up weapons and purchasing talent cards. As of the most recent update, Weapon max level will raise to 200 from 150. Talent cards can be bought every 10 levels but max out at level 50 currently. With level 60 add, we will see if they add more",
+    "added_by_community": "fails_8743"
+  },
+  "guild": {
+    "donations": "Guild donations: You can donate 5 times per day. The first donation is free, then costs increase by 20 gems each (free → 20 → 40 → 60 → 80). Donations are how guilds level up.",
+    "first_donation_daily": "The first guild donation of the day is free.",
+    "max_level": "The max guild level is 11.",
+    "added_by": "xyian"
+  },
+  "gear_sets": {
+    "godforge": "On Godforge, you will need Gear Essence and Crystals to upgrade your gear. You need to salvage any gear (excluding S-tier) to get Gear Essence and you also need to salvage the corresponding S-tier set pieces to get Crystals. You can only salvage S-tier pieces that you have already on Chaotic lvl."
+  },
+  "weapons": {
+    "pieces_list": "The Dragoon Pieces are: \nDragoon Crossbow\nDragoon Amulet\nDragoon Ring\nDragoon Helmet\nDragoon Armor\nDragoon Boots\nThe Oracle Pieces are:\nOracle Spear\nOracle Amulet\nOracle Ring\nOracle Helmet\nOracle Armor\nOracle Boots\nThe Griffin Pieces are:\nGriffin Claw\nGriffin Amulet\nGriffin Ring\nGriffin Helmet\nGriffin Armor\nGriffin Boots",
+    "griffin_armor": "The Griffin Quality Skills:\n\nGriffin Armor\nFine: Max HP+5%\nRare: Barrage DMG REDUC+5%\nEpic: Deals DMG over time to enemies within 7m\nEpic +1: No additional buff\nEpic +2: No additional",
+    "griffin_ring": "The Griffin Quality Skills:\n\nGriffin Ring\nFine: ATK PWR+5%\nRare: CRIT Rate+3%\nEpic: The more enemies in melee range, the higher the CRIT Rate. Max Rate is reached when 3 enemies are p",
+    "griffin_claw": "The Griffin Quality Skills: \n\nGriffin Claw\nBase: High ATK SPD. DMG decreases beyond range.\nFine: ATK PWR+5%\nRare: Deal more DMG at closer distances, up to 10%\nEpic: Higher CRIT Rate a",
+    "oracle_boots": "The Oracle Quality Skills: \n\nOracle Boots\nFine: Max HP+5%\nRare: Dodge+5%\nEpic: CRIT DMG +32% after 30 combo hits\nEpic +1: No additional buff\nEpic +2: No additional buff\nLegendary: Max",
+    "oracle_helmet": "The Oracle Quality Skills: \n\nOracle Helmet\nFine: Max HP+5%\nRare: Red Heart Heal+20%\nEpic: Gain 2x combo hits on CRIT\nEpic +1: No additional buff\nEpic +2: No additional buff\nLegendary:",
+    "oracle_ring": "The Oracle Quality Skills: \n\nOracle Ring\nFine: ATK PWR+5%\nRare: CRIT Rate+3%\nEpic: For every 5 combo hits, ATK SPD +2%, up to 8%\nEpic +1: No additional buff\nEpic +2: No additional buf",
+    "oracle_spear": "The Oracle Quality Skills: \n\nOracle Spear\nBase: Fires a powerful piercing beam\nFine: ATK PWR+5%\nRare: DMG increases with combo hits, up to 10%\nEpic: For every 5 combo hits, CRIT Rate",
+    "dragoon_helmet": "The Dragoon Quality Skills: \nDragoon Helmet\nFine: Max HP+5%\nRare: Red Heart Heal+20%\nEpic: For every 1 enemy defeated or after every 5s, the next attack ignites an area explosion\nEpic",
+    "dragoon_amulet": "The Dragoon Quality Skills: \nDragoon Amulet\nFine: ATK PWR+5%\nRare: CRIT DMG+12%\nEpic: Randomly detonates 2 enemies on the field every 2s\nEpic +1: No additional buff\nEpic +2: No additi",
+    "dragoon_crossbow": "The Dragoon Quality Skills: \n\nDragoon Crossbow\nBase: Fires a powerful bolt\nFine: ATK PWR+5%\nRare: 50% chance to trigger area explosion on hit\nEpic: Explosion damage up, Meteor convert",
+    "s_rank_overview": "There are 3 S-Rank Weapon Categories: Dragoon, Oracle, and Griffin. Each category has 6 unique gear pieces split into Weapon, Amulet, Ring, Helmet, Armor, and Boots. The weapon, amule",
+    "pve_vs_pvp_rankings": "Gear set rankings differ drastically between PvE and PvP. For PvE/campaign: Oracle is best, then Dragoon, then Griffin. For PvP: Griffin is best, then Dragoon, then Oracle. Dragoon is the best of both worlds and the perfect happy medium — if you want to optimize for one mode, lean Oracle (PvE) or Griffin (PvP).",
+    "added_by_pve_pvp": "_xyian"
+  },
+  "runes": {
+    "overview_4_types": "There are 4 different types of equipable runes, etched runes, blessing runes, enhancement runes, ability runes. A player can equip a max of 3 etched, 2 blessing, 4 enhancement and 4 ability at a time with all slots unlocked. Each rune has special abilities based off of its quality and enchantment stats.\n\nEtched Runes (13):\n    Main Weapon:\n        Arrow of Echoes\n        Echo Scythe\n    Sprites:\n        Sprite’s Awe\n        Sprite Assist\n    Strikes:\n        Sword Strike Split\n        Swordstrike Aerie\n    Meteors:\n        Meteor Split\n        Potion Spring \n    Circles:\n        Pulsing Orb\n        Orbital Orb\n    Elemental:\n        Elemental Domain\n        Elemental Crit\n    Plants:\n        Life Surge\n\nBlessing Runes (7):\n    Revive\n    Lucky Shadow\n    Intelligence\n    Rabbit’s Foot\n    Guardian\n    Devil Pact\n    Resilience\n\nEnhancement Runes (13):\nMain Weapon:    \nSharp Arrow\nElemental:\n    Flame-Poison Seal\n    Frost-Thunder Seal\nCircle:\n    Rotating SPD Up\n    Sawblade Circle\nMeteors:\n    Giant Meteor\n    Potion Magnet\nSprites:\n    Sprite Multishot\n    Sprite Link\nStrikes:\n    Dragonflight Sword\n    Ricocheting Strike\nPlants:\n    Rootguard\n    Vine Bind\n\nAbility Runes (13):\n    Main Weapon:\n        Arrow Rain\nElemental:\n    Flame-Poison Touch\n    Frost-Thunder Touch\nCircle:\n    Ring of Agony\n    Circle\nMeteors:\n    Star of Fury\n    Star of Time\nSprites:\n    Healing Sprite\n    Melee Sprite\nStrikes:\n    Sword of Time\n    Strike Potion\nPlants:\n    Plant Summon\n    Equinox Bloom",
+    "enchantment_stats": "Blessing, Enhancement and Ability Runes also have another layer of Enchantment Stats. Enchantment Stats have multiple categories depending on the type of rune with only one enchantment selecti",
+    "blessing_quality_revive": "Blessing Runes Quality Skills:\n\nRevive\n    Rare: Max HP +240\n    Epic: 50% Chance to revive upon death, with half of HP restored\n    Legendary: Increases ATK PWR by 20% after revival\n    Mythic",
+    "etched_elemental": "Etched Runes Quality Skills:\n\nElemental:\n        Elemental Domain\n            Common: Elemental DMG+100\n            Fine: ATK PWR+100\n            Rare: Elemental skills have increased chance to",
+    "etched_circles": "Etched Runes Quality Skills:\n\nCircles:\n        Pulsing Orb\n            Common: Circle DMG+100\n            Fine: ATK PWR+100\n            Rare: Circle skills have increased chance to spawn",
+    "etched_meteors": "Etched Runes Quality Skills:\n\nMeteors:\n        Meteor Split\n            Common: Meteor DMG+100\n            Fine: ATK PWR+100\n            Rare: Meteor skills have increased chance to spawn",
+    "etched_strikes": "Etched Runes Quality Skills:\n\nStrikes:\n        Sword Strike Split\n            Common: Strike DMG+100\n            Fine: ATK PWR+100\n            Rare: Sword Strike skills have increased chance to",
+    "etched_main_weapon": "Etched Runes Quality Skills:\n    Main Weapon:\n        Arrow of Echoes\n            Common: Main Weapon DMG+100\n            Fine: ATK PWR+100\n            Rare: Main weapon skills have increased",
+    "enhancement_overview": "Enhancement Runes:\nThere are currently 13 enhancement runes:\nSharp Arrow\nFlamenox Seal\nFrostshock Seal\nSpin SPD Up\nSawblade Circle\nGiant Meteor\nPotion Magnet\nSprite Multishot\nSprite Link\nDragonflight Sword\nRicocheting Strike\nRootguard\nVine Bind\n\nThey can be broken up into categories accordingly:\nMain Weapon:\n    Sharp Arrow\nElemental:\nFlamenox Seal\nFrostshock Seal\nCircles:\nSpin SPD Up\nSawblade Circle\nMeteors:\nGiant Meteor\nPotion Magnet\nSprites:\nSprite Multishot\nSprite Link\nStrikes:\nDragonflight Sword\nRicocheting Strike\nPlants:\nRootguard\nVine Bind\n\nThe quality upgrades for each are as follows:\n\nMain Weapon:\n    Sharp Arrow\n        Common: Main Weapon damage +5\n        Fine: Main Weapon damage +10\n        Rare: ATK PWR +50\n        Epic: Main weapon DMG increases by 10%\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Main weapon DMG increases by 20%\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Main weapon DMG increases by 30%",
+    "enhancement_elemental": "Enhancement Runes\nElemental:\nFlamenox Seal\n    Common: Fire damage +5\n        Fine: Poison damage +10\n        Rare: ATK PWR +50\n        Epic: Fire DMG +50%\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Poison DMG +50%\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: When Fire and Poison are present, an explosion occurs every second\nFrostshock Seal\n    Common: Ice damage + 10\n        Fine: Lightning damage +10\n        Rare: ATK PWR +50\n        Epic: Lightning strikes have a chance to cause paralysis\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Freezing deepens enemy injuries by 30%\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Lightning strike DMG to frozen monsters increases by 30%\nCircles:\nSpin SPD Up\n    Common: Circle damage +5\n        Fine: Circle damage +10\n        Rare: ATK PWR +50\n        Epic: Circle speed increases by 50%\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Circle speed increases by 100%\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Circles increase from 2 orbs per group to 3",
+    "enhancement_circles_meteors": "Enhancement Runes\nCircles:\nSawblade Circle\n    Common: Meteor damage +5\n        Fine: Circle damage +10\n        Rare: ATK PWR +50\n        Epic: Circles become Sawblade Circle\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Sawblade Circle DMG increases by 50%\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Sawblade Circle inherit main weapon's CRIT rate\nMeteors:\nGiant Meteor\n    Common: Meteor damage +5\n        Fine: Meteor damage +10\n        Rare: ATK PWR +50\n        Epic: Meteors have a 20% chance to become Giant Meteors, DMG increases by 50%\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: After absorbing a Meteor Potion, 50% chance to summon 1 extra Meteor\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: After summoning 5 Meteors, the next summon will be 1 Giant Meteor\nPotion Magnet\n    Common: Meteor damage +5\n        Fine: Meteor damage +10\n        Rare: ATK PWR +50\n        Epic: Auto absorbs Meteor Potions when dropped\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Meteor DMG increases by 25%\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Meteor DMG increases by 50%",
+    "enhancement_sprites": "Enhancement Runes\n\nSprites:\nSprite Multishot\n    Common: Sprite damage +5\n        Fine: Sprite damage +10\n        Rare: Sprite damage +10\n        Epic:Sprites have a 30% chance to fire multiple shots\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Sprite ATK SPD increases by 25%\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Sprite ATK SPD increases by 50%\nSprite Link\n    Common: Sprite damage +5\n        Fine: Sprite damage +10\n        Rare: ATK PWR +50\n        Epic: Every extra sprite increases all Sprite DMG by 5%\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Every extra sprite increases all Sprite DMG by 10%\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Every extra sprite increases all Sprite DMG by 15%",
+    "enhancement_strikes": "Enhancement Runes\n\nStrikes:\nDragonflight Sword\n    Common: Strike damage +5\n        Fine: Strike damage +10\n        Rare: ATK PWR +50\n        Epic: Strikes have a 35% chance to become Dragon Strike dealing 1x ATK PWR as damage (Dragon Beam Strikes do 4 hits, 0.55x ATK PWR each, and have tracking)\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Dragon Strike chance increases to 70%\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Dragon Strike chance increases to 100%\nRicocheting Strike\n    Common: Strike damage +5\n        Fine: Strike damage +10\n        Rare: ATK PWR +50\n        Epic: Strike has a 35% chance to ricochet\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Strike ricochet chance increases to 70%\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Strike always ricochets",
+    "enhancement_plants": "Enhancement Runes\n\nPlants:\nRootguard\nCommon: Plant damage +5\n        Fine: Plant damage +10\n        Rare: ATK PWR +50\n        Epic: Gain a shield while standing still. The more Plant Guardians there are, the faster the shield is gained\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: When shield breaks, summons 2 Plant Guardians\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Max Plant Guardian Count +4\nVine Bind\n    Common: Plant damage +5\n        Fine: Plant damage +10\n        Rare: ATK PWR +50\n        Epic: Plant Guardians link to 1 other Plant Guardian, dealing Poison DMG along the link path and Slowing enemies hit\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Plant Guardians preferentially spawn near the highest-HP enemy\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Plant Guardians link to 2 other Plant Guardians, dealing Poison DMG along the link path and Slowing enemies hit",
+    "ability_overview": "Ability Runes\n\nThere are currently 13 ability runes:\nArrow Rain\nFlamenox Touch\nFrostshock  Touch\nRing of Agony\nCircle\nStar of Fury\nStar of Time\nHealing Sprite\nMelee Sprite\nSword of Time\nStrike Potion\nPlant Summon\nEquinox Bloom\n\nThey can be broken up into categories accordingly:\nMain Weapon:\nArrow Rain\nElemental:\n    Flamenox Touch\nFrostshock  Touch\nCircles:\n    Ring of Agony\nCircle\nMeteors:\nStar of Fury\nStar of Time\nSprites:\nHealing Sprite\nMelee Sprite\nStrikes:\nSword of Time\nStrike Potion\nPlants:\nPlant Summon\nEquinox Bloom",
+    "ability_main_weapon_elemental": "Ability Runes\n\nThe quality upgrades for each are as follows:\nMain Weapon:\nArrow Rain\n    Common: Main Weapon damage +5\n        Fine: Main Weapon damage +10\n        Rare: Max HP +200\n        Epic: Initial Ability: Every 7 shots trigger an AoE Arrow Rain\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Main weapon ATK SPD increases by 15%\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Main weapon ATK SPD increases by 30%\nElemental:\n    Flamenox Touch\n        Common: Poison damage +10\n        Fine: Fire damage +10\n        Rare: Max HP +200\n        Epic: Initial Ability: Ignite a random monster every 2s\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Initial Ability: Poison a random monster every 2s\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Flame-Poison touch cooldown shortened to 1.5s\nFrostshock  Touch\n    Common: Ice damage +5\n        Fine: Lightning damage +10\n        Rare: Max HP +200\n        Epic: Initial Ability: Strike a random enemy with lightning every 2s\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Initial Ability: Freeze a random enemy every 2s\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Lightning Touch can hit 2 enemies instead",
+    "ability_circles": "Ability Runes\n\nCircles:\n    Ring of Agony\n        Common: Circle damage +5\n        Fine: Circle damage +10\n        Rare: Max HP +200\n        Epic: Start with Ring of Agony. Monsters within the ring take 20% more DMG\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Ring of Agony deals 1x ATK PWR as damage every second to enemies inside the ring\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Ring of Agony deals 1x ATK PWR as damage every 0.5s and applies Bolt effect\nCircle\n    Common: Circle damage +5\n        Fine: Circle damage +10\n        Rare: Max HP +200\n        Epic: Start with 2 weak circling orbs dealing 0.75x ATK PWR as damage per hit\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Start with 2 strong circling orbs dealing 1.25x ATK PWR as damage per hit\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Start with 4 strong circling orbs dealing 1.25x ATK PWR as damage per hit",
+    "ability_meteors": "Ability Runes\n\nMeteors:\nStar of Fury\n    Common: Meteor damage +5\n        Fine: Meteor damage +10\n        Rare: Max HP +200\n        Epic: Initial Ability: Upon taking DMG, summon 3 Meteors to randomly bombard the field\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Recover 0.5% Max HP when a Meteor hits\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Upon taking DMG, summon 7 Meteors to randomly bombard the field\nStar of Time\n    Common: Meteor damage +5\n        Fine: Meteor damage +10\n        Rare: Max HP +200\n        Epic: Initial Ability: Summon 1 Meteor every 10s\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Star of Time's Meteor summoning time reduced to 5s\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Star of Time has a 50% chance to summon double Meteors",
+    "ability_sprites": "Ability Runes\n\nSprites:\nHealing Sprite\n    Common: Sprite damage +5\n        Fine: Sprite damage +10\n        Rare: Max HP +200\n        Epic: Start with a Healing Sprite that deals 0.5x ATK PWR as damage, and heals for 1% Max HP per hit.\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Healing Sprite ATK increases by 50%\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Healing Sprite ATK SPD increases by 50%\nMelee Sprite\n    Common: Sprite damage +5\n        Fine: Sprite damage +10\n        Rare: Max HP +200\n        Epic: Start with a Melee Sprite that deals 1.25x ATK PWR as damage in a small area\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Melee Sprite DMG increases by 50%\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Melee Sprite ATK SPD increases by 50%",
+    "ability_strikes": "Ability Runes\n\nStrikes:\nSword of Time\n    Common: Strike damage +5\n        Fine: Strike damage +10\n        Rare: Max HP +200\n        Epic: Initial Ability: Summon 1 Strike every 3s\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Sword of Time's Strike summoning is reduced to 1.5s\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Sword of Time has a 50% chance to summon double Strike swords\nStrike Potion\n    Common: Strike damage +5\n        Fine: Strike damage +10\n        Rare: Max HP +200\n        Epic: Start with a Strike Potion\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Summon 3 Strikes upon absorbing any potion\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Strike Potion has a 50% chance to summon double Strike Swords",
+    "ability_plants": "Ability Runes\n\nPlants:\nPlant Summon\n    Common: Plant damage +5\n        Fine: Plant damage +10\n        Rare: Max HP +200\n        Epic: Summons 1 Plant Guardian around the player every 8s\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Summons 1 Plant Guardian around the player every 4s\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: 50% chance to summon 2 Plant Guardians\nEquinox Bloom\nCommon: Plant damage +5\n        Fine: Plant damage +10\n        Rare: Max HP +200\n        Epic: When a Plant Guardian dies, chance to cast [Berserk] on 1 random Plant Guardian, increasing its CRIT DMG, CRIT Rate, and ATK SPD for 5s\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: When a Plant Guardian dies, chance to create an Acid Swamp\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: When a Plant Guardian dies, chance to cast [Berserk] on 2 random Plant Guardian, increasing their CRIT DMG, CRIT Rate, and ATK SPD for 5s"
+  },
+  "blessings": {},
+  "game_modes": {
+    "overview": "There are four main game-mode categories: Campaign, Arena, Challenge, and Dungeon. Each contains sub-modes with different mechanics and rewards.",
+    "campaign": {
+      "overview": "Campaign is the main PvE mode where you fight against computer enemies. It is vastly different from PvP — bonuses, gear rankings, and strategies change drastically between the two.",
+      "farming_drops": "To optimize gear, runes, and scroll drops: choose campaign levels that have 50 floors, not the 6-minute or endless versions. 50-floor runs have 5 boss battles (one every 10th floor), so more boss drops per run. 6-minute or endless runs have only 2 boss battles total, so fewer drops per run.",
+      "fifty_floor_types": "There are two types of 50-floor campaign levels. One type requires walking through a door to change floors each time. The other type uses the same map for all 50 floors — e.g. Serenity Pool — so you never have to move; you can leave your character in one spot and farm easily. Same-map 50-floor levels like Serenity Pool are ideal for farming.",
+      "profile_exp_note": "Campaign is the only way to earn profile experience. See profile_experience category.",
+      "hard_mode_note": "Later campaign levels introduce hard-mode mechanics that require Sky Tower progression to unlock (e.g. campaign 126 requires Sky Tower 1525 cleared)."
+    },
+    "arena": {
+      "overview": "Arena is the PvP category. Sub-modes: Main Arena, Peak Arena, Rumble Ladder, and All Star Cup.",
+      "main_arena": "The main arena has multiple tiers (Supreme is the top). Standard 1v1 PvP.",
+      "peak_arena": "Peak Arena is a 3v3 mode where you use three of your own characters against three of your opponent's. You pick separate loadouts for each character. If each character has unique/different gear and runes (e.g. one Circle build, one Meteor build, one Sprite build), you get a large bonus (~25% ATK and HP). Duplicate loadouts across characters give little to no bonus — the game rewards variety.",
+      "rumble_ladder": "Rumble Ladder is a PvP ladder mode.",
+      "all_star_cup": "All Star Cup is one of the most recent PvP additions. Each season lasts about 12 days and features different bonuses for different runes and loadouts. Depending on the current season's bonuses and your loadout, you could dominate or struggle — adapting your build to the season's modifiers is key. When selecting a start time, Habby made the time slots actually localized for players.",
+      "all_star_added_by": "fails_8743"
+    },
+    "challenge": {
+      "overview": "Challenge modes: Sky Tower, Seal Battle, and Magic Plant Defense.",
+      "sky_tower": "Sky Tower is linked to campaign progression. It unlocks higher campaign levels — for example, campaign level 126 requires clearing Sky Tower 1525. Sky Tower gates what campaign content you can access, usually becoming relevant around campaign level 50+.",
+      "seal_battle": "Seal Battle is a boss battle mode where the goal is to deal the most damage to a boss.",
+      "magic_plant_defense": "Magic Plant Defense is a newer mode where you defend a magic plant across different levels. Max level is 195 until you clear Campaign Mode 140, which unlocks levels up to 250. Use all your plant defense eggs each week — if you're over a certain threshold you do NOT get the 3 tickets replenished."
+    },
+    "events": {
+      "fishing": "Fishing is one of the most recurring events, happening almost every month. It is one of the main ways to obtain etched runes. Players should prioritize fishing events when they appear."
+    },
+    "dungeon": {
+      "overview": "Dungeon modes: Gold Cave, Ruin Ruins, Shackled Jungle, and Abyssal Tide.",
+      "gold_cave": "Gold Cave is a simple dungeon with a max level of 150. Accessible to most players.",
+      "ruin_ruins": "Ruin Ruins gives you keys to unlock chests that contain runes. Most keys come from events or purchases.",
+      "shackled_jungle": "Shackled Jungle is focused on runes and your rune setup. You defeat waves of enemies, picking skills along the way. If you pick skills that synergize with your runes (good rune synergy), you'll do well; without synergy, it's very difficult.",
+      "abyssal_tide": "Abyssal Tide is an endless dungeon with different bonuses and negatives that rotate weekly (randomized, e.g. Meteor bonus, Sprite bonus, reverse controls, poison for standing still). It gives currency to level up your Sacred Hall."
+    }
+  },
+  "profile_experience": {
+    "description": "Profile experience is your general account or profile level, separate from character or hero stars. It is earned only by playing campaign mode.",
+    "example": "A player might be profile level 59. When you level up, every 10 levels you unlock the ability to buy cards for gold.",
+    "cards_per_10_levels": "At each 10th profile level you can buy 10 cards for gold. You keep the cards forever. The cards are randomly generated.",
+    "card_effects": "Card bonuses include things like Health increase, extra skill refresh, Red heart healing+, speed bonus, and many more. Each purchase gives random rolls.",
+    "gold_note": "Buying these cards uses gold and can be expensive. This is a rarer use of gold compared to gear leveling and the general store."
+  },
+  "tips": {},
+  "skills": {
+    "tracking_eye": {
+      "name": "Tracking Eye",
+      "description": "Your projectiles gain the ability to track enemies. Reduces DMG dealt by 10% (doesn't affect Sprites or elemental damage). Reduces main weapon and Strike projectile speed by 50%. Works best with Oracle Staff or when combined with Piercing Arrow or Energy Beam.",
+      "added_by": "fails_8743"
+    },
+    "weaken": {
+      "name": "Weaken (debuff)",
+      "description": "Weaken is a \"hidden\" debuff that is applied to enemies via some special enchantments and character skins. Weaken causes the affected enemy to deal 20% less damage. Main sources of weakness include the unique rune enchantments for Arrow Rain and Alex's Duck skin, and the Chaotic level Aura from the Griffin Armor.",
+      "added_by": "fails_8743"
+    }
+  },
+  "resources": {
+    "archero_skills_wiki": {
+      "name": "Archero Skills Wiki",
+      "url": "https://archero-2.game-vault.net/wiki/Skills",
+      "description": "The best source to learn more in-depth information on Archero 2 skills.",
+      "added_by": "fails_8743",
+      "community_note": "Best URL for deep-dive skill info: https://archero-2.game-vault.net/wiki/Skills"
+    }
+  },
+  "privilege_cards": {
+    "description": "Privilege Cards provide improved pay-to-play benefits to enhance daily progress.",
+    "community_summary": "Permanent Ad-Free Card: 1200 gems on purchase + 20/day, skips ads. Lifetime Supply Card: 3900 gems on purchase + 800 gems/day — strong value for progression. See permanent_ad_free_card and lifetime_supply_card for structured details.",
+    "community_added_by": "fails_8743",
+    "permanent_ad_free_card": {
+      "name": "Permanent Ad-Free Card",
+      "gems_on_purchase": 1200,
+      "gems_per_day": 20,
+      "benefit": "Skip ad videos for resources. Best value long term.",
+      "added_by": "fails_8743"
+    },
+    "lifetime_supply_card": {
+      "name": "Lifetime Supply Card",
+      "gems_on_purchase": 3900,
+      "gems_per_day": 800,
+      "benefit": "Highly recommended one-time purchase for speeding up progression.",
+      "added_by": "fails_8743"
+    }
+  },
+  "sacred_hall": {
+    "overview": "Sacred Hall is a profile-wide progression system that gives permanent bonuses to all your characters. It is leveled up using currency earned from Abyssal Tide.",
+    "building_effect": "The main upgrade path is the Building Effect. Each level gives an attack increase and a health increase.",
+    "tier_upgrades": "Separate from building levels, there are tier upgrades that unlock special bonuses. Higher tiers can unlock extra skin slots, which ties into Resonance.",
+    "resonance_skin_interaction": "At base level, Resonance is only the ability of a specific character. But if that character has a skin, and your Sacred Hall tier is high enough, you can also get their skin bonus in resonance — not just the ability. This means Sacred Hall tier determines whether resonance includes just abilities or abilities + skins.",
+    "added_by": "_xyian"
+  },
+  "custom_facts": [],
+  "opinions": [],
+  "damage_terminology": {
+    "note": "Community-sourced from #arch-ai !suggest (recovered in full-channel audit). Attack Power, Main weapon DMG, and generic DMG are different stats that multiply together.",
+    "attack_power": "Attack Power (ATK / ATK PWR): baseline multiplier N × Attack Power for damage. Some skills claim to buff ATK but don't (e.g. Swift Arrow, source-specific buffs); others change ATK while describing something else (e.g. Stand Strong).",
+    "main_weapon_dmg": "Main weapon DMG: only the non-elemental portion of main weapon damage; does not include explosion damage from bow/crossbow. Affected by Front Arrow, Sharp Arrow rune, Chaotic Dragoon crossbow effect.",
+    "generic_dmg": "Generic DMG buffs vary: some skills affect many damage sources (Swift Arrow, Tracking Eye, Bane of Bosses), some only one.",
+    "stacking": "Attack Power, Main weapon DMG, and DMG are not the same stat; they multiply with each other.",
+    "added_by": "faria88pt"
+  },
+  "collectibles": {
+    "overview": "Collectibles (found on the main screen via the Goblet Icon in the bottom toolbar) splice into two categories: Talent Cards & Artifacts\n\nTalent Cards:\nTalent Cards are cards that you are able to collect in game that boost a wide variety of stats. Each card is able to be upgraded to a maximum of 5 Star (Apart from the Glory and Tactics cards as these are 1 Star maximum). \n\nThere is a second set of talent cards that unlocks after collecting all cards from the first set. The list below is a comprehensive list of both sets when maxed out to 5 stars (apart from Glory and Tactics which have a maximum of 1 Star).\n\nThe list below states the talent card’s name and then function/boost, there are 32 in total:\n\nEpic Level:\nGlory: First Skill Selection Chance +1\nTactics: Skill Refreshes +1\nMaster Explorer: Scroll Drop Rate +18%\nBrave Adventurer: Gear Drop Rate +18%\nAlchemist: Rune Drop Rate +18%\nSwift Wind: ATK SPD +3% & MOV SPD +3%\nRefinement: Gears’ Base Stats Increase +6%\nWealth: Gold obtained in battle +18%\nUlt CRIT Rate: CRIT Rate +6%\nUlt CRIT DMG: CRIT DMG +12%\nUlt Dodge: Dodge +6%\n\nRare Level:\nSuper Vigor 2: HP +420\nSuper Strength 2: ATK PWR +105\nSuper Recovery 2: Heart Recovery +1%\nAngelic Embrace: Angel Recovery +1%\nDevil Discount: Devil's Pact HP cost reduced +1%\nSuper Vigor: Max HP +420\nSuper Strength: ATK PWR +105\nSuper Recovery: Red Heart Healing Value +105\nSuper Iron Wall: Collision DMG REDUC +48\nHealing: Heal on Level Up +120\nTitan: Max HP +150, ATK PWR +36 & CRIT DMG +6%\nSuper CRIT Rate: CRIT Rate +3%\nSuper CRIT DMG: CRIT DMG +9%\nSuper Dodge: Dodge +3%\n\nCommon Level:\nVigor 2    : HP +300\nStrength 2: ATK PWR +75\nRecovery 2: Heart Recovery +0.5%\nVigor: HP +300\nStrength: ATK PWR +75\nRecovery: Red Heart Healing Value +75\nIron Wall: Collision DMG REDUC +36\n\n\nTalent Cards can be bought by using in game Gold but require a ton of gold farming to complete. However, once complete, a player doesn’t really worry about them any longer. So if you’re in between upgrading gear (that also costs gold) or talent cards, the talent cards will always come with time. Typically they’re all unlocked between levels 50 - 55."
+  }
+}

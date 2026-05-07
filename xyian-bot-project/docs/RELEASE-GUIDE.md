@@ -110,6 +110,66 @@ Copy this for each release:
 3. Update `README.md` if a new channel was filled
 4. Commit, push
 
+## Smoke test for the v3.12.0 vision release
+
+After deploying, walk through this checklist in `#arch-ai` and `#debug-logs`. Skipping any of these has historically caused regressions, so do them all on the first deploy.
+
+**Text Q&A regression (must still work):**
+- [ ] Type a normal text question in `#arch-ai`. Bot answers in-character. No vision footer, no candidate queue ping.
+
+**Non-trusted vision rejection (no AI cost):**
+- [ ] From an account that does NOT have XYIAN OFFICIAL / Admin / Moderator / Arch Legend, attach an image in `#arch-ai`. Bot must reply with the redirect embed pointing at `#arch-ai` and `#community-ai-discussion`.
+- [ ] Confirm in Railway logs that `askAIWithVision` was NOT called for that message — the gate happens before any OpenAI call.
+
+**Trusted vision happy path:**
+- [ ] From a trusted account, attach a clean Archero 2 screenshot in `#arch-ai`. Bot answers in-character within ~2–4s.
+- [ ] If the screenshot has new universal facts, bot reply ends with the `📸 I noticed N things…` footer and `#debug-logs` gets a structured candidate ping.
+- [ ] Run `!suggestions`. New rows show 📸 / confidence / proposed category badges.
+
+**Cooldown:**
+- [ ] Same trusted account uploads another screenshot within 60s. Bot replies with the cooldown embed (no OpenAI call).
+- [ ] Wait 60s, retry — succeeds.
+
+**Categorized approval:**
+- [ ] `!approve <#> runes some_test_key` files into `knowledge.runes.some_test_key` as `{ text, added_by, added_at, source }`.
+- [ ] `!approve <#>` (no extra args) on a different pending row still files into `knowledge.custom_facts` (legacy path preserved).
+- [ ] `!edit <#> <new text>` swaps a pending suggestion's text and stores `original_text`.
+
+**Owner kill switch:**
+- [ ] Owner runs `!ai status`. Bot replies with the status block.
+- [ ] Owner runs `!ai off`. Any text or vision question in `#arch-ai` now gets the offline embed; `#debug-logs` shows the toggle.
+- [ ] Owner runs `!ai on`. Q&A resumes.
+
+**Sync round-trip:**
+- [ ] Run `node scripts/sync-facts.js` (dry run). On a clean repo, expect zero "to add" rows after a real deploy with no new live activity.
+- [ ] If you approved a structured-category suggestion live, confirm `flattenTexts()` finds its `.text` so it doesn't get re-listed as "to add".
+- [ ] After any `--apply` run that wrote to `data/knowledge.json`, confirm `seeds/knowledge.json` was also updated (the script logs `🌱 seeds/knowledge.json refreshed`). Commit both files together.
+
+If anything in the bottom three sections fails, do not push another deploy on top — fix forward in a new patch entry.
+
+## Optional: Attach the Railway Volume (post-deploy, one-time)
+
+This release ships the first-mount seeder hook (`seedDataFiles()`) that makes it safe to put a Railway Volume in front of `xyian-bot-project/data/`. Without the volume, `data/knowledge.json` lives on Railway's ephemeral filesystem and gets wiped on every redeploy — `scripts/sync-facts.js` is what currently rescues live additions back into the repo. With the volume, live `!approve` writes survive deploys directly.
+
+**Strict ordering — do not improvise:**
+
+1. Ship v3.12.0 first. Merge `feature/vision-learning-loop` → `main` and confirm the deploy is healthy in `#debug-logs` (`v3.12.0` posted, fact count looks right). The seeder hook MUST be running in production before you attach the volume.
+2. Attach the volume:
+   - Open the project in Railway → Architecture canvas → click the discord-bot service node.
+   - Click `+ Add` (top right of canvas) → Volume → mount path: `/app/xyian-bot-project/data` → service: `discord-bot`.
+   - Railway will trigger a new deploy as part of the attach.
+3. Watch `#debug-logs` and Railway logs for the seed line:
+   ```
+   📦 Seeded knowledge.json from seeds/ (NNNNN bytes) — first-mount volume hydration
+   ```
+   This line is the proof the seeder ran. If you don't see it, **something is wrong** — likely the volume mount path is off, or `seeds/knowledge.json` didn't get baked into the image.
+4. Smoke-test `#arch-ai`: ask a question that would only succeed if `knowledge.json` was loaded. If the bot answers correctly, the seed worked.
+5. From now on, every `!approve` write hits the volume directly. `scripts/sync-facts.js` still works as a backup / contributor-credit mechanism, but it's no longer the only thing keeping live additions alive.
+
+**If you ever detach + re-attach the volume**, the new volume starts empty again — the seeder will rehydrate from `seeds/knowledge.json` (i.e. last-committed snapshot). To minimize loss, run `node scripts/sync-facts.js --apply` immediately before detaching so the seed is current.
+
+**Do not** mount the volume at any path other than `/app/xyian-bot-project/data`. The seeder is only configured to hydrate that one location.
+
 ## ⚠️ CRITICAL: Version Ordering in CHANGELOG.md
 
 The bot uses `md.match(/^## \[(\d+\.\d+\.\d+)\]/m)` to parse the version — it grabs the **first** `## [x.x.x]` entry. If an older version is listed above a newer one, the bot will think it's running the old version and may skip the changelog post entirely.
