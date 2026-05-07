@@ -59,6 +59,75 @@ function parseChangelog() {
     }
 }
 
+// Look up bullet lines for a specific historical version. Used by
+// !post-changelog <version> to re-post any release whose original deploy
+// failed to get its embed out (e.g. v3.12.0 whose description blew the
+// 4096-char limit before chunking was added).
+function getChangelogLinesForVersion(targetVersion) {
+    try {
+        const md = fs.readFileSync(path.join(__dirname, 'CHANGELOG.md'), 'utf-8');
+        const startMarker = `## [${targetVersion}]`;
+        const startIdx = md.indexOf(startMarker);
+        if (startIdx === -1) return null;
+        const afterStart = md.slice(startIdx);
+        const nextEntry = afterStart.indexOf('\n## [');
+        const section = nextEntry > -1 ? afterStart.slice(0, nextEntry) : afterStart;
+        return section
+            .split('\n')
+            .filter(l => /^- /.test(l.trim()))
+            .map(l => l.trim().replace(/^- /, ''));
+    } catch {
+        return null;
+    }
+}
+
+// Build one or more EmbedBuilders so a long changelog body fits inside
+// Discord's 4096-char embed description limit. Bullets stay whole — we never
+// split mid-bullet, even if it means a chunk is shorter than the limit.
+// Discord allows up to 10 embeds per message; if a release somehow exceeds
+// that, postChangelogToChannel splits across multiple sends.
+function buildChangelogEmbeds(version, lines) {
+    const HARD_LIMIT = 3900; // Headroom under 4096 for safety + embed rendering.
+    const bullets = lines.map(l => `• ${l}`);
+    const chunks = [];
+    let current = '';
+    for (const b of bullets) {
+        if (current && current.length + b.length + 1 > HARD_LIMIT) {
+            chunks.push(current);
+            current = '';
+        }
+        // If a single bullet itself is over the limit, hard-truncate it so we
+        // don't drop the post entirely. Vanishingly rare in practice.
+        const safeBullet = b.length > HARD_LIMIT ? b.slice(0, HARD_LIMIT - 3) + '...' : b;
+        current += (current ? '\n' : '') + safeBullet;
+    }
+    if (current) chunks.push(current);
+    if (chunks.length === 0) chunks.push('• (no entries)');
+
+    return chunks.map((desc, idx) => {
+        const e = new EmbedBuilder().setDescription(desc).setColor(0x00ff88);
+        if (idx === 0) e.setTitle(`📦 XYIAN Bot v${version}`);
+        const isLast = idx === chunks.length - 1;
+        const footer = chunks.length > 1
+            ? `XYIAN Bot — Changelog (part ${idx + 1}/${chunks.length})`
+            : 'XYIAN Bot — Changelog';
+        e.setFooter({ text: footer });
+        if (isLast) e.setTimestamp();
+        return e;
+    });
+}
+
+// Post a versioned changelog entry to a channel, splitting across messages
+// if it produces more than Discord's 10-embed-per-message ceiling.
+async function postChangelogToChannel(channel, version, lines) {
+    const embeds = buildChangelogEmbeds(version, lines);
+    const MAX_PER_MSG = 10;
+    for (let i = 0; i < embeds.length; i += MAX_PER_MSG) {
+        await channel.send({ embeds: embeds.slice(i, i + MAX_PER_MSG) });
+    }
+    return embeds.length;
+}
+
 const { version: BOT_VERSION, lines: BOT_CHANGELOG } = parseChangelog();
 
 // ── Config ──────────────────────────────────────────────────────────────────
@@ -1405,7 +1474,8 @@ client.on('messageCreate', async (message) => {
                         '`!post-guild-requirements` — Post guild requirements embed\n' +
                         '`!reset` — Send daily reset now\n\n' +
                         '**Owner only:**\n' +
-                        '`!ai status` / `!ai on` / `!ai off` — Master kill switch for the OpenAI Q&A in #arch-ai'
+                        '`!ai status` / `!ai on` / `!ai off` — Master kill switch for the OpenAI Q&A in #arch-ai\n' +
+                        '`!post-changelog [x.y.z]` — Manually post a CHANGELOG entry to #changelog (omit version for current)'
                     )
                     .setColor(0x9b59b6).setTimestamp().setFooter({ text: 'XYIAN Bot' });
                 return message.reply({ embeds: [embed] });
@@ -1686,6 +1756,38 @@ client.on('messageCreate', async (message) => {
                     return message.reply('🤖 AI Q&A is now **off**. `#arch-ai` will reply with an offline notice. Re-enable with `!ai on`.');
                 }
                 return message.reply('Usage: `!ai status` · `!ai on` · `!ai off` (owner only)');
+            }
+
+            case 'post-changelog':
+            case 'postchangelog': {
+                // Owner-only manual changelog post. Used to backfill releases
+                // whose automatic startup post failed (e.g. v3.12.0 blew the
+                // 4096-char embed limit). Argument is the semver string, or
+                // omitted to post the latest entry from CHANGELOG.md.
+                if (!isOwner(message.author)) {
+                    return message.reply('❌ This command is owner-only.');
+                }
+                if (!CONFIG.channels.changelog) {
+                    return message.reply('❌ No changelog channel configured.');
+                }
+                const targetVersion = (argText || '').trim() || BOT_VERSION;
+                if (!/^\d+\.\d+\.\d+$/.test(targetVersion)) {
+                    return message.reply('Usage: `!post-changelog [x.y.z]` — version must be `major.minor.patch`. Omit to post the current version.');
+                }
+                const lines = getChangelogLinesForVersion(targetVersion);
+                if (!lines || lines.length === 0) {
+                    return message.reply(`❌ No CHANGELOG entries found for v${targetVersion}.`);
+                }
+                try {
+                    const channel = await client.channels.fetch(CONFIG.channels.changelog);
+                    const embedCount = await postChangelogToChannel(channel, targetVersion, lines);
+                    await sendToAdmin({
+                        content: `📋 **Manual changelog post** by ${message.author.username}: v${targetVersion} (${lines.length} bullet${lines.length === 1 ? '' : 's'}, ${embedCount} embed${embedCount === 1 ? '' : 's'}).`,
+                    });
+                    return message.reply(`✅ Posted v${targetVersion} to <#${CONFIG.channels.changelog}> (${embedCount} embed${embedCount === 1 ? '' : 's'}).`);
+                } catch (e) {
+                    return message.reply(`❌ Post failed: ${e.message}`);
+                }
             }
 
             case 'suggest': {
@@ -2190,13 +2292,7 @@ client.once('ready', async () => {
                     changelogStatus = `⏭️ v${BOT_VERSION} already posted — skipped`;
                     console.log(`📋 Changelog v${BOT_VERSION} already posted — skipping`);
                 } else {
-                    const embed = new EmbedBuilder()
-                        .setTitle(`📦 XYIAN Bot v${BOT_VERSION}`)
-                        .setDescription(BOT_CHANGELOG.map(line => `• ${line}`).join('\n'))
-                        .setColor(0x00ff88)
-                        .setTimestamp()
-                        .setFooter({ text: 'XYIAN Bot — Changelog' });
-                    await changelogChannel.send({ embeds: [embed] });
+                    await postChangelogToChannel(changelogChannel, BOT_VERSION, BOT_CHANGELOG);
                     changelogStatus = `📋 v${BOT_VERSION} posted to #changelog`;
                     console.log(changelogStatus);
                 }

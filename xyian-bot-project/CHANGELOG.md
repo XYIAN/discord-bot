@@ -4,6 +4,16 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.12.1] - 2026-05-06
+
+### Fix: long changelog entries broke the #changelog post
+
+The v3.12.0 startup tried to post its release notes as a single embed, but the description was 5005 chars — over Discord's 4096-char embed-description ceiling. The bot caught the error and reported `⚠️ changelog post failed` to `#debug-logs`, but `#changelog` got nothing for v3.12.0. Fix forward:
+
+- 🪓 **Auto-chunk long descriptions** — `buildChangelogEmbeds()` splits release-note bullets across as many embeds as needed (each capped at 3,900 chars for safety, never breaking mid-bullet). Footer becomes `Changelog (part N/M)` when split. `postChangelogToChannel()` further splits across messages if a single release somehow needed more than the 10-embed-per-message ceiling.
+- 🪝 **`!post-changelog [x.y.z]`** — New owner-only command. Re-runs the post pipeline on demand, parsing any historical version from `CHANGELOG.md`. Omit the version to post the current one. Used to backfill v3.12.0's missed post (`!post-changelog 3.12.0`).
+- 📝 **Help embed updated** — Owner-only section lists the new command.
+
 ## [3.12.0] - 2026-05-06
 
 ### New feature: 📸 Screenshot Q&A + learning loop in #arch-ai
