@@ -427,7 +427,32 @@
     "resonance_skin_interaction": "At base level, Resonance is only the ability of a specific character. But if that character has a skin, and your Sacred Hall tier is high enough, you can also get their skin bonus in resonance — not just the ability. This means Sacred Hall tier determines whether resonance includes just abilities or abilities + skins.",
     "added_by": "_xyian"
   },
-  "custom_facts": [],
+  "custom_facts": [
+    {
+      "text": "by simply owning DK (demon king atreus) all characters get a small 10% health shield that blocks you from dying from a single hit. \n\nExample1: if you do not own DK and your hp is 100 and you get hit by A SINGLE 200 dmg hit (like a fireball) you die. \nExample2:if you own DK and your health is 100 and get hit by A  SINGLE 200 dmg hit (like a fireball) you survive with 1 HP left.\n\nUPDATE: this can only occur ONCE PER GAME / CHALLENGE",
+      "added_by": "_xyian",
+      "added_at": "2026-05-10",
+      "source": "addfact"
+    },
+    {
+      "text": "While most Archero modes have max level caps, the following modes DO NOT and therefore are the best places to utilize the Intellegence blessing runes\n\n1) Shackled Jungle\n2) Abyssal tide",
+      "added_by": "fails_8743",
+      "added_at": "2026-03-30",
+      "source": "addfact"
+    },
+    {
+      "text": "don't for get to use all your plant defense eggs each week. Can confirm that if you have a certain amount you DO NOT get the 3 tickets replinished",
+      "added_by": "fails_8743",
+      "added_at": "2026-03-30",
+      "source": "addfact"
+    },
+    {
+      "text": "When selecting a start time for All Star cup, Habby surprised us all and made the time slots ACTUALLY localized",
+      "added_by": "fails_8743",
+      "added_at": "2026-03-13",
+      "source": "addfact"
+    }
+  ],
   "opinions": [],
   "damage_terminology": {
     "note": "Community-sourced from #arch-ai !suggest (recovered in full-channel audit). Attack Power, Main weapon DMG, and generic DMG are different stats that multiply together.",

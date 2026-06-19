@@ -454,5 +454,23 @@
     "at": "2026-03-30T00:00:00.000Z",
     "status": "approved",
     "approvedVia": "fact_sync"
+  },
+  {
+    "id": 51,
+    "text": "by simply owning DK (demon king atreus) all characters get a small 10% health shield that blocks you from dying from a single hit. \n\nExample1: if you do not own DK and your hp is 100 and you get hit b",
+    "by": "_xyian",
+    "userId": "528059607826825226",
+    "at": "2026-05-10T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
+  },
+  {
+    "id": 53,
+    "text": "While most Archero modes have max level caps, the following modes DO NOT and therefore are the best places to utilize the Intellegence blessing runes\n\n1) Shackled Jungle\n2) Abyssal tide",
+    "by": "fails_8743",
+    "userId": "392511835984756738",
+    "at": "2026-03-30T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
   }
 ]

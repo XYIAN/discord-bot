@@ -4,6 +4,19 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.12.2] - 2026-06-19
+
+### Fact sync
+
+- 📦 **Synced 4 community facts** from the live #arch-ai into permanent memory (`data/knowledge.json` + `seeds/knowledge.json`):
+  - 🛡️ Owning DK (Demon King Atreus) grants all characters a ~10% health shield that blocks one otherwise-lethal hit
+  - 🌾 Several game modes have no max level cap — the best targets for farming
+  - 🥚 Reminder to spend all weekly plant-defense eggs
+  - ⏰ All Star Cup start-time slots are localized to your timezone
+- 🎖️ **Contributor credit updated** in `suggestions.json` — fails_8743 (→ 8 approved), _xyian
+- 🧹 Collapsed a duplicate DK fact (it was posted twice) into a single entry
+- 👥 Contributors: fails_8743, _xyian
+
 ## [3.12.1] - 2026-05-06
 
 ### Fix: long changelog entries broke the #changelog post
