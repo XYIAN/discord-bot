@@ -1168,7 +1168,18 @@ async function sendGeneralResetMessage() {
             embed.addFields({ name: '🧙 Arch AI has a question...', value: question, inline: false });
         }
         embed.setColor(0x00ff88).setTimestamp().setFooter({ text: 'Arch 2 Addicts — Daily Reset' });
-        await sendToGeneral({ embeds: [embed] });
+        const sent = await sendToGeneral({ embeds: [embed] });
+        if (!sent) {
+            // sendViaWebhook swallows webhook errors and returns null (e.g. a
+            // rotated/deleted GENERAL_CHAT_WEBHOOK → 404). Surface it loudly
+            // instead of logging a false success — this is what hid the outage.
+            const reason = webhooks.general
+                ? 'GENERAL_CHAT_WEBHOOK send returned null — webhook likely rotated/deleted. Verify Railway env matches a live #general webhook in Discord.'
+                : 'GENERAL_CHAT_WEBHOOK is not set in the environment.';
+            console.error(`❌ Daily reset NOT delivered: ${reason}`);
+            await sendToAdmin({ content: `🚨 Daily reset NOT delivered to #general — ${reason}` });
+            return;
+        }
         console.log('✅ Daily reset message sent');
     } catch (e) {
         console.error('❌ Daily reset error:', e);

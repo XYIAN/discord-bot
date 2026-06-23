@@ -4,6 +4,15 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.12.3] - 2026-06-23
+
+### Fix: daily reset failures were silent
+
+The daily reset reminder stopped appearing in #general after the 2026-06-19 webhook rotation, but nothing flagged it. `sendGeneralResetMessage()` logged `✅ Daily reset message sent` unconditionally — even when the underlying webhook send failed and returned `null` (a rotated/deleted `GENERAL_CHAT_WEBHOOK` returns 404, which `sendViaWebhook` catches and swallows). So the outage was invisible in logs and never alerted admin.
+
+- 🛟 **Daily reset now verifies delivery** — `sendGeneralResetMessage()` checks the return value of the webhook send. On a `null` result it logs a real error and posts a `🚨 Daily reset NOT delivered` alert to #debug-logs instead of a false success, distinguishing "webhook not set" from "webhook rotated/deleted".
+- 📝 **Operational note:** restoring the daily reset itself requires updating `GENERAL_CHAT_WEBHOOK` (and any other rotated webhooks) in Railway to a live Discord webhook URL — this change only makes a future failure loud, not silent.
+
 ## [3.12.2] - 2026-06-19
 
 ### Fact sync
