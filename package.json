@@ -1,12 +1,13 @@
 {
   "name": "xyian-discord-bot",
-  "version": "3.12.1",
+  "version": "3.13.0",
   "description": "XYIAN Discord Bot - Archero 2 community bot",
   "private": true,
   "scripts": {
     "start": "node xyian-bot-project/bot.js",
     "dev": "node xyian-bot-project/bot.js",
-    "build": "echo 'Node.js project - no build step required'"
+    "build": "echo 'Node.js project - no build step required'",
+    "test": "node xyian-bot-project/test/log-forwarder.test.js && node xyian-bot-project/test/log-forwarder.integration.test.js"
   },
   "author": "Kyle",
   "license": "MIT",

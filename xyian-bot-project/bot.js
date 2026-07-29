@@ -32,6 +32,7 @@ const { Client, GatewayIntentBits, Partials, EmbedBuilder, WebhookClient } = req
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
+const { createLogForwarder, attachConsole } = require('./lib/log-forwarder');
 require('dotenv').config();
 
 // Single source of truth: version + changelog are parsed from CHANGELOG.md
@@ -776,7 +777,28 @@ async function sendViaWebhook(webhookUrl, channelId, trackingKey, content) {
     }
 }
 
+// Continuous debug-log forwarder: streams console errors/warnings to
+// #debug-logs, deduped against the explicit sendToAdmin alerts below so the
+// same event isn't posted twice. Sends via a direct webhook (never through the
+// intercepted console) so a failing send can't feed itself.
+const logForwarder = createLogForwarder({
+    send: async (text) => {
+        if (!webhooks.admin) return;
+        const wh = new WebhookClient({ url: webhooks.admin });
+        await wh.send({ content: text, allowedMentions: { parse: [] } });
+    },
+});
+
+// Real stdout output is preserved for Railway's own logs; a filtered copy is
+// captured for forwarding. attachConsole lives in the tested module.
+function installConsoleForwarding() {
+    attachConsole(logForwarder);
+    logForwarder.start();
+}
+
 async function sendToAdmin(content) {
+    // Record for dedup, but never let it block the actual alert.
+    try { logForwarder.noteExplicitAlert(content); } catch { /* best effort */ }
     return sendViaWebhook(webhooks.admin, null, null, content);
 }
 
@@ -1216,6 +1238,135 @@ async function sendGuildRecruitment() {
         .setTimestamp()
         .setFooter({ text: 'XYIAN OFFICIAL — Arch 2 Addicts' });
     await sendToRecruit({ embeds: [embed] });
+}
+
+// ── Weekly knowledge sync report ────────────────────────────────────────────
+// Read-only: summarizes what the knowledge base gained this week and posts a
+// digest + full-knowledge backup to #debug-logs (admin webhook). Never writes
+// knowledge/suggestions — ingestion stays the job of scripts/sync-facts.js.
+
+const SYNC_REPORT_PATH = path.join(__dirname, 'data', 'sync-report-state.json');
+
+function loadSyncReportState() {
+    try { return JSON.parse(fs.readFileSync(SYNC_REPORT_PATH, 'utf8')); } catch { return {}; }
+}
+
+function saveSyncReportState(data) {
+    try { fs.writeFileSync(SYNC_REPORT_PATH, JSON.stringify(data, null, 2)); } catch { /* best effort */ }
+}
+
+// Collect every knowledge entry carrying an added_at date, from both the
+// custom_facts/opinions arrays and the structured category objects.
+function collectDatedFacts(kb) {
+    const out = [];
+    for (const val of Object.values(kb || {})) {
+        if (Array.isArray(val)) {
+            for (const e of val) if (e && typeof e === 'object' && e.added_at) out.push(e);
+        } else if (val && typeof val === 'object') {
+            for (const e of Object.values(val)) if (e && typeof e === 'object' && e.added_at) out.push(e);
+        }
+    }
+    return out;
+}
+
+async function postWeeklyKnowledgeReport(force = false) {
+    const now = new Date();
+    const state = loadSyncReportState();
+
+    // Don't post twice in the same week (guards redeploy re-arms / double fires).
+    if (!force && state.lastWeeklyReportAt) {
+        const daysSince = (now - new Date(state.lastWeeklyReportAt)) / 86_400_000;
+        if (daysSince < 6) return;
+    }
+
+    const weekAgoDate = new Date(now.getTime() - 7 * 86_400_000).toISOString().split('T')[0]; // YYYY-MM-DD
+    const weekAgoIso = new Date(now.getTime() - 7 * 86_400_000).toISOString();
+
+    const dated = collectDatedFacts(knowledge);
+    const newFacts = dated.filter(f => f.added_at && f.added_at >= weekAgoDate);
+
+    const suggestions = loadSuggestions();
+    const pending = suggestions.filter(s => s.status === 'pending');
+    const approvedThisWeek = suggestions.filter(s => s.status === 'approved' && s.at && s.at >= weekAgoIso);
+
+    // Nothing new and nothing waiting → skip quietly.
+    if (!force && newFacts.length === 0 && pending.length === 0) {
+        console.log('🧠 Weekly knowledge report skipped — nothing new this week');
+        return;
+    }
+
+    const contribCounts = {};
+    for (const f of newFacts) if (f.added_by) contribCounts[f.added_by] = (contribCounts[f.added_by] || 0) + 1;
+    const topContribs = Object.entries(contribCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5)
+        .map(([name, n]) => `${name} (${n})`)
+        .join(', ') || 'none';
+
+    const embed = new EmbedBuilder()
+        .setTitle('🧠 Weekly Knowledge Sync')
+        .setColor(0x5865f2)
+        .setDescription([
+            `**New facts this week:** ${newFacts.length}`,
+            `**Approved suggestions this week:** ${approvedThisWeek.length}`,
+            `**Awaiting review:** ${pending.length}${pending.length > 0 ? ' — run `!suggestions` to review' : ''}`,
+            `**Total dated facts:** ${dated.length}`,
+            `**Contributors this week:** ${topContribs}`,
+            '',
+            'Full knowledge base attached as a dated backup.',
+        ].join('\n'))
+        .setTimestamp()
+        .setFooter({ text: 'Automatic weekly knowledge sync' });
+
+    const backup = {
+        attachment: Buffer.from(JSON.stringify(knowledge, null, 2), 'utf8'),
+        name: `knowledge-${now.toISOString().split('T')[0]}.json`,
+    };
+
+    // Post digest + backup; fall back to embed-only if the file send fails.
+    let sent = await sendToAdmin({ embeds: [embed], files: [backup] });
+    if (!sent) sent = await sendToAdmin({ embeds: [embed] });
+    if (sent) {
+        saveSyncReportState({ lastWeeklyReportAt: now.toISOString() });
+        console.log(`🧠 Weekly knowledge report posted: ${newFacts.length} new, ${pending.length} pending`);
+    } else {
+        console.log('⚠️  Weekly knowledge report failed to send; will retry next run');
+    }
+}
+
+// Next Sunday 10:00 AM America/Los_Angeles, DST-safe (probes the two UTC
+// hours that map to LA 10:00). Mirrors setupDailyResetMessaging's approach.
+function nextWeeklyReportTime(now) {
+    const fmt = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/Los_Angeles', weekday: 'short', hour: '2-digit', hour12: false,
+    });
+    for (let dayOffset = 0; dayOffset <= 8; dayOffset++) {
+        for (const utcHour of [17, 18]) { // LA 10:00 = 17:00 UTC (PDT) or 18:00 UTC (PST)
+            const c = new Date(now);
+            c.setUTCDate(c.getUTCDate() + dayOffset);
+            c.setUTCHours(utcHour, 0, 0, 0);
+            if (c <= now) continue;
+            const parts = fmt.formatToParts(c);
+            const weekday = parts.find(p => p.type === 'weekday')?.value;
+            const hour = parts.find(p => p.type === 'hour')?.value;
+            if (weekday === 'Sun' && hour === '10') return c;
+        }
+    }
+    return new Date(now.getTime() + 7 * 86_400_000); // fallback: 7 days out
+}
+
+function setupWeeklyKnowledgeReport() {
+    const schedule = () => {
+        const now = new Date();
+        const next = nextWeeklyReportTime(now);
+        const ms = Math.max(0, next.getTime() - now.getTime());
+        console.log(`🧠 Next weekly knowledge report: ${next.toISOString()} (~${Math.round(ms / 3_600_000)}h)`);
+        setTimeout(() => {
+            postWeeklyKnowledgeReport().catch(e => console.log(`⚠️  Weekly report error: ${e.message}`));
+            schedule();
+        }, ms);
+    };
+    schedule();
 }
 
 // ── Discord client ──────────────────────────────────────────────────────────
@@ -2331,6 +2482,7 @@ client.once('ready', async () => {
 
     setupDailyResetMessaging();
     setupDailyMessaging();
+    setupWeeklyKnowledgeReport();
 });
 
 // ── Health check (Railway) ──────────────────────────────────────────────────
@@ -2350,6 +2502,8 @@ app.get('/health', (_req, res) => {
 app.listen(port, () => console.log(`🏥 Health check on port ${port}`));
 
 // ── Login ───────────────────────────────────────────────────────────────────
+
+installConsoleForwarding(); // start streaming errors/warnings to #debug-logs
 
 client.login(process.env.DISCORD_TOKEN).catch((err) => {
     console.error('❌ Login failed:', err);

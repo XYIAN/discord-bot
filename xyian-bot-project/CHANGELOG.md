@@ -4,6 +4,20 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.13.0] - 2026-07-29
+
+### Automatic weekly knowledge sync
+
+- 🧠 **New weekly knowledge report** — every Sunday at 10 AM Pacific the bot posts a digest to #debug-logs: new facts added this week, approved suggestions, how many are awaiting review, and the top contributors — with the full `knowledge.json` attached as a dated backup.
+- 💤 **Skips itself when nothing changed** that week, and won't double-post across redeploys (tracks the last run in `data/sync-report-state.json`).
+- 🔒 **Read-only** — it never writes to the knowledge base or suggestions, so it complements `scripts/sync-facts.js` (still the ingestion tool) rather than conflicting with it. DST-safe scheduler mirrors the daily-reset pattern.
+
+### Automatic debug-log forwarding
+
+- 📡 **Runtime errors/warnings now stream to #debug-logs automatically** — `console.error` output and `⚠️/❌/🚨` warnings are batched and forwarded, so problems surface without a hand-written alert for every case.
+- 🙈 **Deduped against the existing explicit alerts** (token-overlap match within a 20s window) so nothing double-posts; the forwarder sends via a direct webhook and never logs through the intercepted console, so a failing send can't feed itself. Real stdout output (Railway logs) is untouched.
+- 🧪 Logic lives in `lib/log-forwarder.js` with unit + integration tests (`test/`), runnable via `npm test`.
+
 ## [3.12.3] - 2026-06-23
 
 ### Fix: daily reset failures were silent
