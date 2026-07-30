@@ -33,7 +33,7 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const { createLogForwarder, attachConsole } = require('./lib/log-forwarder');
-const { reconcilePlan, backfillApprovers, approvedCountFor } = require('./lib/contributions');
+const { reconcilePlan, backfillApprovers, approvedCountFor, mergeLedgers } = require('./lib/contributions');
 require('dotenv').config();
 
 // Single source of truth: version + changelog are parsed from CHANGELOG.md
@@ -235,7 +235,10 @@ function seedDataFiles() {
         catch (e) { console.error('❌ Could not create data dir:', e.message); return; }
     }
     if (!fs.existsSync(SEEDS_DIR)) return;
-    const seedables = ['knowledge.json'];
+    // suggestions.json is the contribution ledger — it MUST be seeded too.
+    // Treating "missing" as empty silently wiped every member's earned rank
+    // when the volume was first attached.
+    const seedables = ['knowledge.json', 'suggestions.json'];
     for (const filename of seedables) {
         const target = path.join(DATA_DIR, filename);
         const seed = path.join(SEEDS_DIR, filename);
@@ -723,6 +726,32 @@ async function reconcileContributorRoles(guild, { dryRun = false, reason = 'sche
         });
     }
     return { granted, checked: held.size };
+}
+
+// Restore contribution history that the Railway volume shadowed away.
+//
+// A volume mounts empty and hides files baked into the image, so the committed
+// suggestions ledger disappeared in production — every member's approved-count
+// silently reset to zero and their earned ranks became unreachable. seeds/
+// lives outside the mount, so it survives. Merge is additive only (live wins,
+// nothing is overwritten or removed), making this safe on every boot.
+function restoreSuggestionsLedger() {
+    const seedPath = path.join(SEEDS_DIR, 'suggestions.json');
+    if (!fs.existsSync(seedPath)) return 0;
+    let archived;
+    try { archived = JSON.parse(fs.readFileSync(seedPath, 'utf8')); }
+    catch (e) { console.error(`❌ Could not read archived ledger: ${e.message}`); return 0; }
+
+    const live = loadSuggestions();
+    const { records, restored } = mergeLedgers(live, archived);
+    if (restored > 0) {
+        saveSuggestions(records);
+        console.error(
+            `🛟 Restored ${restored} contribution record(s) missing from the live ledger ` +
+            `(had ${live.length}, now ${records.length}) — volume had shadowed them.`
+        );
+    }
+    return restored;
 }
 
 // One-time (idempotent) attribution backfill so every approval records who
@@ -2608,7 +2637,13 @@ client.once('ready', async () => {
     // sure every earned role is actually held. Runs at boot and daily, so a
     // missed grant can never become permanent again.
     try {
+        const restored = restoreSuggestionsLedger();
         backfillApproverAttribution();
+        const ledgerSize = loadSuggestions().length;
+        console.log(`📒 Contribution ledger: ${ledgerSize} record(s)${restored ? ` (${restored} restored this boot)` : ''}`);
+        if (ledgerSize === 0) {
+            console.error('❌ Contribution ledger is EMPTY — contributor ranks cannot be computed. Check the data volume.');
+        }
         const guild = client.guilds.cache.first();
         if (guild) {
             await reconcileContributorRoles(guild, { reason: 'startup' });

@@ -102,6 +102,39 @@ test('backfillApprovers preserves an existing approver', () => {
     assert.strictEqual(records[0].approvedByName, 'Mod');
 });
 
+
+// ── Ledger restore (the volume-wipe regression) ─────────────────────────────
+test('mergeLedgers restores an empty live ledger from the archive', () => {
+    const { mergeLedgers } = require('../lib/contributions');
+    const { records, restored } = mergeLedgers([], LEDGER);
+    assert.strictEqual(restored, LEDGER.length, 'all archived records come back');
+    assert.strictEqual(records.length, LEDGER.length);
+    assert.ok(records.every(r => r.restoredFromArchive), 'restored records are marked');
+});
+
+test('mergeLedgers never overwrites or duplicates live records', () => {
+    const { mergeLedgers } = require('../lib/contributions');
+    const live = [{ id: 1, status: 'approved', userId: 'u_fauk', by: 'faukkss', text: 'f0' }];
+    const { records, restored } = mergeLedgers(live, LEDGER);
+    assert.strictEqual(records[0], live[0], 'live record object is untouched');
+    assert.strictEqual(records.filter(r => r.id === 1).length, 1, 'no duplicate id');
+    assert.strictEqual(restored, LEDGER.length - 1);
+});
+
+test('mergeLedgers dedupes by text even when ids differ', () => {
+    const { mergeLedgers } = require('../lib/contributions');
+    const live = [{ id: 999, status: 'approved', userId: 'u_faria', text: 'h0' }];
+    const { restored } = mergeLedgers(live, LEDGER);
+    assert.strictEqual(restored, LEDGER.length - 1, 'same text is not restored twice');
+});
+
+test('mergeLedgers is idempotent', () => {
+    const { mergeLedgers } = require('../lib/contributions');
+    const once = mergeLedgers([], LEDGER).records;
+    const twice = mergeLedgers(once, LEDGER);
+    assert.strictEqual(twice.restored, 0, 'second run restores nothing');
+});
+
 (async () => {
     let passed = 0;
     for (const { name, fn } of cases) {

@@ -87,6 +87,40 @@ function backfillApprovers(suggestions, { ownerId, ownerName }) {
     return { records, changed };
 }
 
+function normalizeText(t) {
+    return String(t || '').replace(/[‘’]/g, "'").replace(/\s+/g, ' ').trim().toLowerCase().slice(0, 60);
+}
+
+/**
+ * Non-destructively merge an archived ledger into the live one.
+ *
+ * A Railway volume mounts empty and shadows files baked into the image, so the
+ * committed contribution ledger silently vanished in production — wiping every
+ * member's earned standing. This restores archived records that the live ledger
+ * is missing while NEVER overwriting or reordering live data (live always
+ * wins), so it's safe to run on every boot.
+ *
+ * @returns {{records:Array, restored:number}}
+ */
+function mergeLedgers(live, archived) {
+    const liveArr = Array.isArray(live) ? live : [];
+    const archArr = Array.isArray(archived) ? archived : [];
+    const seenIds = new Set(liveArr.map((s) => s && s.id).filter((v) => v !== undefined));
+    const seenText = new Set(liveArr.map((s) => normalizeText(s && s.text)).filter(Boolean));
+
+    const additions = [];
+    for (const rec of archArr) {
+        if (!rec) continue;
+        const t = normalizeText(rec.text);
+        if (rec.id !== undefined && seenIds.has(rec.id)) continue;
+        if (t && seenText.has(t)) continue;
+        additions.push({ ...rec, restoredFromArchive: true });
+        if (rec.id !== undefined) seenIds.add(rec.id);
+        if (t) seenText.add(t);
+    }
+    return { records: liveArr.concat(additions), restored: additions.length };
+}
+
 module.exports = {
     approvedCountFor,
     contributorTotals,
@@ -94,4 +128,5 @@ module.exports = {
     earnedTierNames,
     reconcilePlan,
     backfillApprovers,
+    mergeLedgers,
 };

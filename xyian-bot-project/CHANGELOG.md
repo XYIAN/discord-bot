@@ -4,6 +4,17 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.14.1] - 2026-07-30
+
+### Fix: the contribution ledger was wiped by the data volume
+
+Root cause of members losing their earned ranks. When the Railway volume was first attached (v3.12.0), it mounted empty and **shadowed the committed `data/` files**. Only `knowledge.json` was seeded back — `suggestions.json`, the entire contribution ledger, came up empty in production. Every member's approved-count silently reset to zero, so the bot told long-time contributors they hadn't earned anything. The committed copy survived and is the source of truth.
+
+- 🛟 **Ledger restore on boot** — archived contribution records missing from the live ledger are merged back in. Additive only: live records are never overwritten, reordered, or removed, so it is safe to run every boot and is idempotent.
+- 📦 **`suggestions.json` is now seeded** alongside `knowledge.json` on first mount — the original omission that caused the loss.
+- 📒 **Ledger size is logged at every boot**, and an empty ledger now raises a loud error instead of quietly zeroing everyone's rank.
+- 🧪 4 more regression tests covering restore-from-empty, no-clobber, text-level dedup, and idempotency.
+
 ## [3.14.0] - 2026-07-29
 
 ### Fix: contributors were never granted the ranks they earned
