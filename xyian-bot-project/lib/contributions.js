@@ -121,6 +121,39 @@ function mergeLedgers(live, archived) {
     return { records: liveArr.concat(additions), restored: additions.length };
 }
 
+/**
+ * Merge archived custom_facts into a live knowledge base. Same contract as
+ * mergeLedgers: additive only, live wins, dedup by normalized text. This is how
+ * curated fact drops (e.g. patch notes) reach production — the volume already
+ * has a knowledge.json so first-mount seeding won't fire for it.
+ * @returns {{knowledge:object, added:number}}
+ */
+function mergeCustomFacts(liveKb, seedKb) {
+    const live = liveKb && typeof liveKb === 'object' ? liveKb : {};
+    const seed = seedKb && typeof seedKb === 'object' ? seedKb : {};
+    const seen = new Set();
+    const walk = (o) => {
+        if (Array.isArray(o)) o.forEach(walk);
+        else if (o && typeof o === 'object') {
+            if (typeof o.text === 'string') seen.add(normalizeText(o.text));
+            Object.values(o).forEach(walk);
+        } else if (typeof o === 'string') seen.add(normalizeText(o));
+    };
+    walk(live);
+
+    const additions = [];
+    for (const rec of Array.isArray(seed.custom_facts) ? seed.custom_facts : []) {
+        if (!rec || typeof rec.text !== 'string') continue;
+        const t = normalizeText(rec.text);
+        if (!t || seen.has(t)) continue;
+        additions.push(rec);
+        seen.add(t);
+    }
+    if (additions.length === 0) return { knowledge: live, added: 0 };
+    const next = { ...live, custom_facts: [...(Array.isArray(live.custom_facts) ? live.custom_facts : []), ...additions] };
+    return { knowledge: next, added: additions.length };
+}
+
 module.exports = {
     approvedCountFor,
     contributorTotals,
@@ -129,4 +162,5 @@ module.exports = {
     reconcilePlan,
     backfillApprovers,
     mergeLedgers,
+    mergeCustomFacts,
 };

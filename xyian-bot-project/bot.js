@@ -33,7 +33,7 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const { createLogForwarder, attachConsole } = require('./lib/log-forwarder');
-const { reconcilePlan, backfillApprovers, approvedCountFor, mergeLedgers } = require('./lib/contributions');
+const { reconcilePlan, backfillApprovers, approvedCountFor, mergeLedgers, mergeCustomFacts } = require('./lib/contributions');
 require('dotenv').config();
 
 // Single source of truth: version + changelog are parsed from CHANGELOG.md
@@ -752,6 +752,26 @@ function restoreSuggestionsLedger() {
         );
     }
     return restored;
+}
+
+// Merge curated facts (patch notes, audited history) from seeds/ into the live
+// knowledge base. First-mount seeding can't deliver these because the volume
+// already has a knowledge.json, so this additive merge is how curated drops
+// reach production. Live always wins; dedup is by text.
+function restoreCuratedFacts() {
+    const seedPath = path.join(SEEDS_DIR, 'knowledge.json');
+    if (!fs.existsSync(seedPath)) return 0;
+    let seed;
+    try { seed = JSON.parse(fs.readFileSync(seedPath, 'utf8')); }
+    catch (e) { console.error(`❌ Could not read seed knowledge: ${e.message}`); return 0; }
+
+    const { knowledge: merged, added } = mergeCustomFacts(knowledge, seed);
+    if (added > 0) {
+        knowledge = merged;
+        saveKnowledge();
+        console.log(`📚 Merged ${added} curated fact(s) from seeds/ into the knowledge base`);
+    }
+    return added;
 }
 
 // One-time (idempotent) attribution backfill so every approval records who
@@ -2638,6 +2658,7 @@ client.once('ready', async () => {
     // missed grant can never become permanent again.
     try {
         const restored = restoreSuggestionsLedger();
+        restoreCuratedFacts();
         backfillApproverAttribution();
         const ledgerSize = loadSuggestions().length;
         console.log(`📒 Contribution ledger: ${ledgerSize} record(s)${restored ? ` (${restored} restored this boot)` : ''}`);
@@ -2676,6 +2697,22 @@ app.listen(port, () => console.log(`🏥 Health check on port ${port}`));
 // ── Login ───────────────────────────────────────────────────────────────────
 
 installConsoleForwarding(); // start streaming errors/warnings to #debug-logs
+
+// Exit promptly on shutdown. Railway SIGTERMs the old container during a
+// redeploy and SIGKILLs it if it lingers — a SIGKILL is reported as a "crash",
+// which is where the spurious deployment-failed emails come from. Data is
+// written synchronously (writeFileSync), so there's nothing to flush; just
+// close the gateway and exit. Idempotent against repeat signals.
+let shuttingDown = false;
+function gracefulShutdown(signal) {
+    if (shuttingDown) return;
+    shuttingDown = true;
+    console.log(`👋 ${signal} received — shutting down`);
+    try { client.destroy(); } catch { /* already closing */ }
+    setTimeout(() => process.exit(0), 250).unref();
+}
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 client.login(process.env.DISCORD_TOKEN).catch((err) => {
     console.error('❌ Login failed:', err);

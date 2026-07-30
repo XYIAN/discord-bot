@@ -135,6 +135,31 @@ test('mergeLedgers is idempotent', () => {
     assert.strictEqual(twice.restored, 0, 'second run restores nothing');
 });
 
+test('mergeCustomFacts adds curated facts and dedupes by text', () => {
+    const { mergeCustomFacts } = require('../lib/contributions');
+    const live = { custom_facts: [{ text: 'Existing fact about runes' }], weapons: { bow: { text: 'Bow info' } } };
+    const seed = { custom_facts: [
+        { text: 'Existing fact about runes' },   // dup -> skipped
+        { text: 'Bow info' },                     // dup found in a category -> skipped
+        { text: 'Update 1.1.7 added Guild Bounty' },
+    ] };
+    const { knowledge, added } = mergeCustomFacts(live, seed);
+    assert.strictEqual(added, 1);
+    assert.strictEqual(knowledge.custom_facts.length, 2);
+    assert.ok(knowledge.custom_facts.some(f => /Guild Bounty/.test(f.text)));
+    assert.deepStrictEqual(live.custom_facts.length, 1, 'input is not mutated');
+});
+
+test('mergeCustomFacts is idempotent and safe on empty input', () => {
+    const { mergeCustomFacts } = require('../lib/contributions');
+    const seed = { custom_facts: [{ text: 'A brand new fact' }] };
+    const once = mergeCustomFacts({}, seed);
+    assert.strictEqual(once.added, 1);
+    const twice = mergeCustomFacts(once.knowledge, seed);
+    assert.strictEqual(twice.added, 0);
+    assert.strictEqual(mergeCustomFacts(null, null).added, 0);
+});
+
 (async () => {
     let passed = 0;
     for (const { name, fn } of cases) {

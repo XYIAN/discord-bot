@@ -472,5 +472,53 @@
     "at": "2026-03-30T00:00:00.000Z",
     "status": "approved",
     "approvedVia": "fact_sync"
+  },
+  {
+    "id": 54,
+    "text": "Twinborn forging is only accessible after you unlock your first mythic rune.",
+    "by": "faria88pt",
+    "userId": "1429274216657719368",
+    "at": "2026-07-29T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "history_audit",
+    "approvedBy": "528059607826825226",
+    "approvedByName": "XYIAN (history audit)",
+    "note": "Credited from #arch-ai history; contribution was never recorded."
+  },
+  {
+    "id": 55,
+    "text": "For PvP mixed set — Weapon: Crossbow, Amulet: Griffin Amulet, Ring: Griffin Ring, Helmet: Dragoon Helm.",
+    "by": "faria88pt",
+    "userId": "1429274216657719368",
+    "at": "2026-06-23T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "history_audit",
+    "approvedBy": "528059607826825226",
+    "approvedByName": "XYIAN (history audit)",
+    "note": "Credited from #arch-ai history; contribution was never recorded."
+  },
+  {
+    "id": 56,
+    "text": "Twinborn forging can only be done with specific runes of the same type, for example a Frost Shock rune.",
+    "by": "_xyian",
+    "userId": "528059607826825226",
+    "at": "2026-07-29T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "history_audit",
+    "approvedBy": "528059607826825226",
+    "approvedByName": "XYIAN (history audit)",
+    "note": "Credited from #arch-ai history; contribution was never recorded."
+  },
+  {
+    "id": 57,
+    "text": "Twinborn runes are a new method of merging runes together and can be done from Legendary rarity or higher.",
+    "by": "_xyian",
+    "userId": "528059607826825226",
+    "at": "2026-07-29T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "history_audit",
+    "approvedBy": "528059607826825226",
+    "approvedByName": "XYIAN (history audit)",
+    "note": "Credited from #arch-ai history; contribution was never recorded."
   }
 ]

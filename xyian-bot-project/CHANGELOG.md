@@ -4,6 +4,15 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.15.0] - 2026-07-30
+
+### Archero 2 v1.1.7 patch notes + credited missing contributions
+
+- 📖 **Added the full Archero 2 v1.1.7 update to the knowledge base** (21 facts) — new Campaign 181-190 / Hard 166-175 / Shackled Jungle 1501-1700 chapters, Guild Community, Guild Bounty, Charm 2.0, Frenzy Challenge, the 28-day sign-in cycle, Quick Raid Cards, the Stats screen, Privilege Card Deal Pack, Blessing Twinborn Rune fusion, and every gameplay improvement.
+- 🙌 **Credited 4 contributions that were never recorded** — found by auditing the entire #arch-ai history. faria88pt and XYIAN each had facts (including the Twinborn rune details) that the bot accepted in chat but never logged.
+- 📚 **Curated facts now reach production** — seeded facts missing from the live knowledge base are merged in on boot (additive, live wins, deduped). First-mount seeding couldn't deliver these because the volume already had a knowledge file.
+- ⚙️ **Clean, prompt shutdown** — the bot now closes the gateway and exits on SIGTERM instead of lingering until Railway SIGKILLs it, which is what produced the spurious "deployment failed/crashed" emails on every redeploy.
+
 ## [3.14.1] - 2026-07-30
 
 ### Fix: the contribution ledger was wiped by the data volume

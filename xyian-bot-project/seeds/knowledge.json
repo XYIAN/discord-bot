@@ -451,6 +451,177 @@
       "added_by": "fails_8743",
       "added_at": "2026-03-13",
       "source": "addfact"
+    },
+    {
+      "text": "Update 1.1.7 added new Campaign chapters 181-190, and lowered the difficulty of campaign stages after Chapter 80.",
+      "added_by": "XYIAN",
+      "added_at": "2026-07-30",
+      "source": "patch_notes",
+      "game_version": "1.1.7"
+    },
+    {
+      "text": "Update 1.1.7 added new Hard chapters 166-175.",
+      "added_by": "XYIAN",
+      "added_at": "2026-07-30",
+      "source": "patch_notes",
+      "game_version": "1.1.7"
+    },
+    {
+      "text": "Update 1.1.7 added new Shackled Jungle chapters 1501-1700.",
+      "added_by": "XYIAN",
+      "added_at": "2026-07-30",
+      "source": "patch_notes",
+      "game_version": "1.1.7"
+    },
+    {
+      "text": "Guild Community (added in 1.1.7) unlocks alongside the guild and is entered via the Campaign button on the home screen. Guild members can view each other's camps, show off home appearances, and take part in guild interactions.",
+      "added_by": "XYIAN",
+      "added_at": "2026-07-30",
+      "source": "patch_notes",
+      "game_version": "1.1.7"
+    },
+    {
+      "text": "Guild Bounty (event added in 1.1.7): guild members complete personal and guild bounties together to build event progress and unlock both personal and guild rewards.",
+      "added_by": "XYIAN",
+      "added_at": "2026-07-30",
+      "source": "patch_notes",
+      "game_version": "1.1.7"
+    },
+    {
+      "text": "Charm system 2.0 (1.1.7): you raise Charm by obtaining designated appearances. Appearances that now count toward Charm include chat bubbles, personal cards, camp styles, and battle scenes.",
+      "added_by": "XYIAN",
+      "added_at": "2026-07-30",
+      "source": "patch_notes",
+      "game_version": "1.1.7"
+    },
+    {
+      "text": "Frenzy Challenge (added in 1.1.7) is Guild Raid's highest difficulty tier: after clearing the highest difficulty you can push toward tougher goals for more rewards.",
+      "added_by": "XYIAN",
+      "added_at": "2026-07-30",
+      "source": "patch_notes",
+      "game_version": "1.1.7"
+    },
+    {
+      "text": "Daily Sign-in was upgraded in 1.1.7 from a 7-day to a 28-day cycle, with sign-in rewards raised to match. Players partway through the old 7-day cycle move to the 28-day cycle after finishing their current round.",
+      "added_by": "XYIAN",
+      "added_at": "2026-07-30",
+      "source": "patch_notes",
+      "game_version": "1.1.7"
+    },
+    {
+      "text": "Since 1.1.7, Weekly Tasks grant Quick Raid Cards for specific modes: Seal Battle, Monster Invasion, Abyssal Tide, Shackled Jungle, and Magic Plant Defense.",
+      "added_by": "XYIAN",
+      "added_at": "2026-07-30",
+      "source": "patch_notes",
+      "game_version": "1.1.7"
+    },
+    {
+      "text": "The Stats screen (added in 1.1.7) shows the stat bonuses you get from Artifacts, weapon skins, characters, and guild tech.",
+      "added_by": "XYIAN",
+      "added_at": "2026-07-30",
+      "source": "patch_notes",
+      "game_version": "1.1.7"
+    },
+    {
+      "text": "Privilege Card Deal Pack (added in 1.1.7) unlocks after Chapter 21 and bundles the Cave Explorer Card, Sealing Master Card, and Abyssium Conqueror Card at a discount. Buying it also grants 3-Day Friend Trial Cards for all three Privilege Cards that you can gift; each player can claim up to 2 Trial Cards of the same type per 30 days.",
+      "added_by": "XYIAN",
+      "added_at": "2026-07-30",
+      "source": "patch_notes",
+      "game_version": "1.1.7"
+    },
+    {
+      "text": "Blessing Twinborn Rune fusion became available in update 1.1.7.",
+      "added_by": "XYIAN",
+      "added_at": "2026-07-30",
+      "source": "patch_notes",
+      "game_version": "1.1.7"
+    },
+    {
+      "text": "Guild Expedition presets (improved in 1.1.7): you can view other members' presets, and last week's lane info is recorded automatically and reusable with one tap.",
+      "added_by": "XYIAN",
+      "added_at": "2026-07-30",
+      "source": "patch_notes",
+      "game_version": "1.1.7"
+    },
+    {
+      "text": "Since 1.1.7, Max-Star Legendary character shards can be recycled into Character Shadows at a set ratio.",
+      "added_by": "XYIAN",
+      "added_at": "2026-07-30",
+      "source": "patch_notes",
+      "game_version": "1.1.7"
+    },
+    {
+      "text": "Since 1.1.7, enemy summons no longer count toward damage stats in Peak Arena and Guild Expedition.",
+      "added_by": "XYIAN",
+      "added_at": "2026-07-30",
+      "source": "patch_notes",
+      "game_version": "1.1.7"
+    },
+    {
+      "text": "Since 1.1.7, damage stats show a breakdown by Elemental DMG type.",
+      "added_by": "XYIAN",
+      "added_at": "2026-07-30",
+      "source": "patch_notes",
+      "game_version": "1.1.7"
+    },
+    {
+      "text": "Update 1.1.7 added a 3x battle speed option to Abyssal Tide.",
+      "added_by": "XYIAN",
+      "added_at": "2026-07-30",
+      "source": "patch_notes",
+      "game_version": "1.1.7"
+    },
+    {
+      "text": "Update 1.1.7 overhauled achievement rewards for Abyssal Tide, total logins, and character levels.",
+      "added_by": "XYIAN",
+      "added_at": "2026-07-30",
+      "source": "patch_notes",
+      "game_version": "1.1.7"
+    },
+    {
+      "text": "Update 1.1.7 increased Monster Invasion ranking rewards.",
+      "added_by": "XYIAN",
+      "added_at": "2026-07-30",
+      "source": "patch_notes",
+      "game_version": "1.1.7"
+    },
+    {
+      "text": "Since 1.1.7, the max friend count is 200 and daily claimable friend Energy is 25.",
+      "added_by": "XYIAN",
+      "added_at": "2026-07-30",
+      "source": "patch_notes",
+      "game_version": "1.1.7"
+    },
+    {
+      "text": "Since 1.1.7, the preview screen for Avatar and Frame Choice Chests shows which items you already own.",
+      "added_by": "XYIAN",
+      "added_at": "2026-07-30",
+      "source": "patch_notes",
+      "game_version": "1.1.7"
+    },
+    {
+      "text": "Twinborn forging is only accessible after you unlock your first mythic rune.",
+      "added_by": "faria88pt",
+      "added_at": "2026-07-29",
+      "source": "history_audit"
+    },
+    {
+      "text": "For PvP mixed set — Weapon: Crossbow, Amulet: Griffin Amulet, Ring: Griffin Ring, Helmet: Dragoon Helm.",
+      "added_by": "faria88pt",
+      "added_at": "2026-06-23",
+      "source": "history_audit"
+    },
+    {
+      "text": "Twinborn forging can only be done with specific runes of the same type, for example a Frost Shock rune.",
+      "added_by": "_xyian",
+      "added_at": "2026-07-29",
+      "source": "history_audit"
+    },
+    {
+      "text": "Twinborn runes are a new method of merging runes together and can be done from Legendary rarity or higher.",
+      "added_by": "_xyian",
+      "added_at": "2026-07-29",
+      "source": "history_audit"
     }
   ],
   "opinions": [],
