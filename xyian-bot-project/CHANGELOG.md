@@ -4,6 +4,20 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.14.0] - 2026-07-29
+
+### Fix: contributors were never granted the ranks they earned
+
+Members with plenty of approved contributions were being told they lacked permission (e.g. "you need 5 approved suggestions"). The ledger was correct the whole time — the **Discord roles were never granted**. Every historical approval was written by a backfill script (`fact_sync` / `arch_ai_audit`) straight into `suggestions.json`, and the only code that grants tier roles lived inside the `!approve` command. Since permissions are gated on the *role* and nothing ever re-checked, a missed grant was permanent.
+
+- 🔧 **Automatic role reconciliation** — the bot now recomputes every contributor's earned tier from the ledger and grants anything missing, at startup, once a day, and after every approval. A missed grant now self-heals instead of being lost forever.
+- 🛠️ **`!reconcile`** (moderators) re-applies earned roles on demand; `!reconcile dry` previews without changing anything.
+- 🏆 **`!contributions`** shows the contributor leaderboard with each member's current tier.
+- 📝 **Approver is now recorded** — every approval stores `approvedBy` / `approvedByName` alongside the contributor, and existing records were backfilled (script approvals attributed to their script).
+- 🔊 **Failures are loud** — a missing role or a failed grant now logs an error (and reaches #debug-logs via the forwarder) instead of failing silently, which is how this hid for months.
+- 🧪 **Regression tests** (`npm test`) cover tier math, the exact production drift, idempotency, and members who left the guild.
+- 🔍 **`npm run audit:contributions`** — read-only scan of the full #arch-ai history that cross-references the ledger and reports any contribution never credited.
+
 ## [3.13.0] - 2026-07-29
 
 ### Automatic weekly knowledge sync

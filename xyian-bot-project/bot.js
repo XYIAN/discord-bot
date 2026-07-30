@@ -33,6 +33,7 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const { createLogForwarder, attachConsole } = require('./lib/log-forwarder');
+const { reconcilePlan, backfillApprovers, approvedCountFor } = require('./lib/contributions');
 require('dotenv').config();
 
 // Single source of truth: version + changelog are parsed from CHANGELOG.md
@@ -670,8 +671,71 @@ function canMemberDo(member, permission) {
 }
 
 function getApprovedCountForUser(userId) {
+    return approvedCountFor(loadSuggestions(), userId);
+}
+
+// ── Contributor role reconciliation ─────────────────────────────────────────
+// The ledger is the source of truth for what a member earned; Discord roles are
+// what actually grant permissions. Those drifted badly (all historical
+// approvals were script-written and never triggered a tier upgrade, so earned
+// roles were never granted). This recomputes the truth and re-applies it, so a
+// missed grant self-heals instead of being lost forever.
+async function reconcileContributorRoles(guild, { dryRun = false, reason = 'scheduled' } = {}) {
+    if (!guild) return { granted: [], checked: 0 };
     const suggestions = loadSuggestions();
-    return suggestions.filter(s => s.status === 'approved' && s.userId === userId).length;
+
+    // Resolve members up front so the plan is computed from real role state.
+    const held = new Map();
+    for (const s of suggestions) {
+        if (s.status !== 'approved' || !s.userId || held.has(s.userId)) continue;
+        const member = await guild.members.fetch(s.userId).catch(() => null);
+        held.set(s.userId, member ? { member, names: member.roles.cache.map(r => r.name) } : null);
+    }
+
+    const plan = reconcilePlan(suggestions, CONFIG.roleTiers, (uid) => (held.get(uid) ? held.get(uid).names : null));
+    const granted = [];
+
+    for (const entry of plan) {
+        const rec = held.get(entry.userId);
+        if (!rec) continue;
+        for (const roleName of entry.missing) {
+            const role = guild.roles.cache.find(r => r.name === roleName);
+            if (!role) {
+                console.error(`❌ Reconcile: role "${roleName}" not found in guild — cannot grant to ${entry.by}`);
+                continue;
+            }
+            if (dryRun) { granted.push({ ...entry, roleName, dryRun: true }); continue; }
+            try {
+                await rec.member.roles.add(role);
+                granted.push({ ...entry, roleName });
+                console.log(`✅ Reconcile: granted ${roleName} to ${entry.by} (${entry.count} approved)`);
+            } catch (e) {
+                // Loud, not silent — a failed grant is exactly how this bug hid.
+                console.error(`❌ Reconcile: FAILED to grant ${roleName} to ${entry.by}: ${e.message}`);
+            }
+        }
+    }
+
+    if (granted.length > 0) {
+        const lines = granted.map(g => `• **${g.by}** → ${g.roleName} (${g.count} approved)`).join('\n');
+        await sendToAdmin({
+            content: `🔧 **Contributor roles reconciled** (${reason})${dryRun ? ' — DRY RUN' : ''}\n${lines}`,
+        });
+    }
+    return { granted, checked: held.size };
+}
+
+// One-time (idempotent) attribution backfill so every approval records who
+// approved it, not just who contributed it.
+function backfillApproverAttribution() {
+    const suggestions = loadSuggestions();
+    const ownerId = process.env.OWNER_ID || '';
+    const { records, changed } = backfillApprovers(suggestions, { ownerId, ownerName: 'XYIAN' });
+    if (changed > 0) {
+        saveSuggestions(records);
+        console.log(`📝 Backfilled approver attribution on ${changed} record(s)`);
+    }
+    return changed;
 }
 
 async function checkTierUpgrade(guild, userId, username) {
@@ -711,8 +775,17 @@ async function checkTierUpgrade(guild, userId, username) {
         if (tier.threshold === 0) continue;
         if (count >= tier.threshold && !member.roles.cache.some(r => r.name === tier.name)) {
             const role = guild.roles.cache.find(r => r.name === tier.name);
-            if (!role) continue;
-            await member.roles.add(role);
+            if (!role) {
+                // Loud: a missing role silently dropped earned ranks for months.
+                console.error(`❌ Tier upgrade: role "${tier.name}" not found in guild — ${username} (${userId}) earned it with ${count} approved`);
+                continue;
+            }
+            try {
+                await member.roles.add(role);
+            } catch (e) {
+                console.error(`❌ Tier upgrade: FAILED to grant ${tier.name} to ${username} (${userId}): ${e.message} — will retry on next reconcile`);
+                continue;
+            }
 
             const msgs = tierMessages[tier.name];
             if (msgs) {
@@ -1920,6 +1993,45 @@ client.on('messageCreate', async (message) => {
                 return message.reply('Usage: `!ai status` · `!ai on` · `!ai off` (owner only)');
             }
 
+            case 'reconcile': {
+                // Moderator+: re-apply earned contributor roles from the ledger.
+                // `!reconcile dry` previews without changing anything.
+                if (!isModerator(message.member)) {
+                    return message.reply('❌ Moderators only.');
+                }
+                if (!message.guild) return message.reply('❌ Run this in the server.');
+                const dryRun = /^\s*dry/i.test(argText || '');
+                const { granted, checked } = await reconcileContributorRoles(message.guild, {
+                    dryRun, reason: `manual by ${message.author.username}`,
+                });
+                if (granted.length === 0) {
+                    return message.reply(`✅ All ${checked} contributor(s) already hold their earned roles — nothing to fix.`);
+                }
+                const lines = granted.map(g => `• ${g.by} → **${g.roleName}** (${g.count} approved)`).join('\n');
+                return message.reply(
+                    `${dryRun ? '🔍 **Dry run** — would grant:' : '🔧 **Granted:**'}\n${lines}` +
+                    `\n\n_Checked ${checked} contributor(s)._`
+                );
+            }
+
+            case 'contributions': {
+                // Anyone: show the contribution ledger with approver attribution.
+                const suggestions = loadSuggestions();
+                const totals = require('./lib/contributions').contributorTotals(suggestions);
+                if (totals.length === 0) return message.reply('No approved contributions yet.');
+                const lines = totals.slice(0, 15).map((t, i) => {
+                    const tier = [...CONFIG.roleTiers].reverse().find(x => t.count >= x.threshold);
+                    return `**${i + 1}.** ${t.by} — ${t.count} approved${tier ? ` · _${tier.name}_` : ''}`;
+                });
+                const embed = new EmbedBuilder()
+                    .setTitle('🏆 Community Contributors')
+                    .setDescription(lines.join('\n'))
+                    .setColor(0x00ae86)
+                    .setFooter({ text: `${suggestions.filter(s => s.status === 'approved').length} approved contributions total` })
+                    .setTimestamp();
+                return message.reply({ embeds: [embed] });
+            }
+
             case 'post-changelog':
             case 'postchangelog': {
                 // Owner-only manual changelog post. Used to backfill releases
@@ -2060,6 +2172,10 @@ client.on('messageCreate', async (message) => {
                 target.status = 'approved';
                 target.reviewed_by = message.author.username;
                 target.reviewed_at = new Date().toISOString();
+                // Durable approver attribution (id + name), matching the
+                // backfill so every approval records contributor AND approver.
+                target.approvedBy = message.author.id;
+                target.approvedByName = message.author.username;
                 target.approved_category = finalCategory;
                 target.approved_locator = result.locator;
                 if (args.overrideText) {
@@ -2072,9 +2188,13 @@ client.on('messageCreate', async (message) => {
                 saveKnowledge();
                 saveSuggestions(suggestions);
 
-                // Check if the contributor earned a tier upgrade
+                // Check if the contributor earned a tier upgrade. Reconcile
+                // afterwards as a safety net: if the grant above failed for any
+                // reason, this catches it instead of losing the rank silently.
                 if (target.userId && message.guild) {
                     await checkTierUpgrade(message.guild, target.userId, target.by);
+                    reconcileContributorRoles(message.guild, { reason: 'post-approval' })
+                        .catch(e => console.error(`❌ Post-approval reconcile failed: ${e.message}`));
                 }
 
                 // DM the contributor
@@ -2483,6 +2603,23 @@ client.once('ready', async () => {
     setupDailyResetMessaging();
     setupDailyMessaging();
     setupWeeklyKnowledgeReport();
+
+    // Self-heal contributor ranks: backfill approver attribution, then make
+    // sure every earned role is actually held. Runs at boot and daily, so a
+    // missed grant can never become permanent again.
+    try {
+        backfillApproverAttribution();
+        const guild = client.guilds.cache.first();
+        if (guild) {
+            await reconcileContributorRoles(guild, { reason: 'startup' });
+            setInterval(() => {
+                const g = client.guilds.cache.first();
+                if (g) reconcileContributorRoles(g, { reason: 'daily' }).catch(e => console.error(`❌ Daily reconcile failed: ${e.message}`));
+            }, 24 * 60 * 60 * 1000);
+        }
+    } catch (e) {
+        console.error(`❌ Startup reconciliation failed: ${e.message}`);
+    }
 });
 
 // ── Health check (Railway) ──────────────────────────────────────────────────
