@@ -1731,6 +1731,7 @@ client.on('messageCreate', async (message) => {
                         '`!ping` — Bot status\n' +
                         '`!help` / `!menu` — This message\n' +
                         '`!contributors` — Leaderboard of top contributors\n' +
+                        '`!contributions` — Approved contributions + each member\'s tier\n' +
                         '`!rank` / `!level` — Check your activity rank and progress\n' +
                         '`!leaderboard` / `!lb` — Top 10 strategy channel contributors\n\n' +
                         '**🤖 AI Enabled** (in **#arch-ai**):\n' +
@@ -1751,7 +1752,8 @@ client.on('messageCreate', async (message) => {
                         '`!edit <#> <text>` — Fix typos / clean OCR errors before approval\n' +
                         '`!approve <#> [category] [key] [| override]` — Approve into the right knowledge category\n' +
                         '`!reject <#> [reason]` — Reject a suggestion\n' +
-                        '`!grant @user` — Manually assign a role\n\n' +
+                        '`!grant @user` — Manually assign a role\n' +
+                        '`!reconcile [dry]` — Re-apply earned contributor roles from the ledger\n\n' +
                         '**XYIAN OFFICIAL / Admin:**\n' +
                         '`!setupreaction` — Post a reaction-role message\n' +
                         '`!recruit` — Send guild recruitment now\n' +
@@ -2587,7 +2589,9 @@ process.on('unhandledRejection', (e) => {
 
 // ── Ready ───────────────────────────────────────────────────────────────────
 
-client.once('ready', async () => {
+// 'clientReady' replaced 'ready' in discord.js v14.16 (the old name warns on
+// every boot and is removed in v15).
+client.once('clientReady', async () => {
     console.log(`✅ Logged in as ${client.user.tag} (v${BOT_VERSION})`);
     console.log(`📊 ${countFacts()} facts loaded from knowledge.json`);
 

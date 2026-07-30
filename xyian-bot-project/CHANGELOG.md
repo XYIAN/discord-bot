@@ -4,6 +4,11 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.15.1] - 2026-07-30
+
+- 🔇 Silenced the `ready` event deprecation warning that fired on every boot (switched to `clientReady`, required for discord.js v15) — it was cluttering #debug-logs on each deploy.
+- 📖 `!reconcile` and `!contributions` are now listed in `!help`.
+
 ## [3.15.0] - 2026-07-30
 
 ### Archero 2 v1.1.7 patch notes + credited missing contributions
