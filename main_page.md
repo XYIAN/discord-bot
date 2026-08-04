@@ -1,0 +1,62 @@
+# Main Page (Home Screen)
+
+The main screen the player lands on. Acts as a hub for all major game features.
+
+## Top header bar (left to right)
+
+1. **Player avatar** — tap to open profile
+2. **Player level + name** — e.g., "Lv 60, Fauks"
+3. **Energy** — current/max with regen timer (e.g., 24/80, 05:42). Base max is 20 for new players; max raises via Privilege Cards and other buffs.
+4. **Power Level** — total combat power (e.g., 8.5M). **Gold arrow/chevron badge** icon.
+5. **Gold** — soft currency (e.g., 1.59M). Coin icon.
+6. **Gems** — green gem currency (e.g., 20.07K). NOT the payment currency for Privilege Cards or packs.
+
+> Note: Power Level (gold arrow/chevron) and Aurocite (pink triangle gem, only seen on shop/pack screens) are different currencies that should not be confused.
+
+## Left side panel (top to bottom)
+
+- **Sky Tower progression hint banner** — example text: "Clear Sky Tower Floor 1500 in order to access the next level after the current level is passed." This is a gating mechanism — Sky Tower clearance gates campaign progression.
+- **Privilege Card** icon (badge shows count of unclaimed daily rewards) — opens the Privilege Card subscriptions screen. See [privilege_cards.md](privilege_cards.md).
+- **Great Value** icon — opens the Daily Rewards / Great Value pack shop. See [daily_rewards.md](daily_rewards.md).
+- **Active deal timer** — countdown to a rotating limited-time deal. Most are not considered worthwhile to most players.
+
+## Right side panel (top to bottom)
+
+- **Rankings** — leaderboards
+- **Task Center** — daily/weekly tasks
+- **Friends** — friends list and social
+- **Island Treasure** — feature TBD
+- **Eternal Lode** — temporary event
+- **Contract Mystling** — temporary event; Mystlings are collectibles that grant additional buffs (see Camp section)
+
+## Center — Current campaign stage
+
+- Stage name (e.g., "Poison Realm")
+- "Best: X/Y" — your highest wave/room reached out of total in the stage (X = waves cleared, Y = total waves in stage)
+
+## Below center — Quick action row
+
+- **Hunt** — quick-reward alternative to farming stages
+- **Reach (e.g., 123-50)** — current campaign progress; tapping opens clearance rewards (Reach Rewards)
+- **Guild** — guild features (see [guild.md](guild.md))
+
+## Action bar (bottom)
+
+- **Camp** (left character) — opens the Mystlings camp; manages collectibles that grant buffs
+- **Start** button (large yellow). The "×5" shown next to it is the **energy cost per attempt** (5 energy per stage attempt), NOT a multi-run multiplier.
+- Key/arrow icon — TBD
+- **Umbral Tempest** (right character) — opens the Umbral Tempest event (deferred — large event with significant detail)
+
+## Chat strip
+
+A scrolling global chat line above the bottom nav.
+
+## Bottom navigation (5 tabs, left to right)
+
+1. **Shop**
+2. **Gear**
+3. **Campaign** (default selected)
+4. **Collectible**
+5. **Events**
+
+Notification badges appear on tabs with unclaimed rewards or new content.
