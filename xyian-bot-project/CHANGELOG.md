@@ -4,6 +4,29 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.16.0] - 2026-08-03
+
+### Moderation commands for admins and moderators
+
+Moderators and admins had no way to manage roles or remove people through the bot at all.
+
+- `!role @user add|remove <role>` — add or remove a role (Moderator+)
+- `!timeout @user <30m|2h|7d> [reason]` — temporarily mute (Moderator+)
+- `!untimeout @user [reason]` — lift a timeout early (Moderator+)
+- `!kick @user [reason]` — remove a member, they can rejoin (**Admin only**)
+- `!ban @user [reason]` — ban a member (**Admin only**)
+- `!unban <user id> [reason]` — lift a ban (**Admin only**)
+
+Kick, ban and unban are admin-only on purpose: timeouts are reversible and bans are not, so a compromised moderator account cannot empty the guild.
+
+Timeouts, kicks and bans DM the member with the reason (kick/ban DM *before* removal, since afterwards the bot shares no server with them). Every action is posted to the admin channel so staff can see what each other did.
+
+The bot refuses anything Discord would reject — self-moderation, the server owner, bots, or a target above the bot or above you — with a sentence explaining why instead of an opaque failure.
+
+Permission rules live in `lib/moderation.js`, pure and covered by 23 tests (`node test/moderation.test.js`). Ported from the Tempest bot, where the same rules are verified live in Discord.
+
+⚠️ `!kick`, `!ban` and `!unban` are shipped but **not yet tested live** on either bot. The rest was verified end to end on Tempest.
+
 ## [3.15.1] - 2026-07-30
 
 - 🔇 Silenced the `ready` event deprecation warning that fired on every boot (switched to `clientReady`, required for discord.js v15) — it was cluttering #debug-logs on each deploy.

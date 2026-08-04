@@ -71,6 +71,7 @@ Private to **XYIAN OFFICIAL**, **XYIAN Guild Verified**, **Admin**, and the bot 
 | boss-strategy | `1487167727608266863` |
 | shackled-jungle | `1487167728556052752` |
 | rune-gear-strategy-and-presets | `1487167729910677564` |
+| leadership-roundtable | `1498069222801277038` |
 
 ### Strategy category (`Strategy`)
 

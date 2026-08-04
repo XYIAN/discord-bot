@@ -34,6 +34,7 @@ const path = require('path');
 const express = require('express');
 const { createLogForwarder, attachConsole } = require('./lib/log-forwarder');
 const { reconcilePlan, backfillApprovers, approvedCountFor, mergeLedgers, mergeCustomFacts } = require('./lib/contributions');
+const modRules = require('./lib/moderation');
 require('dotenv').config();
 
 // Single source of truth: version + changelog are parsed from CHANGELOG.md
@@ -654,6 +655,73 @@ function hasVisionAccess(member) {
     return member.roles.cache.some(r =>
         CONFIG.visionTrustedRoleNames.includes(r.name)
     );
+}
+
+// ── Moderation ──────────────────────────────────────────────────────────────
+// Permission rules live in lib/moderation.js (pure + unit tested); everything
+// here is Discord plumbing. Ported from the Tempest bot so both stay in step.
+
+function modActorContext(member) {
+    return {
+        isOwner: Boolean(isOwner(member)),
+        isAdmin: isAdmin(member),
+        isModerator: isModerator(member),
+    };
+}
+
+/**
+ * Shared gate: may this member run the action, and may they act on this target?
+ * Returns an error string to reply with, or null when it is allowed.
+ */
+function modGuard(message, action, targetMember) {
+    const actor = modActorContext(message.member);
+    if (!modRules.canRunAction(actor, action)) {
+        return actor.isModerator && !actor.isAdmin
+            ? '❌ That one is admin-only — moderators can manage roles and timeouts.'
+            : '❌ You do not have permission to do that.';
+    }
+    if (!targetMember) return null;
+    const check = modRules.canTargetMember({
+        actorId: message.author.id,
+        targetId: targetMember.id,
+        ownerId: process.env.OWNER_ID,
+        guildOwnerId: message.guild.ownerId,
+        actorTopRole: message.member.roles.highest.position,
+        targetTopRole: targetMember.roles.highest.position,
+        botTopRole: message.guild.members.me ? message.guild.members.me.roles.highest.position : 0,
+        targetIsBot: targetMember.user.bot,
+        actorIsOwner: actor.isOwner,
+    });
+    return check.ok ? null : `❌ ${check.reason}`;
+}
+
+/** Every moderation action is announced so staff are accountable to staff. */
+async function logModAction({ action, actor, target, detail, reason }) {
+    const lines = [
+        `🛡️ **${action}**`,
+        `**Target:** ${target}`,
+        `**By:** ${actor}`,
+        detail ? `**Details:** ${detail}` : null,
+        `**Reason:** ${reason}`,
+    ].filter(Boolean);
+    try { await sendToAdmin(lines.join('\n')); } catch (e) {
+        console.error(`❌ Failed to log moderation action: ${e.message}`);
+    }
+}
+
+/** Resolve `!cmd @user reason` into a member + reason, replying on failure. */
+async function resolveModTarget(message, argText) {
+    const { userId, rest } = modRules.parseTarget(argText);
+    if (!userId) {
+        await message.reply('❌ Mention a member or give their user ID.');
+        return null;
+    }
+    const target = await message.guild.members.fetch(userId).catch(() => null);
+    if (!target) {
+        await message.reply('❌ That member is not in this server.');
+        return null;
+    }
+    return { target, reason: rest || 'No reason given' };
 }
 
 function getMemberTier(member) {
@@ -1753,8 +1821,14 @@ client.on('messageCreate', async (message) => {
                         '`!approve <#> [category] [key] [| override]` — Approve into the right knowledge category\n' +
                         '`!reject <#> [reason]` — Reject a suggestion\n' +
                         '`!grant @user` — Manually assign a role\n' +
-                        '`!reconcile [dry]` — Re-apply earned contributor roles from the ledger\n\n' +
+                        '`!reconcile [dry]` — Re-apply earned contributor roles from the ledger\n' +
+                        '`!role @user add|remove <role>` — Add or remove a role\n' +
+                        '`!timeout @user <30m|2h|7d> [reason]` — Temporarily mute a member\n' +
+                        '`!untimeout @user [reason]` — Lift a timeout early\n\n' +
                         '**XYIAN OFFICIAL / Admin:**\n' +
+                        '`!kick @user [reason]` — Remove a member (they can rejoin)\n' +
+                        '`!ban @user [reason]` — Ban a member\n' +
+                        '`!unban <user id> [reason]` — Lift a ban\n' +
                         '`!setupreaction` — Post a reaction-role message\n' +
                         '`!recruit` — Send guild recruitment now\n' +
                         '`!post-guild-requirements` — Post guild requirements embed\n' +
@@ -2042,6 +2116,139 @@ client.on('messageCreate', async (message) => {
                     return message.reply('🤖 AI Q&A is now **off**. `#arch-ai` will reply with an offline notice. Re-enable with `!ai on`.');
                 }
                 return message.reply('Usage: `!ai status` · `!ai on` · `!ai off` (owner only)');
+            }
+
+            case 'role': {
+                // Moderator+: !role @user add|remove <role name>
+                if (!message.guild) return message.reply('❌ Run this in the server.');
+                const resolved = await resolveModTarget(message, argText);
+                if (!resolved) return;
+                const denied = modGuard(message, 'role', resolved.target);
+                if (denied) return message.reply(denied);
+
+                const m = /^(add|remove)\s+([\s\S]+)$/i.exec(resolved.reason);
+                if (!m) return message.reply('❌ Usage: `!role @user add <role name>` or `!role @user remove <role name>`');
+                const adding = m[1].toLowerCase() === 'add';
+                const roleName = m[2].trim();
+                const role = message.guild.roles.cache.find(r => r.name.toLowerCase() === roleName.toLowerCase());
+                if (!role) return message.reply(`❌ No role called "${roleName}".`);
+
+                // A role at or above the bot cannot be assigned — same Discord rule.
+                const botTop = message.guild.members.me ? message.guild.members.me.roles.highest.position : 0;
+                if (role.position >= botTop) {
+                    return message.reply(`❌ **${role.name}** sits above the bot in the role list, so I can't assign it. Move my role higher.`);
+                }
+                const auditReason = `by ${message.author.tag}`;
+                if (adding) await resolved.target.roles.add(role, auditReason);
+                else await resolved.target.roles.remove(role, auditReason);
+                await logModAction({
+                    action: adding ? 'Role added' : 'Role removed',
+                    actor: `<@${message.author.id}>`, target: `<@${resolved.target.id}>`,
+                    detail: role.name, reason: 'No reason given',
+                });
+                return message.reply(`✅ ${adding ? 'Added' : 'Removed'} **${role.name}** ${adding ? 'to' : 'from'} ${resolved.target.user.tag}.`);
+            }
+
+            case 'timeout': {
+                // Moderator+: !timeout @user 30m being disruptive
+                if (!message.guild) return message.reply('❌ Run this in the server.');
+                const resolved = await resolveModTarget(message, argText);
+                if (!resolved) return;
+                const denied = modGuard(message, 'timeout', resolved.target);
+                if (denied) return message.reply(denied);
+
+                const parts = resolved.reason.split(/\s+/);
+                const parsed = modRules.parseDuration(parts[0] || '');
+                if (!parsed.ok) return message.reply(`❌ ${parsed.reason}`);
+                const why = parts.slice(1).join(' ').trim() || 'No reason given';
+
+                await resolved.target.timeout(parsed.minutes * 60000, `${why} — by ${message.author.tag}`);
+                // Public action AND a DM — additive, never either/or.
+                try {
+                    await resolved.target.send(
+                        `⏳ You have been timed out in **${message.guild.name}** for ${parsed.minutes} minute(s).\n\n**Reason:** ${why}`);
+                } catch { /* DMs closed — not a failure */ }
+                await logModAction({
+                    action: 'Timeout', actor: `<@${message.author.id}>`,
+                    target: `<@${resolved.target.id}>`, detail: `${parsed.minutes} minute(s)`, reason: why,
+                });
+                return message.reply(`✅ Timed out ${resolved.target.user.tag} for ${parsed.minutes} minute(s).`);
+            }
+
+            case 'untimeout': {
+                if (!message.guild) return message.reply('❌ Run this in the server.');
+                const resolved = await resolveModTarget(message, argText);
+                if (!resolved) return;
+                const denied = modGuard(message, 'untimeout', resolved.target);
+                if (denied) return message.reply(denied);
+                await resolved.target.timeout(null, `${resolved.reason} — by ${message.author.tag}`);
+                await logModAction({
+                    action: 'Timeout lifted', actor: `<@${message.author.id}>`,
+                    target: `<@${resolved.target.id}>`, reason: resolved.reason,
+                });
+                return message.reply(`✅ Lifted the timeout on ${resolved.target.user.tag}.`);
+            }
+
+            case 'kick': {
+                // ADMIN ONLY — enforced in modGuard via lib/moderation.
+                if (!message.guild) return message.reply('❌ Run this in the server.');
+                const resolved = await resolveModTarget(message, argText);
+                if (!resolved) return;
+                const denied = modGuard(message, 'kick', resolved.target);
+                if (denied) return message.reply(denied);
+                // DM BEFORE removing: afterwards the bot shares no guild with
+                // them and the DM silently fails.
+                try {
+                    await resolved.target.send(
+                        `👋 You have been removed from **${message.guild.name}**.\n\n**Reason:** ${resolved.reason}\n\nYou can rejoin with a new invite.`);
+                } catch { /* DMs closed */ }
+                await resolved.target.kick(`${resolved.reason} — by ${message.author.tag}`);
+                await logModAction({
+                    action: 'Kick', actor: `<@${message.author.id}>`,
+                    target: `${resolved.target.user.tag} (\`${resolved.target.id}\`)`, reason: resolved.reason,
+                });
+                return message.reply(`✅ Kicked ${resolved.target.user.tag}.`);
+            }
+
+            case 'ban': {
+                // ADMIN ONLY.
+                if (!message.guild) return message.reply('❌ Run this in the server.');
+                const resolved = await resolveModTarget(message, argText);
+                if (!resolved) return;
+                const denied = modGuard(message, 'ban', resolved.target);
+                if (denied) return message.reply(denied);
+                const tag = resolved.target.user.tag;
+                const id = resolved.target.id;
+                try {
+                    await resolved.target.send(
+                        `🔨 You have been banned from **${message.guild.name}**.\n\n**Reason:** ${resolved.reason}`);
+                } catch { /* DMs closed */ }
+                await message.guild.bans.create(id, { reason: `${resolved.reason} — by ${message.author.tag}` });
+                await logModAction({
+                    action: 'Ban', actor: `<@${message.author.id}>`,
+                    target: `${tag} (\`${id}\`)`, reason: resolved.reason,
+                });
+                return message.reply(`✅ Banned ${tag}.`);
+            }
+
+            case 'unban': {
+                // ADMIN ONLY. Takes an id — the user is not in the guild.
+                if (!message.guild) return message.reply('❌ Run this in the server.');
+                const denied = modGuard(message, 'unban', null);
+                if (denied) return message.reply(denied);
+                const { userId, rest } = modRules.parseTarget(argText);
+                if (!userId) return message.reply('❌ Usage: `!unban <user id> [reason]`');
+                const why = rest || 'No reason given';
+                try {
+                    await message.guild.bans.remove(userId, `${why} — by ${message.author.tag}`);
+                } catch {
+                    return message.reply('❌ Could not unban that ID — check it is correct and that they are actually banned.');
+                }
+                await logModAction({
+                    action: 'Unban', actor: `<@${message.author.id}>`,
+                    target: `\`${userId}\``, reason: why,
+                });
+                return message.reply(`✅ Unbanned \`${userId}\`.`);
             }
 
             case 'reconcile': {
