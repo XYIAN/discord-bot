@@ -4,6 +4,18 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.18.1] - 2026-08-04
+
+### Fix: release notes written as prose never reached #changelog
+
+- v3.17.0 and v3.18.0 deployed correctly but posted nothing to #changelog. The parser only ever recognised `- ` bullet lines, and both entries were written as prose paragraphs, so they parsed to zero lines.
+- The failure was silent in the worst way: the deploy log printed `⏭️ no changelog entries`, which reads like a statement of fact rather than a parse failure. It took reading the deploy log line by line to notice v3.16.0 had said `📋 posted to #changelog` and the two after it had not.
+- Parsing moved out of `bot.js` into `lib/changelog.js` with 15 tests, including one that walks the real CHANGELOG.md and fails if *any* release would post nothing — so this cannot regress quietly again.
+- Bullet entries behave exactly as before: bullets still win when present, so an entry that pairs a paragraph of preamble with a list still posts just the list. Prose is the fallback, not the new default.
+- Prose posts as paragraphs separated by blank lines rather than with a `•` stuck in front of each one, and Discord renders the `###` and `**bold**` markup.
+- `!post-changelog <version>` can now re-post the two releases that were missed.
+- `npm test` now discovers `test/*.test.js` instead of chaining them by name. The new test file was written, passed locally, and was not being run at all — the same silent-omission failure as the bug it was testing.
+
 ## [3.18.0] - 2026-08-04
 
 ### Community knowledge import, slice 5 — five more topics, nothing overwritten

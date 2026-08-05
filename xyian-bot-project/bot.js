@@ -35,50 +35,34 @@ const express = require('express');
 const { createLogForwarder, attachConsole } = require('./lib/log-forwarder');
 const { reconcilePlan, backfillApprovers, approvedCountFor, mergeLedgers, mergeCustomFacts, mergeSeedTopics } = require('./lib/contributions');
 const modRules = require('./lib/moderation');
+const changelog = require('./lib/changelog');
 require('dotenv').config();
 
-// Single source of truth: version + changelog are parsed from CHANGELOG.md
+// Single source of truth: version + changelog are parsed from CHANGELOG.md.
+// The parsing itself lives in lib/changelog.js so it can be tested — it
+// silently returned nothing for two prose-written releases and the only symptom
+// was a "no changelog entries" line in the deploy log.
+function readChangelogFile() {
+    return fs.readFileSync(path.join(__dirname, 'CHANGELOG.md'), 'utf-8');
+}
+
 function parseChangelog() {
     try {
-        const md = fs.readFileSync(path.join(__dirname, 'CHANGELOG.md'), 'utf-8');
-        const versionMatch = md.match(/^## \[(\d+\.\d+\.\d+)\]/m);
-        const version = versionMatch ? versionMatch[1] : '0.0.0';
-
-        const firstEntry = md.indexOf('## [');
-        const secondEntry = md.indexOf('## [', firstEntry + 1);
-        const section = secondEntry > -1
-            ? md.slice(firstEntry, secondEntry)
-            : md.slice(firstEntry);
-
-        const lines = section
-            .split('\n')
-            .filter(l => /^- /.test(l.trim()))
-            .map(l => l.trim().replace(/^- /, ''));
-
-        return { version, lines };
+        return changelog.parseChangelog(readChangelogFile());
     } catch (e) {
         console.error('⚠️  Could not parse CHANGELOG.md:', e.message);
-        return { version: '0.0.0', lines: [] };
+        return { version: '0.0.0', lines: [], style: 'prose' };
     }
 }
 
-// Look up bullet lines for a specific historical version. Used by
+// Look up the release notes for a specific historical version. Used by
 // !post-changelog <version> to re-post any release whose original deploy
 // failed to get its embed out (e.g. v3.12.0 whose description blew the
-// 4096-char limit before chunking was added).
+// 4096-char limit before chunking was added, or v3.17.0/v3.18.0 which parsed
+// to nothing at all).
 function getChangelogLinesForVersion(targetVersion) {
     try {
-        const md = fs.readFileSync(path.join(__dirname, 'CHANGELOG.md'), 'utf-8');
-        const startMarker = `## [${targetVersion}]`;
-        const startIdx = md.indexOf(startMarker);
-        if (startIdx === -1) return null;
-        const afterStart = md.slice(startIdx);
-        const nextEntry = afterStart.indexOf('\n## [');
-        const section = nextEntry > -1 ? afterStart.slice(0, nextEntry) : afterStart;
-        return section
-            .split('\n')
-            .filter(l => /^- /.test(l.trim()))
-            .map(l => l.trim().replace(/^- /, ''));
+        return changelog.linesForVersion(readChangelogFile(), targetVersion);
     } catch {
         return null;
     }
@@ -89,20 +73,25 @@ function getChangelogLinesForVersion(targetVersion) {
 // split mid-bullet, even if it means a chunk is shorter than the limit.
 // Discord allows up to 10 embeds per message; if a release somehow exceeds
 // that, postChangelogToChannel splits across multiple sends.
-function buildChangelogEmbeds(version, lines) {
+function buildChangelogEmbeds(version, lines, style) {
     const HARD_LIMIT = 3900; // Headroom under 4096 for safety + embed rendering.
-    const bullets = lines.map(l => `• ${l}`);
+    // Prose entries are paragraphs, not list items — a bullet in front of three
+    // sentences reads badly, and they need a blank line between them to be
+    // legible. Discord renders the `###` and `**bold**` markup as-is.
+    const isProse = style === 'prose';
+    const bullets = isProse ? lines.slice() : lines.map(l => `• ${l}`);
+    const joiner = isProse ? '\n\n' : '\n';
     const chunks = [];
     let current = '';
     for (const b of bullets) {
-        if (current && current.length + b.length + 1 > HARD_LIMIT) {
+        if (current && current.length + b.length + joiner.length > HARD_LIMIT) {
             chunks.push(current);
             current = '';
         }
         // If a single bullet itself is over the limit, hard-truncate it so we
         // don't drop the post entirely. Vanishingly rare in practice.
         const safeBullet = b.length > HARD_LIMIT ? b.slice(0, HARD_LIMIT - 3) + '...' : b;
-        current += (current ? '\n' : '') + safeBullet;
+        current += (current ? joiner : '') + safeBullet;
     }
     if (current) chunks.push(current);
     if (chunks.length === 0) chunks.push('• (no entries)');
@@ -122,8 +111,8 @@ function buildChangelogEmbeds(version, lines) {
 
 // Post a versioned changelog entry to a channel, splitting across messages
 // if it produces more than Discord's 10-embed-per-message ceiling.
-async function postChangelogToChannel(channel, version, lines) {
-    const embeds = buildChangelogEmbeds(version, lines);
+async function postChangelogToChannel(channel, version, lines, style) {
+    const embeds = buildChangelogEmbeds(version, lines, style);
     const MAX_PER_MSG = 10;
     for (let i = 0; i < embeds.length; i += MAX_PER_MSG) {
         await channel.send({ embeds: embeds.slice(i, i + MAX_PER_MSG) });
@@ -131,7 +120,7 @@ async function postChangelogToChannel(channel, version, lines) {
     return embeds.length;
 }
 
-const { version: BOT_VERSION, lines: BOT_CHANGELOG } = parseChangelog();
+const { version: BOT_VERSION, lines: BOT_CHANGELOG, style: BOT_CHANGELOG_STYLE } = parseChangelog();
 
 // ── Config ──────────────────────────────────────────────────────────────────
 
@@ -2317,15 +2306,16 @@ client.on('messageCreate', async (message) => {
                 if (!/^\d+\.\d+\.\d+$/.test(targetVersion)) {
                     return message.reply('Usage: `!post-changelog [x.y.z]` — version must be `major.minor.patch`. Omit to post the current version.');
                 }
-                const lines = getChangelogLinesForVersion(targetVersion);
-                if (!lines || lines.length === 0) {
+                const entry = getChangelogLinesForVersion(targetVersion);
+                const lines = entry ? entry.lines : [];
+                if (!entry || lines.length === 0) {
                     return message.reply(`❌ No CHANGELOG entries found for v${targetVersion}.`);
                 }
                 try {
                     const channel = await client.channels.fetch(CONFIG.channels.changelog);
-                    const embedCount = await postChangelogToChannel(channel, targetVersion, lines);
+                    const embedCount = await postChangelogToChannel(channel, targetVersion, lines, entry.style);
                     await sendToAdmin({
-                        content: `📋 **Manual changelog post** by ${message.author.username}: v${targetVersion} (${lines.length} bullet${lines.length === 1 ? '' : 's'}, ${embedCount} embed${embedCount === 1 ? '' : 's'}).`,
+                        content: `📋 **Manual changelog post** by ${message.author.username}: v${targetVersion} (${lines.length} ${entry.style === 'prose' ? 'paragraph' : 'bullet'}${lines.length === 1 ? '' : 's'}, ${embedCount} embed${embedCount === 1 ? '' : 's'}).`,
                     });
                     return message.reply(`✅ Posted v${targetVersion} to <#${CONFIG.channels.changelog}> (${embedCount} embed${embedCount === 1 ? '' : 's'}).`);
                 } catch (e) {
@@ -2845,7 +2835,7 @@ client.once('clientReady', async () => {
                     changelogStatus = `⏭️ v${BOT_VERSION} already posted — skipped`;
                     console.log(`📋 Changelog v${BOT_VERSION} already posted — skipping`);
                 } else {
-                    await postChangelogToChannel(changelogChannel, BOT_VERSION, BOT_CHANGELOG);
+                    await postChangelogToChannel(changelogChannel, BOT_VERSION, BOT_CHANGELOG, BOT_CHANGELOG_STYLE);
                     changelogStatus = `📋 v${BOT_VERSION} posted to #changelog`;
                     console.log(changelogStatus);
                 }
