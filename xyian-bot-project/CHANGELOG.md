@@ -4,6 +4,16 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.22.2] - 2026-08-04
+
+### The cost figure was never actually checked for being correct
+
+Last of the confirmed code-review findings. `summarise().costUsd` — the one number a moderator reads off `!usage` — was only ever asserted to be non-null. `estimateCost` was well covered, but nothing verified that the per-model fold summing it produced the right dollar amount, so a refactor could have shipped a wrong figure with every test green.
+
+Now asserted arithmetically: uncached, half-cached, across models and across days, plus the unpriced-model string that `formatSummary` renders. Verified these can fail by deliberately skewing the rate by 10% — five assertions went red.
+
+203 tests across 10 files.
+
 ## [3.22.1] - 2026-08-04
 
 ### An `## [Unreleased]` section would have hijacked the release notes

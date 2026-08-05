@@ -175,6 +175,31 @@ test('totals a window and computes the average prompt size', () => {
     assert.strictEqual(sum.avgPromptTokens, 25000);
     assert.strictEqual(sum.dayCount, 2);
 });
+test('costUsd is arithmetically correct, not merely non-null', () => {
+    // The one figure a moderator actually reads was never checked for VALUE —
+    // only for whether it was null. A refactor of the per-model fold could have
+    // shipped a wrong dollar amount with every test still green.
+    // 1,000,000 prompt @ $0.15/M + 1,000,000 completion @ $0.60/M = $0.75
+    let s = recordUsage(emptyState(), call('2026-08-04', 1e6, 1e6));
+    assert.ok(Math.abs(summarise(s, {}).costUsd - 0.75) < 1e-9, `got ${summarise(s, {}).costUsd}`);
+
+    // Half the prompt cached: 500k @ $0.15/M + 500k @ $0.075/M = $0.1125
+    s = recordUsage(emptyState(), {
+        dayKey: '2026-08-04', model: 'gpt-4o-mini',
+        usage: { prompt_tokens: 1e6, completion_tokens: 0, prompt_tokens_details: { cached_tokens: 5e5 } },
+    });
+    assert.ok(Math.abs(summarise(s, {}).costUsd - 0.1125) < 1e-9, `got ${summarise(s, {}).costUsd}`);
+});
+test('costUsd sums across models and across days', () => {
+    let s = recordUsage(emptyState(), call('2026-08-04', 1e6, 0, 'gpt-4o-mini')); // $0.15
+    s = recordUsage(s, call('2026-08-05', 1e6, 0, 'gpt-4o'));                     // $2.50
+    assert.ok(Math.abs(summarise(s, { days: 7 }).costUsd - 2.65) < 1e-9);
+});
+test('formatSummary renders the unpriced-model branch', () => {
+    // summarise's costKnown:false was covered; the string it produces was not.
+    let s = recordUsage(emptyState(), call('2026-08-04', 100, 10, 'mystery-model'));
+    assert.match(formatSummary(summarise(s, {})), /cost unknown/);
+});
 test('the window actually excludes older days', () => {
     let s = emptyState();
     for (let i = 1; i <= 10; i++) s = recordUsage(s, call(`2026-08-${String(i).padStart(2, '0')}`, 100, 10));
