@@ -1,0 +1,21 @@
+{
+  "_meta": {
+    "source": "repair: runes.etched_* truncated at ~192 chars since v3.9.9",
+    "contributed": "2026-08-05",
+    "confidence": "tiers Common/Fine/Rare match live verbatim; Epic+ restored from community fragment",
+    "conflictsWithLive": [
+      "runes.etched_main_weapon",
+      "runes.etched_elemental",
+      "runes.etched_circles",
+      "runes.etched_meteors",
+      "runes.etched_strikes"
+    ]
+  },
+  "runes": {
+    "etched_main_weapon": "Etched Runes Quality Skills:\n    Main Weapon:\n        Arrow of Echoes\n            Common: Main Weapon DMG +100\n            Fine: ATK PWR +100\n            Rare: Main weapon skills have increased chance to spawn\n            Epic: When firing more than 4 projectiles at once, they have a chance to form a web\n            Legendary: Starting Skill: Diagonal Arrow\n            Legendary +1: For each Main Weapon skill obtained, Main Weapon DMG is increased (Max 10 stacks)\n            Legendary +2: 2x Projectile Web DMG\n            Legendary +3: Main weapon skills have greatly increased chance to spawn\n            Mythic: When firing 4+ projectiles, Projectile Web chance is increased (Max 10 stacks)",
+    "etched_elemental": "Etched Runes Quality Skills:\n    Elemental:\n        Elemental Domain\n            Common: Elemental DMG +100\n            Fine: ATK PWR +100\n            Rare: Increased chance for Elemental skills to spawn\n            Epic: When an enemy is defeated by Elemental DMG, 30% chance to form an elemental area for 5s. Enemies in it take Elemental DMG\n            Legendary: Elemental Domain lasts 10s with increased DMG\n            Legendary +1: For each Elemental skill obtained, Elemental DMG is increased (Max 10 stacks)\n            Legendary +2: Elemental DMG +15% to enemies below 50% HP\n            Legendary +3: Elemental skills have greatly increased chance to spawn\n            Mythic: Elemental DMG +30% to enemies below 50% HP",
+    "etched_circles": "Etched Runes Quality Skills:\n    Circles:\n        Pulsing Orb\n            Common: Circle DMG +100\n            Fine: ATK PWR +100\n            Rare: Circle skills have increased chance to spawn\n            Epic: Rotating ball scales the range following the nearest enemy\n            Legendary: Circle trails deal DMG to enemies\n            Legendary +1: For each Circle skill obtained, Circle DMG is increased (Max 10 stacks)\n            Legendary +2: All Circle attacks have a very small chance to fire lasers\n            Legendary +3: Circle skills have greatly increased chance to spawn\n            Mythic: All Circle attacks have a small chance to fire lasers",
+    "etched_meteors": "Etched Runes Quality Skills:\n    Meteors:\n        Meteor Split\n            Common: Meteor DMG +100\n            Fine: ATK PWR +100\n            Rare: Meteor skills have increased chance to spawn\n            Epic: Meteor drops have a chance to split\n            Legendary: Split meteors will bounce forever, reflecting away from the map's edges until their duration ends\n            Legendary +1: For each Meteor skill obtained, Meteor DMG is increased (Max 10 stacks)\n            Legendary +2: Meteor impact zones Burn for 2s\n            Legendary +3: Meteor skills have greatly increased chance to spawn\n            Mythic: Meteor impact zones Burn for 4s",
+    "etched_strikes": "Etched Runes Quality Skills:\n    Strikes:\n        Sword Strike Split\n            Common: Strike DMG +100\n            Fine: ATK PWR +100\n            Rare: Sword Strike skills have increased chance to spawn\n            Epic: Sword Strikes have chance to split into 3 mini-strikes when they fade\n            Legendary: Sword Strikes have chance to split into 5 homing strikes when they fade\n            Legendary +1: For each Sword Strike skill obtained, Strike DMG is increased (Max 10 stacks)\n            Legendary +2: When Sword Strikes defeat enemies, there is a small chance to restore 2% HP\n            Legendary +3: Sword Strike skills have greatly increased chance to spawn\n            Mythic: Strike DMG +20% to enemies below 50% HP"
+  }
+}
