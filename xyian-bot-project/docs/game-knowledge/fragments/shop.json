@@ -1,0 +1,163 @@
+{
+  "_meta": {
+    "source": "community markdown: shop.md",
+    "contributed": "2026-08-04",
+    "confidence": "mechanics reliable; numbers may be stale",
+    "conflictsWithLive": [
+      "gold",
+      "gold.general_store",
+      "weapons.s_rank_overview",
+      "collectibles"
+    ],
+    "notes": [
+      "OVERLAP: live gold.general_store ('Gold can be used to purchase items from the general store') and gold.description are the live counterparts to this source's Daily Shop pricing and Top Up gold packs. This source adds that gold packs are bought with Gems (8,880 gold for 20 gems and up); live has no gold-purchase data. No contradiction found.",
+      "OVERLAP: live weapons.s_rank_overview lists the three S-Rank categories. This source adds a rarity-floor claim - S-Ranked pieces (Dragoon/Griffin/Oracle) only drop at Epic rarity or higher, never Common/Fine/Rare - which live does not state. Addition, not contradiction.",
+      "OVERLAP: the Wish artifact drop table belongs to the live 'collectibles' topic, whose overview names Artifacts as one of two collectible categories but contains only Talent Card data. Live has no artifact rates to contradict.",
+      "DUPLICATION with currencies.json (same contributor, same day): the gear-chest key table (gray/purple/purple-to-blue) and the Aurocite-as-default-display-currency paragraph appear verbatim in both currencies.md and shop.md. Both fragments carry them; the human should pick one home. The '+10% bonus Aurocite from the Habby Store' banner appears in currencies.md, daily_rewards.md and shop.md.",
+      "DUPLICATION with more_shops.json: less than expected. shop.md documents the bottom-nav Shop tab and its 5 sub-tabs; more_shops.md documents a different vendor carousel (Guild Store / Event Shop / Arena Shop / Skin Exchange Shop) that shares no sub-tab with this one. Kept as separate topic keys, no facts merged.",
+      "SOURCE INCONSISTENCY: each chest's prose 'Contents' line disagrees with its own drop table. Mythstone/Chromatic say 'Rare or Epic gear' but the tables also list Fine; Silver says 'Common or Rare gear' but the table lists Fine and Common; Obsidian says 'Rare, Epic, or Legendary gear' but the table lists Epic, Rare and Fine with no Legendary. Both versions are preserved as written.",
+      "SOURCE INCONSISTENCY (arithmetic): per-item rate x item count does not always reproduce the stated overall figure - e.g. Mythstone 5-star Epic is 0.24% x 6 = 1.44%, not the 1.46% stated - and the Chromatic table totals 99.98%, not 100%. Numbers are preserved exactly as written; nothing was rounded or corrected.",
+      "Pity values seen on the contributor's screens (Mythstone, Chromatic, Obsidian, Wish) are per-account counters, not base rates, and are recorded as such rather than as game constants.",
+      "Dropped: pure UI navigation chatter (tab positions, timer readouts) except where a timer states a refresh cadence.",
+      "Unicode stars, arrows and en-dashes were normalised to ASCII ('5-star Epic Gear'). No numeric values were altered."
+    ]
+  },
+  "shop": {
+    "overview": "The bottom-nav Shop tab. Contains everything purchasable in the game, organised into 5 top-level sub-tabs.",
+    "sub_tabs": "Daily Shop (default), Gear Chest, Wish, Limited Offer, Top Up.",
+    "daily_shop": {
+      "refresh": "Refreshes every 24h; items rotate, so gear, scrolls and shards differ each refresh.",
+      "grid": "6 items per refresh. Each shows 'Purchases left: 1' and a price.",
+      "item_types": "Base-set gear (Destruction / Decisiveness / Echo), gear scrolls, or hero/character shards. Currency varies - both Gems and Gold appear.",
+      "observed_items": {
+        "note": "Example rotation captured by the contributor, not a fixed stock list.",
+        "helix_shard": "Sold out at capture time; price not shown.",
+        "amulet_of_decisiveness": "30% off, 50 Gems",
+        "helmet_of_destruction": "30% off, 40 Gems",
+        "helmet_scroll_gems": "42 Gems",
+        "weapon_scroll_gold": "500 Gold",
+        "helmet_scroll_gold": "700 Gold"
+      },
+      "chapter_pack": "Featured at the top of the screen: a one-time-only USD pack tied to a specific campaign chapter, unlocked at a chapter milestone. Observed: 'Ch. 122 Gift Pack - 600% Value - $99.99'."
+    },
+    "gear_chest": {
+      "overview": "Four chest types. Pulls cost keys (1 key = 1 pull) or can be bought with Gems if you are out of keys. Each chest type uses its own key.",
+      "keys": {
+        "gray_key": "Silver Chest.",
+        "purple_key": "Obsidian Chest.",
+        "purple_to_blue_key": "Mythstone Chest AND Chromatic Chest (shared key)."
+      },
+      "guaranteed_prize_rule": "When the guaranteed prize is triggered, all item drop rates within that tier are equal.",
+      "s_rank_rarity_floor": "The '5-star Epic Gear' tier in the Mythstone and Chromatic tables means S-Ranked gear at Epic minimum. S-Ranked pieces (Dragoon / Griffin / Oracle) only drop at Epic rarity or higher; they never drop as Common, Fine or Rare.",
+      "mythstone_chest": {
+        "contents": "Rare or Epic gear; chance of obtaining 5-star Epic gear increased.",
+        "series_tabs": "Griffin / Oracle / Dragoon - pick the series you pull from.",
+        "pull_cost": "1 purple-blue key per pull, or pay in Gems.",
+        "pity": "Base pity values were not captured from the in-game Rules popup. In-game pity counters are per-account, so the 'X opens to guarantee' numbers a player sees are specific to that account.",
+        "drop_rates": {
+          "note": "Excludes the minimum guarantee; stated to total 100%.",
+          "five_star_epic_gear": "1.46% overall, 0.24% per item, 6 items",
+          "epic_gear": "2.18% overall, 0.12% per item, 18 items",
+          "rare_gear": "38.18% overall, 2.12% per item, 18 items",
+          "fine_gear": "58.18% overall, 3.23% per item, 18 items"
+        }
+      },
+      "chromatic_chest": {
+        "contents": "Rare or Epic gear; chance of obtaining 5-star Epic gear increased.",
+        "pull_cost": "1 purple-blue key per pull (shared with Mythstone), or pay in Gems.",
+        "pity": "Values shown in game (Epic within X opens; 5-Star Epic within Y opens) are per-account counters, not base rates. Base values were not captured.",
+        "drop_rates": {
+          "five_star_epic_gear": "1.44% overall, 0.08% per item, 18 items",
+          "epic_gear": "2.18% overall, 0.12% per item, 18 items",
+          "rare_gear": "38.18% overall, 2.12% per item, 18 items",
+          "fine_gear": "58.18% overall, 3.23% per item, 18 items"
+        }
+      },
+      "silver_chest": {
+        "contents": "Common or Rare gear.",
+        "free_draw": "1 free pull per 24h.",
+        "pull_cost": "1 gray key, or pay in Gems.",
+        "drop_rates": {
+          "fine_gear": "33.33% overall, 1.85% per item, 18 items",
+          "common_gear": "66.67% overall, 3.70% per item, 18 items"
+        }
+      },
+      "obsidian_chest": {
+        "contents": "Rare, Epic, or Legendary gear.",
+        "free_draw": "1 free pull every ~2 days (timer observed at 1d 06h).",
+        "pull_cost": "1 purple key, or pay in Gems.",
+        "pity": "Obsidian does have a pity counter, but the base threshold was not captured. On-screen values are the player's personal progress toward pity, not the base threshold.",
+        "drop_rates": {
+          "epic_gear": "4.00% overall, 0.22% per item, 18 items",
+          "rare_gear": "40.00% overall, 2.22% per item, 18 items",
+          "fine_gear": "56.00% overall, 3.11% per item, 18 items"
+        }
+      }
+    },
+    "wish": {
+      "description": "Pull artifacts from a wish mechanic, with a small angel-like character animation.",
+      "pull_cost": "Wish coins, a currency obtained from packs and events.",
+      "pull_options": "Wish x10 or Wish x100. The display reads as held/cost - e.g. 16/10 means 16 wish coins held and 10 per x10 pull.",
+      "pity": "The in-game display showed Epic Artifact guaranteed within 18 chances and Legendary or Mythic within 78 chances. These are the player's current pity counters, not base values; base rates were not confirmed from the Rules popup.",
+      "guarantee_split": "When the guarantee is triggered: 90% Legendary / 10% Mythic. Within a rarity, all artifacts have equal appearance rates.",
+      "drop_rates": {
+        "mythic_artifact": "0.10% overall, 0.02% per item, 5 items",
+        "legendary_artifact": "1.00% overall, 0.11% per item, 9 items",
+        "epic_artifact": "9.00% overall, 1.29% per item, 7 items",
+        "rare_artifact": "18.00% overall, 3.60% per item, 5 items",
+        "epic_artifact_shard_plus": "24.00% overall, 3.43% per item, 7 items",
+        "rare_artifact_shard_plus": "47.90% overall, 9.58% per item, 5 items"
+      },
+      "daily_special_pack_section": "A section inside the Wish tab: 3 packs that refresh daily, a mix of Aurocite-priced and USD-priced (e.g. 99 Aurocite, $9.99) at '400% Value'."
+    },
+    "limited_offer": {
+      "overview": "Four sub-tabs of paid bundles at varying price tiers. Each pack typically shows a '% Value' badge advertising the discount versus buying its contents separately.",
+      "daily_special": "Refreshes every 24h. 6 packs, a mix of Aurocite (e.g. 99) and USD ($9.99 / $19.99 / $25.99 / $49.99). Most flagged '400% Value'.",
+      "weekly_special": "Refreshes once per week. 9+ packs at 450% Value, ranging from 499 Aurocite to $99.99. (A 03d 06h timer was time remaining on the current week.)",
+      "monthly_special": "9+ packs at 500% Value, mostly $9.99 to $99.99.",
+      "supreme_collection": "Also called the Supreme Treasure Store. Refreshes daily (06:59 timer). All packs 600% Value and all $99.99 - the high-spend tier."
+    },
+    "top_up": {
+      "overview": "Direct currency purchases, in three sub-tabs: Gems, Gold, Aurocite.",
+      "currency_display_behavior": "The game treats Aurocite as the default real-money currency. If your Aurocite balance covers the price, it shows in Aurocite; if not, it falls back to USD or local currency. The same pack can appear priced differently depending on your Aurocite balance.",
+      "gems": {
+        "note": "Paid with Aurocite or USD, depending on Aurocite balance. First-purchase bonus gems are listed where the pack has one.",
+        "some_gems": "80 gems for 99 Aurocite; first-purchase bonus +80.",
+        "pile_of_gems": "500 gems for 499 Aurocite; no first-purchase bonus.",
+        "heap_of_gems": "1,200 gems for $9.99; first-purchase bonus +1,200.",
+        "bag_of_gems": "2,500 gems for $19.99; no first-purchase bonus.",
+        "barrel_of_gems": "6,500 gems for $49.99; first-purchase bonus +6,500.",
+        "chest_of_gems": "14,000 gems for $99.99; first-purchase bonus +14,000."
+      },
+      "gold": {
+        "note": "Paid with Gems. Section refreshes daily (06:59 timer).",
+        "a_handful_of_gold": "8,880 gold for 20 gems.",
+        "a_pile_of_gold": "88,800 gold for 200 gems.",
+        "a_chest_of_gold": "888,000 gold for 2,000 gems."
+      },
+      "aurocite": {
+        "note": "Paid with USD only. In-game text: 'Aurocite can be used to purchase all paid in-game items.'",
+        "habby_store_bonus": "'Receive +10% bonus Aurocite when purchasing from the Habby Store' - the Habby Store is an external/web purchase channel that grants the bonus.",
+        "packs": {
+          "99_aurocite": "$0.99; purchases left: 30.",
+          "499_aurocite": "$4.99; purchases left: 30.",
+          "999_aurocite": "$9.99; purchase limit not captured.",
+          "1999_aurocite": "$19.99; purchase limit not captured.",
+          "4999_aurocite": "$49.99; purchase limit not captured.",
+          "9999_aurocite": "$99.99; purchase limit not captured."
+        }
+      }
+    },
+    "advice": {
+      "f2p_daily_shop": "Always check it, especially for discounted gear and scrolls under 100 Gems.",
+      "f2p_silver_chest": "Claim the free pull every 24h.",
+      "f2p_obsidian_chest": "Claim the free pull every ~2 days.",
+      "f2p_wish": "No specific timing advice - use the x10 or x100 pulls whenever you prefer.",
+      "f2p_skip": "Skip Limited Offer, Top Up, the Chapter Pack, and paid Mythstone/Chromatic pulls.",
+      "paying_best_value": "Best dollar-per-value is Daily Special packs and the Supreme Treasure Store at $99.99 (600% Value).",
+      "paying_aurocite": "Buy Aurocite through the Habby Store whenever possible for the +10% bonus.",
+      "paying_gold_packs": "Skip Top Up gold packs - gold is easy to farm and the conversion rate is bad.",
+      "paying_chest_pulls": "For Mythstone/Chromatic pulls, pull on the series matching your active gear progression (Griffin / Oracle / Dragoon)."
+    }
+  }
+}

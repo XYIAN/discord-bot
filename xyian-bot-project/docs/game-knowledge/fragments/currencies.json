@@ -1,0 +1,117 @@
+{
+  "_meta": {
+    "source": "community markdown: currencies.md",
+    "contributed": "2026-08-04",
+    "confidence": "mechanics reliable; numbers may be stale",
+    "conflictsWithLive": [
+      "gold",
+      "gold.description",
+      "sacred_hall",
+      "sacred_hall.overview",
+      "privilege_cards",
+      "custom_facts",
+      "game_modes.dungeon.ruin_ruins"
+    ],
+    "notes": [
+      "CONFLICT: live sacred_hall.overview says Sacred Hall 'is leveled up using currency earned from Abyssal Tide'; this source says the Upgrade track costs Character Shadows and the Build track costs Abyssal Stonework, and names the Shard Exchange as the Character Shadows source. Not resolved here. (characters.json flags the same conflict from the other side.)",
+      "CONFLICT: this source says excess hero shards convert to Character Shadows 1:1 via the Sacred Hall Shard Exchange. Live custom_facts (XYIAN, 2026-07-30, game_version 1.1.7) says 'Max-Star Legendary character shards can be recycled into Character Shadows at a set ratio'. The live entry is newer and does not state the ratio; the 1:1 figure here is the likeliest stale number in this file.",
+      "OVERLAP: live 'gold' describes gold as 'the primary currency', used for the general store and gear leveling. This source frames gold as the soft currency for upgrades and most non-premium purchases and treats Aurocite as the real-money currency. Framing differs; no numeric contradiction.",
+      "OVERLAP: live privilege_cards records 1200/3900 gems for the two lifetime cards. This source states gems are NOT the purchase currency for Privilege Cards and that renewal costs 499 Aurocite/month, which matches the privilege_cards.json note that those gem figures are payouts, not prices.",
+      "OVERLAP: live game_modes.dungeon.ruin_ruins ('Ruin Ruins gives you keys to unlock chests') vs this source's Relic Shovel used in 'Rune Ruins / digging mechanic'. Different consumables and a different spelling of the mode name; both may be true, not resolved here.",
+      "Energy, Power Level and Gems restate facts already emitted by main_page.json (fragment, not live) - same numbers, no divergence.",
+      "Dropped: nothing substantive. Icon descriptions were kept because the source explicitly warns that the Power Level and Aurocite icons are confusable.",
+      "Unicode multiplication signs and en-dashes in the source were normalised to ASCII. No numeric values were altered."
+    ]
+  },
+  "currencies": {
+    "overview": "Reference for the currencies and consumable resources shown in the header bar, shop screens and pack screens.",
+    "energy": {
+      "icon": "Lightning bolt, top header bar.",
+      "use": "Consumed to play stages: 5 energy per attempt.",
+      "regeneration": "Regenerates over time.",
+      "base_max": "20 for new players.",
+      "cap_increases": "Privilege Cards and other buffs raise the cap; the Hunting Warrior Card adds +20."
+    },
+    "power_level": {
+      "icon": "Gold arrow / chevron badge, top header bar.",
+      "use": "Not spent. Represents total combat power across gear, heroes and runes; a progress indicator only."
+    },
+    "gold": {
+      "icon": "Coin, top header bar.",
+      "use": "Soft currency. Used for upgrades and most non-premium purchases."
+    },
+    "gems": {
+      "icon": "Green gem, top header bar.",
+      "not_used_for": "NOT used to buy Privilege Cards or Daily Reward packs.",
+      "used_for": "Gear chests (Mythstone, Chromatic, Silver, Obsidian), Wishes, certain items in the first daily shop section, and buying additional event tries during temporary events.",
+      "source": "Many Privilege Cards pay out daily in gems."
+    },
+    "aurocite": {
+      "icon": "Pink triangle gem; appears on shop, pack and Privilege Card renewal screens.",
+      "type": "Real-money premium currency.",
+      "used_for": "Renewing Privilege Cards (499 Aurocite/month) and buying Daily Reward packs (99 / 199 / 299 / 499 Aurocite).",
+      "habby_store_bonus": "The '+10% bonus Aurocite when purchasing from the Habby Store' banner refers to this currency.",
+      "default_currency_behavior": "The game treats Aurocite as its default real-money currency. If your Aurocite balance covers a paid item's price, the price is displayed in Aurocite; if not, it falls back to local fiat currency (USD for this player).",
+      "display_caveat": "The same purchase can therefore appear priced differently to different players depending on their Aurocite balance."
+    },
+    "icon_confusion_warning": "Power Level uses a gold arrow/chevron badge and Aurocite uses a pink triangle gem - easy to confuse. Power Level lives in the main screen header; Aurocite shows up on shop, pack and Privilege Card renewal screens.",
+    "gear_chest_keys": {
+      "rule": "Each chest type uses its own key. 1 key = 1 pull, or spend Gems if you are out of keys.",
+      "gray_key": "Silver Chest.",
+      "purple_key": "Obsidian Chest.",
+      "purple_to_blue_key": "Mythstone Chest AND Chromatic Chest (shared key)."
+    },
+    "sacred_hall_currencies": {
+      "character_shadows": {
+        "icon": "Purple gem.",
+        "use": "Sacred Hall Upgrade track.",
+        "source": "Shard Exchange, where excess hero shards convert 1:1, plus other progression rewards."
+      },
+      "abyssal_stonework": {
+        "icon": "Blue.",
+        "use": "Sacred Hall Build track.",
+        "source": "Not captured by the source (TBD)."
+      }
+    },
+    "rune_enchantment_currencies": {
+      "enchantium": {
+        "icon": "Green triangle with arrowhead.",
+        "use": "Standard Enchantizer pulls, 1,000 Enchantium per pull.",
+        "gem_conversion": "Convertible from gems at escalating rates - e.g. the 21st-30th purchase costs 300 gems/attempt and the 31st-40th costs 400 gems/attempt."
+      },
+      "advanced_enchantium": {
+        "icon": "Pink circle with arrowhead.",
+        "use": "Advanced Enchantizer pulls, 1 Advanced Enchantium per pull.",
+        "value": "Drop rates roughly 44x better for Mythic than the standard Enchantizer.",
+        "source": "Earned passively at 1 per 100 standard Enchant pulls; also directly purchasable."
+      }
+    },
+    "spirit_pact_seed": {
+      "icon": "Blue plum-seed shape.",
+      "use": "Pact Sanctum upgrades, spent alongside gold.",
+      "source": "Confirmed source is the Magic Plant Defense Exchange Shop. The source suspects Mystling-related events and rewards also grant it, but did not confirm."
+    },
+    "hero_shards": {
+      "rule": "Each hero is unlocked and starred up with shards specific to that hero; there are no universal shards.",
+      "sources": "Hunt, Daily Rewards (Bonus Pack), Limited Offer packs, and events.",
+      "excess_shards": "Convert to Character Shadows via the Sacred Hall Shard Exchange."
+    },
+    "pack_and_chest_items": {
+      "note": "The source flags this whole group as needing verification.",
+      "phynx_shards": "Hero shards used to unlock and upgrade the Phynx hero.",
+      "random_phynx_shard_pack_rates": {
+        "x1": "70%",
+        "x2": "25%",
+        "x3": "3%",
+        "x4": "1.39%",
+        "x5": "0.5%",
+        "x10": "0.1%",
+        "x50": "0.01%"
+      },
+      "chromatic_chest_key": "Used to open Chromatic chests.",
+      "wish_coin": "Currency for the Wish system; further detail not captured (TBD).",
+      "relic_shovel": "Used in the Rune Ruins / digging mechanic.",
+      "draw_item_choice_chest": "When opened, lets you pick one of: 1x Chromatic Chest key, 1x Wish Coin, 2x Relic Shovel."
+    }
+  }
+}

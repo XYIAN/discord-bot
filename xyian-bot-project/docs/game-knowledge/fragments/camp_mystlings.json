@@ -1,0 +1,29 @@
+{
+  "_meta": {
+    "source": "community markdown: camp_mystlings.md",
+    "contributed": "2026-08-04",
+    "confidence": "mechanics reliable; numbers may be stale",
+    "conflictsWithLive": []
+  },
+  "mystlings": {
+    "overview": "Mystlings are collectible creatures that grant an Active Skill in battle and a passive Collection Stat just for being owned. They are managed from Camp, opened with the Camp button at the bottom-left of the main screen.",
+    "aspects": "Mystlings come in 4 categories, called Aspects: Demon, Undead, Nature and Monster. The Mystling inventory is organised by Aspect.",
+    "rarity_vs_stars": "Each Mystling has a fixed rarity (Common / Rare / Epic / Legendary and so on), locked to one tier per Mystling the way heroes are. The stars shown on a Mystling are its upgrade or ascension level, not its rarity.",
+    "mystling_detail_screen": "A Mystling's detail screen shows its name and star rating, its Active Skill (a deployable battle ability, Lv. 1+), its Collection Stats (a passive bonus from owning it, Lv. 1+), a Star Up button that spends shards or duplicates to raise that one Mystling's stars, and a Deploy button that puts it in the active battle slot.",
+    "example_death_mage": "Death Mage at Active Skill Lv. 1 fires 8 giant scythes, each dealing 160% of character ATK and applying one of ATK -10%, ATK SPD -10%, MOV SPD -10% or Dodge -10% for 5s; reapplying refreshes the duration. Its Lv. 1 Collection Stat is Final DMG Bonus +2%.",
+    "heart_icons": "Two different heart icons exist. On a Mystling's detail page the heart shows the total stars that Mystling has been upgraded across the copies you own. On the Collect page the heart shows your overall collection progress on the milestone track.",
+    "deploy_cap": "Base deploy cap is 1 Mystling. Sacred Hall privileges add +1 Max deployed Mystlings in Peak Arena, Arena and Guild Expedition at higher Sacred Hall tiers (multiple instances), and Mystling collection milestones add +3 Max Mystling dispatches at 20 progress. The cap grows through both progression tracks combined.",
+    "collection_progress": "The Collect button on the Mystling screen opens a milestone reward track. Total collection progress, counted from the heart and star icons on your Mystling cards, unlocks permanent account-wide bonuses at thresholds. The snapshot player sat at 492 progress on a track that runs past 2,600.",
+    "collection_milestones_early": "2: camp naming permission. 5: Mystling hatchery slot +2. 10: Mystling hatching duration -720s. 15: Pact Sanctum upgrade time -5%. 20: Max Mystling dispatches +3. After that a new milestone lands roughly every 20-30 progress.",
+    "collection_milestones_mid": "420: Pact Sanctum upgrade time -5%. 440: Guild assist reward chances +2. 460: after taking damage 1 time, DMG REDUC +0.6% (max 10 stacks). 480: Pact Sanctum upgrade time -5%. 500: assisted help requests extra -60s.",
+    "collection_milestones_late": "1030: each time an active skill is used, DMG +1.25% (max 20 stacks). 1060: when battle starts, 50% chance to prevent 1 player dealing damage for 3s. 1090: after taking damage 1 time, DMG REDUC +1.5% (max 10 stacks). 1120: ATK PWR +15%. 1150: Max HP +15%. 1900: battle-start prevent chance 90%. 1950: DMG REDUC +2.7% (max 10 stacks). 2000: ATK PWR +15%. 2050: Max HP +15%. 2100: cooldown of active Mystling skills reduced +5%. 2200: each active skill use gives DMG +2.5% (max 20 stacks). 2300: battle-start prevent chance 100%. 2400: DMG REDUC +3% (max 10 stacks). 2500: ATK PWR +15%. 2600: Max HP +15%.",
+    "collection_patterns": "ATK PWR +15% and Max HP +15% repeat at several thresholds and stack meaningfully. Pact Sanctum upgrade time -5% also repeats. Hatchery, hatching-speed and dispatch-cap upgrades front-load in early progress, while combat-defensive bonuses layer in throughout.",
+    "collection_strategy": "The collection track is a large permanent power source: account-wide, it never resets, and it complements Sacred Hall and rune progression. Hatching new Mystlings raises the counter and unlocks more global buffs even if you never deploy them.",
+    "camp_overview": "Camp is a customisable town containing three buildings - Pact Sanctum, Magic Plant Defense and the Hatchery - plus the Mystling collection. The player names their own camp, and naming unlocks at 2 Mystling collection progress.",
+    "pact_sanctum": "The Camp building that sets the passive ATK and HP buffs your active hero gains whenever ANY Mystling is deployed. Observed at Lv.120: ATK Increase +8,020 and HP Up +32,080, with the next level previewing ATK +8,780 and HP +35,420.",
+    "pact_sanctum_upgrades": "Upgrades cost Gold plus Spirit Pact Seed (a blue plum-seed-shaped item) and take real time - about 42 minutes per level at Lv.120, scaling with level. Mystling collection milestones repeatedly cut Pact Sanctum upgrade time by 5%.",
+    "hatchery": "The Camp building where new Mystlings are hatched. 8 egg slots were visible in a circle, and slot count scales with collection progress (+2 slots at 5 progress). Hatching duration is reduced by collection milestones (-720s at 10 progress).",
+    "bulk_hatching": "Bulk Hatching processes multiple eggs at once and has two settings. Egg priority: higher rarity first (the default for grinding stronger Mystlings) or lower rarity first. Aspect: Demon, Undead, Nature or Monster - choosing an Aspect guarantees the hatched Mystlings are of that Aspect, which is how you fill out a specific Aspect collection.",
+    "magic_plant_defense_building": "Magic Plant Defense sits in Camp because defending the magic plant uses your Mystlings. From its entry screen it offers Solo Challenge and Team Challenge, shows a Drop Chance preview of 4 reward types, and carries its own Exchange Shop, Tasks, ranking sidebar and recruit chat for team challenges."
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "_meta": {
+    "source": "community markdown: more_shops.md",
+    "contributed": "2026-08-04",
+    "confidence": "mechanics reliable; numbers may be stale",
+    "conflictsWithLive": [
+      "skins",
+      "skins._placeholder",
+      "guild"
+    ],
+    "notes": [
+      "CONFLICT: live skins._placeholder says 'Each character has skins with unique abilities and 5 star levels'. This source says the Hero Skin Shop stock are weapon skin names, not character names, each tied to a gear set (Griffin / Dragoon / Oracle). Not resolved here. Sideline evidence for the human: live custom_facts (XYIAN, 2026-07-30, 1.1.7) refers to 'weapon skins' in the Stats screen entry.",
+      "OVERLAP: this source claims the Guild Store only stocks Rare character shards, which is why events are the Legendary-shard path. Live 'guild' holds donations and max level only and says nothing about store stock - addition, not contradiction. guild.json (fragment) is the other place Guild Store content lives.",
+      "Emits two top-level topic keys (event_shop, skin_exchange_shop) because more_shops.md documents two unrelated vendors; folding them into one key would bury both. Neither key exists in knowledge.json yet.",
+      "Kept strictly separate from shop.json per instruction. In practice the two sources barely overlap: shop.md covers the bottom-nav Shop tab (Daily Shop, Gear Chest, Wish, Limited Offer, Top Up) and this one covers a different vendor carousel (Guild Store / Event Shop / Arena Shop / Skin Exchange Shop). No sub-tab appears in both.",
+      "CROSS-SOURCE, unresolved: this source lists a 'Legendary Character Universal Shard' in the 400,000 Island Points tier, while currencies.md states there are no universal shards, only hero-specific ones. Both are from the same contributor on the same day.",
+      "CROSS-SOURCE, unresolved: 'Character Shadows x350' appears here as Event Shop stock. currencies.md identifies Character Shadows as the Sacred Hall Upgrade currency, and live sacred_hall.overview attributes Sacred Hall currency to Abyssal Tide. Flagged under currencies.json, not here.",
+      "Otta, Thor and Cleo are all recorded as Legendary in live characters.* - consistent with this source's shard listings, so not flagged as a conflict.",
+      "Item costs and limits marked '(verify)' in the source are recorded as not captured rather than guessed. Nothing was inferred to fill them.",
+      "Sold-out markers are the contributor's own purchase state, not stock properties, and are recorded as a snapshot note.",
+      "Unicode multiplication signs, en-dashes and arrows were normalised to ASCII. No numeric values were altered."
+    ]
+  },
+  "event_shop": {
+    "location": "One stop in the bottom-tab shop carousel reached from the Guild Store / Arena Shop / Skin Exchange Shop screens. Carousel order left to right: Guild Store, Event Shop, Arena Shop (sub-tabs Arena Shop / Peak Arena Shop), Skin Exchange Shop.",
+    "description": "A multi-event vendor with one top-level tab per active or recurring event. Each tab holds its own milestone-gated stock.",
+    "sub_tabs": "Island Store (the Island Treasure Hunt event) and Darksurge Vault.",
+    "currency": "Event-specific tokens, different per tab. Island Store prices are in a yellow-icon currency the source calls Island Tokens; the exact name is unconfirmed. Observed item costs: 2, 4, 5, 10, 11, 12.",
+    "island_store": {
+      "refresh": "In-game text: 'Refreshed when the Island Treasure Hunt event starts' - the entire stock cycles when a new Island Treasure Hunt event begins.",
+      "limit_caveat": "The source's limit column is headed 'Daily/event limit' without saying which applies.",
+      "always_available": {
+        "note": "Top tier of the shop, stocked without a milestone gate.",
+        "otta_shard": "Legendary hero shard. Cost 2, limit 5.",
+        "random_epic_character_shard": "Cost 2, limit 10.",
+        "random_rare_character_shard": "Cost 2, limit 25.",
+        "standard_epic_character_shard_choice_chest": "Cost 5, limit 25.",
+        "standard_rare_character_shard_choice_chest": "Cost 4, limit 50.",
+        "demon_kings_eye_shard": "Cost 2, limit 2.",
+        "not_captured": "Demon Blood Shard, Cupid's Arrow Shard and Cupid's Bow Shard are also stocked; their cost and limit were not captured."
+      },
+      "milestone_gates": {
+        "mechanic": "Stock tiers are gated behind progression labels reading 'Island Points reach X to unlock'. Higher tiers unlock progressively rarer items.",
+        "island_points_200000": "Defiance of Fate Artifact Choice Chest (cost 2), Limited Mythic Artifact Shard Choice Chest (cost 10), Choice Epic Etched Rune Chest (cost 12).",
+        "island_points_300000": "Character Shadows x350 (cost 10), Thor Shard - Legendary hero (cost 11), Limited Mythic Artifact Shard Choice Chest (cost 11).",
+        "island_points_400000": "Cleo Shard (Legendary hero), Legendary Character Universal Shard, Choice Epic Etched Rune Chest. Costs not captured."
+      }
+    },
+    "darksurge_vault": "The second event tab. Contents were not captured (TBD).",
+    "advice": {
+      "legendary_shard_path": "Island Treasure Hunt events trade event participation (Island Points) for Legendary hero shards - Otta, Thor, Cleo - that the standard Guild Store does not stock, since it only carries Rare. Events are the primary Legendary hero progression path for active F2P players.",
+      "milestone_planning": "Milestone progression is high leverage: plan participation to clear the highest Island Points tier (200K / 300K / 400K) you can reach each event."
+    },
+    "unconfirmed": "Exact currency name for the Event Shop, Darksurge Vault contents, and how Island Points are earned during the event."
+  },
+  "skin_exchange_shop": {
+    "location": "Last stop in the bottom-tab shop carousel (Guild Store, Event Shop, Arena Shop, Skin Exchange Shop).",
+    "description": "The dedicated vendor for weapon skins - both buying new skins and exchanging for upgraded variants.",
+    "sub_tabs": "Hero Skin Shop (main purchase tab) and Reforger Shop (skin upgrade/exchange tab).",
+    "currency": "Items cost 6 or 12 of a yellow-icon currency; the exact name was not captured (the source guesses Skin Tokens or Reforger Coins). Contributor's balance at capture: 4 of a green-icon currency and 6 of the yellow-icon one.",
+    "purchase_limit": "Every item showed 'Purchases left: 6' - a fixed limit per event cycle.",
+    "hero_skin_shop": {
+      "note": "Current rotation observed by the contributor, not a permanent catalogue.",
+      "cost_12_skins": "Awakened Stone Monkey, Violet Lotus Pulse, Conqueror of Battles, Golden Velvet Carol, Eternal Nightglow, Fiery Reckoning, Waxwane Judgment, Lightning Essence, Abyssal Guide.",
+      "cost_6_skins": "Illusion Essence, Ice Diva, Nian Slayer - Prosperity, Nian Slayer - Longevity, Seraduckus, Duckoola, Waddla, Empowered Curse, Life Essence.",
+      "rarity_hypothesis": "The source suspects the cost-12 tier is higher rarity than the cost-6 tier, going by icon background colour, but did not confirm it.",
+      "snapshot_sold_out": "Golden Velvet Carol (cost 12), Empowered Curse and Life Essence (cost 6) showed Sold Out because the contributor had already bought them."
+    },
+    "reforger_shop": "The skin upgrade/reforge tab. Reforge-specific rules and costs were not captured; the Griffin/Oracle skin screens documented in gear.md come from here.",
+    "naming_note": "These are weapon skin names, not character names. Each skin is tied to a gear set (Griffin / Dragoon / Oracle).",
+    "advice": "Purchase limits are per event cycle, so buy the highest-value skins for your set and build first - you cannot re-buy once the limit is spent.",
+    "unconfirmed": "Exact currency name, whether cost 6 versus cost 12 maps to a specific rarity, and Reforger Shop pricing and exchange mechanics."
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "_meta": {
+    "source": "community markdown: events.md",
+    "contributed": "2026-08-04",
+    "confidence": "mechanics reliable; numbers may be stale",
+    "conflictsWithLive": [
+      "game_modes.arena.main_arena",
+      "game_modes.arena.peak_arena",
+      "game_modes.arena.rumble_ladder",
+      "game_modes.arena.all_star_cup",
+      "game_modes.challenge.sky_tower",
+      "game_modes.challenge.seal_battle",
+      "game_modes.challenge.magic_plant_defense",
+      "game_modes.dungeon.gold_cave",
+      "game_modes.dungeon.shackled_jungle",
+      "game_modes.dungeon.abyssal_tide"
+    ]
+  },
+  "game_modes": {
+    "events_tab": "The Events tab groups three categories: Arena (4 PvP modes), Challenge (Magic Plant Defense, Seal Battle, Sky Tower) and Dungeon (Abyssal Tide, Gold Cave, Shackled Jungle). Each sub-feature has its own season or cycle, rewards and shop.",
+    "event_shop_currencies": "Every Arena mode has its own shop and its own currency, so running all four yields different shard pools: Arena Coins for Phynx and Nezha shards, Peak Arena Coins for Loki shards, All-Star Cup tokens for Universal Artifact Shards.",
+    "privilege_card_raid_synergy": "The Sealing Master, Cave Explorer and Abyssium Conqueror Privilege Cards enable Quick-Raid on most Challenge and Dungeon modes and raise their daily run counts. They are the highest-leverage cards for active event grinders.",
+    "arena": {
+      "main_arena": "1v1 ranked PvP ladder on weekly seasons that settle and reset on a 7-day cycle. Challenge attempts are limited (snapshot showed 'Challenge x1', apparently daily-restored). Runs one of your 8 saved preset loadouts. The screen header is named after your current tier, e.g. 'Transcendent Battle'.",
+      "main_arena_tiers": "6 tiers, low to high. Bronze: 50 players per group, top 15 promoted. Gold: 100 per group, top 30 promoted, bottom 40 demoted. Diamond: 200 per group, top 20 promoted, bottom 100 demoted. Master: no group limit, top 20% promoted, bottom 40% demoted. Transcendent: no limit, top 20% promoted, bottom 40% demoted. Supreme: top tier, no promotion possible - the top 40% keep their tier and the rest are demoted.",
+      "main_arena_settlement": "Weekly settlement. If a group holds fewer players than expected, results are assigned in priority order: same-ranked players, then promoted players, then demoted players. The in-game example is a 45-player group where 20 first stay at the same rank, then the top 20 are promoted, then the last 5 are demoted.",
+      "main_arena_promotion_note": "The source's own summary table also states 'Top 46 promote at season settlement', which does not line up with the per-tier promotion rules it lists elsewhere. Recorded as written; unresolved.",
+      "arena_shop": "Spends Arena Coins (red icon). Phynx Shard 5,400, Nezha Shard 5,400, Random Epic Enhancement Rune 20,250, Random Epic Ability Rune 20,250, Random Epic Blessing Rune 30,750, Obsidian Chest Key 45,000, Chromatic Chest Key 60,000, Wish Coin 60,000, Ruin Shovel 15,000. Daily limits: 38 for Phynx Shard, 10 for everything else.",
+      "arena_shop_exclusives": "Phynx and Nezha (Epic hero) shards are sold only in the Arena Shop, so Arena is the primary path for those two heroes' shards. The Guild Store carries Rare hero shards only.",
+      "peak_arena": "PvP mode where each player dispatches 3 characters to attack or defend; duplicate characters are allowed. Weekly seasons. The Peak1 / Peak2 / Peak3 loadout slots in the gear system exist for this mode.",
+      "peak_arena_rules": "Active skin skills of deployed characters DO take effect, but Resonance skills do NOT. Each deployed character can be equipped with gear and runes, and gear and runes can be reused across the three characters - you do not need to own multiple sets.",
+      "peak_arena_tickets": "Each challenge costs 1 Peak Arena Ticket. Tickets refill periodically (observed 1 ticket per 3h 06m) and can be bought with gems; purchases reset daily. When a season ends, all excess tickets above the cap are removed, so do not stockpile tickets at season end.",
+      "peak_arena_hours": "Runs daily 0:00-23:50 UTC+0, with a short downtime at the end of the UTC day.",
+      "power_of_fusion": "Peak Arena's diversity bonus. Grants every deployed character Final ATK and Final HP equal to [Stacks x 1%]. Stacks come from: each unique character beyond the first, +10; each unique gear piece beyond 6 across all deployed characters, +8; each unique Rune beyond 13 across all deployed characters, +6; each full Godforged Star on a deployed character's gear, +3 (for duplicate gear only the highest Godforge star counts).",
+      "peak_arena_strategy": "Power of Fusion rewards breadth of collection - 3 different characters with different gear, runes and high Godforge stars. This is the opposite of 1v1 Arena, which uses a single loadout.",
+      "peak_arena_ranking": "A new season starts with no rank; you must win at least 1 battle to be ranked. Ranks display as a stair-step structure. Daily rewards cap at 2 claims per day.",
+      "peak_arena_shop": "Spends Peak Arena Coins (yellow star icon); the rotation refreshes roughly every 2 days, in sync with the seasonal cycle. Observed: Loki Shard 360 (50 purchases), Character Shadows 70 (200), Swapping Orb 1,200 at 50% off (2), Enchantium x1,000 for 200 at 50% off (50), plus cosmetics Starry Eyes 4,000, Heart Eyes 4,000, Angel Halo 2,000 at 50% off, Floating Bracelet 2,000 at 50% off, Fiery Wings 40,000, Fireworks 40,000 (1 purchase each).",
+      "peak_arena_shop_notes": "Loki (Epic hero) shards are exclusive to the Peak Arena Shop. Character Shadows at 70 coins are an efficient Sacred Hall feeder, and the discounted Enchantium pack effectively converts Peak Arena coins into rune Enchantment progression.",
+      "rumble_ladder": "6-player free-for-all PvP survival, run in periodic seasons (Off-Season at snapshot). Matches last 3 minutes: collect EXP to gain power, defeat monsters to earn gifts, and deliver gifts to storage zones to score points, competing for top rank inside the 3 minutes.",
+      "rumble_modes": "Two sub-modes. Rumble Dome: ATK and HP scale with your current power. Free-for-All: everyone uses default ATK and HP, and only appearance and Rumble-specific skills are inherited, so gear and runes create no power gap - a pure skill match.",
+      "rumble_map": "Storage Zone: deliver carried gifts here to score points. Trap Zone: contains traps, and gift barrels refresh every 30 seconds. Boss Zone: 1 boss spawns every 30 seconds, the first after 30s.",
+      "rumble_skills": "You play your own owned characters and each character has unique Rumble skills. Skills acquired during battle do not interrupt the skill panel - it stays open and skills can be selected at any time; if none are selected, new skills queue.",
+      "rumble_trophies": "Trophies are counted separately for each character and rise or fall on that character's own performance plus match placement. Your ranking total is the sum of your top 3 characters' trophies. Matchmaking prioritises players of similar rank using the multiplayer Cred Score system.",
+      "rumble_schedule": "Free-For-All Rumble runs Mon-Wed only, in four 3-hour windows per day, all UTC+0: 1:00-4:00, 7:00-10:00, 13:00-16:00 and 19:00-22:00. That is about 12 hours a day and 36 hours per week.",
+      "rumble_tiers": "Rumble Dome is one named tier (trophy range 500-549 observed). Tier gem rewards recorded for Rumble Dome: trophies 10-19 give 240 gems, 30-39 give 400, 40-49 give 400. The 20-29 and 50-59 rows were not captured, and tier names above Rumble Dome are unknown.",
+      "rumble_shop": "Spends Rumble Tokens (yellow trophy icon). Observed: Random Epic Enhancement Rune 1,350 (3 purchases left), Random Epic Ability Rune 1,350 (3), Universal Rare Artifact Shard 75 (30), Ruin Shovel 100 at 50% off (10) or 200 full price (50), Chromatic Chest Key 400 (50), Wish Coin 400 (50), Gold x50 for 1 (9,999). Sold out at snapshot: Random S/Epic Gear, Random Rare Character, Universal Epic and Universal Legendary Artifact Shards, and the discounted Chromatic Chest Key and Wish Coin.",
+      "rumble_shop_notes": "Rumble Shop is a strong all-round store - Random Rare Character and Random S/Epic Gear are variety the Guild, Arena and Peak shops do not offer. The 50-60% discounts are time-limited. Universal Rare Artifact Shards at 75 tokens are cheap enough to buy in bulk.",
+      "all_star_cup": "Periodic 3-stage tournament with themed seasons (Sword Strike Season at snapshot). You must have reached Campaign Chapter 15 to take part in any cycle. Servers are grouped into zones by launch schedule and estimated participant count to balance competition.",
+      "all_star_cup_stages": "Qualifiers: open competition ranked on floors reached plus stage clear time; the top 64 advance. Elimination Stage: the 64 split into 8 groups of 8, and the top of each group advances, leaving 8 finalists. Finals: the 8 finalists face off head to head and the winner is crowned All-Star Cup Champion.",
+      "all_star_cup_guessing": "During the Elimination Stage and Finals players can wager Guess Coins on match outcomes. A successful guess pays 1.5x the wagered Guess Coins back in All-Star Cup tokens.",
+      "all_star_cup_shop": "Spends All-Star Cup Tokens (yellow star icon). Observed: Random Epic Enhancement Rune 6,750 (2 purchases), Random Epic Ability Rune 6,750 (2), Random Epic Blessing Rune 10,125 (2), Universal Rare Artifact Shard 375 (30), Universal Epic Artifact Shard 1,125 (20), Universal Legendary Artifact Shard 2,250 (10), Chromatic Chest Key 1,600 at 50% off (5) or 2,000 full price (20), Ruin Shovel 800 at 50% off (5) or 1,000 full price (20), Wish Coin 1,600 at 50% off (5) or 2,000 full price (20), Enchantium x1,000 for 2,000 (20), Gold x10 for 1 (9,999). Rare Character Universal Shard was sold out.",
+      "all_star_cup_shop_exclusives": "Universal Artifact Shards are unique to the All-Star Cup shop - high-value cross-rarity items not available elsewhere. Worth prioritising if you run All-Star Cup actively.",
+      "all_star_cup_seasons": "Themes change every season (Sword Strike at snapshot, next theme unknown). Build a Preset loadout aligned to the active theme for tournament viability."
+    },
+    "challenge": {
+      "magic_plant_defense": "Solo or 2-player co-op PvE defence; difficulty rises in a 2-player team. The host spends a ticket to start and assisting players do not. Assist rewards are capped at 10 per week. 3 tickets replenish weekly and 1 more can be earned from daily tasks; the source estimates a solo host gets up to about 10 tickets a week.",
+      "magic_plant_defense_stages": "New stages unlock based on campaign progress. In co-op both players must have the stage unlocked, so you cannot carry a lower-progression friend into a stage they have not reached.",
+      "magic_plant_defense_rewards": "Clear rewards include Mystling Eggs and Mystling materials, making it the primary source for hatching new Mystlings. Drops vary by stage and higher stages drop better. In co-op the host's drop rates apply and assisting players get reduced rates.",
+      "magic_plant_defense_drop_rates": "Drop rates from the in-game rules, observed at Stage 191: blue gem item 70.00%, purple gem item 24.00%, yellow item 6.00%. Rates scale upward by stage. The rules popup has separate Rules and Drop Rate tabs.",
+      "magic_plant_defense_mystlings": "Defending the magic plant uses your deployed Mystlings, which is why the mode also appears inside Camp.",
+      "magic_plant_defense_shop": "The Exchange Shop spends MPD Tokens (orange flower icon) earned from defending stages and refreshes every 2d 06h. Observed: Random Gear Scroll 20 (200 purchases), Wish Coin 800 (5), Enchantium x1,000 for 800 (10), Gold x25 for 1 (9,999), Thorned Crown 10,000 (1), Shadow Path 20,000 (1), Divine Tree Totem 80,000 (1), Magic Plant Spirit 80,000 (1). Spirit Pact Seed was sold out at snapshot.",
+      "magic_plant_defense_spirit_pact_seed": "The Magic Plant Defense exchange shop is a confirmed source of Spirit Pact Seeds, the material used to upgrade the Pact Sanctum in Camp.",
+      "seal_battle": "Boss-based PvE challenge. 2 challenges per day, and the Sealing Master Privilege Card adds +1 for 3. Rewards are based on survival time. EXP drops randomly on the field during a run and must be actively collected to upgrade mid-run. Revival is not allowed, with revival gear the only exception.",
+      "seal_battle_seasons": "A season lasts 28 days: 4 boss rounds of 7 days each. The final 10 minutes of every boss round is a settlement phase during which challenges are not allowed. Season 21 was current at snapshot, and the season timer shown in game is time remaining, not season length.",
+      "seal_battle_bosses": "The boss rotates each 7-day round. Cyclops Mage was the boss at snapshot.",
+      "seal_battle_ranking": "Players are grouped based on registration time. Each boss round's group ranking is by total damage dealt to that boss. Groups are re-ranked at the start of each new boss round from the previous round's standings, and at season end groups are demoted based on the previous season's group rank, with different demotion quotas per rank.",
+      "seal_battle_tiers": "Seal Battle has its own tier ladder, shown as banded icons across the top of the ranking screen. Demon Slayer (purple) is the top tier and Elite (yellow) sits below it, with lower tiers beneath. Demon Slayer is a tier name, not a season theme. Each tier ranks separately and rewards scale by tier.",
+      "seal_battle_rewards": "Ranking rewards are mailed at the end of each boss round, so 4 times across a 28-day season. Demon Slayer tier: rank 1 gets 5,000 gems plus Seal Battle tokens, rank 2 4,000 gems, rank 3 3,000, rank 4 2,800, rank 5 2,600. Elite tier: rank 1 3,000, rank 2 2,400, rank 3 1,800, rank 4 1,500, rank 5 1,200.",
+      "seal_battle_actions": "Quick Raid auto-resolves attempts and is unlocked by the Sealing Master Privilege Card, using your highest damage of the round. Practice gives test runs that do not consume chances, Start is a manual run, and Preset loads a saved gear and rune loadout. The Sealing Master card also Quick-Raids the Monster Invasion guild boss.",
+      "sky_tower": "Ascending floor-based tower, shown in groups of 5 floors (e.g. Floor 2796-2800). Each Start costs 1 entry and daily entries are limited; the Abyssium Conqueror Privilege Card adds +3 daily Sky Tower challenges.",
+      "sky_tower_floor_types": "Floor groups vary in challenge type - some are multi-boss battles (the label 'Multiple boss battles will occur!' appeared on Floor 2796-2800) and others present different challenges. Read the floor group's challenge label before entering.",
+      "sky_tower_rewards": "Per-clear rewards include gems (e.g. 50), keys, gear scrolls (e.g. 550) and other materials. Milestone rewards exist for clearing a floor tier, e.g. 'Claim after clearing Floor 2800'.",
+      "sky_tower_gating": "Campaign progression is gated by Sky Tower floor clears, so pushing floors unlocks more campaign content. Floors past 2,700 exist. The Abyssium Conqueror card is important for anyone running Sky Tower actively."
+    },
+    "dungeon": {
+      "gold_cave": "The Cave Explorer Privilege Card adds +2 Gold Cave daily challenges. The source records no other Gold Cave detail.",
+      "abyssal_tide": "The Abyssium Conqueror Privilege Card adds +1 daily Abyssal Tide challenge and Quick-Raid functionality. The source records no other Abyssal Tide detail.",
+      "shackled_jungle": "Stage-based dungeon gated by power rating (Stage 638 at snapshot). The game shows your current power against the recommended rating for the next stage, e.g. Current 128,130 / Rec. Rating 128,400; if your rating is well below the recommendation, success is unlikely. Each Start costs 1 entry, and a 1st Clear Reward is previewed for the next stage.",
+      "shackled_jungle_privilege": "The Abyssium Conqueror Card adds +2 daily Shackled Jungle challenges and unlocks Quick-Raid for stages you have already cleared."
+    }
+  }
+}
