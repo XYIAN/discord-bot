@@ -1,0 +1,25 @@
+{
+  "_meta": {
+    "source": "docs/game-knowledge/ (community contribution), events/game-modes sections",
+    "confidence": "high \u2014 mechanics and UI detail, cross-checked against live",
+    "why": "These 10 paths collided with live values. Reviewed one by one: NONE contradict live. Live carries community strategy (\"adapt your build to the season modifiers\"); the fragment carries mechanics and UI detail (\"3-stage tournament, Chapter 15 gate\"). Overwriting would have discarded the strategy; leaving the conflict would have discarded the mechanics. So the fragment text lands under a sibling *_mechanics key and both survive. No --repair was needed for any of them."
+  },
+  "game_modes": {
+    "arena": {
+      "main_arena_mechanics": "1v1 ranked PvP ladder on weekly seasons that settle and reset on a 7-day cycle. Challenge attempts are limited (snapshot showed 'Challenge x1', apparently daily-restored). Runs one of your 8 saved preset loadouts. The screen header is named after your current tier, e.g. 'Transcendent Battle'.",
+      "peak_arena_mechanics": "PvP mode where each player dispatches 3 characters to attack or defend; duplicate characters are allowed. Weekly seasons. The Peak1 / Peak2 / Peak3 loadout slots in the gear system exist for this mode.",
+      "rumble_ladder_mechanics": "6-player free-for-all PvP survival, run in periodic seasons (Off-Season at snapshot). Matches last 3 minutes: collect EXP to gain power, defeat monsters to earn gifts, and deliver gifts to storage zones to score points, competing for top rank inside the 3 minutes.",
+      "all_star_cup_mechanics": "Periodic 3-stage tournament with themed seasons (Sword Strike Season at snapshot). You must have reached Campaign Chapter 15 to take part in any cycle. Servers are grouped into zones by launch schedule and estimated participant count to balance competition."
+    },
+    "challenge": {
+      "magic_plant_defense_mechanics": "Solo or 2-player co-op PvE defence; difficulty rises in a 2-player team. The host spends a ticket to start and assisting players do not. Assist rewards are capped at 10 per week. 3 tickets replenish weekly and 1 more can be earned from daily tasks; the source estimates a solo host gets up to about 10 tickets a week.",
+      "seal_battle_mechanics": "Boss-based PvE challenge. 2 challenges per day, and the Sealing Master Privilege Card adds +1 for 3. Rewards are based on survival time. EXP drops randomly on the field during a run and must be actively collected to upgrade mid-run. Revival is not allowed, with revival gear the only exception.",
+      "sky_tower_mechanics": "Ascending floor-based tower, shown in groups of 5 floors (e.g. Floor 2796-2800). Each Start costs 1 entry and daily entries are limited; the Abyssium Conqueror Privilege Card adds +3 daily Sky Tower challenges."
+    },
+    "dungeon": {
+      "gold_cave_mechanics": "The Cave Explorer Privilege Card adds +2 Gold Cave daily challenges. The source records no other Gold Cave detail.",
+      "abyssal_tide_mechanics": "The Abyssium Conqueror Privilege Card adds +1 daily Abyssal Tide challenge and Quick-Raid functionality. The source records no other Abyssal Tide detail.",
+      "shackled_jungle_mechanics": "Stage-based dungeon gated by power rating (Stage 638 at snapshot). The game shows your current power against the recommended rating for the next stage, e.g. Current 128,130 / Rec. Rating 128,400; if your rating is well below the recommendation, success is unlikely. Each Start costs 1 entry, and a 1st Clear Reward is previewed for the next stage."
+    }
+  }
+}
