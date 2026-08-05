@@ -23,6 +23,13 @@ Timeouts, kicks and bans DM the member with the reason (kick/ban DM *before* rem
 
 The bot refuses anything Discord would reject — self-moderation, the server owner, bots, or a target above the bot or above you — with a sentence explaining why instead of an opaque failure.
 
+### Deploy fixes shipped alongside
+
+- `railway.json` ran the bot via `npm start`, making **npm** PID 1. Railway signals npm, npm reports its own child being stopped as a failure and exits non-zero — so every ordinary redeploy was reported as a crash and emailed about. Now runs `node xyian-bot-project/bot.js` directly. (Same bug and fix as the Tempest bot.)
+- `Procfile` updated for the same reason.
+- Removed a stale `xyian-bot-project/railway.json` that pointed at `archive/legacy/ultimate-xyian-bot.js` — a file that has not been the entrypoint for a long time. Railway reads the root config; this one was dead weight that would mislead anyone debugging a deploy.
+- `npm test` now runs the moderation tests too.
+
 Permission rules live in `lib/moderation.js`, pure and covered by 23 tests (`node test/moderation.test.js`). Ported from the Tempest bot, where the same rules are verified live in Discord.
 
 ⚠️ `!kick`, `!ban` and `!unban` are shipped but **not yet tested live** on either bot. The rest was verified end to end on Tempest.

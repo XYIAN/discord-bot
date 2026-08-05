@@ -1,0 +1,126 @@
+{
+  "_meta": {
+    "source": "community markdown: guild.md",
+    "contributed": "2026-08-04",
+    "confidence": "mechanics reliable; numbers may be stale",
+    "conflictsWithLive": [
+      "guild",
+      "guild.donations",
+      "guild.max_level"
+    ]
+  },
+  "guild": {
+    "overview": "Guilds are persistent social groups with shared progression and competitive content. The Guild hub is a map view with six buildings, each its own sub-feature.",
+    "member_cap": "Up to 30 members at base. Raising the guild level increases the member cap.",
+    "leadership": "Leaders can appoint Vice Leaders to help manage. Leaders cannot leave the guild — they must transfer leadership or be the last person to disband it.",
+    "inactive_leader": "Leadership auto-transfers when a leader is inactive for 7 days.",
+    "hub_buildings": "Six buildings: Guild Hall (members, roles, research, leaderboard), Monster Invasion (guild boss raids), Guild Expedition (multi-guild PvP tournament), Shop / Guild Store (hero shards and random Epic runes), Guild Merchant (community bargain mechanic), and Guild Aid.",
+    "guild_hall": {
+      "contents": "Guild name, ID, emblem with guild level, member count, Recruit button, aggregate guild power, guild XP progress bar toward the next level, and a leader-editable description box.",
+      "member_row": "Each member row shows avatar, role, name, power level, daily contribution count, contribution score, and online/offline status.",
+      "roles": "Leader (1), Vice Leader (multiple, appointed by the Leader), and Guild Members.",
+      "buttons": "Log (guild activity history: joins, leaves, kicks with timestamps), Guild Research, and Manage Member (kick / promote, Leader and Vice Leader only)."
+    },
+    "guild_research": {
+      "overview": "A grid of unlockable research nodes, each with 5 levels (Lv 1-5). Each node grants a buff that applies to all members of the guild.",
+      "how_it_works": "Each node has a Needed Research EXP bar. Members donate to push the bar; once filled the node levels up and the buff applies guild-wide. Node popups show current level, current effect, next level effect, donation rewards (EXP + currencies), and today's remaining battle chances.",
+      "tiers": "Most node names appear in Tier I and Tier II variants (e.g. Vitality I to Vitality II). Tier II is the higher unlock, only available after maxing Tier I.",
+      "node_types": "Two kinds of node: most grant incremental stat buffs on a Lv 1-5 ladder, while some are content unlocks (e.g. Clash Clearance II unlocks higher-tier Monster Invasion chests) with no per-level stat.",
+      "contribution_tracking": "Research shows your weekly contribution and your weekly ranking within the guild, plus a Guild Rankings button for global guild leaderboards.",
+      "nodes": {
+        "vitality_i": "Max HP. Observed maxed at +10%; full ladder not captured.",
+        "vitality_ii": "Max HP. Higher tier of Vitality I; per-level ladder not captured.",
+        "battle_will_ii": "ATK PWR +4% / +8% / +12% / +16% / +20% across Lv 1-5.",
+        "wealth_boost_i": "Stage/Hunt Gold Gain +2% / +4% / +6% / +8% / +10% across Lv 1-5.",
+        "wealth_boost_ii": "Stage/Hunt Gold Gain +2% / +4% / +6% / +8% / +10% across Lv 1-5.",
+        "scroll_boost_i": "Stage/Hunt Scroll Gain. Per-level ladder not captured.",
+        "training_boost_ii": "Stage/Hunt EXP Gain. Per-level ladder not captured.",
+        "stamina_capacity": "Max Energy, single tier. Observed maxed at +10.",
+        "purge": "More damage vs minions +4% / +8% / +12% / +16% / +20% across Lv 1-5. Single tier.",
+        "coordinated_hunt": "More damage vs elites +4% / +8% / +12% / +16% / +20% across Lv 1-5. Single tier.",
+        "assist_enhancement_i": "Guild assist reward chances +1 / +2 / +3 / +4 / +5 across Lv 1-5.",
+        "clash_clearance_ii": "Content unlock: unlocks Monster Invasion chest tiers (maxed unlocks Tier 10-12 chests).",
+        "other_nodes_observed": "Node names seen but with effects not documented: Clash, Stamina Cycle II, Contribution Return II, Assist Accel II, Reflexes, Assist Enhancement II."
+      },
+      "strategy": "Research is the cleanest source of permanent guild-wide stat buffs, and they apply to every member, so donating is high-leverage even for nodes you will not personally use. Focus Tier II of the stats your build prioritizes — Battle Will II for ATK builds, Vitality II for tanky builds, Wealth Boost II for gold farming."
+    },
+    "monster_invasion": {
+      "overview": "A guild-wide boss raid where members collectively damage a single boss for tiered rewards.",
+      "boss_rotation": "The boss rotates daily. A Boss Refresh Timer counts down to the next rotation, and a Chance Refresh Timer limits attempts per member per cycle.",
+      "damage_thresholds": "Per-day damage milestones each player must hit to claim each reward tier: 30M / 60M / 100M+ chests.",
+      "buttons": "Quick Raid (auto-resolve attempts, extended by the Sealing Master privilege card), Practice (test runs that cost no chances and give no rewards), Start (manual run), and Preset (load a saved gear/rune loadout).",
+      "guild_ranking": "Monster Invasion has a global guild ranking based on total guild damage summed across all members for each daily boss rotation. Rewards are sent via mail at the end of each round.",
+      "ranking_rewards": {
+        "note": "Guild Coins / secondary currency, sent by mail to all members of qualifying guilds at the end of each daily round. Values for the top 4 ranks were not captured.",
+        "rank_5": "5,000 / 2,250",
+        "rank_6_10": "4,500 / 2,100",
+        "rank_11_30": "4,000 / 1,950",
+        "rank_31_60": "3,500 / 1,800",
+        "rank_61_100": "3,000 / 1,650",
+        "rank_100_plus": "2,500 / 1,500"
+      },
+      "strategy": "Being in a Top-100 guild is a meaningful daily Guild Coin source. The driver is total guild damage, so a guild with many members hitting the per-player milestones out-damages one with only a few high-damage members."
+    },
+    "guild_expedition": {
+      "overview": "A multi-guild PvP tournament with seasonal rounds. Your guild faces other guilds in deployment-based combat.",
+      "eligibility": "Guild must be Lv.3 or higher and have at least 10 members registered. Members must personally register. Each route has a deploy cap and stronger members are deployed first, but all registered members earn rewards even if not deployed.",
+      "weekly_schedule": {
+        "note": "7-day cycle, all times UTC+0.",
+        "registration": "Mon 00:00 - Tue 23:59. Members register and select a battle route.",
+        "prep_phase": "Wed 00:00 - Thu 23:59. Leaders and Vice Leaders assign deployed members for all 3 routes; members spend Expedition Hearts to recharge Expedition Talents and gain buffs.",
+        "battle_phase": "Fri 00:00 - Sun 23:59. Round-robin combat. Deployments and character progress lock at Fri 12:00 UTC, and the opposing guild's deployment becomes viewable within 2 hours after lock."
+      },
+      "format": "A group of 4 guilds competes round-robin, giving 3 matches per guild per cycle. Each match has 3 routes (Left / Middle / Right); each route deploys 8 members and the top 8 by Battle Power per lane fight. Capturing flags across the 3 routes determines wins.",
+      "combat_rules": "Matches use spectator mode with the arena's presets. Characters' HP and ATK use default values rather than live stats, so gear and runes do not directly determine fight outcomes — talent and Expedition Talents do. The guild that defeats all enemy players on a route claims that route's flag.",
+      "season_structure": "A season lasts 12 weeks (84 days) across 12 rounds of 1 week each. Performance accumulates league points across rounds, driving promotion or demotion at season end.",
+      "match_scoring": "Within a round: a win (more flags captured) is 3 points and a draw (equal flags) is 1 point each. These determine placement within your weekly 4-guild bracket.",
+      "round_points": "End-of-round bracket placement gives league points: 1st +50, 2nd +35, 3rd +10, 4th -15.",
+      "win_streak_bonus": "Win streaks add bonus points: a 2-match win streak gives +5, a 3-match win streak gives +10.",
+      "season_reset": {
+        "note": "At season reset a guild's points auto-reset to a soft floor based on final points — higher finishes keep more progress.",
+        "0_599": "No reset, stays the same",
+        "600_699": "Resets to 550",
+        "700_799": "Resets to 600",
+        "800_899": "Resets to 650",
+        "900_999": "Resets to 750",
+        "1000_1099": "Resets to 850",
+        "1100_1199": "Resets to 950",
+        "1200_plus": "Resets to 1,000"
+      },
+      "season_rewards": "Rewards are tallied based on the final tier reached in the season. Players must be registered for at least 3 weeks of matches to be eligible; if the guild itself participated fewer than 3 weeks, players must participate in all available matches (exact wording was cut off in the source).",
+      "leagues": "The label under each guild's name on the round screen is its league. Thunderbound Oath and Dragonbound are the two leagues documented, with Dragonbound the higher one. Thunderbound Oath spans the 900-1,199 point band; sub-tier range is 100 points. The full league ladder was not captured.",
+      "expedition_talents": "A talent tree unlocked through registration and the Prep Phase. Members spend Expedition Hearts to power it up, and talents apply to the entire guild during the upcoming Battle Phase. Examples observed: all members gain DMG Reflect (CD 1s, upgradeable to 1.5s), DMG Reflect reduced +15%, Healing reduced +20%, Hit Rate +20%, and +1% DMG to all members on a lane for each additional guild member that joins that lane (calculated per lane independently).",
+      "deployment_screen": "Shows 3 lanes (Left / Middle / Right) with participants per lane and total power per lane. Among the members of each route, the top 8 in Battle Power join the battle; registered but undeployed members still earn rewards. Presets save deployment configurations."
+    },
+    "guild_store": {
+      "overview": "The guild's daily-rotating shop, primarily for hero shards and random Epic runes. Refreshes every 24h.",
+      "currency": "Guild Coins (orange icon), alongside gold.",
+      "hero_shards": "Alex, Nyanja, Helix, Hela, Mymu, and Hou Yi shards at 900 Guild Coins each, limit 50 purchases each per day.",
+      "runes": "Random Epic Enhancement Rune, Random Epic Ability Rune, and Random Epic Blessing Rune, bought with gems, limit 10 each.",
+      "strategy": "All 6 hero shards on offer are Rare-tier heroes, so the Guild Store is a strong farm path for Rare hero progression — up to 300 Rare hero shards per day per member.",
+      "shop_tabs": "Sub-tabs at the bottom of the Shop: Guild Store (default), Guild Expedition Shop, Event Shop, Arena Shop, and Skin Exchange Shop."
+    },
+    "guild_expedition_shop": {
+      "overview": "A tab inside the Guild Shop selling themed random Epic runes plus specific named runes. Refreshes roughly every 2 days.",
+      "currency": "Paid for with a currency earned from Guild Expedition (2,700 per item; the source could not confirm the currency name, likely Expedition Coins).",
+      "items": "Random Epic Circle, Meteor, Sword Strike, Sprite, Main Weapon, Elemental, Plant, and Blessing Runes, plus Arrow of Echoes (a specific Etched rune). All at 2,700 with 1 purchase each.",
+      "strategy": "The cleanest path for theme-targeted rune farming — if you are building a Sprite or Plant build, the Random Epic [Theme] Rune options let you spend Expedition currency directly toward that theme."
+    },
+    "guild_merchant": {
+      "overview": "A community-driven bargain mechanic. Guild members collectively contribute bargains to lower the price of merchant items for the whole guild. Items rotate daily.",
+      "how_it_works": "A panda merchant offers items each day at a base price in gems. Each member can place a Bargain, a small contribution toward the price cut. The more members who Bargain, the cheaper items get for everyone.",
+      "refunds": "The price difference is returned via mail the next day, so anyone who bought at a higher price is refunded once the cut is finalized.",
+      "daily_window": "The bargain runs on a daily timer window.",
+      "community_expectation": "Bargaining once daily is a common guild requirement, not just a personal tool."
+    },
+    "guild_aid": {
+      "overview": "A Mystling-specific member help system. Guildmates can speed up each other's Pact Sanctum upgrade timers and Mystling egg hatch times.",
+      "upgrades": "The Mystling Collection track has milestones that improve it: 'Guild assist reward chances +N' boosts what you earn from helping others, and 'Assisted help requests: extra -60s' makes assistance you receive more impactful.",
+      "routine": "Sending and receiving Guild Aid daily is part of an active member's loop, especially in guilds focused on Mystling progression."
+    },
+    "guild_coins_source": "Guild Coins (used in the Guild Store) come from Monster Invasion guild ranking rewards and guild donation rewards. Consistent Monster Invasion damage plus donating to Guild Research is the loop that funds Guild Store purchases.",
+    "daily_routine": "A typical active guild day: claim Pact Sanctum if upgraded, run Monster Invasion (Quick-Raid if you own the Sealing Master card), place 1 Bargain at Guild Merchant, buy daily hero shards from the Guild Store, contribute to Guild Research, and deploy/battle in Guild Expedition during active rounds.",
+    "why_it_matters": "Active guild membership is essential for endgame progression — Monster Invasion rewards, Guild Expedition coins, daily merchant bargains, hero shard farming, and guild-wide research buffs all require active participation.",
+    "open_questions": "Not documented in this contribution: what Manage Member reveals, how Expedition Hearts are earned, and the full league ladder above and below Thunderbound Oath."
+  }
+}

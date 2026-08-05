@@ -1,0 +1,82 @@
+{
+  "_meta": {
+    "source": "community markdown: privilege_cards.md",
+    "contributed": "2026-08-04",
+    "confidence": "mechanics reliable; numbers may be stale",
+    "conflictsWithLive": [
+      "privilege_cards",
+      "privilege_cards.description",
+      "privilege_cards.community_summary",
+      "privilege_cards.permanent_ad_free_card",
+      "privilege_cards.lifetime_supply_card"
+    ]
+  },
+  "privilege_cards": {
+    "overview": "A set of cards, some lifetime and some monthly, that provide ongoing daily rewards and quality-of-life perks. Accessed from the Privilege Card icon on the main screen left panel.",
+    "pricing_caveat": "The numbers shown next to 'Purchase and get' on a card screen are one-time gem bonuses received on purchase, NOT the card's price. Actual prices are not visible to players who already own the cards, so the purchase currency (USD or Aurocite) and amounts were not captured.",
+    "daily_gifts": "Free to everyone: 10 gems per day, resets daily.",
+    "lifetime_ad_free_card": {
+      "name": "Lifetime Ad-Free Card",
+      "type": "lifetime, one-time purchase",
+      "gems_on_purchase": 1200,
+      "gems_per_day": 20,
+      "benefit": "Ad-free forever; increases daily free gems."
+    },
+    "lifetime_supply_card": {
+      "name": "Lifetime Supply Card",
+      "type": "lifetime, one-time purchase",
+      "gems_on_purchase": 3900,
+      "gems_per_day": 800,
+      "benefit": "Claim a large gem payout daily."
+    },
+    "monthly_cards_overview": "Each monthly card lasts 30 days. Renewal costs 499 Aurocite, not gems. Initial purchase comes with a 500-gem one-time bonus; the initial purchase price is not visible to current owners.",
+    "monthly_card": {
+      "name": "Monthly Card",
+      "type": "monthly, 30 days",
+      "gems_per_day": 400,
+      "benefits": "New skill refreshes in battle +1, forfeit skill selection, skippable arena battles, skip Peak Arena battle."
+    },
+    "hunting_warrior_card": {
+      "name": "Hunting Warrior Card",
+      "type": "monthly, 30 days",
+      "gems_per_day": 100,
+      "benefits": "Unlimited multiple Quick Hunts, Max Energy +20, AFK Rewards +20%."
+    },
+    "cave_explorer_card": {
+      "name": "Cave Explorer Card",
+      "type": "monthly, 30 days",
+      "gems_per_day": 0,
+      "benefits": "Gold Cave Daily Challenges +2, unlock Auto-Dig in Rune Ruins."
+    },
+    "sealing_master_card": {
+      "name": "Sealing Master Card",
+      "type": "monthly, 30 days",
+      "gems_per_day": 0,
+      "benefits": "Seal Battle Daily Challenges +1; Seal Battle can be Quick-Raided with the highest DMG in this round; Monster Invasion can be Quick-Raided with DMG dealt in the 1st round of the current day."
+    },
+    "abyssium_conqueror_card": {
+      "name": "Abyssium Conqueror Card",
+      "type": "monthly, 30 days",
+      "gems_per_day": 0,
+      "benefits": "Abyssal Tide can be Quick-Raided with the highest DMG dealt in the current day; Daily Abyssal Tide challenges +1; cleared Shackled Jungle stages can be Quick-Raided; Daily Shackled Jungle challenges +2; Daily Sky Tower challenges +3."
+    },
+    "daily_gem_totals": {
+      "note": "Gems per day by source when all cards are owned.",
+      "daily_gifts": 10,
+      "lifetime_ad_free": 20,
+      "lifetime_supply": 800,
+      "monthly_card": 400,
+      "hunting_warrior": 100,
+      "cave_explorer": 0,
+      "sealing_master": 0,
+      "abyssium_conqueror": 0,
+      "total": "1,330 gems/day"
+    },
+    "recommendation_policy": {
+      "default_rule": "Do NOT recommend purchases to F2P players — it gets annoying fast and is the wrong frame for that audience.",
+      "f2p_players": "Focus advice on free progression, daily routines, and best use of free gems. Mention lifetime cards only if the player asks specifically about value or clearly invites it, and frame them as optional.",
+      "paying_players": "Lifetime Ad-Free plus Lifetime Supply are the two purchases broadly worth recommending to anyone playing actively — they pay back over time.",
+      "monthly_card_matching": "Monthly cards are situational, matched to player activity: heavy Quick Hunts user to Hunting Warrior; active in Gold Cave / Rune Ruins to Cave Explorer; active in Seal Battle / Monster Invasion to Sealing Master; active in Abyssal Tide / Shackled Jungle / Sky Tower to Abyssium Conqueror; heavy Arena player to Monthly Card."
+    }
+  }
+}

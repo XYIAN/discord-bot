@@ -1,0 +1,29 @@
+{
+  "_meta": {
+    "source": "community markdown: battle_pass.md",
+    "contributed": "2026-08-04",
+    "confidence": "mechanics reliable; numbers may be stale",
+    "conflictsWithLive": []
+  },
+  "battle_pass": {
+    "description": "Seasonal reward track, reached from the Daily Rewards / Great Value screen via the Battle Pass tab.",
+    "season_length": "28 days per pass. After the current pass ends, the next one becomes available.",
+    "tracks": {
+      "free": "Available to all players.",
+      "advanced_pass": "Paid tier.",
+      "luxury_pass": "Top paid tier."
+    },
+    "progression": "Complete Daily Tasks to earn activity points (XP). Each level on the pass unlocks rewards in each of the three tracks the player has access to.",
+    "exp_carryover": {
+      "description": "At the end of each season, EXP carries over to the next pass based on total EXP earned. Values below are the amount carried over.",
+      "under_1450": 0,
+      "1450_to_1699": 200,
+      "1700_to_1949": 300,
+      "1950_to_2199": 450,
+      "2200_to_2449": 550,
+      "2450_or_more": 700
+    },
+    "post_cap_rewards": "Once the pass reaches max level, every additional 50 activity points grants 1 Gray Key (used for Silver Chest pulls). Capped at 20 gray keys per season; activity points earned after that give no further reward for the season.",
+    "claim_all": "A Claim All button at the bottom of the Battle Pass screen claims every unclaimed reward across the tracks the player has access to."
+  }
+}

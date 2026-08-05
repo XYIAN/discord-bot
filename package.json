@@ -1,13 +1,13 @@
 {
   "name": "xyian-discord-bot",
-  "version": "3.15.1",
+  "version": "3.16.0",
   "description": "XYIAN Discord Bot - Archero 2 community bot",
   "private": true,
   "scripts": {
     "start": "node xyian-bot-project/bot.js",
     "dev": "node xyian-bot-project/bot.js",
     "build": "echo 'Node.js project - no build step required'",
-    "test": "node xyian-bot-project/test/log-forwarder.test.js && node xyian-bot-project/test/log-forwarder.integration.test.js && node xyian-bot-project/test/contributions.test.js",
+    "test": "node xyian-bot-project/test/log-forwarder.test.js && node xyian-bot-project/test/log-forwarder.integration.test.js && node xyian-bot-project/test/contributions.test.js && node xyian-bot-project/test/moderation.test.js",
     "audit:contributions": "node xyian-bot-project/scripts/audit-contributions.js"
   },
   "author": "Kyle",

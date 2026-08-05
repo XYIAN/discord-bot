@@ -1,0 +1,215 @@
+{
+  "_meta": {
+    "source": "community markdown: gear.md",
+    "contributed": "2026-08-04",
+    "confidence": "mechanics reliable; numbers may be stale",
+    "conflictsWithLive": [
+      "gear_sets",
+      "weapons.s_rank_overview",
+      "weapons.pieces_list",
+      "weapons.griffin_claw",
+      "weapons.griffin_armor",
+      "weapons.griffin_ring",
+      "weapons.oracle_spear",
+      "weapons.oracle_helmet",
+      "weapons.oracle_boots",
+      "weapons.oracle_ring",
+      "skins"
+    ]
+  },
+  "gear_sets": {
+    "overview": "Six core gear sets: three base sets and three S-Ranked counterparts. Only S-Ranked gear can be upgraded past Legendary.",
+    "gear_slots": "Six gear slots per hero: Helmet, Armor, Weapon, Boots, Ring, Amulet.",
+    "loadouts": "Every player has 8 saved loadouts they can name and configure freely. Loadouts are player-level slots, not hero-level — they persist independent of which hero is selected.",
+    "set_pairs": {
+      "destruction": "Base set, caps at Legendary. S-Ranked counterpart: Dragoon.",
+      "decisiveness": "Base set, caps at Legendary. S-Ranked counterpart: Griffin.",
+      "echo": "Base set, caps at Legendary. S-Ranked counterpart: Oracle."
+    },
+    "s_ranked_indicator": "S-Ranked pieces show a yellow 'S' badge on the gear icon (it can read as a '5' at small sizes).",
+    "s_ranked_source": "S-Ranked gear (Dragoon / Griffin / Oracle) drops directly from Mythstone Chest and Chromatic Chest. You do not build them up from base set pieces.",
+    "s_ranked_minimum_rarity": "S-Ranked gear never drops at Common, Fine, or Rare. The lowest rarity an S-Ranked piece can drop at is Epic; from there it can be upgraded to Chaotic.",
+    "rarity_ladder_note": "14 rarity tiers, low to high, ending at Chaotic.",
+    "rarity_ladder": {
+      "1": "Common",
+      "2": "Fine",
+      "3": "Rare",
+      "4": "Epic",
+      "5": "Legendary",
+      "6": "Legendary +1",
+      "7": "Legendary +2",
+      "8": "Legendary +3",
+      "9": "Mythic",
+      "10": "Mythic +1",
+      "11": "Mythic +2",
+      "12": "Mythic +3",
+      "13": "Mythic +4",
+      "14": "Chaotic (top tier)"
+    },
+    "base_set_cap": "Base sets (Destruction / Decisiveness / Echo) can be upgraded through Legendary +3 but cannot reach Mythic or beyond.",
+    "s_ranked_cap": "S-Ranked sets (Dragoon / Griffin / Oracle) can be upgraded all the way to Chaotic.",
+    "base_set_fodder": "Past early game, base set pieces have no long-term upgrade ceiling, so most players use them as upgrade fodder for S-Ranked pieces.",
+    "gear_levels": "Each gear piece has a Level counter from 1 to 200, upgraded with slot-specific Gear Scrolls (Weapon Scroll for weapons, Armor Scroll for armor, etc.).",
+    "gear_scroll_sources": "Gear Scrolls drop from Hunt and are sold in the Daily Shop and as Reach milestone rewards.",
+    "levels_vs_rarity": "Gear level and rarity are independent progression tracks. Level grows to 200 via Gear Scrolls; rarity is upgraded separately at the Blacksmith. They do not affect each other.",
+    "upgrade_costs": "Rarity upgrades cost Gold plus slot-specific Scrolls.",
+    "piece_detail_fields": "A gear piece's detail screen shows name + rarity tier, level X/200, Skin Skills (set-specific abilities) and Quality Skills (stat bonuses).",
+    "stat_snapshot_caveat": "Per-piece stats below were captured at the Chaotic rarity tier. Lower rarities show a subset of these effects, and flat values scale with the piece's level.",
+    "griffin_set": {
+      "theme": "Theme observed: proximity / melee-range bonuses — multiple 'more enemies in melee range' effects, closer-distance DMG and CRIT bonuses, a 7m damage-over-time aura, and dodge while moving. Reads as a close-range crowd-fighting set. (Contributor flagged this as an interpretation to confirm.)",
+      "recurring_pattern": "Every Griffin piece has: a flat primary stat (ATK PWR on offensive slots, Max HP on defensive slots), a matching % primary stat, a slot-flavored secondary stat, [Slot]'s base stats +20% / +30% / +40% as three tiered upgrades, and one or two conditional effects that scale by rarity (the second tier roughly doubles the first).",
+      "griffin_claw": {
+        "slot": "Weapon",
+        "flavor": "The Griffin's claws, sharp as if they could tear through the sky.",
+        "skin_skill_note": "The weapon slot displays the equipped weapon SKIN's ability, not a base Griffin Claw skill.",
+        "quality_skills": "ATK PWR +19,680 (flat), ATK PWR +5%, ATK SPD +5%, Deal more DMG at closer distances up to 10%, Higher CRIT Rate at closer distances up to 9% / 18%, Weapon's base stats +20% / +30% / +40%, Close-range damage taken -20%"
+      },
+      "griffin_helmet": {
+        "slot": "Helmet",
+        "flavor": "The regal stance, wearing this makes your vision broader than the sky.",
+        "quality_skills": "Max HP +60,960, Max HP +5%, Red Heart Heal +20%, Higher CRIT DMG at closer distances up to 36% / 72%, Max HP +10%, Helmet's base stats +20% / +30% / +40%, Higher ATK SPD at closer distances to the target up to 100%"
+      },
+      "griffin_armor": {
+        "slot": "Armor",
+        "flavor": "Woven from the feathers of storms, it grants the wearer the protection of the king of the skies.",
+        "quality_skills": "Max HP +59,520, Max HP +5%, Barrage DMG REDUC +5%, Deals DMG over time to enemies within 7m, Max HP +10%, Armor's base stats +20% / +30% / +40%, Doubles DMG over time to enemies within 7m, Weakens enemies within 7m and deepens enemy wounds by 20%"
+      },
+      "griffin_boots": {
+        "slot": "Boots",
+        "flavor": "Soaring through the clouds, these boots embody lofty ambition and swift winds.",
+        "quality_skills": "Max HP +59,520, Max HP +5%, Dodge +5%, The more enemies in melee range the higher the CRIT DMG (max at 4 enemies, up to 36% / 72% increase; Players and Bosses count as 2 units), Max HP +10%, Boots' base stats +20% / +30% / +40%, 20% DMG REDUC when moving"
+      },
+      "griffin_ring": {
+        "slot": "Ring",
+        "flavor": "Seize the gale, this ring symbolizes the perfect blend of freedom and power.",
+        "quality_skills": "ATK PWR +15,720, ATK PWR +5%, CRIT Rate +3%, The more enemies in melee range the higher the CRIT Rate (max at 3 enemies, up to 9% / 18% increase; Players and Bosses count as 2 units), ATK PWR +10%, Ring's base stats +20% / +30% / +40%, Hearts heal more at lower HP up to 100%"
+      },
+      "griffin_amulet": {
+        "slot": "Amulet",
+        "flavor": "Wings' protection, the amulet contains formidable defense.",
+        "quality_skills": "ATK PWR +17,160, ATK PWR +5%, CRIT DMG +12%, Counter with 2x / 4x DMG to nearby enemies when damaged, ATK PWR +10%, Amulet's base stats +20% / +30% / +40%, When taking DMG within distance of 7, chance to drop Hearts"
+      }
+    },
+    "oracle_set": {
+      "theme": "Theme observed: combo hits, multishot / projectile mechanics, and CRIT scaling with sustained combat — 'for every 5 combo hits' and 'when combo reaches +40 hits' triggers, piercing beams, diagonal arrows, and Multishot procs. Reads as a sustained ranged DPS combo build, the opposite identity from Griffin.",
+      "structure_note": "Same structural pattern as Griffin: flat + % primary stats, slot-flavored secondary, base-stat tiers, and conditional effects.",
+      "oracle_spear": {
+        "slot": "Weapon",
+        "flavor": "The weapon of prophecy that can discern enemies' weaknesses and bring justice in the light.",
+        "skin_skill_note": "The weapon slot displays the equipped weapon skin's ability.",
+        "quality_skills": "ATK PWR +16,560, ATK PWR +5%, Fires a powerful piercing beam, DMG increases with combo hits up to 10%, For every 5 combo hits CRIT Rate +2% up to 8%"
+      },
+      "oracle_helmet": {
+        "slot": "Helmet",
+        "flavor": "A protective shield infused with divine will, dispelling all doubts and confusion.",
+        "quality_skills": "Max HP +59,520, Max HP +5%, Red Heart Heal +20%, Gain 2x combo hits on CRIT, Max HP +10%, Helmet's base stats +20% / +30% / +40%, Gain 3x combo hits on CRIT, Chance to gain +1 Multishot on critical hit"
+      },
+      "oracle_armor": {
+        "slot": "Armor",
+        "flavor": "Blessed by holy light, it guards the oracle from worldly corruption.",
+        "quality_skills": "Barrage DMG REDUC +5%, Max HP +10%, For every 5 combo hits +2 diagonal arrows on next hit, Armor's base stats +20% / +30% / +40%, For every 5 combo hits +4 diagonal arrows on next hit, When looting Hearts chance to gain Invincibility Shield for 2s"
+      },
+      "oracle_boots": {
+        "slot": "Boots",
+        "flavor": "With a divine mandate, the oracle's steps always lead the path of righteousness.",
+        "quality_skills": "Max HP +58,860, Max HP +5%, Dodge +5%, CRIT DMG +32% after 30 combo hits, Max HP +10%, Boots' base stats +20% / +30% / +40%, CRIT DMG +48% after 20 combo hits, 20% DMG REDUC when stationary"
+      },
+      "oracle_ring": {
+        "slot": "Ring",
+        "flavor": "Foreseeing the signs of victory, wear this ring to grasp the future.",
+        "quality_skills": "ATK PWR (flat value not captured), CRIT Rate +5%, For every 5 combo hits ATK SPD +2% up to 8%, ATK PWR +10%, Ring's base stats +20% / +30% / +40%, For every 5 combo hits ATK SPD +4% up to 16%, When combo reaches +40 hits deal increased DMG to enemies at Max HP"
+      },
+      "oracle_amulet": {
+        "slot": "Amulet",
+        "flavor": "The oracle's revelation. The amulet holds wisdom of the future.",
+        "quality_skills": "ATK PWR +5%, CRIT DMG +12%, Every 5 combo hits doubles next attack DMG, ATK PWR +10%, Amulet's base stats +20% / +30% / +40%, Every 3 combo hits doubles next attack DMG, When combo reaches +40 hits projectile splits +3"
+      }
+    },
+    "dragoon_set": {
+      "status": "Per-piece Dragoon detail was not documented in this contribution. The contributor notes Dragoon follows the same pattern as Griffin and Oracle: 6 pieces (Helmet / Armor / Weapon / Boots / Ring / Amulet) each with flat + % primary stats, a slot-flavored secondary, base-stat tiers, and conditional effects."
+    },
+    "weapon_skins": {
+      "scope": "Skins exist only for the main weapon. There are no skins for Helmet, Armor, Boots, Ring, or Amulet. Only one weapon skin can be equipped at a time.",
+      "weapon_archetypes": "Three base weapon archetypes, each with multiple skins: Crossbow (Heroic Longbow family), Staff (Beam Staff family), and Claw (Agile Knuckles / Griffin Claw family).",
+      "two_layers": "Each skin has two layers with different activation rules: Collectible Stats and Skin Skills.",
+      "collectible_stats": "Static and always active once you own the skin, whether or not it is equipped. Owning more skins stacks their Collectible Stats permanently across the account.",
+      "skin_skills": "Only active while that skin is equipped. The active ability proc (Snowball, Lacerate DoT, Cudgel Jab, summoned hoops, etc.) only triggers on the currently equipped skin.",
+      "star_upgrades": "Every skin has 6 effective tiers: an 'owned' baseline (0 stars) plus 1 star through 5 stars. You upgrade only by acquiring duplicate skins — each duplicate is one star. There is no currency-based upgrade path.",
+      "star_benefits": "Higher stars give stronger Collectible Stats (bigger per-piece-equipped bonuses) and stronger Skin Skills (more damage, procs, and stacks).",
+      "skin_rarity": "Skins have their own rarities; icon background color is a tell (purple-magenta = lower, gold-yellow = higher). Higher-rarity skins give bigger Collectible Stats at every star tier. More rarity tiers exist beyond these two, with different ratios; the full ladder was not captured.",
+      "collectible_stats_gold_rarity": {
+        "note": "Per matching-set gear piece equipped, for higher-rarity (gold icon) skins such as Holly Blitz, Cosmic Hoop, Monarch's Fang.",
+        "owned_0_star": "ATK +20, HP +80",
+        "1_star": "ATK +36, HP +144",
+        "2_star": "ATK +52, HP +208",
+        "3_star": "ATK +68, HP +272",
+        "4_star": "ATK +84, HP +336",
+        "5_star": "ATK +100, HP +400"
+      },
+      "collectible_stats_purple_rarity": {
+        "note": "Per matching-set gear piece equipped, for lower-rarity (purple icon) skins such as Shadesteal Claw.",
+        "owned_0_star": "ATK +10, HP +40",
+        "1_star": "ATK +18, HP +72",
+        "2_star": "ATK +26, HP +104",
+        "3_star": "ATK +34, HP +136",
+        "4_star": "ATK +42, HP +168",
+        "5_star": "ATK +50, HP +200"
+      },
+      "set_tie": "Each skin is tied to a specific gear set (Griffin / Dragoon / Oracle). Its Collectible Stats only count matching-set gear — equipping a Griffin skin while wearing Oracle gear means the Collectible Stats have nothing to count.",
+      "acquisition": "Hero Skin Shop is the primary source; Reforger Shop is an alternative source/exchange. The skin tooltip header reads 'Skin Exchange Shop'.",
+      "strategy": "Two different priorities: Collectible Stats reward breadth (owning many skins, even at low stars, builds a permanent passive power floor), while Skin Skills reward depth (level your best equipped skin to 5 stars via duplicates).",
+      "holly_blitz": {
+        "set": "Griffin",
+        "type": "Claw weapon skin, gold rarity",
+        "flavor": "Crimson gauntlets trimmed with holly and berries, topped by a golden star. Every punch lands as a sharp, festive greeting.",
+        "skin_skill": "Main weapon attacks have a small chance to fire Snowball dealing X% Weapon DMG and applying Snow Cover. Each Snow Cover stack reduces the target's MOV SPD and ATK SPD by 2%; at 10 stacks all stacks are consumed to Stun for 1s.",
+        "skill_scaling": "Owned 60%, 1 star 90%, 2 star 120%, 3 star 160%, 4 star 200%, 5 star 240%"
+      },
+      "monarchs_fang": {
+        "set": "Griffin",
+        "type": "gold rarity",
+        "flavor": "Forged from crown fragments of an emperor long gone, symbolizing supreme sovereignty.",
+        "skin_skill": "Main weapon attacks inflict Lacerate on enemies hit for 5s, dealing X% Weapon DMG every 0.5s. When Lacerated enemies are defeated there is a Y% chance to drop Red Hearts.",
+        "skill_scaling": "Owned 4% / 5%, 1 star 6% / 8%, 2 star 8% / 11%, 3 star 10% / 14%, 4 star 12% / 17%, 5 star 15% / 20%"
+      },
+      "shadesteal_claw": {
+        "set": "Griffin",
+        "type": "Claw weapon skin, lower (purple) rarity",
+        "flavor": "When swung, its claw afterimages are testament to its blinding speed.",
+        "collectible_stats": "ATK +10, HP +40 per Griffin piece equipped",
+        "skin_skill": "Main weapon attacks release N fist shadows, each dealing X% Weapon DMG.",
+        "skill_scaling": "1 star 5 shadows x 4%, 2 star 6 x 6%, 3 star 6 x 8%, 4 star 7 x 10%, 5 star 8 x 12%"
+      },
+      "cosmic_hoop": {
+        "set": "Griffin",
+        "type": "gold rarity",
+        "collectible_stats_by_star": "1 star HP +144, 2 star ATK +52 HP +208, 3 star ATK +68 HP +272, 4 star ATK +84 HP +336, 5 star ATK +100 HP +400",
+        "skin_skill": "Summon 2 Cosmic Hoops that gradually move outward, dealing X% ATK DMG. [Cosmic Hoop] has a Y% chance to gain [Fiery Path].",
+        "skill_scaling": "1 star - / 40%, 2 star 44% / 55%, 3 star 56% / 70%, 4 star 68% / 85%, 5 star 80% / 100%"
+      },
+      "goldwish_cudgel": {
+        "set": "Oracle",
+        "type": "Oracle weapon skin, gold rarity",
+        "flavor": "Golden cloud sigils coil along the staff. It shifts at will, each swing heaven-shaking, demon-vanquishing.",
+        "collectible_stats": "ATK +20, HP +80 per Oracle gear piece (gold-rarity progression)",
+        "skin_skill": "Main Weapon hits have a chance to trigger [Cudgel Jab], dealing 55% ATK DMG in a straight line and potentially applying Paralyze."
+      },
+      "eldritch_tower": {
+        "set": "Oracle",
+        "type": "Oracle weapon skin, gold rarity",
+        "collectible_stats": "Standard gold-rarity progression: ATK +20 to +100, HP +80 to +400 across Owned through 5 stars."
+      },
+      "oracle_skin_note": "The Oracle weapon shows as 'Oracle Spear' on the gear page, but skins re-render it as different visual weapons (cudgels, towers). The underlying archetype is likely Staff. Oracle skins follow the same rules as Griffin skins."
+    },
+    "hero_stat_sheet": {
+      "core": "Total ATK, Total HP, ATK PWR, ATK Bonus %, Max HP, HP Bonus %, MOV SPD %, ATK SPD %",
+      "crit": "CRIT Rate, CRIT DMG, CRIT DMG REDUC, Reduced Crit DMG from Players (PvP-specific)",
+      "defense": "Dodge, Effect RES, DMG REDUC, Final DMG REDUC, plus per-context values for Barrage, Collision, Airborne, Ground, Minion, Elite, Boss",
+      "offense": "Final DMG Bonus, more damage vs airborne / ground / minions / elites, Boss DMG, Main Weapon DMG (flat + %), Main Weapon CRIT Rate",
+      "elemental": "Poison DMG (flat), Lightning DMG (flat + %), Flame DMG %, Fire DMG (flat)",
+      "healing": "Heal on Level Up, Red Heart Heal %, Heart Recovery %, Angel Recovery %",
+      "misc": "Devil's Pact HP cost reduced %",
+      "flat_and_percent_note": "Most stats appear as both a flat + and a percentage variant and the game stacks both. Higher-tier gear and runes mostly contribute to the % multipliers."
+    }
+  }
+}

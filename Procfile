@@ -1,1 +1,1 @@
-web: npm start
+web: node xyian-bot-project/bot.js
