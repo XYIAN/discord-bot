@@ -33,10 +33,10 @@ test('renders the live knowledge base to the pinned length and hash', () => {
     // message what moved. If it fails after you edited lib/knowledge-render.js,
     // stop: you have changed what the bot is allowed to say.
     const out = renderKnowledge(KNOWLEDGE);
-    assert.strictEqual(out.length, 152616, 'rendered length changed');
+    assert.strictEqual(out.length, 152813, 'rendered length changed');
     assert.strictEqual(
         sha(out),
-        '9bae1c57f3eb2ae9dd7294e8da6d2600c2826ec021de72899d5a6551e9119ca8',
+        '1299f3d0d0b0df0fef23453458121e76c3e186b820d617e453b571f549859827',
         'rendered content changed',
     );
 });

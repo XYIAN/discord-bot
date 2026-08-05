@@ -4,6 +4,17 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.21.2] - 2026-08-04
+
+### Aurocite is money: 100 Aurocite = $1 USD
+
+Kyle confirmed the conversion, and it turns out to matter. The knowledge base already described Aurocite as "the default real-money currency" but never recorded the rate — so the bot could answer "499 Aurocite" and nobody reading it would necessarily register that as **$4.99 of real money**.
+
+- Added `currencies.aurocite.usd_conversion`: 100 Aurocite = $1 USD, so 99 = $0.99, 499 = $4.99, 4999 = $49.99. Any Aurocite figure is a real-money figure.
+- This retroactively justifies the v3.21.1 price guard treating Aurocite exactly like dollars. It was the right call for a reason better than the one given at the time.
+- The golden render test failed on this change, which is precisely its job — a data edit must be visible and re-pinned deliberately. Re-pinned in this commit: 152,813 chars.
+- `!usage` per-day rows were wrapping on narrower clients; the table is now 42 characters wide with a header row.
+
 ## [3.21.1] - 2026-08-04
 
 ### The price warning is now enforced, not requested

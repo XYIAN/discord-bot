@@ -2626,8 +2626,11 @@ client.on('messageCreate', async (message) => {
                 if (!sum.calls) {
                     return message.reply('No AI calls recorded yet. Usage tracking started in v3.20.0 — ask me something and check back.');
                 }
-                const lines = sum.perDay.slice(-14).map(d =>
-                    `\`${d.day}\`  ${String(d.calls).padStart(4)} calls  ${String((d.promptTokens || 0).toLocaleString()).padStart(10)} prompt  ${String((d.cachedTokens || 0).toLocaleString()).padStart(9)} cached  ${String((d.completionTokens || 0).toLocaleString()).padStart(6)} out`);
+                // Keep the row narrow enough not to wrap on mobile Discord —
+                // a wrapped monospace table is harder to read than fewer columns.
+                const lines = [`${'day'.padEnd(10)}${'calls'.padStart(6)}${'prompt'.padStart(10)}${'cached'.padStart(9)}${'out'.padStart(7)}`]
+                    .concat(sum.perDay.slice(-14).map(d =>
+                        `${d.day.padEnd(10)}${String(d.calls).padStart(6)}${String((d.promptTokens || 0).toLocaleString()).padStart(10)}${String((d.cachedTokens || 0).toLocaleString()).padStart(9)}${String((d.completionTokens || 0).toLocaleString()).padStart(7)}`));
                 const embed = new EmbedBuilder()
                     .setTitle(`📊 AI usage — last ${sum.dayCount} day${sum.dayCount === 1 ? '' : 's'}`)
                     .setColor(0x00ff88)

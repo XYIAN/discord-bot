@@ -1,0 +1,12 @@
+{
+  "_meta": {
+    "source": "Kyle (XYIAN, guild owner), 2026-08-04, direct statement",
+    "confidence": "high \u2014 from the guild owner, who buys this currency",
+    "why": "The knowledge base said Aurocite was \"the default real-money currency\" but never gave the conversion, so the bot could quote \"499 Aurocite\" without anyone reading it as $4.99. Recording the ratio makes every Aurocite figure legible as money."
+  },
+  "currencies": {
+    "aurocite": {
+      "usd_conversion": "Aurocite maps directly to real money at 100 Aurocite = $1 USD. So 99 Aurocite is $0.99, 499 Aurocite is $4.99, 4999 Aurocite is $49.99. Any Aurocite price is a real-money price."
+    }
+  }
+}

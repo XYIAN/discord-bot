@@ -1390,7 +1390,8 @@
       "used_for": "Renewing Privilege Cards (499 Aurocite/month) and buying Daily Reward packs (99 / 199 / 299 / 499 Aurocite).",
       "habby_store_bonus": "The '+10% bonus Aurocite when purchasing from the Habby Store' banner refers to this currency.",
       "default_currency_behavior": "The game treats Aurocite as its default real-money currency. If your Aurocite balance covers a paid item's price, the price is displayed in Aurocite; if not, it falls back to local fiat currency (USD for this player).",
-      "display_caveat": "The same purchase can therefore appear priced differently to different players depending on their Aurocite balance."
+      "display_caveat": "The same purchase can therefore appear priced differently to different players depending on their Aurocite balance.",
+      "usd_conversion": "Aurocite maps directly to real money at 100 Aurocite = $1 USD. So 99 Aurocite is $0.99, 499 Aurocite is $4.99, 4999 Aurocite is $49.99. Any Aurocite price is a real-money price."
     },
     "icon_confusion_warning": "Power Level uses a gold arrow/chevron badge and Aurocite uses a pink triangle gem - easy to confuse. Power Level lives in the main screen header; Aurocite shows up on shop, pack and Privilege Card renewal screens.",
     "gear_chest_keys": {
