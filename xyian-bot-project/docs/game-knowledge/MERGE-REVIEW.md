@@ -1,9 +1,12 @@
 # Merge review — community knowledge import
 
-**Nothing here has been merged into `data/knowledge.json`.** The fragments in
-`fragments/` are staged for review. `knowledge.json` is live production data that was
-already wiped once by an infrastructure incident, so every conflict below needs a human
-decision before anything lands.
+> **STATUS as of v3.18.0 — all 15 fragments are now merged.** Every merge was
+> additive-only: not one pre-existing value in `knowledge.json` was altered or removed,
+> verified leaf-by-leaf against git HEAD after each slice. Live keys went 344 → 1,083.
+>
+> What remains open is the short list in **§2 Contradictions**, which is now much shorter
+> than it looked. Everything else below is kept as the record of how the import was
+> reviewed.
 
 Source: community contribution by stacey-fails, 2026-08-04, branch
 `Knowledgebase-Add---Likely-real-out-of-date-lol`. 15 markdown files → 15 JSON
@@ -35,15 +38,52 @@ in the whole import.
 
 ## 2. Contradictions — pick a winner
 
+### What the `characters` merge actually found (v3.18.0)
+
+The headline number was **41 conflicts**, which read as "this topic needs a lot of human
+decisions". Compared field by field, it does not:
+
+- **27 of 41 are wording-only** — identical numbers, different house style. Live writes
+  `(at stars 1, 4, and 7)` and `attack speed by 4%`; the contribution writes `(1★, 4★, 7★)`
+  and `ATK SPD by 4%`. Nothing to decide, nothing lost by keeping live.
+- **A further 5 agree in substance** and only tripped the numeric check on phrasing —
+  the resonance entries and `star_pattern.3`/`.4` say the same thing two ways.
+- **2 are the contribution being less complete than live**, not disagreeing with it:
+  `dracoola.stat_boost` and `loki.stat_boost` record only `(4★)` where all 13 other heroes
+  in the same fragment record `(1★, 4★, 7★)`. A transcription gap. Live wins on merit.
+- **2 are complementary notes**, kept side by side as `phynx.note_kit` / `hou_yi.note_kit`.
+- **3 are the same single disagreement** — the star ladder — showing up in `max_stars`,
+  `star_pattern.7` and `skill_level_unlocks`.
+
+That leaves **4 real skill contradictions and 1 real question**, below. The additive merge
+protected live from all of them without needing the answer first, so the bot has the
+contribution's 46 new character keys today and the open questions can wait.
+
+Worth noting: the five *new* `star_system` keys that did merge (`all_buff_unlocks`,
+`resonance_unlocks`, `all_buff_meaning`, `how_stars_are_earned`, `strategy`) all
+**corroborate** live — buffs at 1/4/7, resonance at 3 and 6. Checked explicitly that none
+of the 46 added keys smuggles in the 8-star claim, so the disagreement stays isolated to
+the three paths above rather than leaking into the knowledge base as a second opinion.
+
+### One name inconsistency inside live itself
+
+`characters.hou_yi.skill_name` is `"Sun Piercer"` but live's own skill text for that hero
+says `"Sunpiercer"` in all four levels, and so does the contribution. Live disagrees with
+itself; the contribution is right. Left alone because it is cosmetic and the rule for this
+import was that live wins — but it is a free correction whenever someone wants it.
+
+### The open table
+
 | Topic | Source says | Live says | Why it matters |
 |---|---|---|---|
-| `star_system.max_stars` | **8** stars (skill Lv4 at 8★) | **7** | Changes every progression calculation downstream |
+| `star_system.max_stars` | **8** stars (skill Lv4 at 8★) | **7** (skill Lv4 at 7★) | Changes every progression calculation downstream. **Needs Kyle** — he plays the game. The source is internally consistent across 5 separate passages, and its ladder is more regular (skills at 0/2/5/8, buffs at 1/4/7, resonance at 3/6, no star doing double duty) where live has star 7 granting both a buff and Skill Lv4. That is suggestive, not proof. |
 | `characters.mymu` skill | Consumes 50–100% of **HP**, **reduced** ATK/MOV SPD | 50–100% of **ATK**, **increased** speed | These describe opposite effects |
 | `characters.loki` Focus | 15s | 3s | 5× difference |
 | `characters.helix` Lv4 | ATK +20% | ATK **SPD** | Different stat |
 | Ad-free card name | Lifetime Ad-Free Card | Permanent Ad-Free Card | Source has it 3×, live has it 0× |
 | Sacred Hall currency | Character Shadows + Abyssal Stonework | earned from Abyssal Tide | Flagged from both sides independently |
-| Star buff cadence | Dracoola/Loki at 4★ only | all heroes 1/4/7 | Probably a source transcription gap |
+| Star buff cadence | Dracoola/Loki at 4★ only | all heroes 1/4/7 | **Resolved — live wins.** All 13 other heroes in the same fragment say 1/4/7. A transcription gap, not a claim. |
+| `characters.wukong` Lv1 | Summons **1** Monkey Mirage | Summons **3** | Newly surfaced in the v3.18.0 pass; not in the original review |
 
 Also several rune ladder tiers disagree (Rootguard, Vine Bind, Melee/Healing Sprite,
 Ring of Agony, Equinox Bloom's Frenzy vs Berserk, Frostshock Seal tiers swapped).
@@ -81,9 +121,17 @@ Most likely to have drifted since contribution:
 
 ## Suggested order
 
-1. Repair the six truncated live entries — unambiguous.
-2. Merge the 10 genuinely new topics (shop, events, hunt, battle_pass, currencies,
-   daily_rewards, reach_rewards, camp_mystlings, main_screen, event_shop) — nothing to
-   conflict with.
-3. Work the contradiction table with Kyle, starting with `max_stars`.
-4. Decide policy on volatile numbers: seed with caveat, or leave to `!suggest`.
+1. ~~Repair the six truncated live entries~~ — **done, v3.17.0.** Five `runes.etched_*`
+   repaired and verified in production; the bot returns all 9 tiers of Arrow of Echoes.
+2. ~~Merge the 10 genuinely new topics~~ — **done, v3.17.0.**
+3. ~~Merge the 5 remaining topics~~ — **done, v3.18.0.** guild, gear_sets, rune systems,
+   privilege_cards, events/game_modes, characters. All additive.
+4. **Work the contradiction table with Kyle** — 5 items, starting with `max_stars`.
+5. Decide policy on volatile numbers: seed with caveat, or leave to `!suggest`.
+6. Still unrepaired: **11 `weapons.*` entries truncated at 183 chars** since v3.9.9. The
+   contribution describes that gear as a flat effects list rather than a per-rarity ladder,
+   so tier attribution cannot be reconstructed from it faithfully. Needs a different source
+   or a decision to change the topic's shape.
+7. Deliberately not merged: the four `*_rune_ladders` objects. They restate what live holds
+   as flat ladder strings — better structured, and covering 13 etched runes to live's 5, but
+   adopting them is a *replacement*, not a merge, and deserves its own slice.

@@ -1,0 +1,14 @@
+{
+  "_meta": {
+    "source": "docs/game-knowledge/characters.md",
+    "why": "phynx.note and hou_yi.note both collided with live notes that say something different but equally true. Live has PvP meta placement, the contribution has elemental/acquisition context. Both kept."
+  },
+  "characters": {
+    "phynx": {
+      "note_kit": "Bleed elemental synergy. Phynx is the default hero of the Daily Rewards bonus pack rotation."
+    },
+    "hou_yi": {
+      "note_kit": "Boss-stack scaling kit."
+    }
+  }
+}

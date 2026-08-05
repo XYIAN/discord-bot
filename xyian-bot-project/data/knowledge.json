@@ -11,17 +11,28 @@
       "4": "Character-specific stat boost (same as star 1)",
       "5": "Skill Level 3",
       "6": "+1 Resonance slot",
-      "7": "Character-specific stat boost + Skill Level 4"
+      "7": "Character-specific stat boost + Skill Level 4",
+      "8": "Hero's unique Level 4 skill (MAX, final form)"
     },
     "skill_level_unlocks": "Skill Lv1 at 0 stars (just owning the character), Skill Lv2 at 2 stars, Skill Lv3 at 5 stars, Skill Lv4 at 7 stars. Skill level is separate from star/character level.",
-    "note": "Stars 1, 4, and 7 give the same stat boost per character (e.g. Alex gets [All] Max HP +3% each time). Stars 3 and 6 each unlock a resonance slot. Star 7 gives both a stat boost AND skill level 4."
+    "note": "Stars 1, 4, and 7 give the same stat boost per character (e.g. Alex gets [All] Max HP +3% each time). Stars 3 and 6 each unlock a resonance slot. Star 7 gives both a stat boost AND skill level 4.",
+    "how_stars_are_earned": "Stars are unlocked by collecting hero shards (the 'X/150' or 'X/100' counter on hero cards).",
+    "all_buff_unlocks": "[All] buffs unlock at stars 1/4/7 - three per hero, each a permanent global bonus across the account.",
+    "resonance_unlocks": "Resonance unlocks at 3 stars, with a second slot at 6 stars.",
+    "all_buff_meaning": "The '[All]' prefix on a star-up bonus means it applies to every hero you own, not just the hero being starred up. Examples: '[All] CRIT DMG REDUC +15%', '[All] CRIT Rate +4%'.",
+    "strategy": "Because 1/4/7 star bonuses are account-wide, even heroes you never plan to play are worth starring for the global buffs."
   },
   "resonance": {
     "description": "Resonance allows characters to equip skills from other characters you own.",
     "unlock_at": "Star 3 (+1 slot) and Star 6 (+1 slot, 2 total)",
     "how_it_works": "A 6-star character can equip 2 borrowed skills from other characters in addition to their own skill. The borrowed skill uses the level from the character who owns it.",
     "example": "A 6-star Dracoola can equip Hou Yi's Sun Piercer and Nyanja's Cloudfooted if you own those characters.",
-    "pvp_note": "Phynx's Desert Tribunal is widely considered the best resonance skill for PvP."
+    "pvp_note": "Phynx's Desert Tribunal is widely considered the best resonance skill for PvP.",
+    "character_skills_row": "2 slots total. Slot 1 unlocks at 3 stars, slot 2 at 6 stars. Each holds another hero's signature kit at whatever level you have unlocked on the source hero.",
+    "skin_skills_row": "4 slots total, fixed count, unlocked progressively via Sacred Hall privileges ('+1 skin talent(s) of character in Resonance slot #N'). Once unlocked, fill with skin talents from any character.",
+    "resonance_section": "The Resonance section below the slots lists the cumulative effects of everything currently equipped across both rows.",
+    "max_loadout": "A 6-star hero with Sacred Hall progress can wield their own kit + 2 borrowed hero kits + 4 borrowed skin skills simultaneously.",
+    "strategic_implication": "Resonance makes building multiple heroes deep valuable even if you only play one. Levelling secondary heroes and starring up skins unlocks stronger things to resonate into your main."
   },
   "characters": {
     "alex": {
@@ -70,7 +81,8 @@
         "2": "Hela restores 1% HP to herself and all nearby allies over time.",
         "3": "Hela increases her own and all nearby allies' CRIT Rate by 5%.",
         "4": "Hela increases her own and all nearby allies' CRIT DMG by 20%."
-      }
+      },
+      "note": "Support / aura kit."
     },
     "mymu": {
       "rarity": "rare",
@@ -82,7 +94,8 @@
         "2": "Defeating monsters has a small chance of removing [Overdraw].",
         "3": "When [Overdraw] is active, -30% ATK and MOV SPD to surrounding monsters.",
         "4": "When entering [Overdraw], Overdraw HP drain range increases to [100%-150%]."
-      }
+      },
+      "note": "High-risk Overdraw kit."
     },
     "hou_yi": {
       "rarity": "rare",
@@ -97,7 +110,8 @@
         "3": "Gain 2 Sunpiercer stacks per boss defeated and 1 stack per elite defeated.",
         "4": "Gain 2 Sunpiercer stacks when entering battle. Each stack additionally increases crit damage by 4%."
       },
-      "note": "Newest rare character"
+      "note": "Newest rare character",
+      "note_kit": "Boss-stack scaling kit."
     },
     "seraph": {
       "rarity": "epic",
@@ -109,7 +123,8 @@
         "2": "Chance to get another skill when Healing is selected during Angel encounter.",
         "3": "Chance that Max HP is not reduced when making Devil Pact.",
         "4": "Easier to get higher-quality skills when acquiring new skills."
-      }
+      },
+      "note": "Angel/Devil interaction kit."
     },
     "dracoola": {
       "rarity": "epic",
@@ -123,7 +138,8 @@
         "2": "Excess healing will be converted into damage on the next attack.",
         "3": "When HP is >50%, MOV SPD +20%.",
         "4": "At full HP, ATK PWR +40%."
-      }
+      },
+      "note": "Vampire-themed sustain kit."
     },
     "rolla": {
       "rarity": "epic",
@@ -135,7 +151,8 @@
         "2": "Enemy ATK is reduced for 5s after being unfrozen.",
         "3": "Attacks are imbued with the formidable ice element.",
         "4": "Summons Frost Meteor when attacking frozen enemies."
-      }
+      },
+      "note": "Ice/freeze theme."
     },
     "loki": {
       "rarity": "epic",
@@ -147,7 +164,8 @@
         "2": "After entering [Focus State] 2 times, the next time this state is active, ATK SPD is increased by 30%, and duration is doubled.",
         "3": "When [Focus State] fades, there is 30% chance to enter this state again.",
         "4": "When battling players, if [Focus State] is active, there is a chance to gain immunity to all Control effects."
-      }
+      },
+      "note": "Movement-based ATK buff; heavily PvP-tuned."
     },
     "phynx": {
       "rarity": "epic",
@@ -160,7 +178,8 @@
         "3": "Against Burning or Poisoned enemies, +50% Bleed DMG dealt. Their Burn and Poison debuffs also tick 20% faster.",
         "4": "If enemy takes Lightning or Ice DMG, all remaining Bleed ticks are resolved instantly."
       },
-      "note": "Widely considered the best resonance skill for PvP. Pairs with Cleo (S-tier P2P) or Helix/Rolla/Mymu (F2P alternatives). See pvp_meta for full combo rankings."
+      "note": "Widely considered the best resonance skill for PvP. Pairs with Cleo (S-tier P2P) or Helix/Rolla/Mymu (F2P alternatives). See pvp_meta for full combo rankings.",
+      "note_kit": "Bleed elemental synergy. Phynx is the default hero of the Daily Rewards bonus pack rotation."
     },
     "nezha": {
       "rarity": "epic",
@@ -172,7 +191,9 @@
         "2": "Main Weapon attacks have a chance to fire 2 [Cosmic Hoops] at target.",
         "3": "[Cosmic Hoops] gain [Fiery Path] effect and can track enemies.",
         "4": "Main Weapon attacks have a chance to fire 3 [Cosmic Hoops] at target, with a chance to chain-fire."
-      }
+      },
+      "acquisition": "Event-only: join limited-time event(s) to obtain. No shop or shard-farm path.",
+      "note": "'Cosmic Hoop' is also the name of a Griffin weapon skin; skin names appear to mirror their heroes' kits. No star-up [All] buff documented in source."
     },
     "otta": {
       "rarity": "legendary",
@@ -184,7 +205,8 @@
         "2": "After taking damage, gain +40% Crit Rate and +60% Crit DMG for 5s.",
         "3": "CRIT hits can insta-kill minions below 30% HP.",
         "4": "The farther the range, the higher the CRIT Rate, up to 15%."
-      }
+      },
+      "note": "CRIT-focused."
     },
     "demon_king_atreus": {
       "rarity": "legendary",
@@ -200,7 +222,8 @@
         "2": "Chance to summon dark energy orbs when enemies are hit; can pull hate. Energy orbs release energy rings to attack nearby enemies. Up to 3 orbs can be present.",
         "3": "When HP is below 50%, absorbs dark energy orbs on the map to restore shield HP (each orb restores 10% HP). Only triggers 1 time per game.",
         "4": "Dark energy orbs will form a binding field when destroyed. Enemies caught in the field will have their projectiles slowed and DMG taken increased. Field lasts 10s."
-      }
+      },
+      "note": "Shield-based."
     },
     "thor": {
       "rarity": "legendary",
@@ -212,7 +235,8 @@
         "2": "When moving, there is a chance to summon Mjolnir, homing in on enemies and dealing 100% DMG.",
         "3": "Attacks deal Lightning damage. Mjolnir inherits the hero's CRIT Rate. After dealing a critical hit, there is a chance to paralyze enemies for 0.5s.",
         "4": "When paralyzing enemies, fires 3 additional Mini-Mjolnirs."
-      }
+      },
+      "note": "Storm's Judgment is one of the most popular resonance picks observed across builds."
     },
     "cleo": {
       "rarity": "legendary",
@@ -224,7 +248,8 @@
         "2": "For every 20 Fire hits, mark the enemy with the highest percentage HP on the field. After 1s, trigger a cross-shaped explosion and remove the mark, dealing 300% DMG and leaving behind a burning trail.",
         "3": "Trigger a cross-shaped explosion at your location after marking a target, dealing 300% DMG and leaving behind a burning trail. ATK +40% for 3s after marking.",
         "4": "Marking an enemy also Frightens them. Marked enemies suffer -50% ATK before exploding. Marked players suffer -35% ATK before exploding."
-      }
+      },
+      "note": "Fire-themed."
     },
     "wukong": {
       "rarity": "legendary",
@@ -238,8 +263,22 @@
         "2": "When attacking or taking damage, chance to summon 1 [Monkey Mirage] for 10s. Up to 6 [Monkey Mirages] can exist.",
         "3": "For each [Monkey Mirage] on the map, increase ATK, DMG REDUC, and Control RES by 3.5%.",
         "4": "[Monkey Mirages] have a chance to steal nearby enemy Hearts and Potions, increasing Wukong's ATK by 20% for 7s."
-      }
-    }
+      },
+      "acquisition": "Event-only: join limited-time event(s) to obtain. No shop path.",
+      "note": "Summon-based. No star-up [All] buff documented in source."
+    },
+    "_coverage": "Source documents 6 Rare, 6 Epic and 5 Legendary heroes. Source states more Epic and Legendary heroes likely exist beyond those catalogued.",
+    "rarity_tiers": "Heroes are grouped into three rarity pools: Rare, Epic, Legendary. Each pool contains different heroes.",
+    "rarity_is_fixed": "Each hero is locked to one rarity and never ascends tiers (Otta is always Legendary, Alex is always Rare).",
+    "rarity_vs_power": "Rarity does not directly imply power. A fully-leveled lower-rarity hero can outperform a low-star higher-rarity hero.",
+    "acquisition_daily_rewards": "Daily Rewards Bonus Pack gives random shards for the selected hero (default Phynx); shard quantity scales with rarity (x1 70%, x2 25%).",
+    "acquisition_limited_offers": "Limited Offer packs supply event/seasonal hero shards.",
+    "acquisition_event_only_heroes": "Nezha and Wukong are obtainable only during their corresponding limited-time events.",
+    "acquisition_not_from_chests_or_hunt": "Hero shards do NOT drop from Mythstone or Chromatic Chests, and do NOT drop from Hunt. Chests give gear; Hunt gives gear, runes, gear scrolls, gold and EXP only.",
+    "shards": "Heroes are unlocked and starred up with shards, shown as an 'X/Y' counter on the hero card (X/150 and X/100 counters observed). Sources: Daily Rewards Bonus Pack, Limited Offer packs, events. Not Hunt.",
+    "shard_exchange": "Excess hero shards convert one-way into Character Shadows, not into other heroes' shards.",
+    "unique_skill_kits": "Each hero has one named signature ability set that levels across 4 tiers as the hero stars up. The kit name is unique per hero.",
+    "outfit_button": "The Outfit button on the hero portrait is where skins and cosmetics are applied to the hero."
   },
   "pvp_meta": {
     "best_resonance_combos": {
@@ -999,7 +1038,32 @@
     "building_effect": "The main upgrade path is the Building Effect. Each level gives an attack increase and a health increase.",
     "tier_upgrades": "Separate from building levels, there are tier upgrades that unlock special bonuses. Higher tiers can unlock extra skin slots, which ties into Resonance.",
     "resonance_skin_interaction": "At base level, Resonance is only the ability of a specific character. But if that character has a skin, and your Sacred Hall tier is high enough, you can also get their skin bonus in resonance — not just the ability. This means Sacred Hall tier determines whether resonance includes just abilities or abilities + skins.",
-    "added_by": "_xyian"
+    "added_by": "_xyian",
+    "access": "Reached from the Sacred Hall button on the hero portrait. A building structure providing global ATK and HP bonuses plus account-wide privileges.",
+    "sub_tabs": {
+      "upgrade": "Spend Character Shadows (purple gem currency) to raise Sacred Hall level and apply privileges to the existing structure.",
+      "build": "Spend Abyssal Stonework (blue currency) to build/expand Sacred Hall. Separate track from Upgrade.",
+      "display_case": "Cosmetic showcase for up to 6 characters of your choice."
+    },
+    "two_tracks": "Build and Upgrade are two distinct progression tracks using two different currencies. Both are needed to fully advance Sacred Hall.",
+    "side_panel": "The Upgrade view side panel has Overview (full privileges list, cumulative plus upcoming unlocks) and Shard Exchange.",
+    "building_stats_example": "ATK +5,000 and HP +20,000 at Lv. 46; the next-level preview showed ATK +5,800, HP +25,000.",
+    "privileges_observed": [
+      "Main hero can activate +1 skin skills (raises the cap on simultaneously active skin skills)",
+      "Stage/Hunt EXP and Gold Gain +15%",
+      "Stage/Hunt Scroll Gain +15%",
+      "Main character can inherit +1 skin talent(s) of character in Resonance slot #1",
+      "Main character can inherit +1 skin talent(s) of character in Resonance slot #2",
+      "Energy restoration speed +10% / +20%",
+      "Max Energy +20 / +10 (multiple instances stack the cap)",
+      "Gold Shop's gold exchange bonus +20%",
+      "Skin Collection Stats +15% / +30% (recurs at multiple tiers)",
+      "Activated weapon reforge count limit +1 (recurs)",
+      "Max deployed Mystlings in Peak Arena, Arena, Guild Expedition +1 (recurs)"
+    ],
+    "shard_exchange": "Overflow hero shards convert into Character Shadows at a 1:1 ratio, with a 'Salvage All' bulk option. Character Shadows feed the Sacred Hall Upgrade track, so excess hero shards become Sacred Hall progress.",
+    "strategic_implication": "A slow, permanent power-floor raise. Every hero benefits, and privileges like energy regen, scroll/gold gain and max energy make every other system more efficient.",
+    "skin_collection_stats_note": "Skin Collectible Stats are static (always-on for every owned skin, not equipped-gated). Source believes the Sacred Hall +15%/+30% multiplier most likely applies to ALL owned skins' Collectible Stats account-wide, but flags this as unverified."
   },
   "custom_facts": [
     {
