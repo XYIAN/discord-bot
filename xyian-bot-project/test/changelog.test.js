@@ -117,6 +117,41 @@ test('preserves document order and tags each block', () => {
     assert.deepStrictEqual(kinds, ['prose', 'prose', 'prose', 'bullet', 'bullet']);
 });
 
+console.log('an Unreleased section must not hijack the release notes');
+const WITH_UNRELEASED = `# Changelog
+
+## [Unreleased]
+
+- work in progress, not shipped
+
+## [3.22.0] - 2026-08-04
+
+- the real release
+`;
+test('version and notes come from the SAME heading', () => {
+    // A bare indexOf('## [') took the version from the first SEMVER heading and
+    // the body from the first heading of any kind, so adding a conventional
+    // Unreleased section made v3.22.0 announce the unshipped notes.
+    const r = parseChangelog(WITH_UNRELEASED);
+    assert.strictEqual(r.version, '3.22.0');
+    assert.ok(r.lines.some((l) => /the real release/.test(l)), 'lost the real notes');
+    assert.ok(!r.lines.some((l) => /work in progress/.test(l)), 'leaked Unreleased notes');
+});
+test('a section stops at the next heading of ANY kind', () => {
+    const md = '## [2.0.0] - x\n\n- two\n\n## [Unreleased]\n\n- wip\n';
+    const r = linesForVersion(md, '2.0.0');
+    assert.deepStrictEqual(r.lines, ['two']);
+});
+test('a `## [` inside body text does not split the section', () => {
+    // Only a LINE-START heading counts.
+    const md = '## [1.0.0] - x\n\n- see the `## [foo]` syntax\n- second bullet\n';
+    assert.strictEqual(linesForVersion(md, '1.0.0').lines.length, 2);
+});
+test('a file with only an Unreleased section reports no version', () => {
+    const r = parseChangelog('# Changelog\n\n## [Unreleased]\n\n- wip\n');
+    assert.strictEqual(r.version, '0.0.0');
+});
+
 console.log('linesForVersion');
 test('finds a historical bullet release', () => {
     const r = linesForVersion(BULLET_ENTRY, '3.15.0');

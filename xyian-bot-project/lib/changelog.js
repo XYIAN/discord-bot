@@ -15,13 +15,38 @@
 // so v3.17.0 and v3.18.0 deployed fine, logged "no changelog entries", and
 // their release notes never reached the community.
 
+/**
+ * A release heading: `## [1.2.3]` at the start of a line.
+ *
+ * Anchored to a line start AND to a semantic version on purpose. A bare
+ * indexOf('## [') matches any heading anywhere, including one inside a code
+ * fence and — far more likely — a conventional `## [Unreleased]` section. With
+ * that, the version came from the first SEMVER heading while the notes came
+ * from whatever heading appeared first in the file, so adding an Unreleased
+ * section would have made the bot announce the real release with the
+ * work-in-progress notes underneath it.
+ */
+const RELEASE_HEADING = /^## \[(\d+\.\d+\.\d+)\]/m;
+/** Any `## [...]` heading — the boundary a section ends at, Unreleased included. */
+const ANY_ENTRY_HEADING = /^## \[/m;
+
+/** Where a section that starts at `from` ends. */
+function sectionEnd(md, from) {
+    const rest = md.slice(from);
+    // Skip the heading itself before looking for the next one.
+    const firstNewline = rest.indexOf('\n');
+    if (firstNewline === -1) return md.length;
+    const after = rest.slice(firstNewline);
+    const m = after.match(ANY_ENTRY_HEADING);
+    return m ? from + firstNewline + m.index : md.length;
+}
+
 /** Split the section for one `## [x.y.z]` entry out of the file. */
 function sectionFor(md, version) {
-    const startIdx = md.indexOf(`## [${version}]`);
-    if (startIdx === -1) return null;
-    const after = md.slice(startIdx);
-    const next = after.indexOf('\n## [');
-    return next > -1 ? after.slice(0, next) : after;
+    const heading = new RegExp(`^## \\[${version.replace(/\./g, '\\.')}\\]`, 'm');
+    const m = md.match(heading);
+    if (!m) return null;
+    return md.slice(m.index, sectionEnd(md, m.index));
 }
 
 /**
@@ -63,15 +88,16 @@ function linesFromSection(section) {
  */
 function parseChangelog(md) {
     const text = String(md || '');
-    const versionMatch = text.match(/^## \[(\d+\.\d+\.\d+)\]/m);
-    const version = versionMatch ? versionMatch[1] : '0.0.0';
+    // Find the newest RELEASE heading, and read the notes from that same
+    // heading — not from whatever `## [` appears first. Deriving the version
+    // from one heading and the body from another is how an `## [Unreleased]`
+    // section would have made the bot announce a real release with
+    // work-in-progress notes.
+    const m = text.match(RELEASE_HEADING);
+    if (!m) return { version: '0.0.0', blocks: [], lines: [] };
 
-    const firstEntry = text.indexOf('## [');
-    if (firstEntry === -1) return { version, blocks: [], lines: [] };
-    const secondEntry = text.indexOf('## [', firstEntry + 1);
-    const section = secondEntry > -1 ? text.slice(firstEntry, secondEntry) : text.slice(firstEntry);
-
-    return { version, ...linesFromSection(section) };
+    const section = text.slice(m.index, sectionEnd(text, m.index));
+    return { version: m[1], ...linesFromSection(section) };
 }
 
 /**

@@ -4,6 +4,16 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.22.1] - 2026-08-04
+
+### An `## [Unreleased]` section would have hijacked the release notes
+
+Found by the same code review, verified by reproducing it.
+
+`parseChangelog` took the version from the first *semver* heading but the body from the first heading of **any** kind, using an unanchored `indexOf('## [')`. Add the near-universal Keep-a-Changelog `## [Unreleased]` section and the bot would announce the real version with the unshipped work-in-progress notes underneath it.
+
+Both the heading match and the section boundary are now anchored to the start of a line, so a `## [` appearing inside body text or a code fence cannot split a section either. Four tests, including the exact Unreleased case.
+
 ## [3.22.0] - 2026-08-04
 
 ### Code review found real bugs — including one that would have eaten vision replies
