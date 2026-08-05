@@ -635,5 +635,50 @@
   },
   "collectibles": {
     "overview": "Collectibles (found on the main screen via the Goblet Icon in the bottom toolbar) splice into two categories: Talent Cards & Artifacts\n\nTalent Cards:\nTalent Cards are cards that you are able to collect in game that boost a wide variety of stats. Each card is able to be upgraded to a maximum of 5 Star (Apart from the Glory and Tactics cards as these are 1 Star maximum). \n\nThere is a second set of talent cards that unlocks after collecting all cards from the first set. The list below is a comprehensive list of both sets when maxed out to 5 stars (apart from Glory and Tactics which have a maximum of 1 Star).\n\nThe list below states the talent card’s name and then function/boost, there are 32 in total:\n\nEpic Level:\nGlory: First Skill Selection Chance +1\nTactics: Skill Refreshes +1\nMaster Explorer: Scroll Drop Rate +18%\nBrave Adventurer: Gear Drop Rate +18%\nAlchemist: Rune Drop Rate +18%\nSwift Wind: ATK SPD +3% & MOV SPD +3%\nRefinement: Gears’ Base Stats Increase +6%\nWealth: Gold obtained in battle +18%\nUlt CRIT Rate: CRIT Rate +6%\nUlt CRIT DMG: CRIT DMG +12%\nUlt Dodge: Dodge +6%\n\nRare Level:\nSuper Vigor 2: HP +420\nSuper Strength 2: ATK PWR +105\nSuper Recovery 2: Heart Recovery +1%\nAngelic Embrace: Angel Recovery +1%\nDevil Discount: Devil's Pact HP cost reduced +1%\nSuper Vigor: Max HP +420\nSuper Strength: ATK PWR +105\nSuper Recovery: Red Heart Healing Value +105\nSuper Iron Wall: Collision DMG REDUC +48\nHealing: Heal on Level Up +120\nTitan: Max HP +150, ATK PWR +36 & CRIT DMG +6%\nSuper CRIT Rate: CRIT Rate +3%\nSuper CRIT DMG: CRIT DMG +9%\nSuper Dodge: Dodge +3%\n\nCommon Level:\nVigor 2    : HP +300\nStrength 2: ATK PWR +75\nRecovery 2: Heart Recovery +0.5%\nVigor: HP +300\nStrength: ATK PWR +75\nRecovery: Red Heart Healing Value +75\nIron Wall: Collision DMG REDUC +36\n\n\nTalent Cards can be bought by using in game Gold but require a ton of gold farming to complete. However, once complete, a player doesn’t really worry about them any longer. So if you’re in between upgrading gear (that also costs gold) or talent cards, the talent cards will always come with time. Typically they’re all unlocked between levels 50 - 55."
+  },
+  "hunt": {
+    "description": "Idle / AFK reward system reached from the Hunt button on the main screen. Pays out rewards passively instead of grinding earlier stages.",
+    "accumulation": "Auto-gets rewards over time, accumulating while not playing.",
+    "max_accumulation": "24 hours. After 24h the buffer stops filling — claim before then to avoid wasted time.",
+    "scaling": "Later chapters grant better rewards; Hunt's per-hour yield scales with campaign progression.",
+    "reward_types": "Gold and EXP, plus a probabilistic mix of gear, gear scrolls and runes. Hunt does not drop hero/character shards.",
+    "claim": "The Claim button collects whatever has accumulated, up to the 24h cap.",
+    "quick_hunt": {
+      "description": "Instantly receive Hunting rewards without waiting. Two options: free (watch an ad) or an energy run.",
+      "free_ad_option": "1 ad per use. Base 2 free chances per day; more can be earned from various sources.",
+      "hunting_warrior_card": "The Hunting Warrior Privilege Card grants unlimited free Quick Hunt chances.",
+      "energy_option": "Configurable per click: 5 energy = 1 run, 10 energy = 2 runs, 25 energy = 5 runs."
+    },
+    "drop_rates": {
+      "source": "In-game Rules popup.",
+      "gold": "100% — guaranteed every claim.",
+      "exp": "100% — guaranteed every claim.",
+      "gear_pieces": "0.79% each, 18 pieces total.",
+      "gear_scrolls": "11.90% each, 6 scrolls total.",
+      "runes": "0.60% each, 24 runes total."
+    },
+    "gear_pieces": {
+      "sets": "Three sets — Destruction, Echo, Decisiveness — across 6 slots, 18 pieces total.",
+      "weapon": "Heroic Longbow, Beam Staff, Agile Knuckles",
+      "armor": "Armor of Destruction, Echo Armor, Armor of Decisiveness",
+      "boots": "Boots of Destruction, Echo Boots, Boots of Decisiveness",
+      "helmet": "Helmet of Destruction, Echo Helmet, Helmet of Decisiveness",
+      "ring": "Ring of Destruction, Echo Ring, Ring of Decisiveness",
+      "amulet": "Amulet of Destruction, Echo Amulet, Amulet of Decisiveness",
+      "set_role": "These are the base/entry sets mapping to the three upgrade tiers in the main gear system: Destruction -> Dragoon, Decisiveness -> Griffin, Echo -> Oracle. They share similar bonuses to their upgrade-tier counterparts but more limited.",
+      "use_past_early_game": "Mainly used as upgrade fodder to level Dragoon/Griffin/Oracle."
+    },
+    "gear_scrolls": "One scroll per slot type: Weapon Scroll, Armor Scroll, Helmet Scroll, Ring Scroll, Amulet Scroll, Boots Scroll.",
+    "rune_drops": {
+      "note": "These are runes, not in-run skills. Hunt deposits them straight into the rune inventory.",
+      "list": "Sawblade Circle, Spin SPD Up, Dragonflight Sword, Ricochet Strike, Sprite Multishot, Sprite Link, Sharp Arrow, Giant Meteor, Potion Magnet, Flamenox Seal, Frostshock Seal, Rootguard, Vine Bind, Circle, Ring of Agony, Sword of Time, Strike Potion, Melee Sprite, Healing Sprite, Arrow Rain, Star of Time, Star of Fury, Plant Summon, Equinox Bloom."
+    },
+    "advice": {
+      "claim_before_cap": "Always claim Hunt before it caps at 24h — wasted time is wasted rewards.",
+      "f2p": "Use the 2 free daily ad chances; don't burn energy on Quick Hunt.",
+      "hunting_warrior_card_owners": "Spam unlimited free Quick Hunts; energy-paid runs are situational.",
+      "energy_efficiency": "Energy-paid Quick Hunts are most efficient at 25 energy / 5 runs.",
+      "push_campaign": "Push deeper into the campaign to raise Hunt's hourly rate."
+    }
   }
 }
