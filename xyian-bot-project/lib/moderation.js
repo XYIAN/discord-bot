@@ -31,6 +31,25 @@ function canRunAction(actor, action) {
 }
 
 /**
+ * Whether `memberOrId` is the configured owner.
+ *
+ * Takes a User/GuildMember object OR a raw id string, because bot.js called it
+ * both ways: one call site passed `message.author.id`, the older implementation
+ * read `.id` off it, got undefined, and could never match. It had an isAdmin
+ * fallback so nothing visibly broke — which is why it survived unnoticed.
+ *
+ * An unconfigured ownerId means NOBODY is the owner. That is deliberate (fail
+ * closed), but callers must say so out loud rather than refusing the real owner
+ * with a bare "owner-only".
+ */
+function matchesOwner(memberOrId, ownerId) {
+    const configured = String(ownerId == null ? '' : ownerId).trim();
+    if (!configured || !memberOrId) return false;
+    const id = typeof memberOrId === 'string' ? memberOrId : memberOrId.id;
+    return Boolean(id) && String(id) === configured;
+}
+
+/**
  * Whether the actor may act on this target at all.
  *
  * Discord enforces its own hierarchy server-side, but a rejection there is an
@@ -111,6 +130,7 @@ module.exports = {
     MAX_TIMEOUT_MINUTES,
     canRunAction,
     canTargetMember,
+    matchesOwner,
     parseDuration,
     parseTarget,
 };

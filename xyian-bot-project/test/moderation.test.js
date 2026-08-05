@@ -9,7 +9,7 @@
 const assert = require('assert');
 const {
     MOD_ACTIONS, MAX_TIMEOUT_MINUTES,
-    canRunAction, canTargetMember, parseDuration, parseTarget,
+    canRunAction, canTargetMember, parseDuration, parseTarget, matchesOwner,
 } = require('../lib/moderation');
 
 let passed = 0;
@@ -136,6 +136,33 @@ test('handles a target with no reason', () => {
 test('returns null when there is no target', () => {
     assert.strictEqual(parseTarget('just words').userId, null);
     assert.strictEqual(parseTarget('').userId, null);
+});
+
+console.log('matchesOwner');
+test('matches a member object', () => {
+    assert.strictEqual(matchesOwner({ id: '123' }, '123'), true);
+    assert.strictEqual(matchesOwner({ id: '999' }, '123'), false);
+});
+test('matches a raw id string too', () => {
+    // bot.js called it both ways; the old version silently failed on strings
+    // because it read `.id` off them, and an isAdmin fallback hid the bug.
+    assert.strictEqual(matchesOwner('123', '123'), true);
+    assert.strictEqual(matchesOwner('999', '123'), false);
+});
+test('nobody is the owner when OWNER_ID is unset', () => {
+    // Fails closed on purpose — but callers must SAY the id is unconfigured,
+    // not refuse the real owner with a bare "owner-only".
+    for (const unset of ['', '   ', null, undefined]) {
+        assert.strictEqual(matchesOwner({ id: '123' }, unset), false, String(unset));
+    }
+});
+test('tolerates whitespace and numeric ids from env', () => {
+    assert.strictEqual(matchesOwner({ id: '123' }, ' 123 '), true);
+    assert.strictEqual(matchesOwner({ id: 123 }, '123'), true);
+});
+test('a missing or idless actor is refused rather than throwing', () => {
+    assert.strictEqual(matchesOwner(null, '123'), false);
+    assert.strictEqual(matchesOwner({}, '123'), false);
 });
 
 console.log(`\n${passed} passed`);

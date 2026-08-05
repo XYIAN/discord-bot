@@ -25,36 +25,41 @@ function sectionFor(md, version) {
 }
 
 /**
- * Pull the postable lines out of one entry's section.
+ * Pull the postable blocks out of one entry's section, in document order.
  *
- * Bullets win when present — they are the deliberate, already-formatted shape.
- * Prose is the fallback rather than the default so that an entry mixing a
- * paragraph of preamble with a bullet list still posts just the bullets, which
- * is what the older entries expect.
+ * Every non-empty line survives except the `## [x.y.z]` title, which the embed
+ * already shows as its own heading. Each block is tagged so the renderer can
+ * treat a bullet list and a paragraph differently.
  *
- * @returns {{lines: string[], style: 'bullets'|'prose'}}
+ * An earlier version had bullets win outright whenever any were present, so
+ * that an entry pairing a paragraph of preamble with a bullet list posted just
+ * the list. That reads fine until an entry has *substantial* prose AND a bullet
+ * list — v3.19.0 was one, and the rule would have silently dropped its entire
+ * first half. Dropping content quietly is the exact failure this module was
+ * extracted to fix, so order is preserved and nothing is discarded.
+ *
+ * Discord renders `###` and `**bold**` inside an embed description, so prose is
+ * passed through untouched.
+ *
+ * @returns {{blocks: Array<{kind:'bullet'|'prose', text:string}>, lines: string[]}}
+ *          `lines` is the plain text of each block, for counting and messages.
  */
 function linesFromSection(section) {
-    const raw = String(section || '').split('\n');
-
-    const bullets = raw
-        .filter((l) => /^- /.test(l.trim()))
-        .map((l) => l.trim().replace(/^- /, ''));
-    if (bullets.length) return { lines: bullets, style: 'bullets' };
-
-    // Prose: keep the `###` subheading and the paragraphs, drop the `## [x.y.z]`
-    // title (the embed already shows the version) and blank lines. Discord
-    // renders `###` and `**bold**` inside an embed description, so the text is
-    // passed through untouched.
-    const prose = raw
+    const blocks = String(section || '')
+        .split('\n')
         .map((l) => l.trim())
-        .filter((l) => l && !/^## \[/.test(l));
-    return { lines: prose, style: 'prose' };
+        .filter((l) => l && !/^## \[/.test(l))
+        .map((l) =>
+            /^- /.test(l)
+                ? { kind: 'bullet', text: l.replace(/^- /, '') }
+                : { kind: 'prose', text: l });
+
+    return { blocks, lines: blocks.map((b) => b.text) };
 }
 
 /**
  * Version + release notes for the newest entry in the file.
- * @returns {{version: string, lines: string[], style: string}}
+ * @returns {{version: string, blocks: object[], lines: string[]}}
  */
 function parseChangelog(md) {
     const text = String(md || '');
@@ -62,7 +67,7 @@ function parseChangelog(md) {
     const version = versionMatch ? versionMatch[1] : '0.0.0';
 
     const firstEntry = text.indexOf('## [');
-    if (firstEntry === -1) return { version, lines: [], style: 'prose' };
+    if (firstEntry === -1) return { version, blocks: [], lines: [] };
     const secondEntry = text.indexOf('## [', firstEntry + 1);
     const section = secondEntry > -1 ? text.slice(firstEntry, secondEntry) : text.slice(firstEntry);
 
@@ -73,7 +78,7 @@ function parseChangelog(md) {
  * Release notes for one specific historical version — backs
  * `!post-changelog <version>` for releases whose original deploy failed to get
  * the embed out.
- * @returns {{lines: string[], style: string}|null} null when the version is absent
+ * @returns {{blocks: object[], lines: string[]}|null} null when the version is absent
  */
 function linesForVersion(md, targetVersion) {
     const section = sectionFor(String(md || ''), targetVersion);

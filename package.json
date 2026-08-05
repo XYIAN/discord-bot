@@ -1,6 +1,6 @@
 {
   "name": "xyian-discord-bot",
-  "version": "3.18.1",
+  "version": "3.19.0",
   "description": "XYIAN Discord Bot - Archero 2 community bot",
   "private": true,
   "scripts": {

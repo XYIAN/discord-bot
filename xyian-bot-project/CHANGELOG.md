@@ -4,6 +4,28 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.19.0] - 2026-08-04
+
+### Characters merged — and the whole community import is now in
+
+Knowledge base 1,033 → 1,083 keys. Every one of the 15 contributed files is merged. Across the entire import, **not one pre-existing value was altered or removed** — checked leaf by leaf against git after each slice.
+
+**Characters (+48).** This was the topic held back longest, on the grounds that it had "41 conflicts". Compared field by field, most of those were not decisions at all. 27 were wording-only — live writes `(at stars 1, 4, and 7)` and `attack speed by 4%`, the contribution writes `(1★, 4★, 7★)` and `ATK SPD by 4%`. Five more agreed in substance and only differed in phrasing. Two were the contribution being *less* complete than live, not disagreeing with it. Two were complementary notes, now kept side by side. And three were the same single disagreement counted three times.
+
+**What is genuinely still open: four skill descriptions and one question.** Mymu (does Overdraw consume HP or ATK, and does it buff or debuff), Loki's Focus State (3s or 15s), Helix Lv1 (ATK or ATK SPD), and Wukong Lv1 (1 Monkey Mirage or 3). Live's version is what the bot answers with in every case.
+
+**The star ladder needs Kyle.** The contribution says heroes cap at 8 stars with Skill Lv4 at 8★; live says 7 and 7★. It changes every progression calculation, so live is untouched at 7. Worth knowing before deciding: the source is internally consistent across five separate passages, and its ladder is more regular — skills at 0/2/5/8, global buffs at 1/4/7, resonance at 3/6, no star doing double duty — where live has star 7 granting both a buff *and* Skill Lv4. Suggestive, not proof.
+
+Checked explicitly that none of the 46 added keys smuggles the 8-star claim in, so the disagreement stays in those three paths rather than sitting in the knowledge base as a quiet second opinion. The five new `star_system` keys that did merge all corroborate live.
+
+### Fix: owner-only commands were disabled for everyone
+
+- `OWNER_ID` is not set on this deployment, so `isOwner` returned false for everybody and every owner-only command was dead — including `!post-changelog`. The refusal read `❌ This command is owner-only.`, which is a reasonable thing to tell a stranger and a baffling thing to tell the owner. **Set `OWNER_ID` on Railway to fix it.**
+- The refusal now distinguishes "you are not the owner" from "no owner is configured, so nobody can run this", and an unset `OWNER_ID` is called out in the deploy notice instead of waiting for someone to trip over a command.
+- Fixed a latent bug at the `setupreaction` call site: it passed `message.author.id` to a function that read `.id` off it, so the owner check there could never match. It fell through to an admin check, so nothing visibly broke — which is why it went unnoticed.
+- `matchesOwner` moved into `lib/moderation.js` and now takes either a user object or a raw id, with 5 tests.
+- Changelog entries mixing prose sections with a bullet list now post **both**. The first version of the parser let bullets win outright, which would have silently dropped this entry's entire first half — the same quiet content loss the parser was extracted to fix. 89 tests across 6 files.
+
 ## [3.18.1] - 2026-08-04
 
 ### Fix: release notes written as prose never reached #changelog

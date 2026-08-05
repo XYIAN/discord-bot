@@ -73,25 +73,31 @@ function getChangelogLinesForVersion(targetVersion) {
 // split mid-bullet, even if it means a chunk is shorter than the limit.
 // Discord allows up to 10 embeds per message; if a release somehow exceeds
 // that, postChangelogToChannel splits across multiple sends.
-function buildChangelogEmbeds(version, lines, style) {
+function buildChangelogEmbeds(version, blocks) {
     const HARD_LIMIT = 3900; // Headroom under 4096 for safety + embed rendering.
-    // Prose entries are paragraphs, not list items — a bullet in front of three
-    // sentences reads badly, and they need a blank line between them to be
-    // legible. Discord renders the `###` and `**bold**` markup as-is.
-    const isProse = style === 'prose';
-    const bullets = isProse ? lines.slice() : lines.map(l => `• ${l}`);
-    const joiner = isProse ? '\n\n' : '\n';
+    // Bullets get a glyph and sit tight against each other, the way a list
+    // should. Prose is left alone — a bullet in front of three sentences reads
+    // badly — and gets a blank line before it so paragraphs stay legible.
+    // Discord renders the `###` and `**bold**` markup as-is.
+    const rendered = (blocks || []).map((b, i) => {
+        const isBullet = b.kind === 'bullet';
+        const prev = i > 0 ? blocks[i - 1] : null;
+        // Tight only between two consecutive bullets; everything else breathes.
+        const sep = prev && isBullet && prev.kind === 'bullet' ? '\n' : '\n\n';
+        return { text: isBullet ? `• ${b.text}` : b.text, sep };
+    });
+
     const chunks = [];
     let current = '';
-    for (const b of bullets) {
-        if (current && current.length + b.length + joiner.length > HARD_LIMIT) {
+    for (const r of rendered) {
+        if (current && current.length + r.text.length + r.sep.length > HARD_LIMIT) {
             chunks.push(current);
             current = '';
         }
-        // If a single bullet itself is over the limit, hard-truncate it so we
+        // If a single block itself is over the limit, hard-truncate it so we
         // don't drop the post entirely. Vanishingly rare in practice.
-        const safeBullet = b.length > HARD_LIMIT ? b.slice(0, HARD_LIMIT - 3) + '...' : b;
-        current += (current ? joiner : '') + safeBullet;
+        const safe = r.text.length > HARD_LIMIT ? r.text.slice(0, HARD_LIMIT - 3) + '...' : r.text;
+        current += (current ? r.sep : '') + safe;
     }
     if (current) chunks.push(current);
     if (chunks.length === 0) chunks.push('• (no entries)');
@@ -111,8 +117,8 @@ function buildChangelogEmbeds(version, lines, style) {
 
 // Post a versioned changelog entry to a channel, splitting across messages
 // if it produces more than Discord's 10-embed-per-message ceiling.
-async function postChangelogToChannel(channel, version, lines, style) {
-    const embeds = buildChangelogEmbeds(version, lines, style);
+async function postChangelogToChannel(channel, version, blocks) {
+    const embeds = buildChangelogEmbeds(version, blocks);
     const MAX_PER_MSG = 10;
     for (let i = 0; i < embeds.length; i += MAX_PER_MSG) {
         await channel.send({ embeds: embeds.slice(i, i + MAX_PER_MSG) });
@@ -120,7 +126,7 @@ async function postChangelogToChannel(channel, version, lines, style) {
     return embeds.length;
 }
 
-const { version: BOT_VERSION, lines: BOT_CHANGELOG, style: BOT_CHANGELOG_STYLE } = parseChangelog();
+const { version: BOT_VERSION, lines: BOT_CHANGELOG, blocks: BOT_CHANGELOG_BLOCKS } = parseChangelog();
 
 // ── Config ──────────────────────────────────────────────────────────────────
 
@@ -609,8 +615,29 @@ async function checkActivityTierUpgrade(guild, userId, username, points) {
 
 // ── Role helpers ────────────────────────────────────────────────────────────
 
-function isOwner(member) {
-    return process.env.OWNER_ID && member.id === process.env.OWNER_ID;
+/** Whether OWNER_ID is configured at all. When it isn't, NOBODY is the owner
+ *  and every owner-only command is dead — which used to look identical to
+ *  "you personally are not the owner". See ownerDenialMessage(). */
+function ownerIdConfigured() {
+    return Boolean(String(process.env.OWNER_ID || '').trim());
+}
+
+/**
+ * Accepts a User/GuildMember object or a raw id string. It took both forms
+ * already — `isOwner(message.author.id)` at the `setupreaction` call site read
+ * `.id` off a string, got undefined, and so could never match. That one had an
+ * isAdmin fallback so nothing visibly broke, which is exactly why it survived.
+ */
+function isOwner(memberOrId) {
+    return modRules.matchesOwner(memberOrId, process.env.OWNER_ID);
+}
+
+/** Tell the truth about *why* an owner-only command was refused. */
+function ownerDenialMessage() {
+    return ownerIdConfigured()
+        ? '❌ This command is owner-only.'
+        : '❌ This command is owner-only, but `OWNER_ID` is not set on this deployment, '
+          + 'so no one can run it. Set `OWNER_ID` to your Discord user id and redeploy.';
 }
 
 function isAdmin(member) {
@@ -2084,7 +2111,7 @@ client.on('messageCreate', async (message) => {
                 // every Railway redeploy by design (the source of truth is code,
                 // not state). Use `!ai status` to verify before/after toggling.
                 if (!isOwner(message.author)) {
-                    return message.reply('❌ This command is owner-only.');
+                    return message.reply(ownerDenialMessage());
                 }
                 const sub = (argText || 'status').trim().toLowerCase();
                 const fmtBool = b => b ? '✅ on' : '❌ off';
@@ -2297,7 +2324,7 @@ client.on('messageCreate', async (message) => {
                 // 4096-char embed limit). Argument is the semver string, or
                 // omitted to post the latest entry from CHANGELOG.md.
                 if (!isOwner(message.author)) {
-                    return message.reply('❌ This command is owner-only.');
+                    return message.reply(ownerDenialMessage());
                 }
                 if (!CONFIG.channels.changelog) {
                     return message.reply('❌ No changelog channel configured.');
@@ -2313,9 +2340,9 @@ client.on('messageCreate', async (message) => {
                 }
                 try {
                     const channel = await client.channels.fetch(CONFIG.channels.changelog);
-                    const embedCount = await postChangelogToChannel(channel, targetVersion, lines, entry.style);
+                    const embedCount = await postChangelogToChannel(channel, targetVersion, entry.blocks);
                     await sendToAdmin({
-                        content: `📋 **Manual changelog post** by ${message.author.username}: v${targetVersion} (${lines.length} ${entry.style === 'prose' ? 'paragraph' : 'bullet'}${lines.length === 1 ? '' : 's'}, ${embedCount} embed${embedCount === 1 ? '' : 's'}).`,
+                        content: `📋 **Manual changelog post** by ${message.author.username}: v${targetVersion} (${lines.length} block${lines.length === 1 ? '' : 's'}, ${embedCount} embed${embedCount === 1 ? '' : 's'}).`,
                     });
                     return message.reply(`✅ Posted v${targetVersion} to <#${CONFIG.channels.changelog}> (${embedCount} embed${embedCount === 1 ? '' : 's'}).`);
                 } catch (e) {
@@ -2553,7 +2580,7 @@ client.on('messageCreate', async (message) => {
             }
 
             case 'setupreaction': {
-                if (!isOwner(message.author.id) && !isAdmin(message.member)) {
+                if (!isOwner(message.author) && !isAdmin(message.member)) {
                     return message.reply('❌ This command requires Admin access.');
                 }
                 const roleName = CONFIG.reactionRole.roleName;
@@ -2835,7 +2862,7 @@ client.once('clientReady', async () => {
                     changelogStatus = `⏭️ v${BOT_VERSION} already posted — skipped`;
                     console.log(`📋 Changelog v${BOT_VERSION} already posted — skipping`);
                 } else {
-                    await postChangelogToChannel(changelogChannel, BOT_VERSION, BOT_CHANGELOG, BOT_CHANGELOG_STYLE);
+                    await postChangelogToChannel(changelogChannel, BOT_VERSION, BOT_CHANGELOG_BLOCKS);
                     changelogStatus = `📋 v${BOT_VERSION} posted to #changelog`;
                     console.log(changelogStatus);
                 }
@@ -2846,12 +2873,20 @@ client.once('clientReady', async () => {
         }
     }
 
+    // An unset OWNER_ID silently disables every owner-only command, and the
+    // only symptom is a flat "owner-only" refusal aimed at the person who IS
+    // the owner. Say it once a deploy, where the other boot status already is.
+    if (!ownerIdConfigured()) {
+        console.log('⚠️  OWNER_ID not set — owner-only commands are disabled for everyone');
+    }
+
     // Deploy notification → debug channel (includes changelog status)
     await sendToAdmin({
         content: `🚀 **Bot deployed!** v${BOT_VERSION}\n` +
             `📊 ${countFacts()} facts loaded\n` +
             `🤖 OpenAI: ${openai ? '✅ ready' : '❌ not configured'}\n` +
             `${changelogStatus}\n` +
+            (ownerIdConfigured() ? '' : '⚠️ `OWNER_ID` unset — owner-only commands disabled\n') +
             `⏰ ${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })} Pacific`,
     });
 

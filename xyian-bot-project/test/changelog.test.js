@@ -58,11 +58,11 @@ test('falls back to 0.0.0 rather than throwing on junk', () => {
     assert.strictEqual(parseChangelog(null).version, '0.0.0');
 });
 
-console.log('parseChangelog — bullet entries (existing behaviour, must not regress)');
-test('extracts bullets and strips the marker', () => {
+console.log('parseChangelog — bullet entries');
+test('extracts bullets, strips the marker, tags them', () => {
     const r = parseChangelog(BULLET_ENTRY);
-    assert.strictEqual(r.style, 'bullets');
-    assert.deepStrictEqual(r.lines, [
+    const bullets = r.blocks.filter((b) => b.kind === 'bullet').map((b) => b.text);
+    assert.deepStrictEqual(bullets, [
         '`!role @user add|remove <role>` — add or remove a role',
         '`!timeout @user <30m>` — temporarily mute',
     ]);
@@ -70,17 +70,12 @@ test('extracts bullets and strips the marker', () => {
 test('does not bleed into the next version entry', () => {
     assert.ok(!parseChangelog(BULLET_ENTRY).lines.some((l) => /older thing/.test(l)));
 });
-test('prose preamble is dropped when bullets exist', () => {
-    // Older entries pair a paragraph of context with a bullet list and expect
-    // only the bullets to post.
-    assert.ok(!parseChangelog(BULLET_ENTRY).lines.some((l) => /no way to manage/.test(l)));
-});
 
 console.log('parseChangelog — prose entries (the v3.17/v3.18 bug)');
 test('a prose entry yields lines instead of silently yielding none', () => {
     const r = parseChangelog(PROSE_ENTRY);
-    assert.strictEqual(r.style, 'prose');
     assert.ok(r.lines.length > 0, 'prose entry parsed to zero lines — the original bug');
+    assert.ok(r.blocks.every((b) => b.kind === 'prose'));
 });
 test('keeps the subheading and the paragraphs, drops the version title', () => {
     const r = parseChangelog(PROSE_ENTRY);
@@ -94,6 +89,34 @@ test('does not bleed into the next entry', () => {
     assert.ok(!parseChangelog(PROSE_ENTRY).lines.some((l) => /a bullet/.test(l)));
 });
 
+console.log('parseChangelog — MIXED entries (the v3.19.0 near-miss)');
+const MIXED_ENTRY = `# Changelog
+
+## [3.19.0] - 2026-08-04
+
+### Characters merged
+
+**Characters (+48).** This was the topic held back longest.
+
+### Fix: owner-only commands were disabled for everyone
+
+- \`OWNER_ID\` is not set, so nobody could run them.
+- The refusal now says which of the two it is.
+`;
+test('an entry with BOTH prose and bullets keeps all of it', () => {
+    // The first version of this module let bullets win outright whenever any
+    // were present. v3.19.0 has substantial prose AND a bullet list, so that
+    // rule would have silently dropped its entire first half — the same quiet
+    // content loss this module exists to prevent.
+    const r = parseChangelog(MIXED_ENTRY);
+    assert.ok(r.lines.some((l) => /Characters \(\+48\)/.test(l)), 'prose half was dropped');
+    assert.ok(r.lines.some((l) => /OWNER_ID.*not set/.test(l)), 'bullet half was dropped');
+});
+test('preserves document order and tags each block', () => {
+    const kinds = parseChangelog(MIXED_ENTRY).blocks.map((b) => b.kind);
+    assert.deepStrictEqual(kinds, ['prose', 'prose', 'prose', 'bullet', 'bullet']);
+});
+
 console.log('linesForVersion');
 test('finds a historical bullet release', () => {
     const r = linesForVersion(BULLET_ENTRY, '3.15.0');
@@ -101,8 +124,8 @@ test('finds a historical bullet release', () => {
 });
 test('finds a historical prose release — so !post-changelog can repair 3.17/3.18', () => {
     const r = linesForVersion(PROSE_ENTRY, '3.18.0');
-    assert.strictEqual(r.style, 'prose');
     assert.ok(r.lines.length > 0);
+    assert.ok(r.blocks.every((b) => b.kind === 'prose'));
 });
 test('returns null for a version that is not in the file', () => {
     assert.strictEqual(linesForVersion(BULLET_ENTRY, '9.9.9'), null);
@@ -122,8 +145,7 @@ test('handles an empty or missing section safely', () => {
 test('ignores a hyphen that is not a list marker', () => {
     // "-5% damage" must not be mistaken for a bullet.
     const r = linesFromSection('## [1.0.0] - x\n\n-5% damage on this build\n');
-    assert.strictEqual(r.style, 'prose');
-    assert.deepStrictEqual(r.lines, ['-5% damage on this build']);
+    assert.deepStrictEqual(r.blocks, [{ kind: 'prose', text: '-5% damage on this build' }]);
 });
 
 console.log('the real CHANGELOG.md');
