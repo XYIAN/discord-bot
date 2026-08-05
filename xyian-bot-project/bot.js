@@ -285,9 +285,11 @@ function usageDayKey() {
     return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
 }
 
-function recordApiUsage(model, usage) {
+function recordApiUsage(model, usage, promptChars) {
     try {
-        usageState = usageLib.recordUsage(usageState, { dayKey: usageDayKey(), model, usage });
+        usageState = usageLib.recordUsage(usageState, {
+            dayKey: usageDayKey(), model, usage, promptChars,
+        });
         fs.writeFileSync(USAGE_PATH, JSON.stringify(usageState, null, 2));
     } catch (e) {
         console.error('⚠️  Could not record API usage:', e.message);
@@ -1134,7 +1136,7 @@ async function askAI(question, username, userId) {
             max_tokens: 600,
             temperature: 0.4,
         });
-        recordApiUsage('gpt-4o-mini', res.usage);
+        recordApiUsage('gpt-4o-mini', res.usage, systemPrompt.length);
         const answer = res.choices[0]?.message?.content?.trim();
         if (answer && answer.length > 5) {
             storeExchange(userId, question, answer);
@@ -1314,7 +1316,7 @@ async function askAIWithVision(question, imageUrls, username, userId) {
             max_tokens: 1000,  // bumped from 700 to leave room for CANDIDATES block
             temperature: 0.4,
         });
-        recordApiUsage('gpt-4o-mini', res.usage);
+        recordApiUsage('gpt-4o-mini', res.usage, visionPrompt.length);
         const raw = res.choices[0]?.message?.content?.trim();
         if (raw && raw.length > 5) {
             const { reply, candidates } = splitVisionResponse(raw);
@@ -2626,7 +2628,7 @@ client.on('messageCreate', async (message) => {
                     return message.reply('No AI calls recorded yet. Usage tracking started in v3.20.0 — ask me something and check back.');
                 }
                 const lines = sum.perDay.slice(-14).map(d =>
-                    `\`${d.day}\`  ${String(d.calls).padStart(4)} calls  ${String(d.promptTokens.toLocaleString()).padStart(10)} prompt  ${String(d.completionTokens.toLocaleString()).padStart(7)} out`);
+                    `\`${d.day}\`  ${String(d.calls).padStart(4)} calls  ${String((d.promptTokens || 0).toLocaleString()).padStart(10)} prompt  ${String((d.cachedTokens || 0).toLocaleString()).padStart(9)} cached  ${String((d.completionTokens || 0).toLocaleString()).padStart(6)} out`);
                 const embed = new EmbedBuilder()
                     .setTitle(`📊 AI usage — last ${sum.dayCount} day${sum.dayCount === 1 ? '' : 's'}`)
                     .setColor(0x00ff88)

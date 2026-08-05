@@ -17,8 +17,8 @@
  * An unknown model yields null rather than a confidently wrong number.
  */
 const PRICING_PER_MILLION = {
-    'gpt-4o-mini': { input: 0.15, output: 0.60 },
-    'gpt-4o': { input: 2.50, output: 10.00 },
+    'gpt-4o-mini': { input: 0.15, cachedInput: 0.075, output: 0.60 },
+    'gpt-4o': { input: 2.50, cachedInput: 1.25, output: 10.00 },
 };
 
 /** How many days of history to keep. Enough to see a trend, small enough to stay tiny. */
@@ -35,8 +35,19 @@ function emptyState() {
  * zero tokens rather than throwing: losing the accounting for one call must
  * never break answering the question the user actually asked.
  *
+ * `cachedTokens` comes from `usage.prompt_tokens_details.cached_tokens` and is
+ * billed at half rate. It matters more than it looks: OpenAI caches on a stable
+ * prompt PREFIX, so the current fixed knowledge dump is the most cache-friendly
+ * shape possible. Any future change that reorders the prompt per question
+ * forfeits that discount — and without this field there is no way to tell what
+ * was given up.
+ *
+ * `promptChars` is what the bot BUILT, as opposed to what the tokenizer made of
+ * it. Recording both means a prompt-size change shows up in the ledger directly
+ * instead of being inferred.
+ *
  * @param {object} state    previous state (not mutated)
- * @param {object} call     { dayKey, model, usage: {prompt_tokens, completion_tokens} }
+ * @param {object} call     { dayKey, model, promptChars, usage }
  * @returns {object} new state
  */
 function recordUsage(state, call) {
@@ -48,21 +59,26 @@ function recordUsage(state, call) {
     const usage = (call && call.usage) || {};
     const promptTokens = Number(usage.prompt_tokens) || 0;
     const completionTokens = Number(usage.completion_tokens) || 0;
+    const cachedTokens = Number((usage.prompt_tokens_details || {}).cached_tokens) || 0;
+    const promptChars = Number(call && call.promptChars) || 0;
 
     const days = { ...prev.days };
     const day = days[dayKey]
         ? { ...days[dayKey], byModel: { ...days[dayKey].byModel } }
-        : { calls: 0, promptTokens: 0, completionTokens: 0, byModel: {} };
+        : { calls: 0, promptTokens: 0, completionTokens: 0, cachedTokens: 0, promptChars: 0, byModel: {} };
 
     day.calls += 1;
     day.promptTokens += promptTokens;
     day.completionTokens += completionTokens;
+    day.cachedTokens = (day.cachedTokens || 0) + cachedTokens;
+    day.promptChars = (day.promptChars || 0) + promptChars;
 
-    const m = day.byModel[model] || { calls: 0, promptTokens: 0, completionTokens: 0 };
+    const m = day.byModel[model] || { calls: 0, promptTokens: 0, completionTokens: 0, cachedTokens: 0 };
     day.byModel[model] = {
         calls: m.calls + 1,
         promptTokens: m.promptTokens + promptTokens,
         completionTokens: m.completionTokens + completionTokens,
+        cachedTokens: (m.cachedTokens || 0) + cachedTokens,
     };
 
     days[dayKey] = day;
@@ -77,13 +93,23 @@ function recordUsage(state, call) {
 
 /**
  * Estimated USD for a token count.
+ *
+ * Cached prompt tokens bill at half rate, so they are subtracted from the
+ * full-rate portion rather than double-counted. A cachedTokens larger than
+ * promptTokens would be nonsense from the API; clamp instead of going negative.
+ *
  * @returns {number|null} null when the model's price is unknown
  */
-function estimateCost(model, promptTokens, completionTokens) {
+function estimateCost(model, promptTokens, completionTokens, cachedTokens) {
     const price = PRICING_PER_MILLION[model];
     if (!price) return null;
+    const prompt = Number(promptTokens) || 0;
+    const cached = Math.min(Math.max(Number(cachedTokens) || 0, 0), prompt);
+    const full = prompt - cached;
+    const cachedRate = price.cachedInput === undefined ? price.input : price.cachedInput;
     return (
-        (Number(promptTokens) || 0) * price.input / 1e6
+        full * price.input / 1e6
+        + cached * cachedRate / 1e6
         + (Number(completionTokens) || 0) * price.output / 1e6
     );
 }
@@ -105,6 +131,8 @@ function summarise(state, options) {
     let calls = 0;
     let promptTokens = 0;
     let completionTokens = 0;
+    let cachedTokens = 0;
+    let promptChars = 0;
     let costUsd = 0;
     let costKnown = true;
 
@@ -113,8 +141,10 @@ function summarise(state, options) {
         calls += d.calls || 0;
         promptTokens += d.promptTokens || 0;
         completionTokens += d.completionTokens || 0;
+        cachedTokens += d.cachedTokens || 0;
+        promptChars += d.promptChars || 0;
         for (const [model, m] of Object.entries(d.byModel || {})) {
-            const c = estimateCost(model, m.promptTokens, m.completionTokens);
+            const c = estimateCost(model, m.promptTokens, m.completionTokens, m.cachedTokens);
             if (c === null) costKnown = false;
             else costUsd += c;
         }
@@ -124,7 +154,14 @@ function summarise(state, options) {
         calls,
         promptTokens,
         completionTokens,
+        cachedTokens,
+        promptChars,
         avgPromptTokens: calls ? Math.round(promptTokens / calls) : 0,
+        avgPromptChars: calls ? Math.round(promptChars / calls) : 0,
+        // What fraction of prompt tokens billed at the cheaper cached rate.
+        // This is the number that says what prompt-prefix caching is worth here,
+        // and therefore what any per-question reordering would give up.
+        cachedPct: promptTokens ? Math.round(1000 * cachedTokens / promptTokens) / 10 : 0,
         costUsd: costKnown ? costUsd : null,
         costKnown,
         dayCount: keys.length,
@@ -142,7 +179,8 @@ function formatSummary(summary) {
         `${summary.calls} AI call${summary.calls === 1 ? '' : 's'} over ${summary.dayCount} day`
         + `${summary.dayCount === 1 ? '' : 's'} — ${summary.promptTokens.toLocaleString()} prompt + `
         + `${summary.completionTokens.toLocaleString()} completion tokens, `
-        + `avg ${summary.avgPromptTokens.toLocaleString()} prompt tokens/call, ${cost}`
+        + `avg ${summary.avgPromptTokens.toLocaleString()} prompt tokens/call, `
+        + `${summary.cachedPct}% of prompt tokens cached, ${cost}`
     );
 }
 

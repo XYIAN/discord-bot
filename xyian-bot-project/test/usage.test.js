@@ -100,6 +100,43 @@ test('retention drops the OLDEST days, not arbitrary ones', () => {
     assert.strictEqual(keys[keys.length - 1], `2026-01-${String(RETAIN_DAYS + 2).padStart(3, '0')}`);
 });
 
+console.log('cached tokens — what prompt-prefix caching is worth');
+test('records cached_tokens from prompt_tokens_details', () => {
+    const s = recordUsage(emptyState(), {
+        dayKey: '2026-08-04', model: 'gpt-4o-mini',
+        usage: { prompt_tokens: 38273, completion_tokens: 300, prompt_tokens_details: { cached_tokens: 37000 } },
+    });
+    assert.strictEqual(s.days['2026-08-04'].cachedTokens, 37000);
+    assert.strictEqual(s.days['2026-08-04'].byModel['gpt-4o-mini'].cachedTokens, 37000);
+});
+test('an absent prompt_tokens_details records zero and does not throw', () => {
+    // The existing malformed-usage tolerance must survive this addition.
+    const s = recordUsage(emptyState(), call('2026-08-04', 100, 10));
+    assert.strictEqual(s.days['2026-08-04'].cachedTokens, 0);
+});
+test('records promptChars so a prompt-size change is visible, not inferred', () => {
+    const s = recordUsage(emptyState(), {
+        dayKey: '2026-08-04', model: 'gpt-4o-mini', promptChars: 152616,
+        usage: { prompt_tokens: 38273, completion_tokens: 300 },
+    });
+    assert.strictEqual(s.days['2026-08-04'].promptChars, 152616);
+    assert.strictEqual(summarise(s, {}).avgPromptChars, 152616);
+});
+test('summarise reports the cached percentage', () => {
+    const s = recordUsage(emptyState(), {
+        dayKey: '2026-08-04', model: 'gpt-4o-mini',
+        usage: { prompt_tokens: 1000, completion_tokens: 10, prompt_tokens_details: { cached_tokens: 750 } },
+    });
+    assert.strictEqual(summarise(s, {}).cachedPct, 75);
+});
+test('formatSummary surfaces the cached share', () => {
+    const s = recordUsage(emptyState(), {
+        dayKey: '2026-08-04', model: 'gpt-4o-mini',
+        usage: { prompt_tokens: 1000, completion_tokens: 10, prompt_tokens_details: { cached_tokens: 500 } },
+    });
+    assert.match(formatSummary(summarise(s, {})), /50% of prompt tokens cached/);
+});
+
 console.log('estimateCost');
 test('prices gpt-4o-mini per published rates', () => {
     // 1M input @ $0.15 + 1M output @ $0.60
@@ -108,6 +145,18 @@ test('prices gpt-4o-mini per published rates', () => {
 });
 test('returns null for an unknown model rather than guessing', () => {
     assert.strictEqual(estimateCost('some-future-model', 1e6, 1e6), null);
+});
+test('cached prompt tokens bill at half rate, not double-counted', () => {
+    // 1M prompt tokens all cached = $0.075, not $0.15 and not $0.225.
+    assert.strictEqual(estimateCost('gpt-4o-mini', 1e6, 0, 1e6), 0.075);
+    // Half cached = midpoint.
+    assert.ok(Math.abs(estimateCost('gpt-4o-mini', 1e6, 0, 5e5) - 0.1125) < 1e-9);
+});
+test('nonsensical cached counts clamp instead of going negative', () => {
+    // cached > prompt would be an API bug; the cost must not go below the
+    // all-cached price or above the none-cached price.
+    assert.strictEqual(estimateCost('gpt-4o-mini', 1e6, 0, 5e6), 0.075);
+    assert.strictEqual(estimateCost('gpt-4o-mini', 1e6, 0, -100), 0.15);
 });
 test('one 38k-token question costs well under a cent', () => {
     // Sanity-check the scale of the problem: the prompt tripling is a real
