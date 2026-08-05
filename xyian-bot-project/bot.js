@@ -2828,6 +2828,21 @@ process.on('unhandledRejection', (e) => {
 // every boot and is removed in v15).
 client.once('clientReady', async () => {
     console.log(`✅ Logged in as ${client.user.tag} (v${BOT_VERSION})`);
+
+    // Fold seeds/ into the volume BEFORE anything counts or reports the
+    // knowledge base. This used to run near the end of boot, so the fact count
+    // in the log and the deploy notice described the volume as it was *before*
+    // this release's merge — always exactly one deploy stale. v3.18.0 shipped
+    // 75 new keys and reported the pre-merge 242; the 317 then showed up under
+    // v3.18.1, which had changed no knowledge at all. Nothing was lost, but the
+    // headline number pointed at the wrong release.
+    // Kept in its own try/catch: a seed problem must not stop the bot booting.
+    try {
+        restoreCuratedFacts();
+    } catch (e) {
+        console.error('⚠️  Could not merge curated seeds:', e.message);
+    }
+
     console.log(`📊 ${countFacts()} facts loaded from knowledge.json`);
 
     // Resolve general channel ID for stale-message cleanup
@@ -2905,7 +2920,8 @@ client.once('clientReady', async () => {
     // missed grant can never become permanent again.
     try {
         const restored = restoreSuggestionsLedger();
-        restoreCuratedFacts();
+        // restoreCuratedFacts() already ran at the top of boot, before the fact
+        // count and deploy notice — see the comment there.
         backfillApproverAttribution();
         const ledgerSize = loadSuggestions().length;
         console.log(`📒 Contribution ledger: ${ledgerSize} record(s)${restored ? ` (${restored} restored this boot)` : ''}`);

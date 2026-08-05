@@ -4,6 +4,15 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.19.1] - 2026-08-04
+
+### Fix: the deploy notice's fact count was always one release behind
+
+- `restoreCuratedFacts()` — which folds `seeds/` into the live volume — ran near the *end* of boot, after the fact count had already been logged and the deploy notice sent. So the headline number described the volume as it was before that release's own merge.
+- v3.18.0 shipped 75 new keys and reported the pre-merge **242**. The **317** then appeared under v3.18.1, a release that changed no knowledge whatsoever. Nothing was ever lost — every merge landed correctly — but the number pointed at the wrong release, and reading it as "my merge didn't ship" would have been a reasonable and completely wrong conclusion.
+- The merge now runs first, in its own try/catch so a seed problem still can't stop the bot booting. Next deploy should report **347**.
+- Caught by checking the count against the repo after the characters merge and finding a 30-key gap, then confirming the data really was live by asking the bot a question only the new keys could answer.
+
 ## [3.19.0] - 2026-08-04
 
 ### Characters merged — and the whole community import is now in
