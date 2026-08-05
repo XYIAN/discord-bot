@@ -39,6 +39,7 @@ const changelog = require('./lib/changelog');
 const usageLib = require('./lib/usage');
 const knowledgeRender = require('./lib/knowledge-render');
 const priceGuard = require('./lib/price-guard');
+const visionResponse = require('./lib/vision-response');
 require('dotenv').config();
 
 // Single source of truth: version + changelog are parsed from CHANGELOG.md.
@@ -1202,36 +1203,9 @@ function knowledgeCategoryList() {
 // vision model. Returns { reply, candidates } where reply is the user-facing
 // text with the block stripped, and candidates is a (possibly empty) array.
 function splitVisionResponse(rawAnswer) {
-    if (!rawAnswer) return { reply: rawAnswer, candidates: [] };
-    // Look for an explicit delimiter the prompt asks the model to emit.
-    const marker = /===\s*CANDIDATES\s*===\s*([\s\S]*)$/i;
-    const match = rawAnswer.match(marker);
-    if (!match) return { reply: rawAnswer.trim(), candidates: [] };
-    const reply = rawAnswer.slice(0, match.index).trim();
-    let jsonText = match[1].trim();
-    // Strip ``` fences if the model wrapped the JSON in them.
-    jsonText = jsonText.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/i, '').trim();
-    let parsed = [];
-    try {
-        const obj = JSON.parse(jsonText);
-        parsed = Array.isArray(obj) ? obj : (Array.isArray(obj?.candidates) ? obj.candidates : []);
-    } catch {
-        parsed = [];
-    }
-    // Sanitize: drop anything missing text, normalize fields.
-    const cleaned = [];
-    for (const c of parsed) {
-        if (!c || typeof c !== 'object') continue;
-        const text = (c.text || '').trim();
-        if (text.length < 10) continue;
-        const proposed_category = KNOWLEDGE_CATEGORIES.has(c.category) ? c.category : null;
-        const proposed_key = (typeof c.key === 'string' && /^[a-z0-9_]{2,40}$/i.test(c.key.trim()))
-            ? c.key.trim().toLowerCase()
-            : null;
-        const confidence = ['high', 'medium', 'low'].includes(c.confidence) ? c.confidence : 'medium';
-        cleaned.push({ text, proposed_category, proposed_key, confidence });
-    }
-    return { reply, candidates: cleaned };
+    // Parsing lives in lib/vision-response.js so it can be tested — it handles
+    // untrusted model output that flows into the moderator review queue.
+    return visionResponse.splitVisionResponse(rawAnswer, KNOWLEDGE_CATEGORIES);
 }
 
 async function askAIWithVision(question, imageUrls, username, userId) {
