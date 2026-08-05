@@ -293,10 +293,315 @@
     "donations": "Guild donations: You can donate 5 times per day. The first donation is free, then costs increase by 20 gems each (free → 20 → 40 → 60 → 80). Donations are how guilds level up.",
     "first_donation_daily": "The first guild donation of the day is free.",
     "max_level": "The max guild level is 11.",
-    "added_by": "xyian"
+    "added_by": "xyian",
+    "overview": "Guilds are persistent social groups with shared progression and competitive content. The Guild hub is a map view with six buildings, each its own sub-feature.",
+    "member_cap": "Up to 30 members at base. Raising the guild level increases the member cap.",
+    "leadership": "Leaders can appoint Vice Leaders to help manage. Leaders cannot leave the guild — they must transfer leadership or be the last person to disband it.",
+    "inactive_leader": "Leadership auto-transfers when a leader is inactive for 7 days.",
+    "hub_buildings": "Six buildings: Guild Hall (members, roles, research, leaderboard), Monster Invasion (guild boss raids), Guild Expedition (multi-guild PvP tournament), Shop / Guild Store (hero shards and random Epic runes), Guild Merchant (community bargain mechanic), and Guild Aid.",
+    "guild_hall": {
+      "contents": "Guild name, ID, emblem with guild level, member count, Recruit button, aggregate guild power, guild XP progress bar toward the next level, and a leader-editable description box.",
+      "member_row": "Each member row shows avatar, role, name, power level, daily contribution count, contribution score, and online/offline status.",
+      "roles": "Leader (1), Vice Leader (multiple, appointed by the Leader), and Guild Members.",
+      "buttons": "Log (guild activity history: joins, leaves, kicks with timestamps), Guild Research, and Manage Member (kick / promote, Leader and Vice Leader only)."
+    },
+    "guild_research": {
+      "overview": "A grid of unlockable research nodes, each with 5 levels (Lv 1-5). Each node grants a buff that applies to all members of the guild.",
+      "how_it_works": "Each node has a Needed Research EXP bar. Members donate to push the bar; once filled the node levels up and the buff applies guild-wide. Node popups show current level, current effect, next level effect, donation rewards (EXP + currencies), and today's remaining battle chances.",
+      "tiers": "Most node names appear in Tier I and Tier II variants (e.g. Vitality I to Vitality II). Tier II is the higher unlock, only available after maxing Tier I.",
+      "node_types": "Two kinds of node: most grant incremental stat buffs on a Lv 1-5 ladder, while some are content unlocks (e.g. Clash Clearance II unlocks higher-tier Monster Invasion chests) with no per-level stat.",
+      "contribution_tracking": "Research shows your weekly contribution and your weekly ranking within the guild, plus a Guild Rankings button for global guild leaderboards.",
+      "nodes": {
+        "vitality_i": "Max HP. Observed maxed at +10%; full ladder not captured.",
+        "vitality_ii": "Max HP. Higher tier of Vitality I; per-level ladder not captured.",
+        "battle_will_ii": "ATK PWR +4% / +8% / +12% / +16% / +20% across Lv 1-5.",
+        "wealth_boost_i": "Stage/Hunt Gold Gain +2% / +4% / +6% / +8% / +10% across Lv 1-5.",
+        "wealth_boost_ii": "Stage/Hunt Gold Gain +2% / +4% / +6% / +8% / +10% across Lv 1-5.",
+        "scroll_boost_i": "Stage/Hunt Scroll Gain. Per-level ladder not captured.",
+        "training_boost_ii": "Stage/Hunt EXP Gain. Per-level ladder not captured.",
+        "stamina_capacity": "Max Energy, single tier. Observed maxed at +10.",
+        "purge": "More damage vs minions +4% / +8% / +12% / +16% / +20% across Lv 1-5. Single tier.",
+        "coordinated_hunt": "More damage vs elites +4% / +8% / +12% / +16% / +20% across Lv 1-5. Single tier.",
+        "assist_enhancement_i": "Guild assist reward chances +1 / +2 / +3 / +4 / +5 across Lv 1-5.",
+        "clash_clearance_ii": "Content unlock: unlocks Monster Invasion chest tiers (maxed unlocks Tier 10-12 chests).",
+        "other_nodes_observed": "Node names seen but with effects not documented: Clash, Stamina Cycle II, Contribution Return II, Assist Accel II, Reflexes, Assist Enhancement II."
+      },
+      "strategy": "Research is the cleanest source of permanent guild-wide stat buffs, and they apply to every member, so donating is high-leverage even for nodes you will not personally use. Focus Tier II of the stats your build prioritizes — Battle Will II for ATK builds, Vitality II for tanky builds, Wealth Boost II for gold farming."
+    },
+    "monster_invasion": {
+      "overview": "A guild-wide boss raid where members collectively damage a single boss for tiered rewards.",
+      "boss_rotation": "The boss rotates daily. A Boss Refresh Timer counts down to the next rotation, and a Chance Refresh Timer limits attempts per member per cycle.",
+      "damage_thresholds": "Per-day damage milestones each player must hit to claim each reward tier: 30M / 60M / 100M+ chests.",
+      "buttons": "Quick Raid (auto-resolve attempts, extended by the Sealing Master privilege card), Practice (test runs that cost no chances and give no rewards), Start (manual run), and Preset (load a saved gear/rune loadout).",
+      "guild_ranking": "Monster Invasion has a global guild ranking based on total guild damage summed across all members for each daily boss rotation. Rewards are sent via mail at the end of each round.",
+      "ranking_rewards": {
+        "note": "Guild Coins / secondary currency, sent by mail to all members of qualifying guilds at the end of each daily round. Values for the top 4 ranks were not captured.",
+        "rank_5": "5,000 / 2,250",
+        "rank_6_10": "4,500 / 2,100",
+        "rank_11_30": "4,000 / 1,950",
+        "rank_31_60": "3,500 / 1,800",
+        "rank_61_100": "3,000 / 1,650",
+        "rank_100_plus": "2,500 / 1,500"
+      },
+      "strategy": "Being in a Top-100 guild is a meaningful daily Guild Coin source. The driver is total guild damage, so a guild with many members hitting the per-player milestones out-damages one with only a few high-damage members."
+    },
+    "guild_expedition": {
+      "overview": "A multi-guild PvP tournament with seasonal rounds. Your guild faces other guilds in deployment-based combat.",
+      "eligibility": "Guild must be Lv.3 or higher and have at least 10 members registered. Members must personally register. Each route has a deploy cap and stronger members are deployed first, but all registered members earn rewards even if not deployed.",
+      "weekly_schedule": {
+        "note": "7-day cycle, all times UTC+0.",
+        "registration": "Mon 00:00 - Tue 23:59. Members register and select a battle route.",
+        "prep_phase": "Wed 00:00 - Thu 23:59. Leaders and Vice Leaders assign deployed members for all 3 routes; members spend Expedition Hearts to recharge Expedition Talents and gain buffs.",
+        "battle_phase": "Fri 00:00 - Sun 23:59. Round-robin combat. Deployments and character progress lock at Fri 12:00 UTC, and the opposing guild's deployment becomes viewable within 2 hours after lock."
+      },
+      "format": "A group of 4 guilds competes round-robin, giving 3 matches per guild per cycle. Each match has 3 routes (Left / Middle / Right); each route deploys 8 members and the top 8 by Battle Power per lane fight. Capturing flags across the 3 routes determines wins.",
+      "combat_rules": "Matches use spectator mode with the arena's presets. Characters' HP and ATK use default values rather than live stats, so gear and runes do not directly determine fight outcomes — talent and Expedition Talents do. The guild that defeats all enemy players on a route claims that route's flag.",
+      "season_structure": "A season lasts 12 weeks (84 days) across 12 rounds of 1 week each. Performance accumulates league points across rounds, driving promotion or demotion at season end.",
+      "match_scoring": "Within a round: a win (more flags captured) is 3 points and a draw (equal flags) is 1 point each. These determine placement within your weekly 4-guild bracket.",
+      "round_points": "End-of-round bracket placement gives league points: 1st +50, 2nd +35, 3rd +10, 4th -15.",
+      "win_streak_bonus": "Win streaks add bonus points: a 2-match win streak gives +5, a 3-match win streak gives +10.",
+      "season_reset": {
+        "note": "At season reset a guild's points auto-reset to a soft floor based on final points — higher finishes keep more progress.",
+        "0_599": "No reset, stays the same",
+        "600_699": "Resets to 550",
+        "700_799": "Resets to 600",
+        "800_899": "Resets to 650",
+        "900_999": "Resets to 750",
+        "1000_1099": "Resets to 850",
+        "1100_1199": "Resets to 950",
+        "1200_plus": "Resets to 1,000"
+      },
+      "season_rewards": "Rewards are tallied based on the final tier reached in the season. Players must be registered for at least 3 weeks of matches to be eligible; if the guild itself participated fewer than 3 weeks, players must participate in all available matches (exact wording was cut off in the source).",
+      "leagues": "The label under each guild's name on the round screen is its league. Thunderbound Oath and Dragonbound are the two leagues documented, with Dragonbound the higher one. Thunderbound Oath spans the 900-1,199 point band; sub-tier range is 100 points. The full league ladder was not captured.",
+      "expedition_talents": "A talent tree unlocked through registration and the Prep Phase. Members spend Expedition Hearts to power it up, and talents apply to the entire guild during the upcoming Battle Phase. Examples observed: all members gain DMG Reflect (CD 1s, upgradeable to 1.5s), DMG Reflect reduced +15%, Healing reduced +20%, Hit Rate +20%, and +1% DMG to all members on a lane for each additional guild member that joins that lane (calculated per lane independently).",
+      "deployment_screen": "Shows 3 lanes (Left / Middle / Right) with participants per lane and total power per lane. Among the members of each route, the top 8 in Battle Power join the battle; registered but undeployed members still earn rewards. Presets save deployment configurations."
+    },
+    "guild_store": {
+      "overview": "The guild's daily-rotating shop, primarily for hero shards and random Epic runes. Refreshes every 24h.",
+      "currency": "Guild Coins (orange icon), alongside gold.",
+      "hero_shards": "Alex, Nyanja, Helix, Hela, Mymu, and Hou Yi shards at 900 Guild Coins each, limit 50 purchases each per day.",
+      "runes": "Random Epic Enhancement Rune, Random Epic Ability Rune, and Random Epic Blessing Rune, bought with gems, limit 10 each.",
+      "strategy": "All 6 hero shards on offer are Rare-tier heroes, so the Guild Store is a strong farm path for Rare hero progression — up to 300 Rare hero shards per day per member.",
+      "shop_tabs": "Sub-tabs at the bottom of the Shop: Guild Store (default), Guild Expedition Shop, Event Shop, Arena Shop, and Skin Exchange Shop."
+    },
+    "guild_expedition_shop": {
+      "overview": "A tab inside the Guild Shop selling themed random Epic runes plus specific named runes. Refreshes roughly every 2 days.",
+      "currency": "Paid for with a currency earned from Guild Expedition (2,700 per item; the source could not confirm the currency name, likely Expedition Coins).",
+      "items": "Random Epic Circle, Meteor, Sword Strike, Sprite, Main Weapon, Elemental, Plant, and Blessing Runes, plus Arrow of Echoes (a specific Etched rune). All at 2,700 with 1 purchase each.",
+      "strategy": "The cleanest path for theme-targeted rune farming — if you are building a Sprite or Plant build, the Random Epic [Theme] Rune options let you spend Expedition currency directly toward that theme."
+    },
+    "guild_merchant": {
+      "overview": "A community-driven bargain mechanic. Guild members collectively contribute bargains to lower the price of merchant items for the whole guild. Items rotate daily.",
+      "how_it_works": "A panda merchant offers items each day at a base price in gems. Each member can place a Bargain, a small contribution toward the price cut. The more members who Bargain, the cheaper items get for everyone.",
+      "refunds": "The price difference is returned via mail the next day, so anyone who bought at a higher price is refunded once the cut is finalized.",
+      "daily_window": "The bargain runs on a daily timer window.",
+      "community_expectation": "Bargaining once daily is a common guild requirement, not just a personal tool."
+    },
+    "guild_aid": {
+      "overview": "A Mystling-specific member help system. Guildmates can speed up each other's Pact Sanctum upgrade timers and Mystling egg hatch times.",
+      "upgrades": "The Mystling Collection track has milestones that improve it: 'Guild assist reward chances +N' boosts what you earn from helping others, and 'Assisted help requests: extra -60s' makes assistance you receive more impactful.",
+      "routine": "Sending and receiving Guild Aid daily is part of an active member's loop, especially in guilds focused on Mystling progression."
+    },
+    "guild_coins_source": "Guild Coins (used in the Guild Store) come from Monster Invasion guild ranking rewards and guild donation rewards. Consistent Monster Invasion damage plus donating to Guild Research is the loop that funds Guild Store purchases.",
+    "daily_routine": "A typical active guild day: claim Pact Sanctum if upgraded, run Monster Invasion (Quick-Raid if you own the Sealing Master card), place 1 Bargain at Guild Merchant, buy daily hero shards from the Guild Store, contribute to Guild Research, and deploy/battle in Guild Expedition during active rounds.",
+    "why_it_matters": "Active guild membership is essential for endgame progression — Monster Invasion rewards, Guild Expedition coins, daily merchant bargains, hero shard farming, and guild-wide research buffs all require active participation.",
+    "open_questions": "Not documented in this contribution: what Manage Member reveals, how Expedition Hearts are earned, and the full league ladder above and below Thunderbound Oath."
   },
   "gear_sets": {
-    "godforge": "On Godforge, you will need Gear Essence and Crystals to upgrade your gear. You need to salvage any gear (excluding S-tier) to get Gear Essence and you also need to salvage the corresponding S-tier set pieces to get Crystals. You can only salvage S-tier pieces that you have already on Chaotic lvl."
+    "godforge": "On Godforge, you will need Gear Essence and Crystals to upgrade your gear. You need to salvage any gear (excluding S-tier) to get Gear Essence and you also need to salvage the corresponding S-tier set pieces to get Crystals. You can only salvage S-tier pieces that you have already on Chaotic lvl.",
+    "overview": "Six core gear sets: three base sets and three S-Ranked counterparts. Only S-Ranked gear can be upgraded past Legendary.",
+    "gear_slots": "Six gear slots per hero: Helmet, Armor, Weapon, Boots, Ring, Amulet.",
+    "loadouts": "Every player has 8 saved loadouts they can name and configure freely. Loadouts are player-level slots, not hero-level — they persist independent of which hero is selected.",
+    "set_pairs": {
+      "destruction": "Base set, caps at Legendary. S-Ranked counterpart: Dragoon.",
+      "decisiveness": "Base set, caps at Legendary. S-Ranked counterpart: Griffin.",
+      "echo": "Base set, caps at Legendary. S-Ranked counterpart: Oracle."
+    },
+    "s_ranked_indicator": "S-Ranked pieces show a yellow 'S' badge on the gear icon (it can read as a '5' at small sizes).",
+    "s_ranked_source": "S-Ranked gear (Dragoon / Griffin / Oracle) drops directly from Mythstone Chest and Chromatic Chest. You do not build them up from base set pieces.",
+    "s_ranked_minimum_rarity": "S-Ranked gear never drops at Common, Fine, or Rare. The lowest rarity an S-Ranked piece can drop at is Epic; from there it can be upgraded to Chaotic.",
+    "rarity_ladder_note": "14 rarity tiers, low to high, ending at Chaotic.",
+    "rarity_ladder": {
+      "1": "Common",
+      "2": "Fine",
+      "3": "Rare",
+      "4": "Epic",
+      "5": "Legendary",
+      "6": "Legendary +1",
+      "7": "Legendary +2",
+      "8": "Legendary +3",
+      "9": "Mythic",
+      "10": "Mythic +1",
+      "11": "Mythic +2",
+      "12": "Mythic +3",
+      "13": "Mythic +4",
+      "14": "Chaotic (top tier)"
+    },
+    "base_set_cap": "Base sets (Destruction / Decisiveness / Echo) can be upgraded through Legendary +3 but cannot reach Mythic or beyond.",
+    "s_ranked_cap": "S-Ranked sets (Dragoon / Griffin / Oracle) can be upgraded all the way to Chaotic.",
+    "base_set_fodder": "Past early game, base set pieces have no long-term upgrade ceiling, so most players use them as upgrade fodder for S-Ranked pieces.",
+    "gear_levels": "Each gear piece has a Level counter from 1 to 200, upgraded with slot-specific Gear Scrolls (Weapon Scroll for weapons, Armor Scroll for armor, etc.).",
+    "gear_scroll_sources": "Gear Scrolls drop from Hunt and are sold in the Daily Shop and as Reach milestone rewards.",
+    "levels_vs_rarity": "Gear level and rarity are independent progression tracks. Level grows to 200 via Gear Scrolls; rarity is upgraded separately at the Blacksmith. They do not affect each other.",
+    "upgrade_costs": "Rarity upgrades cost Gold plus slot-specific Scrolls.",
+    "piece_detail_fields": "A gear piece's detail screen shows name + rarity tier, level X/200, Skin Skills (set-specific abilities) and Quality Skills (stat bonuses).",
+    "stat_snapshot_caveat": "Per-piece stats below were captured at the Chaotic rarity tier. Lower rarities show a subset of these effects, and flat values scale with the piece's level.",
+    "griffin_set": {
+      "theme": "Theme observed: proximity / melee-range bonuses — multiple 'more enemies in melee range' effects, closer-distance DMG and CRIT bonuses, a 7m damage-over-time aura, and dodge while moving. Reads as a close-range crowd-fighting set. (Contributor flagged this as an interpretation to confirm.)",
+      "recurring_pattern": "Every Griffin piece has: a flat primary stat (ATK PWR on offensive slots, Max HP on defensive slots), a matching % primary stat, a slot-flavored secondary stat, [Slot]'s base stats +20% / +30% / +40% as three tiered upgrades, and one or two conditional effects that scale by rarity (the second tier roughly doubles the first).",
+      "griffin_claw": {
+        "slot": "Weapon",
+        "flavor": "The Griffin's claws, sharp as if they could tear through the sky.",
+        "skin_skill_note": "The weapon slot displays the equipped weapon SKIN's ability, not a base Griffin Claw skill.",
+        "quality_skills": "ATK PWR +19,680 (flat), ATK PWR +5%, ATK SPD +5%, Deal more DMG at closer distances up to 10%, Higher CRIT Rate at closer distances up to 9% / 18%, Weapon's base stats +20% / +30% / +40%, Close-range damage taken -20%"
+      },
+      "griffin_helmet": {
+        "slot": "Helmet",
+        "flavor": "The regal stance, wearing this makes your vision broader than the sky.",
+        "quality_skills": "Max HP +60,960, Max HP +5%, Red Heart Heal +20%, Higher CRIT DMG at closer distances up to 36% / 72%, Max HP +10%, Helmet's base stats +20% / +30% / +40%, Higher ATK SPD at closer distances to the target up to 100%"
+      },
+      "griffin_armor": {
+        "slot": "Armor",
+        "flavor": "Woven from the feathers of storms, it grants the wearer the protection of the king of the skies.",
+        "quality_skills": "Max HP +59,520, Max HP +5%, Barrage DMG REDUC +5%, Deals DMG over time to enemies within 7m, Max HP +10%, Armor's base stats +20% / +30% / +40%, Doubles DMG over time to enemies within 7m, Weakens enemies within 7m and deepens enemy wounds by 20%"
+      },
+      "griffin_boots": {
+        "slot": "Boots",
+        "flavor": "Soaring through the clouds, these boots embody lofty ambition and swift winds.",
+        "quality_skills": "Max HP +59,520, Max HP +5%, Dodge +5%, The more enemies in melee range the higher the CRIT DMG (max at 4 enemies, up to 36% / 72% increase; Players and Bosses count as 2 units), Max HP +10%, Boots' base stats +20% / +30% / +40%, 20% DMG REDUC when moving"
+      },
+      "griffin_ring": {
+        "slot": "Ring",
+        "flavor": "Seize the gale, this ring symbolizes the perfect blend of freedom and power.",
+        "quality_skills": "ATK PWR +15,720, ATK PWR +5%, CRIT Rate +3%, The more enemies in melee range the higher the CRIT Rate (max at 3 enemies, up to 9% / 18% increase; Players and Bosses count as 2 units), ATK PWR +10%, Ring's base stats +20% / +30% / +40%, Hearts heal more at lower HP up to 100%"
+      },
+      "griffin_amulet": {
+        "slot": "Amulet",
+        "flavor": "Wings' protection, the amulet contains formidable defense.",
+        "quality_skills": "ATK PWR +17,160, ATK PWR +5%, CRIT DMG +12%, Counter with 2x / 4x DMG to nearby enemies when damaged, ATK PWR +10%, Amulet's base stats +20% / +30% / +40%, When taking DMG within distance of 7, chance to drop Hearts"
+      }
+    },
+    "oracle_set": {
+      "theme": "Theme observed: combo hits, multishot / projectile mechanics, and CRIT scaling with sustained combat — 'for every 5 combo hits' and 'when combo reaches +40 hits' triggers, piercing beams, diagonal arrows, and Multishot procs. Reads as a sustained ranged DPS combo build, the opposite identity from Griffin.",
+      "structure_note": "Same structural pattern as Griffin: flat + % primary stats, slot-flavored secondary, base-stat tiers, and conditional effects.",
+      "oracle_spear": {
+        "slot": "Weapon",
+        "flavor": "The weapon of prophecy that can discern enemies' weaknesses and bring justice in the light.",
+        "skin_skill_note": "The weapon slot displays the equipped weapon skin's ability.",
+        "quality_skills": "ATK PWR +16,560, ATK PWR +5%, Fires a powerful piercing beam, DMG increases with combo hits up to 10%, For every 5 combo hits CRIT Rate +2% up to 8%"
+      },
+      "oracle_helmet": {
+        "slot": "Helmet",
+        "flavor": "A protective shield infused with divine will, dispelling all doubts and confusion.",
+        "quality_skills": "Max HP +59,520, Max HP +5%, Red Heart Heal +20%, Gain 2x combo hits on CRIT, Max HP +10%, Helmet's base stats +20% / +30% / +40%, Gain 3x combo hits on CRIT, Chance to gain +1 Multishot on critical hit"
+      },
+      "oracle_armor": {
+        "slot": "Armor",
+        "flavor": "Blessed by holy light, it guards the oracle from worldly corruption.",
+        "quality_skills": "Barrage DMG REDUC +5%, Max HP +10%, For every 5 combo hits +2 diagonal arrows on next hit, Armor's base stats +20% / +30% / +40%, For every 5 combo hits +4 diagonal arrows on next hit, When looting Hearts chance to gain Invincibility Shield for 2s"
+      },
+      "oracle_boots": {
+        "slot": "Boots",
+        "flavor": "With a divine mandate, the oracle's steps always lead the path of righteousness.",
+        "quality_skills": "Max HP +58,860, Max HP +5%, Dodge +5%, CRIT DMG +32% after 30 combo hits, Max HP +10%, Boots' base stats +20% / +30% / +40%, CRIT DMG +48% after 20 combo hits, 20% DMG REDUC when stationary"
+      },
+      "oracle_ring": {
+        "slot": "Ring",
+        "flavor": "Foreseeing the signs of victory, wear this ring to grasp the future.",
+        "quality_skills": "ATK PWR (flat value not captured), CRIT Rate +5%, For every 5 combo hits ATK SPD +2% up to 8%, ATK PWR +10%, Ring's base stats +20% / +30% / +40%, For every 5 combo hits ATK SPD +4% up to 16%, When combo reaches +40 hits deal increased DMG to enemies at Max HP"
+      },
+      "oracle_amulet": {
+        "slot": "Amulet",
+        "flavor": "The oracle's revelation. The amulet holds wisdom of the future.",
+        "quality_skills": "ATK PWR +5%, CRIT DMG +12%, Every 5 combo hits doubles next attack DMG, ATK PWR +10%, Amulet's base stats +20% / +30% / +40%, Every 3 combo hits doubles next attack DMG, When combo reaches +40 hits projectile splits +3"
+      }
+    },
+    "dragoon_set": {
+      "status": "Per-piece Dragoon detail was not documented in this contribution. The contributor notes Dragoon follows the same pattern as Griffin and Oracle: 6 pieces (Helmet / Armor / Weapon / Boots / Ring / Amulet) each with flat + % primary stats, a slot-flavored secondary, base-stat tiers, and conditional effects."
+    },
+    "weapon_skins": {
+      "scope": "Skins exist only for the main weapon. There are no skins for Helmet, Armor, Boots, Ring, or Amulet. Only one weapon skin can be equipped at a time.",
+      "weapon_archetypes": "Three base weapon archetypes, each with multiple skins: Crossbow (Heroic Longbow family), Staff (Beam Staff family), and Claw (Agile Knuckles / Griffin Claw family).",
+      "two_layers": "Each skin has two layers with different activation rules: Collectible Stats and Skin Skills.",
+      "collectible_stats": "Static and always active once you own the skin, whether or not it is equipped. Owning more skins stacks their Collectible Stats permanently across the account.",
+      "skin_skills": "Only active while that skin is equipped. The active ability proc (Snowball, Lacerate DoT, Cudgel Jab, summoned hoops, etc.) only triggers on the currently equipped skin.",
+      "star_upgrades": "Every skin has 6 effective tiers: an 'owned' baseline (0 stars) plus 1 star through 5 stars. You upgrade only by acquiring duplicate skins — each duplicate is one star. There is no currency-based upgrade path.",
+      "star_benefits": "Higher stars give stronger Collectible Stats (bigger per-piece-equipped bonuses) and stronger Skin Skills (more damage, procs, and stacks).",
+      "skin_rarity": "Skins have their own rarities; icon background color is a tell (purple-magenta = lower, gold-yellow = higher). Higher-rarity skins give bigger Collectible Stats at every star tier. More rarity tiers exist beyond these two, with different ratios; the full ladder was not captured.",
+      "collectible_stats_gold_rarity": {
+        "note": "Per matching-set gear piece equipped, for higher-rarity (gold icon) skins such as Holly Blitz, Cosmic Hoop, Monarch's Fang.",
+        "owned_0_star": "ATK +20, HP +80",
+        "1_star": "ATK +36, HP +144",
+        "2_star": "ATK +52, HP +208",
+        "3_star": "ATK +68, HP +272",
+        "4_star": "ATK +84, HP +336",
+        "5_star": "ATK +100, HP +400"
+      },
+      "collectible_stats_purple_rarity": {
+        "note": "Per matching-set gear piece equipped, for lower-rarity (purple icon) skins such as Shadesteal Claw.",
+        "owned_0_star": "ATK +10, HP +40",
+        "1_star": "ATK +18, HP +72",
+        "2_star": "ATK +26, HP +104",
+        "3_star": "ATK +34, HP +136",
+        "4_star": "ATK +42, HP +168",
+        "5_star": "ATK +50, HP +200"
+      },
+      "set_tie": "Each skin is tied to a specific gear set (Griffin / Dragoon / Oracle). Its Collectible Stats only count matching-set gear — equipping a Griffin skin while wearing Oracle gear means the Collectible Stats have nothing to count.",
+      "acquisition": "Hero Skin Shop is the primary source; Reforger Shop is an alternative source/exchange. The skin tooltip header reads 'Skin Exchange Shop'.",
+      "strategy": "Two different priorities: Collectible Stats reward breadth (owning many skins, even at low stars, builds a permanent passive power floor), while Skin Skills reward depth (level your best equipped skin to 5 stars via duplicates).",
+      "holly_blitz": {
+        "set": "Griffin",
+        "type": "Claw weapon skin, gold rarity",
+        "flavor": "Crimson gauntlets trimmed with holly and berries, topped by a golden star. Every punch lands as a sharp, festive greeting.",
+        "skin_skill": "Main weapon attacks have a small chance to fire Snowball dealing X% Weapon DMG and applying Snow Cover. Each Snow Cover stack reduces the target's MOV SPD and ATK SPD by 2%; at 10 stacks all stacks are consumed to Stun for 1s.",
+        "skill_scaling": "Owned 60%, 1 star 90%, 2 star 120%, 3 star 160%, 4 star 200%, 5 star 240%"
+      },
+      "monarchs_fang": {
+        "set": "Griffin",
+        "type": "gold rarity",
+        "flavor": "Forged from crown fragments of an emperor long gone, symbolizing supreme sovereignty.",
+        "skin_skill": "Main weapon attacks inflict Lacerate on enemies hit for 5s, dealing X% Weapon DMG every 0.5s. When Lacerated enemies are defeated there is a Y% chance to drop Red Hearts.",
+        "skill_scaling": "Owned 4% / 5%, 1 star 6% / 8%, 2 star 8% / 11%, 3 star 10% / 14%, 4 star 12% / 17%, 5 star 15% / 20%"
+      },
+      "shadesteal_claw": {
+        "set": "Griffin",
+        "type": "Claw weapon skin, lower (purple) rarity",
+        "flavor": "When swung, its claw afterimages are testament to its blinding speed.",
+        "collectible_stats": "ATK +10, HP +40 per Griffin piece equipped",
+        "skin_skill": "Main weapon attacks release N fist shadows, each dealing X% Weapon DMG.",
+        "skill_scaling": "1 star 5 shadows x 4%, 2 star 6 x 6%, 3 star 6 x 8%, 4 star 7 x 10%, 5 star 8 x 12%"
+      },
+      "cosmic_hoop": {
+        "set": "Griffin",
+        "type": "gold rarity",
+        "collectible_stats_by_star": "1 star HP +144, 2 star ATK +52 HP +208, 3 star ATK +68 HP +272, 4 star ATK +84 HP +336, 5 star ATK +100 HP +400",
+        "skin_skill": "Summon 2 Cosmic Hoops that gradually move outward, dealing X% ATK DMG. [Cosmic Hoop] has a Y% chance to gain [Fiery Path].",
+        "skill_scaling": "1 star - / 40%, 2 star 44% / 55%, 3 star 56% / 70%, 4 star 68% / 85%, 5 star 80% / 100%"
+      },
+      "goldwish_cudgel": {
+        "set": "Oracle",
+        "type": "Oracle weapon skin, gold rarity",
+        "flavor": "Golden cloud sigils coil along the staff. It shifts at will, each swing heaven-shaking, demon-vanquishing.",
+        "collectible_stats": "ATK +20, HP +80 per Oracle gear piece (gold-rarity progression)",
+        "skin_skill": "Main Weapon hits have a chance to trigger [Cudgel Jab], dealing 55% ATK DMG in a straight line and potentially applying Paralyze."
+      },
+      "eldritch_tower": {
+        "set": "Oracle",
+        "type": "Oracle weapon skin, gold rarity",
+        "collectible_stats": "Standard gold-rarity progression: ATK +20 to +100, HP +80 to +400 across Owned through 5 stars."
+      },
+      "oracle_skin_note": "The Oracle weapon shows as 'Oracle Spear' on the gear page, but skins re-render it as different visual weapons (cudgels, towers). The underlying archetype is likely Staff. Oracle skins follow the same rules as Griffin skins."
+    },
+    "hero_stat_sheet": {
+      "core": "Total ATK, Total HP, ATK PWR, ATK Bonus %, Max HP, HP Bonus %, MOV SPD %, ATK SPD %",
+      "crit": "CRIT Rate, CRIT DMG, CRIT DMG REDUC, Reduced Crit DMG from Players (PvP-specific)",
+      "defense": "Dodge, Effect RES, DMG REDUC, Final DMG REDUC, plus per-context values for Barrage, Collision, Airborne, Ground, Minion, Elite, Boss",
+      "offense": "Final DMG Bonus, more damage vs airborne / ground / minions / elites, Boss DMG, Main Weapon DMG (flat + %), Main Weapon CRIT Rate",
+      "elemental": "Poison DMG (flat), Lightning DMG (flat + %), Flame DMG %, Fire DMG (flat)",
+      "healing": "Heal on Level Up, Red Heart Heal %, Heart Recovery %, Angel Recovery %",
+      "misc": "Devil's Pact HP cost reduced %",
+      "flat_and_percent_note": "Most stats appear as both a flat + and a percentage variant and the game stacks both. Higher-tier gear and runes mostly contribute to the % multipliers."
+    }
   },
   "weapons": {
     "pieces_list": "The Dragoon Pieces are: \nDragoon Crossbow\nDragoon Amulet\nDragoon Ring\nDragoon Helmet\nDragoon Armor\nDragoon Boots\nThe Oracle Pieces are:\nOracle Spear\nOracle Amulet\nOracle Ring\nOracle Helmet\nOracle Armor\nOracle Boots\nThe Griffin Pieces are:\nGriffin Claw\nGriffin Amulet\nGriffin Ring\nGriffin Helmet\nGriffin Armor\nGriffin Boots",
@@ -335,7 +640,161 @@
     "ability_meteors": "Ability Runes\n\nMeteors:\nStar of Fury\n    Common: Meteor damage +5\n        Fine: Meteor damage +10\n        Rare: Max HP +200\n        Epic: Initial Ability: Upon taking DMG, summon 3 Meteors to randomly bombard the field\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Recover 0.5% Max HP when a Meteor hits\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Upon taking DMG, summon 7 Meteors to randomly bombard the field\nStar of Time\n    Common: Meteor damage +5\n        Fine: Meteor damage +10\n        Rare: Max HP +200\n        Epic: Initial Ability: Summon 1 Meteor every 10s\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Star of Time's Meteor summoning time reduced to 5s\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Star of Time has a 50% chance to summon double Meteors",
     "ability_sprites": "Ability Runes\n\nSprites:\nHealing Sprite\n    Common: Sprite damage +5\n        Fine: Sprite damage +10\n        Rare: Max HP +200\n        Epic: Start with a Healing Sprite that deals 0.5x ATK PWR as damage, and heals for 1% Max HP per hit.\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Healing Sprite ATK increases by 50%\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Healing Sprite ATK SPD increases by 50%\nMelee Sprite\n    Common: Sprite damage +5\n        Fine: Sprite damage +10\n        Rare: Max HP +200\n        Epic: Start with a Melee Sprite that deals 1.25x ATK PWR as damage in a small area\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Melee Sprite DMG increases by 50%\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Melee Sprite ATK SPD increases by 50%",
     "ability_strikes": "Ability Runes\n\nStrikes:\nSword of Time\n    Common: Strike damage +5\n        Fine: Strike damage +10\n        Rare: Max HP +200\n        Epic: Initial Ability: Summon 1 Strike every 3s\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Sword of Time's Strike summoning is reduced to 1.5s\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Sword of Time has a 50% chance to summon double Strike swords\nStrike Potion\n    Common: Strike damage +5\n        Fine: Strike damage +10\n        Rare: Max HP +200\n        Epic: Start with a Strike Potion\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Summon 3 Strikes upon absorbing any potion\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: Strike Potion has a 50% chance to summon double Strike Swords",
-    "ability_plants": "Ability Runes\n\nPlants:\nPlant Summon\n    Common: Plant damage +5\n        Fine: Plant damage +10\n        Rare: Max HP +200\n        Epic: Summons 1 Plant Guardian around the player every 8s\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Summons 1 Plant Guardian around the player every 4s\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: 50% chance to summon 2 Plant Guardians\nEquinox Bloom\nCommon: Plant damage +5\n        Fine: Plant damage +10\n        Rare: Max HP +200\n        Epic: When a Plant Guardian dies, chance to cast [Berserk] on 1 random Plant Guardian, increasing its CRIT DMG, CRIT Rate, and ATK SPD for 5s\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: When a Plant Guardian dies, chance to create an Acid Swamp\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: When a Plant Guardian dies, chance to cast [Berserk] on 2 random Plant Guardian, increasing their CRIT DMG, CRIT Rate, and ATK SPD for 5s"
+    "ability_plants": "Ability Runes\n\nPlants:\nPlant Summon\n    Common: Plant damage +5\n        Fine: Plant damage +10\n        Rare: Max HP +200\n        Epic: Summons 1 Plant Guardian around the player every 8s\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: Summons 1 Plant Guardian around the player every 4s\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: 50% chance to summon 2 Plant Guardians\nEquinox Bloom\nCommon: Plant damage +5\n        Fine: Plant damage +10\n        Rare: Max HP +200\n        Epic: When a Plant Guardian dies, chance to cast [Berserk] on 1 random Plant Guardian, increasing its CRIT DMG, CRIT Rate, and ATK SPD for 5s\n        Epic +1: No additional buff\n        Epic +2: No additional buff but unlocked rune enchantment capabilities\n        Legendary: When a Plant Guardian dies, chance to create an Acid Swamp\n        Legendary +1: No additional buff\n        Legendary +2: No additional buff\n        Mythic: When a Plant Guardian dies, chance to cast [Berserk] on 2 random Plant Guardian, increasing their CRIT DMG, CRIT Rate, and ATK SPD for 5s",
+    "overview": "Runes provide stat bonuses, starting skills and special passives. They equip to a fixed set of slots arranged around the active hero.",
+    "equip_slots": {
+      "total_equippable": "13 runes when fully unlocked",
+      "ability_runes": "4 slots",
+      "enhancement_runes": "4 slots",
+      "blessing_runes": "2 slots",
+      "etched_runes": "3 slots",
+      "new_player_gating": "Etched Rune slots #2 and #3 are locked until the player reaches certain rune-level thresholds. Slot #1 is available from the start.",
+      "loadouts": "The Runes screen shares the same 8 loadouts as Gear, via a dropdown at top right."
+    },
+    "category_roles": {
+      "ability_runes": "Grant Starting Skills - active in-run abilities (procs and summoned units). Without them the hero has only main-weapon attacks plus their unique kit.",
+      "enhancement_runes": "Amplify a specific theme. They do not grant starting skills; they reshape how a theme behaves once active. Higher base stats than Ability Runes (ATK PWR +950 / +1,200 vs +50 on a comparable Ability Rune).",
+      "blessing_runes": "Passive run-modifiers (luck, dodge, conversion, revive). They shift probabilities, enable safety nets or convert stats. With only 2 slots this is one of the highest-leverage build decisions.",
+      "etched_runes": "High-power category amplifiers that lock in build identity. Substantially higher base stats (e.g. ATK PWR +1,200 vs +50 on a comparable Ability Rune). They multiply what your Ability Runes produce rather than granting Starting Skills."
+    },
+    "themes": {
+      "count": "7 themes: Circle, Main Weapon, Sword Strike, Meteor, Elemental, Plant, Sprite.",
+      "scope": "All Ability, Enhancement and Etched Runes fall into one of the 7 themes. Blessing Runes sit outside this categorization.",
+      "why_it_matters": "Promised Ruins targets by theme; Etched Runes amplify by theme (a Sprite Etched Rune only multiplies Sprite-themed runes); strategic builds align all 4 Ability + 4 Enhancement + 3 Etched runes around 1-3 themes.",
+      "group_split_note": "The Group A / Group B split of the 7 themes exists only as the Promised Ruins selection mechanic. Outside that screen the themes are flat."
+    },
+    "rarity_ladder": {
+      "order": "Common, Fine, Rare, Epic, Epic +1, Epic +2, Legendary, Legendary +1, Legendary +2, Legendary +3, Mythic (max).",
+      "differs_from_gear": "Runes cap at Mythic - no Chaotic tier and no Mythic + variants, unlike gear.",
+      "f2p_outlook": "Mythic runes are realistically reachable for F2P but take a long time accumulating duplicates from Hunt drops, Rune Ruins, Promised Ruins and free chests. Legendary +3 on key runes is a comfortable mid-term F2P goal; Mythic is long-term."
+    },
+    "stat_unlock_mechanics": {
+      "one_stat_per_tier": "Each named rarity tier unlocks one new stat line, shown on the detail screen as a colour-dotted row.",
+      "dot_tiers": "Dots represent only the 6 named tiers: Common, Fine, Rare, Epic, Legendary, Mythic. A lock icon means not yet unlocked.",
+      "plus_variants": "Epic +1/+2 and Legendary +1/+2/+3 sit between the named tiers. On Ability, Enhancement and Blessing Runes they add no new rows - they amplify existing effect values and bump the cumulative primary stat.",
+      "primary_stat_row": "The top row shows the cumulative primary stat (knife icon = ATK PWR, heart icon = Max HP), which scales through every tier including the + variants and Mythic.",
+      "enchantment_unlock_position": "The Enchantment slot unlocks at Epic +2, between the Epic and Legendary dots, so it is not a dot row; it appears as a separate section at the bottom of the rune detail screen.",
+      "locked_row_reading": "Lock colour indicates the tier band: a yellow lock is the Legendary band (L, L+1, L+2, L+3 - 4 rows, top-to-bottom in that order), a red lock is Mythic (1 row). Locked text stays readable."
+    },
+    "unlock_counts_by_category": {
+      "ability_runes": "6 unlocks total, one per named tier. + variants only bump the cumulative primary stat.",
+      "enhancement_runes": "6 unlocks total, same as Ability. + variants are stat-value bumps only.",
+      "blessing_runes": "4 unlocks total (Rare, Epic, Legendary, Mythic). Common and Fine are absorbed into the cumulative ATK PWR + Max HP shown at the top of the detail screen.",
+      "etched_runes": "Up to 9 unlocks total - the 6 named tiers plus additional buff lines at Legendary +1, +2 and +3. Unique to Etched Runes; these L+ variants meaningfully grow the rune's kit, not just its numbers.",
+      "mythic_is_terminal": "Mythic is the top tier: final unlock, max stat values, no further upgrades."
+    },
+    "blessing_rune_primary_stats": "Blessing Runes show two primary stats. At Legendary +2 each displays roughly ATK PWR +570 and Max HP +2,280 as baseline cumulative stats.",
+    "enchantment_system": {
+      "applies_to": "Ability, Enhancement and Blessing Runes only. Etched Runes do NOT have an Enchantment slot - they only have an Equip button.",
+      "unlock": "Unlocked at Epic +2 per rune (each rune individually must reach Epic +2), not account-wide.",
+      "archive": "Each rune has an Enchantment Archive - a pool of possible Enchantment Stats organised into categories specific to the rune type.",
+      "one_at_a_time": "Only ONE Enchantment can be equipped at a time per rune.",
+      "how_to_change": "Use the Enchant button on a rune to open the Enchantizer screen and swap which Enchantment Stat is active.",
+      "placeholder_text": "Until a selection is made after the Epic +2 unlock, the line displays the placeholder 'Unlocks Rune Enchantment'.",
+      "progression_bar": "A progression bar at the bottom of the Enchantizer (observed at 21/100) tracks toward additional Archive entries.",
+      "quality_range": "Each Archive entry has its own rarity, Common through Mythic, determined by the pull. The Specialized category is always Legendary or Mythic, never lower.",
+      "archive_rule": "In-game Rule 3: the affix archive stores unlocked affix types of the highest quality. They can be freely switched in unlocked rune slots and saved as different presets.",
+      "archive_keeps_best": "The Archive remembers only the highest-quality version of each affix ever pulled. A later Mythic replaces an earlier Legendary of the same affix.",
+      "free_switching": "Once an affix is in the Archive you can freely switch among entries with no re-rolling.",
+      "presets": "Presets can be saved per rune slot, e.g. one for boss fights and one for crowd clear.",
+      "obtained_label": "The 'Obtained' label next to an affix in the Rules popup means that affix is already in your Archive."
+    },
+    "enchantment_categories": {
+      "blessing_runes": "9 categories: ATK PWR; Max HP; Reduced Circle DMG taken; Reduced Sword Strike DMG taken; Reduced Sprite DMG taken; Reduced Main Weapon DMG taken; Reduced Meteor DMG taken; Reduced Elemental DMG taken; Specialized. Categories 1-8 roll Common to Mythic; Specialized always rolls Legendary or Mythic and is rune-specific.",
+      "enhancement_runes": "7 categories: ATK PWR; [Theme] DMG (varies by rune theme); Boss DMG; More damage VS minions; [Theme] CRIT Rate; CRIT DMG; Specialized. Categories 1-6 roll Common to Mythic; Specialized always rolls Legendary or Mythic.",
+      "ability_runes": "7 categories: Max HP; Elemental DMG; Boss DMG REDUC; Minion DMG REDUC; Elemental CRIT DMG; CRIT DMG REDUC; Specialized. Categories 1-6 roll Common to Mythic; Specialized always rolls Legendary or Mythic.",
+      "ability_vs_enhancement": "Ability Rune enchantments skew defensive and elemental (Max HP, REDUC stats); Enhancement skews offensive (ATK PWR, DMG bumps). Both have 7 categories with Specialized as the 7th.",
+      "open_question": "Source flags as unverified whether 'Elemental DMG' and 'Elemental CRIT DMG' on Ability Runes are literal or theme-flexible (e.g. whether Plant Summon shows 'Plant DMG' instead).",
+      "specialized_strategy": "Specialized is the only Blessing enchantment guaranteed Legendary+ and is uniquely tailored to that rune, so a Mythic Specialized roll is generally the strongest enchantment outcome.",
+      "specialized_coverage": "Every Ability, Enhancement and Blessing Rune has its own unique Mythic Specialized Enchantment. The source documents all 7 Blessing ones and 2 of 13 Enhancement ones (Sharp Arrow, Frostshock Seal); the remaining 11 Enhancement and all 13 Ability Specialized enchantments are undocumented."
+    },
+    "enchantizer_currencies": {
+      "enchantium": "Standard Enchantizer pull currency (green triangle with arrowhead icon).",
+      "advanced_enchantium": "Advanced Enchantizer pull currency (pink circle with arrowhead icon). Much rarer than standard Enchantium.",
+      "gems": "The standard top-bar gem currency. Convertible into Enchantium, but the enchanting cost itself is paid in Enchantium - gems and Enchantium are different currencies.",
+      "gem_to_enchantium_rate": "The gem cost per Enchantium batch escalates with attempts made that day: 300 gems/attempt for the 21st-30th purchase, 400 gems/attempt for the 31st-40th, with further escalation likely above.",
+      "daily_reset": "The gem cost ladder resets daily, so heavy converters should spread purchases across days rather than burning them in one sitting."
+    },
+    "standard_enchantizer": {
+      "cost": "1,000 Enchantium per attempt.",
+      "mechanic": "Each attempt rolls 3 random Enchantments from the rune's eligible affix pool, shown in a slot-machine-style 3-row UI. You choose one to equip or skip and re-roll.",
+      "skip_toggle": "When the Skip toggle is on, the machine auto-rolls past Common/Fine/Rare results.",
+      "auto_enchant": "Holding the Enchant button repeats pulls automatically and pauses on any Legendary or Mythic result (in-game Rule 2).",
+      "anti_dup_rule": "When enchanting runes of the same type, identical Mythic affixes will not be drawn - Mythic dupes are filtered.",
+      "drop_rates": {
+        "common": "~49.5% cumulative; 24.75% per option (2 options visible)",
+        "fine": "~37% cumulative; 9.31% per option (4 options visible)",
+        "rare": "varies; 2.05% per option",
+        "epic": "~2.25% cumulative (per-option rate unverified in source)",
+        "legendary": "0.50% total; 0.08% per option",
+        "mythic": "0.25% total; 0.06% per option"
+      },
+      "practical_rate": "Roughly 1 in 400 standard pulls is Mythic.",
+      "mythic_specialized_rate": "Pulling a Mythic Specialized via the Standard Enchantizer is roughly 1 in 1,667 pulls."
+    },
+    "advanced_enchantizer": {
+      "cost": "1 Advanced Enchantium per attempt.",
+      "pity_counter": "A 'Get Mythic affix in N draws' counter guarantees a Mythic affix within a rolling pity window (observed at 3 draws).",
+      "mechanic": "Same 3-row slot machine, Skip toggle and auto-enchant rules as the standard Enchantizer, with dramatically better odds.",
+      "drop_rates": {
+        "epic": "~70% cumulative (source flags exact % as needing verification)",
+        "legendary": "18.2% cumulative; 3.03% per option",
+        "mythic": "11% cumulative; 2.75% per option"
+      },
+      "practical_rate": "Roughly 1 in 9 Advanced pulls is Mythic, versus 1 in 400 standard.",
+      "earning_advanced_enchantium": "1 Advanced Enchantium per 100 standard Enchant pulls - the 21/100 counter at the bottom of the standard Enchantizer tracks this. That is 100,000 Enchantium spent per 1 Advanced Enchantium earned.",
+      "direct_purchase": "Advanced Enchantium can also be bought directly; store details undocumented in source.",
+      "strategic_note": "The Advanced Enchantizer's 11% Mythic rate plus its pity counter is what makes endgame Enchantments feasible. F2P accumulate Advanced Enchantium slowly."
+    },
+    "rune_workshop": {
+      "purpose": "Fuse/merge owned runes to produce a single higher-rarity rune.",
+      "warehouse": "The Warehouse view shows all available (non-equipped) runes.",
+      "quick_fuse": "Quick Fuse auto-selects optimal fusion candidates.",
+      "result": "The Fusion successful popup shows the result rune name, new rarity, a stat preview (old to new) and any newly unlocked stat lines.",
+      "equipped_excluded": "Equipped runes are excluded from fusion and show an 'Equipped' overlay."
+    },
+    "rune_ruins": {
+      "purpose": "Dig for random runes.",
+      "dig_x1": "Costs 1 Ruin Shovel, or falls back to Gems.",
+      "dig_x5": "Costs 1,000 Gems.",
+      "auto_dig": "Hold down to auto-dig for batch digs.",
+      "chests": {
+        "rusty_chest": "Random white or green runes",
+        "sturdy_chest": "Random green or blue runes",
+        "glorious_chest": "Random blue or purple runes"
+      },
+      "drop_rate_example": "Rusty Chest, excluding the minimum guarantee: overall rate 28.80% at the rune tier - 15 individual runes at 1.11% each, then more at 0.31% / 0.30% / 0.15% for rarer items. Higher-tier chests follow the same structure with higher rarity floors."
+    },
+    "promised_ruins": {
+      "purpose": "Same chest framework as Rune Ruins but category-targeted.",
+      "selection_rule": "You pick ONE category from EACH of the two groups (not 'or'), so every dig is guaranteed to draw from both selections.",
+      "group_a": "Pick one of: Circle, Main Weapon, Sword Strike.",
+      "group_b": "Pick one of: Meteor, Elemental, Plant, Sprite.",
+      "dig_x1": "300 Gems, or 1 Relic Shovel.",
+      "dig_x5": "1,500 Gems.",
+      "when_to_use": "Use Promised Ruins when building toward two specific themes; use Rune Ruins when fishing broadly."
+    },
+    "rune_packs": {
+      "daily_special_pack": "Refreshes every 24h. 6 packs ranging from 499 Aurocite up to $49.99 USD, all flagged '400% Value'.",
+      "weekly_special_pack": "Refreshes weekly, with additional packs at higher price points.",
+      "typical_contents": "Gems, gold, ruin shovels, relic shovels, runes directly, and rune-related upgrade materials."
+    },
+    "sources_summary": {
+      "hunt": "Best for bulk passive runes. Cost: free / energy / ad.",
+      "rune_ruins": "Best for random rune fishing. Cost: Ruin Shovels or Gems.",
+      "promised_ruins": "Best for targeted theme runes. Cost: Relic Shovels or Gems (300+).",
+      "packs": "Paid bundles with mixed contents. Cost: Aurocite or USD.",
+      "rune_workshop": "Upgrades rarity rather than granting new runes. Cost: existing duplicate runes."
+    },
+    "build_patterns": {
+      "principle": "You equip 4 Ability + 4 Enhancement runes simultaneously. Ability Runes give the building blocks (starting skills, summons, procs); Enhancement Runes amplify and reshape how those skills behave. Match Etched Runes to your equipped Ability Runes.",
+      "sprite_build": "2x Sprite Ability (Melee Sprite, Healing Sprite) + 2x Sprite Enhancement (Sprite Multishot, Sprite Link) + Sprite Etched (Sprite Assist, Sprite's Awe).",
+      "circle_build": "2x Circle Ability (Circle, Ring of Agony) + 2x Circle Enhancement (Sawblade Circle, Spin SPD Up) + Circle Etched (Pulsing Orb, Orbital Orb).",
+      "plant_build": "Plant Summon + Equinox Bloom + Rootguard + Vine Bind + Life Surge.",
+      "meteor_build": "Star of Time + Star of Fury + Potion Magnet + Giant Meteor + Meteor Split / Potion Spring.",
+      "etched_slots_declare_identity": "With only 3 Etched slots, your Etched Runes essentially declare which 3 categories the build leans on. Multi-category builds spread them thinner."
+    },
+    "_coverage": "Source catalogues 13 Ability, 13 Enhancement, 7 Blessing and 13 Etched Runes, and notes more Etched Runes likely exist beyond those documented."
   },
   "blessings": {},
   "game_modes": {
@@ -417,7 +876,67 @@
       "gems_on_purchase": 3900,
       "gems_per_day": 800,
       "benefit": "Highly recommended one-time purchase for speeding up progression.",
-      "added_by": "fails_8743"
+      "added_by": "fails_8743",
+      "type": "lifetime, one-time purchase"
+    },
+    "overview": "A set of cards, some lifetime and some monthly, that provide ongoing daily rewards and quality-of-life perks. Accessed from the Privilege Card icon on the main screen left panel.",
+    "pricing_caveat": "The numbers shown next to 'Purchase and get' on a card screen are one-time gem bonuses received on purchase, NOT the card's price. Actual prices are not visible to players who already own the cards, so the purchase currency (USD or Aurocite) and amounts were not captured.",
+    "daily_gifts": "Free to everyone: 10 gems per day, resets daily.",
+    "lifetime_ad_free_card": {
+      "name": "Lifetime Ad-Free Card",
+      "type": "lifetime, one-time purchase",
+      "gems_on_purchase": 1200,
+      "gems_per_day": 20,
+      "benefit": "Ad-free forever; increases daily free gems."
+    },
+    "monthly_cards_overview": "Each monthly card lasts 30 days. Renewal costs 499 Aurocite, not gems. Initial purchase comes with a 500-gem one-time bonus; the initial purchase price is not visible to current owners.",
+    "monthly_card": {
+      "name": "Monthly Card",
+      "type": "monthly, 30 days",
+      "gems_per_day": 400,
+      "benefits": "New skill refreshes in battle +1, forfeit skill selection, skippable arena battles, skip Peak Arena battle."
+    },
+    "hunting_warrior_card": {
+      "name": "Hunting Warrior Card",
+      "type": "monthly, 30 days",
+      "gems_per_day": 100,
+      "benefits": "Unlimited multiple Quick Hunts, Max Energy +20, AFK Rewards +20%."
+    },
+    "cave_explorer_card": {
+      "name": "Cave Explorer Card",
+      "type": "monthly, 30 days",
+      "gems_per_day": 0,
+      "benefits": "Gold Cave Daily Challenges +2, unlock Auto-Dig in Rune Ruins."
+    },
+    "sealing_master_card": {
+      "name": "Sealing Master Card",
+      "type": "monthly, 30 days",
+      "gems_per_day": 0,
+      "benefits": "Seal Battle Daily Challenges +1; Seal Battle can be Quick-Raided with the highest DMG in this round; Monster Invasion can be Quick-Raided with DMG dealt in the 1st round of the current day."
+    },
+    "abyssium_conqueror_card": {
+      "name": "Abyssium Conqueror Card",
+      "type": "monthly, 30 days",
+      "gems_per_day": 0,
+      "benefits": "Abyssal Tide can be Quick-Raided with the highest DMG dealt in the current day; Daily Abyssal Tide challenges +1; cleared Shackled Jungle stages can be Quick-Raided; Daily Shackled Jungle challenges +2; Daily Sky Tower challenges +3."
+    },
+    "daily_gem_totals": {
+      "note": "Gems per day by source when all cards are owned.",
+      "daily_gifts": 10,
+      "lifetime_ad_free": 20,
+      "lifetime_supply": 800,
+      "monthly_card": 400,
+      "hunting_warrior": 100,
+      "cave_explorer": 0,
+      "sealing_master": 0,
+      "abyssium_conqueror": 0,
+      "total": "1,330 gems/day"
+    },
+    "recommendation_policy": {
+      "default_rule": "Do NOT recommend purchases to F2P players — it gets annoying fast and is the wrong frame for that audience.",
+      "f2p_players": "Focus advice on free progression, daily routines, and best use of free gems. Mention lifetime cards only if the player asks specifically about value or clearly invites it, and frame them as optional.",
+      "paying_players": "Lifetime Ad-Free plus Lifetime Supply are the two purchases broadly worth recommending to anyone playing actively — they pay back over time.",
+      "monthly_card_matching": "Monthly cards are situational, matched to player activity: heavy Quick Hunts user to Hunting Warrior; active in Gold Cave / Rune Ruins to Cave Explorer; active in Seal Battle / Monster Invasion to Sealing Master; active in Abyssal Tide / Shackled Jungle / Sky Tower to Abyssium Conqueror; heavy Arena player to Monthly Card."
     }
   },
   "sacred_hall": {

@@ -1,0 +1,201 @@
+{
+  "_meta": {
+    "source": "community markdown: runes.md",
+    "contributed": "2026-08-04",
+    "confidence": "mechanics reliable; numbers may be stale",
+    "conflictsWithLive": [
+      "runes",
+      "runes.overview_4_types",
+      "runes.enchantment_stats",
+      "runes.blessing_quality_revive",
+      "runes.etched_main_weapon",
+      "runes.etched_elemental",
+      "runes.etched_circles",
+      "runes.etched_meteors",
+      "runes.etched_strikes",
+      "runes.enhancement_overview",
+      "runes.enhancement_elemental",
+      "runes.enhancement_circles_meteors",
+      "runes.enhancement_sprites",
+      "runes.enhancement_strikes",
+      "runes.enhancement_plants",
+      "runes.ability_overview",
+      "runes.ability_main_weapon_elemental",
+      "runes.ability_circles",
+      "runes.ability_meteors",
+      "runes.ability_sprites",
+      "runes.ability_strikes",
+      "runes.ability_plants"
+    ],
+    "notes": [
+      "The live 'runes' topic already holds all 21 sub-keys listed above as long multi-line prose strings covering the same ground. This fragment restructures the same subject matter into short nested facts. Every live sub-key is content-overlapped by this fragment even though none of the new key names collide literally - a human must decide replace vs merge for the whole topic.",
+      "Several live entries are truncated mid-sentence (enchantment_stats ends '...only one enchantment selecti', blessing_quality_revive ends at 'Mythic', four etched_* entries end mid-clause). This fragment supplies complete text for those.",
+      "NAME CONFLICTS between this source and live: 'Ricochet Strike' (here) vs 'Ricocheting Strike' (live); 'Spin SPD Up' (here) vs 'Rotating SPD Up' (live overview_4_types); 'Flamenox Seal'/'Frostshock Seal' (here) vs 'Flame-Poison Seal'/'Frost-Thunder Seal' (live overview_4_types); 'Flamenox Touch'/'Frostshock Touch' (here) vs 'Flame-Poison Touch'/'Frost-Thunder Touch' (live). Live is internally inconsistent on these too. Not resolved here.",
+      "LADDER CONFLICTS where live and this source state different effects for the same tier, all left unresolved: Rootguard Legendary and Mythic; Vine Bind Epic and Mythic; Melee Sprite and Healing Sprite Epic/Legendary/Mythic; Ring of Agony Legendary and Mythic; Plant Summon Legendary; Equinox Bloom (Frenzy here vs Berserk live); Star of Fury Legendary; Frostshock Touch Common; Frostshock Seal Common/Fine (swapped); Sprite Multishot Rare; Sawblade Circle Common; Circle and Healing Sprite Epic damage multipliers (live carries ATK-multiplier figures this source omits).",
+      "TIER-LADDER CONFLICT: this source's rarity ladder includes Legendary +3; live rune entries list only Legendary, Legendary +1, Legendary +2, Mythic.",
+      "Dropped: all '[pending]' Mythic Specialized Enchantment rows (11 of 13 Enhancement, 13 of 13 Ability). They are placeholders, not data, and are recorded only as a coverage note.",
+      "Dropped: pure UI navigation and screenshot-methodology chatter (screen layouts, tab positions, screenshot counts, '[verify]' markers), except where a UI detail is how a mechanic is reached or gated.",
+      "Dropped: the per-category summary tables near the end of the source, which restate the ladders. Their unique content (per-rune observed Enchantment values) was preserved on the enhancement ladder entries as 'observed_enchantment'.",
+      "'observed_enchantment' records what the contributor had equipped on that rune at capture time. It is an observation, not a game constant.",
+      "Source is internally inconsistent on Etched Rune count: a heading says '12 Etched Runes catalogued' but the table and the ladders section both contain 13. All 13 are emitted.",
+      "Unicode minus/en-dash and multiplication-sign characters were normalised to ASCII. No numeric values were altered."
+    ],
+    "note": "ladder objects excluded \u2014 they duplicate live flat entries; see MERGE-REVIEW.md"
+  },
+  "runes": {
+    "overview": "Runes provide stat bonuses, starting skills and special passives. They equip to a fixed set of slots arranged around the active hero.",
+    "equip_slots": {
+      "total_equippable": "13 runes when fully unlocked",
+      "ability_runes": "4 slots",
+      "enhancement_runes": "4 slots",
+      "blessing_runes": "2 slots",
+      "etched_runes": "3 slots",
+      "new_player_gating": "Etched Rune slots #2 and #3 are locked until the player reaches certain rune-level thresholds. Slot #1 is available from the start.",
+      "loadouts": "The Runes screen shares the same 8 loadouts as Gear, via a dropdown at top right."
+    },
+    "category_roles": {
+      "ability_runes": "Grant Starting Skills - active in-run abilities (procs and summoned units). Without them the hero has only main-weapon attacks plus their unique kit.",
+      "enhancement_runes": "Amplify a specific theme. They do not grant starting skills; they reshape how a theme behaves once active. Higher base stats than Ability Runes (ATK PWR +950 / +1,200 vs +50 on a comparable Ability Rune).",
+      "blessing_runes": "Passive run-modifiers (luck, dodge, conversion, revive). They shift probabilities, enable safety nets or convert stats. With only 2 slots this is one of the highest-leverage build decisions.",
+      "etched_runes": "High-power category amplifiers that lock in build identity. Substantially higher base stats (e.g. ATK PWR +1,200 vs +50 on a comparable Ability Rune). They multiply what your Ability Runes produce rather than granting Starting Skills."
+    },
+    "themes": {
+      "count": "7 themes: Circle, Main Weapon, Sword Strike, Meteor, Elemental, Plant, Sprite.",
+      "scope": "All Ability, Enhancement and Etched Runes fall into one of the 7 themes. Blessing Runes sit outside this categorization.",
+      "why_it_matters": "Promised Ruins targets by theme; Etched Runes amplify by theme (a Sprite Etched Rune only multiplies Sprite-themed runes); strategic builds align all 4 Ability + 4 Enhancement + 3 Etched runes around 1-3 themes.",
+      "group_split_note": "The Group A / Group B split of the 7 themes exists only as the Promised Ruins selection mechanic. Outside that screen the themes are flat."
+    },
+    "rarity_ladder": {
+      "order": "Common, Fine, Rare, Epic, Epic +1, Epic +2, Legendary, Legendary +1, Legendary +2, Legendary +3, Mythic (max).",
+      "differs_from_gear": "Runes cap at Mythic - no Chaotic tier and no Mythic + variants, unlike gear.",
+      "f2p_outlook": "Mythic runes are realistically reachable for F2P but take a long time accumulating duplicates from Hunt drops, Rune Ruins, Promised Ruins and free chests. Legendary +3 on key runes is a comfortable mid-term F2P goal; Mythic is long-term."
+    },
+    "stat_unlock_mechanics": {
+      "one_stat_per_tier": "Each named rarity tier unlocks one new stat line, shown on the detail screen as a colour-dotted row.",
+      "dot_tiers": "Dots represent only the 6 named tiers: Common, Fine, Rare, Epic, Legendary, Mythic. A lock icon means not yet unlocked.",
+      "plus_variants": "Epic +1/+2 and Legendary +1/+2/+3 sit between the named tiers. On Ability, Enhancement and Blessing Runes they add no new rows - they amplify existing effect values and bump the cumulative primary stat.",
+      "primary_stat_row": "The top row shows the cumulative primary stat (knife icon = ATK PWR, heart icon = Max HP), which scales through every tier including the + variants and Mythic.",
+      "enchantment_unlock_position": "The Enchantment slot unlocks at Epic +2, between the Epic and Legendary dots, so it is not a dot row; it appears as a separate section at the bottom of the rune detail screen.",
+      "locked_row_reading": "Lock colour indicates the tier band: a yellow lock is the Legendary band (L, L+1, L+2, L+3 - 4 rows, top-to-bottom in that order), a red lock is Mythic (1 row). Locked text stays readable."
+    },
+    "unlock_counts_by_category": {
+      "ability_runes": "6 unlocks total, one per named tier. + variants only bump the cumulative primary stat.",
+      "enhancement_runes": "6 unlocks total, same as Ability. + variants are stat-value bumps only.",
+      "blessing_runes": "4 unlocks total (Rare, Epic, Legendary, Mythic). Common and Fine are absorbed into the cumulative ATK PWR + Max HP shown at the top of the detail screen.",
+      "etched_runes": "Up to 9 unlocks total - the 6 named tiers plus additional buff lines at Legendary +1, +2 and +3. Unique to Etched Runes; these L+ variants meaningfully grow the rune's kit, not just its numbers.",
+      "mythic_is_terminal": "Mythic is the top tier: final unlock, max stat values, no further upgrades."
+    },
+    "blessing_rune_primary_stats": "Blessing Runes show two primary stats. At Legendary +2 each displays roughly ATK PWR +570 and Max HP +2,280 as baseline cumulative stats.",
+    "enchantment_system": {
+      "applies_to": "Ability, Enhancement and Blessing Runes only. Etched Runes do NOT have an Enchantment slot - they only have an Equip button.",
+      "unlock": "Unlocked at Epic +2 per rune (each rune individually must reach Epic +2), not account-wide.",
+      "archive": "Each rune has an Enchantment Archive - a pool of possible Enchantment Stats organised into categories specific to the rune type.",
+      "one_at_a_time": "Only ONE Enchantment can be equipped at a time per rune.",
+      "how_to_change": "Use the Enchant button on a rune to open the Enchantizer screen and swap which Enchantment Stat is active.",
+      "placeholder_text": "Until a selection is made after the Epic +2 unlock, the line displays the placeholder 'Unlocks Rune Enchantment'.",
+      "progression_bar": "A progression bar at the bottom of the Enchantizer (observed at 21/100) tracks toward additional Archive entries.",
+      "quality_range": "Each Archive entry has its own rarity, Common through Mythic, determined by the pull. The Specialized category is always Legendary or Mythic, never lower.",
+      "archive_rule": "In-game Rule 3: the affix archive stores unlocked affix types of the highest quality. They can be freely switched in unlocked rune slots and saved as different presets.",
+      "archive_keeps_best": "The Archive remembers only the highest-quality version of each affix ever pulled. A later Mythic replaces an earlier Legendary of the same affix.",
+      "free_switching": "Once an affix is in the Archive you can freely switch among entries with no re-rolling.",
+      "presets": "Presets can be saved per rune slot, e.g. one for boss fights and one for crowd clear.",
+      "obtained_label": "The 'Obtained' label next to an affix in the Rules popup means that affix is already in your Archive."
+    },
+    "enchantment_categories": {
+      "blessing_runes": "9 categories: ATK PWR; Max HP; Reduced Circle DMG taken; Reduced Sword Strike DMG taken; Reduced Sprite DMG taken; Reduced Main Weapon DMG taken; Reduced Meteor DMG taken; Reduced Elemental DMG taken; Specialized. Categories 1-8 roll Common to Mythic; Specialized always rolls Legendary or Mythic and is rune-specific.",
+      "enhancement_runes": "7 categories: ATK PWR; [Theme] DMG (varies by rune theme); Boss DMG; More damage VS minions; [Theme] CRIT Rate; CRIT DMG; Specialized. Categories 1-6 roll Common to Mythic; Specialized always rolls Legendary or Mythic.",
+      "ability_runes": "7 categories: Max HP; Elemental DMG; Boss DMG REDUC; Minion DMG REDUC; Elemental CRIT DMG; CRIT DMG REDUC; Specialized. Categories 1-6 roll Common to Mythic; Specialized always rolls Legendary or Mythic.",
+      "ability_vs_enhancement": "Ability Rune enchantments skew defensive and elemental (Max HP, REDUC stats); Enhancement skews offensive (ATK PWR, DMG bumps). Both have 7 categories with Specialized as the 7th.",
+      "open_question": "Source flags as unverified whether 'Elemental DMG' and 'Elemental CRIT DMG' on Ability Runes are literal or theme-flexible (e.g. whether Plant Summon shows 'Plant DMG' instead).",
+      "specialized_strategy": "Specialized is the only Blessing enchantment guaranteed Legendary+ and is uniquely tailored to that rune, so a Mythic Specialized roll is generally the strongest enchantment outcome.",
+      "specialized_coverage": "Every Ability, Enhancement and Blessing Rune has its own unique Mythic Specialized Enchantment. The source documents all 7 Blessing ones and 2 of 13 Enhancement ones (Sharp Arrow, Frostshock Seal); the remaining 11 Enhancement and all 13 Ability Specialized enchantments are undocumented."
+    },
+    "enchantizer_currencies": {
+      "enchantium": "Standard Enchantizer pull currency (green triangle with arrowhead icon).",
+      "advanced_enchantium": "Advanced Enchantizer pull currency (pink circle with arrowhead icon). Much rarer than standard Enchantium.",
+      "gems": "The standard top-bar gem currency. Convertible into Enchantium, but the enchanting cost itself is paid in Enchantium - gems and Enchantium are different currencies.",
+      "gem_to_enchantium_rate": "The gem cost per Enchantium batch escalates with attempts made that day: 300 gems/attempt for the 21st-30th purchase, 400 gems/attempt for the 31st-40th, with further escalation likely above.",
+      "daily_reset": "The gem cost ladder resets daily, so heavy converters should spread purchases across days rather than burning them in one sitting."
+    },
+    "standard_enchantizer": {
+      "cost": "1,000 Enchantium per attempt.",
+      "mechanic": "Each attempt rolls 3 random Enchantments from the rune's eligible affix pool, shown in a slot-machine-style 3-row UI. You choose one to equip or skip and re-roll.",
+      "skip_toggle": "When the Skip toggle is on, the machine auto-rolls past Common/Fine/Rare results.",
+      "auto_enchant": "Holding the Enchant button repeats pulls automatically and pauses on any Legendary or Mythic result (in-game Rule 2).",
+      "anti_dup_rule": "When enchanting runes of the same type, identical Mythic affixes will not be drawn - Mythic dupes are filtered.",
+      "drop_rates": {
+        "common": "~49.5% cumulative; 24.75% per option (2 options visible)",
+        "fine": "~37% cumulative; 9.31% per option (4 options visible)",
+        "rare": "varies; 2.05% per option",
+        "epic": "~2.25% cumulative (per-option rate unverified in source)",
+        "legendary": "0.50% total; 0.08% per option",
+        "mythic": "0.25% total; 0.06% per option"
+      },
+      "practical_rate": "Roughly 1 in 400 standard pulls is Mythic.",
+      "mythic_specialized_rate": "Pulling a Mythic Specialized via the Standard Enchantizer is roughly 1 in 1,667 pulls."
+    },
+    "advanced_enchantizer": {
+      "cost": "1 Advanced Enchantium per attempt.",
+      "pity_counter": "A 'Get Mythic affix in N draws' counter guarantees a Mythic affix within a rolling pity window (observed at 3 draws).",
+      "mechanic": "Same 3-row slot machine, Skip toggle and auto-enchant rules as the standard Enchantizer, with dramatically better odds.",
+      "drop_rates": {
+        "epic": "~70% cumulative (source flags exact % as needing verification)",
+        "legendary": "18.2% cumulative; 3.03% per option",
+        "mythic": "11% cumulative; 2.75% per option"
+      },
+      "practical_rate": "Roughly 1 in 9 Advanced pulls is Mythic, versus 1 in 400 standard.",
+      "earning_advanced_enchantium": "1 Advanced Enchantium per 100 standard Enchant pulls - the 21/100 counter at the bottom of the standard Enchantizer tracks this. That is 100,000 Enchantium spent per 1 Advanced Enchantium earned.",
+      "direct_purchase": "Advanced Enchantium can also be bought directly; store details undocumented in source.",
+      "strategic_note": "The Advanced Enchantizer's 11% Mythic rate plus its pity counter is what makes endgame Enchantments feasible. F2P accumulate Advanced Enchantium slowly."
+    },
+    "rune_workshop": {
+      "purpose": "Fuse/merge owned runes to produce a single higher-rarity rune.",
+      "warehouse": "The Warehouse view shows all available (non-equipped) runes.",
+      "quick_fuse": "Quick Fuse auto-selects optimal fusion candidates.",
+      "result": "The Fusion successful popup shows the result rune name, new rarity, a stat preview (old to new) and any newly unlocked stat lines.",
+      "equipped_excluded": "Equipped runes are excluded from fusion and show an 'Equipped' overlay."
+    },
+    "rune_ruins": {
+      "purpose": "Dig for random runes.",
+      "dig_x1": "Costs 1 Ruin Shovel, or falls back to Gems.",
+      "dig_x5": "Costs 1,000 Gems.",
+      "auto_dig": "Hold down to auto-dig for batch digs.",
+      "chests": {
+        "rusty_chest": "Random white or green runes",
+        "sturdy_chest": "Random green or blue runes",
+        "glorious_chest": "Random blue or purple runes"
+      },
+      "drop_rate_example": "Rusty Chest, excluding the minimum guarantee: overall rate 28.80% at the rune tier - 15 individual runes at 1.11% each, then more at 0.31% / 0.30% / 0.15% for rarer items. Higher-tier chests follow the same structure with higher rarity floors."
+    },
+    "promised_ruins": {
+      "purpose": "Same chest framework as Rune Ruins but category-targeted.",
+      "selection_rule": "You pick ONE category from EACH of the two groups (not 'or'), so every dig is guaranteed to draw from both selections.",
+      "group_a": "Pick one of: Circle, Main Weapon, Sword Strike.",
+      "group_b": "Pick one of: Meteor, Elemental, Plant, Sprite.",
+      "dig_x1": "300 Gems, or 1 Relic Shovel.",
+      "dig_x5": "1,500 Gems.",
+      "when_to_use": "Use Promised Ruins when building toward two specific themes; use Rune Ruins when fishing broadly."
+    },
+    "rune_packs": {
+      "daily_special_pack": "Refreshes every 24h. 6 packs ranging from 499 Aurocite up to $49.99 USD, all flagged '400% Value'.",
+      "weekly_special_pack": "Refreshes weekly, with additional packs at higher price points.",
+      "typical_contents": "Gems, gold, ruin shovels, relic shovels, runes directly, and rune-related upgrade materials."
+    },
+    "sources_summary": {
+      "hunt": "Best for bulk passive runes. Cost: free / energy / ad.",
+      "rune_ruins": "Best for random rune fishing. Cost: Ruin Shovels or Gems.",
+      "promised_ruins": "Best for targeted theme runes. Cost: Relic Shovels or Gems (300+).",
+      "packs": "Paid bundles with mixed contents. Cost: Aurocite or USD.",
+      "rune_workshop": "Upgrades rarity rather than granting new runes. Cost: existing duplicate runes."
+    },
+    "build_patterns": {
+      "principle": "You equip 4 Ability + 4 Enhancement runes simultaneously. Ability Runes give the building blocks (starting skills, summons, procs); Enhancement Runes amplify and reshape how those skills behave. Match Etched Runes to your equipped Ability Runes.",
+      "sprite_build": "2x Sprite Ability (Melee Sprite, Healing Sprite) + 2x Sprite Enhancement (Sprite Multishot, Sprite Link) + Sprite Etched (Sprite Assist, Sprite's Awe).",
+      "circle_build": "2x Circle Ability (Circle, Ring of Agony) + 2x Circle Enhancement (Sawblade Circle, Spin SPD Up) + Circle Etched (Pulsing Orb, Orbital Orb).",
+      "plant_build": "Plant Summon + Equinox Bloom + Rootguard + Vine Bind + Life Surge.",
+      "meteor_build": "Star of Time + Star of Fury + Potion Magnet + Giant Meteor + Meteor Split / Potion Spring.",
+      "etched_slots_declare_identity": "With only 3 Etched slots, your Etched Runes essentially declare which 3 categories the build leans on. Multi-category builds spread them thinner."
+    },
+    "_coverage": "Source catalogues 13 Ability, 13 Enhancement, 7 Blessing and 13 Etched Runes, and notes more Etched Runes likely exist beyond those documented."
+  }
+}
