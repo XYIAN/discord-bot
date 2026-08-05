@@ -4,6 +4,20 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.21.1] - 2026-08-04
+
+### The price warning is now enforced, not requested
+
+v3.21.0 added a system-prompt rule: quote a real-money price only with an explicit "this may be out of date". Testing it live showed that is not enough.
+
+Asked *"How much does it cost to renew a monthly Privilege Card, and is it worth buying?"*, the bot obeyed half the rule — it declined to recommend the purchase — and dropped the other half, answering **"Renewing a monthly Privilege Card costs 499 Aurocite."** flat, with no caveat. One instruction among eight, inside a 36,000-token prompt, is a suggestion rather than a guarantee.
+
+So the guarantee is now deterministic. `lib/price-guard.js` checks the finished answer and appends the staleness notice when it actually quotes a real-money or Aurocite figure. The prompt rule stays, because when the model does follow it the phrasing is better; this catches the times it does not.
+
+Deliberately narrow: gems and gold are earned in-game, so "8,880 gold for 20 gems" is not flagged. Over-flagging would attach a warning to most answers in the file and train people to ignore it. It also never stacks a second caveat when the model already gave one, and is idempotent.
+
+14 tests, including the exact answer that motivated it.
+
 ## [3.21.0] - 2026-08-04
 
 ### Stale prices out of the prompt, and a correction to the numbers I published

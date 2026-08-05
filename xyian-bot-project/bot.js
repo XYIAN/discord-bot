@@ -38,6 +38,7 @@ const modRules = require('./lib/moderation');
 const changelog = require('./lib/changelog');
 const usageLib = require('./lib/usage');
 const knowledgeRender = require('./lib/knowledge-render');
+const priceGuard = require('./lib/price-guard');
 require('dotenv').config();
 
 // Single source of truth: version + changelog are parsed from CHANGELOG.md.
@@ -1130,7 +1131,11 @@ async function askAI(question, username, userId) {
             temperature: 0.4,
         });
         recordApiUsage('gpt-4o-mini', res.usage, systemPrompt.length);
-        const answer = res.choices[0]?.message?.content?.trim();
+        const raw = res.choices[0]?.message?.content?.trim();
+        // The prompt asks for a staleness caveat on any real-money figure; the
+        // model follows that inconsistently, so enforce it here instead of
+        // hoping. No-op unless the answer actually quotes a price.
+        const answer = priceGuard.appendPriceCaveat(raw);
         if (answer && answer.length > 5) {
             storeExchange(userId, question, answer);
             return answer;
@@ -1312,7 +1317,8 @@ async function askAIWithVision(question, imageUrls, username, userId) {
         recordApiUsage('gpt-4o-mini', res.usage, visionPrompt.length);
         const raw = res.choices[0]?.message?.content?.trim();
         if (raw && raw.length > 5) {
-            const { reply, candidates } = splitVisionResponse(raw);
+            const { reply: rawReply, candidates } = splitVisionResponse(raw);
+            const reply = priceGuard.appendPriceCaveat(rawReply);
             if (reply && reply.length > 5) {
                 // Stash text-only summary into conversation history.
                 const ctxQ = trimmedQuestion
