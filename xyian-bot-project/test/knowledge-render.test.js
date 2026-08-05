@@ -119,4 +119,50 @@ test('community facts and opinions can never be suppressed', () => {
     assert.ok(out.includes('a community fact'));
 });
 
+console.log('the live suppression list (slice 3)');
+// Kept in step with bot.js by the test below that fails if a path stops existing.
+const LIVE_SUPPRESSED = [
+    'shop.top_up.gems',
+    'shop.top_up.aurocite',
+    'shop.top_up.gold',
+    'event_shop.island_store.milestone_gates',
+];
+const get = (obj, dotted) => dotted.split('.').reduce((o, k) => (o == null ? o : o[k]), obj);
+
+test('every suppressed path still EXISTS in knowledge.json', () => {
+    // A suppression entry for a path that has been renamed or removed is dead
+    // weight that silently stops protecting anything. Fail loudly instead.
+    for (const p of LIVE_SUPPRESSED) {
+        assert.notStrictEqual(get(KNOWLEDGE, p), undefined, `suppressed path has rotted: ${p}`);
+    }
+});
+test('suppressing them removes the bulk price ladders', () => {
+    const out = renderKnowledge(KNOWLEDGE, { suppress: LIVE_SUPPRESSED });
+    assert.ok(!out.includes('8,880 gold for 20 gems'), 'gem-priced gold ladder still rendered');
+    assert.ok(!out.includes('Island Points reach'), 'per-event milestone gates still rendered');
+});
+test('their evergreen siblings SURVIVE — the point of sub-key granularity', () => {
+    const out = renderKnowledge(KNOWLEDGE, { suppress: LIVE_SUPPRESSED });
+    assert.ok(out.includes('Direct currency purchases'), 'lost the top-up overview');
+    assert.ok(out.includes('treats Aurocite as the default'), 'lost currency display behaviour');
+    assert.ok(out.includes('Refreshed when the Island Treasure Hunt'), 'lost the island shop refresh rule');
+    assert.ok(out.includes('Top tier of the shop'), 'lost the always-available stock');
+});
+test('suppression does NOT by itself make the bot price-safe', () => {
+    // Documented deliberately, because believing otherwise is the dangerous
+    // part. Real-money figures live in at least eight further places
+    // (privilege_cards.monthly_cards_overview, daily_rewards.packs.*.price,
+    // currencies.aurocite.used_for, runes.rune_packs, shop.wish, ...). The
+    // actual safety mechanism is the PRICES rule in the system prompt; this
+    // list only removes the bulk ladders. If this assertion ever starts
+    // failing, someone has tried to solve safety by whack-a-mole — check the
+    // prompt rule is still there before deleting the test.
+    const out = renderKnowledge(KNOWLEDGE, { suppress: LIVE_SUPPRESSED });
+    assert.ok(out.includes('499 Aurocite'), 'expected residual prices to remain reachable');
+});
+test('community facts survive the live suppression list untouched', () => {
+    const out = renderKnowledge(KNOWLEDGE, { suppress: LIVE_SUPPRESSED });
+    for (const f of KNOWLEDGE.custom_facts || []) assert.ok(out.includes(f.text));
+});
+
 console.log(`\n${passed} passed`);

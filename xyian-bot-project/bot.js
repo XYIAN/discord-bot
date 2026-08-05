@@ -305,9 +305,26 @@ function saveKnowledge() {
     }
 }
 
-// Dotted paths left OUT of the system prompt. Filled in slice 3; empty here so
-// this extraction is provably byte-identical to what bot.js did before.
-const SUPPRESSED_FROM_PROMPT = [];
+// Dotted paths left OUT of the system prompt.
+//
+// This is a SAFETY list before it is an optimisation. The bot answers strangers
+// in a public channel, and the worst thing in the knowledge base is a stale
+// real-money price: quoting "$99 for 10,000 gems" is a monetary claim, and Habby
+// reprices packs whenever it likes. Better to say "I don't have that" and point
+// at !suggest than to be confidently wrong about what someone should pay.
+//
+// Every entry needs a reason. Suppression happens at RENDER time — data/knowledge.json
+// is never modified, so all of this is revertible by emptying this array, and
+// !facts still counts the entries. Sub-key granularity is deliberate: these
+// entries mix volatile prices with evergreen UI description, and dropping the
+// whole entry to lose the prices would take the description with it.
+const SUPPRESSION_REASONS = {
+    'shop.top_up.gems': 'Aurocite/USD pack ladder — real-money prices Habby changes at will.',
+    'shop.top_up.aurocite': 'USD-only Aurocite ladder plus a Habby Store bonus percentage — all real-money.',
+    'shop.top_up.gold': 'Gem-priced gold packs; the entry\'s own note says the section refreshes daily.',
+    'event_shop.island_store.milestone_gates': 'Island Points gates for one past Island Treasure Hunt run; the sibling `refresh` key says the whole stock cycles each event.',
+};
+const SUPPRESSED_FROM_PROMPT = Object.keys(SUPPRESSION_REASONS);
 
 function knowledgeAsText() {
     // Rendering lives in lib/knowledge-render.js so it can be unit-tested — this
@@ -1092,7 +1109,8 @@ async function askAI(question, username, userId) {
         '- When you don\'t know something, nudge them toward !suggest to help fill the gap.\n' +
         '- You care about accuracy above all. Wrong info hurts the guild.\n' +
         '- The user may ask follow-up questions. Use the conversation history to understand context.\n' +
-        '- When referencing community opinions, clearly note they are opinions from players, not verified facts.\n\n' +
+        '- When referencing community opinions, clearly note they are opinions from players, not verified facts.\n' +
+        '- PRICES: any real-money price (Aurocite, USD, $) or paid-pack cost in these facts is a snapshot from when it was recorded, and Habby changes them. If you quote one, say plainly that it may be out of date and to check in-game. Never present a real-money price as current, and never advise on whether a purchase is worth the money.\n\n' +
         '--- VERIFIED FACTS ---\n' + knowledgeAsText();
 
     const priorContext = getUserContext(userId);
@@ -2878,6 +2896,11 @@ client.once('clientReady', async () => {
     }
 
     console.log(`📊 ${countFacts()} facts loaded from knowledge.json`);
+    if (SUPPRESSED_FROM_PROMPT.length) {
+        // Never let content vanish from the prompt invisibly — say how much and
+        // why, every boot.
+        console.log(`🚫 ${SUPPRESSED_FROM_PROMPT.length} path(s) held back from the AI prompt (stale pricing): ${SUPPRESSED_FROM_PROMPT.join(', ')}`);
+    }
 
     // Resolve general channel ID for stale-message cleanup
     try {
