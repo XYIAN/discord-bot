@@ -37,6 +37,7 @@ const { reconcilePlan, backfillApprovers, approvedCountFor, mergeLedgers, mergeC
 const modRules = require('./lib/moderation');
 const changelog = require('./lib/changelog');
 const usageLib = require('./lib/usage');
+const knowledgeRender = require('./lib/knowledge-render');
 require('dotenv').config();
 
 // Single source of truth: version + changelog are parsed from CHANGELOG.md.
@@ -304,44 +305,15 @@ function saveKnowledge() {
     }
 }
 
+// Dotted paths left OUT of the system prompt. Filled in slice 3; empty here so
+// this extraction is provably byte-identical to what bot.js did before.
+const SUPPRESSED_FROM_PROMPT = [];
+
 function knowledgeAsText() {
-    const sections = [];
-    for (const [category, entries] of Object.entries(knowledge)) {
-        if (category === 'custom_facts') {
-            if (Array.isArray(entries) && entries.length > 0) {
-                sections.push('ADDITIONAL FACTS:\n' + entries.map(f => `- ${f.text}`).join('\n'));
-            }
-            continue;
-        }
-        if (category === 'opinions') {
-            if (Array.isArray(entries) && entries.length > 0) {
-                sections.push('COMMUNITY OPINIONS (not verified — present these as player opinions, not confirmed facts):\n' + entries.map(o => `- ${o.text} (by ${o.added_by})`).join('\n'));
-            }
-            continue;
-        }
-        const lines = [];
-        if (typeof entries === 'object' && entries !== null) {
-            for (const [name, data] of Object.entries(entries)) {
-                if (typeof data === 'string') {
-                    lines.push(`${name}: ${data}`);
-                } else if (typeof data === 'object' && data !== null) {
-                    // Approved/vision entries store { text, added_by, added_at, source }.
-                    // Prefer the human-readable .text so the AI sees clean prose
-                    // instead of a JSON dump. Curated entries without .text
-                    // (e.g. characters with skill_levels) still fall back to JSON.
-                    if (typeof data.text === 'string' && data.text.length > 0) {
-                        lines.push(`${name}: ${data.text}`);
-                    } else {
-                        lines.push(`${name}: ${JSON.stringify(data)}`);
-                    }
-                }
-            }
-        }
-        if (lines.length) {
-            sections.push(`${category.toUpperCase()}:\n${lines.join('\n')}`);
-        }
-    }
-    return sections.join('\n\n');
+    // Rendering lives in lib/knowledge-render.js so it can be unit-tested — this
+    // text is the bot's entire factual grounding, and a silent change to it is a
+    // silent change to every answer. A golden test pins its exact output.
+    return knowledgeRender.renderKnowledge(knowledge, { suppress: SUPPRESSED_FROM_PROMPT });
 }
 
 function countFacts() {
