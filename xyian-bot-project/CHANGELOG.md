@@ -4,6 +4,24 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.18.0] - 2026-08-04
+
+### Community knowledge import, slice 5 — five more topics, nothing overwritten
+
+Knowledge base 730 → 1033 keys. Five topics that the first pass had deferred because their conflicts needed a human decision rather than a merge rule.
+
+**Arena, Challenge and Dungeon modes (+55).** Ten of these collided with descriptions the guild had already written. None of them actually contradicted anything — live carries strategy ("adapt your build to the season's modifiers", "use all your plant defense eggs each week"), the contribution carries mechanics ("3-stage tournament, Chapter 15 gate", "the host spends a ticket, assisting players do not"). Overwriting would have lost the strategy; skipping would have lost the mechanics. Both are kept, the contribution's text under a sibling `*_mechanics` key.
+
+Two of the new entries confirm what the guild had already worked out. `main_arena_tiers` lists all six tiers and agrees that Supreme is the top. `power_of_fusion` gives the formula behind the "~25% ATK and HP for unique builds" the guild had measured by feel: stacks × 1%, +10 per unique character beyond the first, +8 per unique gear beyond 6, +6 per unique rune beyond 13, +3 per full Godforged star.
+
+**Guild (+17).** Structure, buildings, Guild Research and the guild shops. Checked for contradiction first: the contribution's "donations" are Research EXP nodes, a different mechanic from the daily gem donations already recorded, so both stand.
+
+**Gear sets (+23), privilege cards (+13).** The one privilege-card collision was on flavour, not fact — both sides agree on 3900 gems and 800/day, and the community member's own recommendation was kept with its attribution.
+
+**Runes (+20, deliberately not 24).** Four "ladder" objects were left out: they restate, in a different shape, exactly what the bot already holds as flat ladder strings. Merging them would have put the same facts in the knowledge base twice. They are better structured than what's there and cover 13 etched runes to the current 5 — but that's a replacement decision, not a merge, and it needs its own slice.
+
+**Still outstanding:** `characters` (41 collisions, including whether heroes cap at 7 or 8 stars — a real contradiction that changes progression maths) and the 11 `weapons.*` entries truncated since v3.9.9.
+
 ## [3.17.0] - 2026-08-05
 
 ### Community knowledge import — 10 new topics, and a delivery gap closed
