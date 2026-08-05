@@ -1,0 +1,55 @@
+{
+  "_meta": {
+    "source": "community markdown: daily_rewards.md",
+    "contributed": "2026-08-04",
+    "confidence": "mechanics reliable; numbers may be stale",
+    "conflictsWithLive": []
+  },
+  "daily_rewards": {
+    "description": "Daily-resetting set of value packs centered on hero shards, reached from the Great Value icon on the main screen left panel.",
+    "reset": "Packs reset daily (~24h timer shown at the top of the screen).",
+    "selected_hero": "A Swap Character selection sets which hero's shards and themed rewards the pack contents are built around. Default seen: Phynx.",
+    "buy_all_special_packs": "Bulk option to buy all special packs at once: 499 Aurocite, advertised as Value 1700%.",
+    "habby_store_bonus": "In-game banner: receive +10% bonus Aurocite when purchasing from the Habby Store.",
+    "packs": {
+      "bonus_pack": {
+        "price": "Free",
+        "daily_limit": "1/day",
+        "contents": "A Random [Hero] Shard Pack."
+      },
+      "value_pack": {
+        "price": "99 Aurocite",
+        "value_claim": "1700%",
+        "daily_limit": "1/day"
+      },
+      "featured_pack": {
+        "price": "199 Aurocite",
+        "value_claim": "1350%",
+        "daily_limit": "1/day"
+      },
+      "deluxe_pack": {
+        "price": "299 Aurocite",
+        "value_claim": "1200%",
+        "daily_limit": "1/day"
+      }
+    },
+    "bonus_pack_shard_rates": {
+      "description": "Drop rates for the free Bonus Pack's Random Hero Shard Pack (Phynx version).",
+      "x1": "70%",
+      "x2": "25%",
+      "x3": "3%",
+      "x4": "1.39%",
+      "x5": "0.5%",
+      "x10": "0.1%",
+      "x50": "0.01%"
+    },
+    "paid_pack_contents": "Value, Featured and Deluxe packs each contain a mix of items including hero shards, gold, gems, and a Draw Item Choice Chest.",
+    "draw_item_choice_chest": "Lets the player choose one of: 1x Chromatic Chest key, 1x Wish Coin, 2x Relic Shovel.",
+    "rules": {
+      "one_purchase_per_day": "Packs are limited to 1 purchase per day and reset daily.",
+      "hero_swap": "You can swap heroes for different pack options; the selected hero changes which shards drop.",
+      "bulk_discount": "Buying all packs at once gives a greater discount. Once you have purchased any pack individually, the bulk option becomes unavailable.",
+      "hero_lock": "After purchasing any paid pack, you can no longer swap hero packs — the selected hero is locked in for the day."
+    }
+  }
+}

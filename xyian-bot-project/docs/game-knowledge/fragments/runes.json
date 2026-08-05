@@ -1,0 +1,683 @@
+{
+  "_meta": {
+    "source": "community markdown: runes.md",
+    "contributed": "2026-08-04",
+    "confidence": "mechanics reliable; numbers may be stale",
+    "conflictsWithLive": [
+      "runes",
+      "runes.overview_4_types",
+      "runes.enchantment_stats",
+      "runes.blessing_quality_revive",
+      "runes.etched_main_weapon",
+      "runes.etched_elemental",
+      "runes.etched_circles",
+      "runes.etched_meteors",
+      "runes.etched_strikes",
+      "runes.enhancement_overview",
+      "runes.enhancement_elemental",
+      "runes.enhancement_circles_meteors",
+      "runes.enhancement_sprites",
+      "runes.enhancement_strikes",
+      "runes.enhancement_plants",
+      "runes.ability_overview",
+      "runes.ability_main_weapon_elemental",
+      "runes.ability_circles",
+      "runes.ability_meteors",
+      "runes.ability_sprites",
+      "runes.ability_strikes",
+      "runes.ability_plants"
+    ],
+    "notes": [
+      "The live 'runes' topic already holds all 21 sub-keys listed above as long multi-line prose strings covering the same ground. This fragment restructures the same subject matter into short nested facts. Every live sub-key is content-overlapped by this fragment even though none of the new key names collide literally - a human must decide replace vs merge for the whole topic.",
+      "Several live entries are truncated mid-sentence (enchantment_stats ends '...only one enchantment selecti', blessing_quality_revive ends at 'Mythic', four etched_* entries end mid-clause). This fragment supplies complete text for those.",
+      "NAME CONFLICTS between this source and live: 'Ricochet Strike' (here) vs 'Ricocheting Strike' (live); 'Spin SPD Up' (here) vs 'Rotating SPD Up' (live overview_4_types); 'Flamenox Seal'/'Frostshock Seal' (here) vs 'Flame-Poison Seal'/'Frost-Thunder Seal' (live overview_4_types); 'Flamenox Touch'/'Frostshock Touch' (here) vs 'Flame-Poison Touch'/'Frost-Thunder Touch' (live). Live is internally inconsistent on these too. Not resolved here.",
+      "LADDER CONFLICTS where live and this source state different effects for the same tier, all left unresolved: Rootguard Legendary and Mythic; Vine Bind Epic and Mythic; Melee Sprite and Healing Sprite Epic/Legendary/Mythic; Ring of Agony Legendary and Mythic; Plant Summon Legendary; Equinox Bloom (Frenzy here vs Berserk live); Star of Fury Legendary; Frostshock Touch Common; Frostshock Seal Common/Fine (swapped); Sprite Multishot Rare; Sawblade Circle Common; Circle and Healing Sprite Epic damage multipliers (live carries ATK-multiplier figures this source omits).",
+      "TIER-LADDER CONFLICT: this source's rarity ladder includes Legendary +3; live rune entries list only Legendary, Legendary +1, Legendary +2, Mythic.",
+      "Dropped: all '[pending]' Mythic Specialized Enchantment rows (11 of 13 Enhancement, 13 of 13 Ability). They are placeholders, not data, and are recorded only as a coverage note.",
+      "Dropped: pure UI navigation and screenshot-methodology chatter (screen layouts, tab positions, screenshot counts, '[verify]' markers), except where a UI detail is how a mechanic is reached or gated.",
+      "Dropped: the per-category summary tables near the end of the source, which restate the ladders. Their unique content (per-rune observed Enchantment values) was preserved on the enhancement ladder entries as 'observed_enchantment'.",
+      "'observed_enchantment' records what the contributor had equipped on that rune at capture time. It is an observation, not a game constant.",
+      "Source is internally inconsistent on Etched Rune count: a heading says '12 Etched Runes catalogued' but the table and the ladders section both contain 13. All 13 are emitted.",
+      "Unicode minus/en-dash and multiplication-sign characters were normalised to ASCII. No numeric values were altered."
+    ]
+  },
+  "runes": {
+    "overview": "Runes provide stat bonuses, starting skills and special passives. They equip to a fixed set of slots arranged around the active hero.",
+    "equip_slots": {
+      "total_equippable": "13 runes when fully unlocked",
+      "ability_runes": "4 slots",
+      "enhancement_runes": "4 slots",
+      "blessing_runes": "2 slots",
+      "etched_runes": "3 slots",
+      "new_player_gating": "Etched Rune slots #2 and #3 are locked until the player reaches certain rune-level thresholds. Slot #1 is available from the start.",
+      "loadouts": "The Runes screen shares the same 8 loadouts as Gear, via a dropdown at top right."
+    },
+    "category_roles": {
+      "ability_runes": "Grant Starting Skills - active in-run abilities (procs and summoned units). Without them the hero has only main-weapon attacks plus their unique kit.",
+      "enhancement_runes": "Amplify a specific theme. They do not grant starting skills; they reshape how a theme behaves once active. Higher base stats than Ability Runes (ATK PWR +950 / +1,200 vs +50 on a comparable Ability Rune).",
+      "blessing_runes": "Passive run-modifiers (luck, dodge, conversion, revive). They shift probabilities, enable safety nets or convert stats. With only 2 slots this is one of the highest-leverage build decisions.",
+      "etched_runes": "High-power category amplifiers that lock in build identity. Substantially higher base stats (e.g. ATK PWR +1,200 vs +50 on a comparable Ability Rune). They multiply what your Ability Runes produce rather than granting Starting Skills."
+    },
+    "themes": {
+      "count": "7 themes: Circle, Main Weapon, Sword Strike, Meteor, Elemental, Plant, Sprite.",
+      "scope": "All Ability, Enhancement and Etched Runes fall into one of the 7 themes. Blessing Runes sit outside this categorization.",
+      "why_it_matters": "Promised Ruins targets by theme; Etched Runes amplify by theme (a Sprite Etched Rune only multiplies Sprite-themed runes); strategic builds align all 4 Ability + 4 Enhancement + 3 Etched runes around 1-3 themes.",
+      "group_split_note": "The Group A / Group B split of the 7 themes exists only as the Promised Ruins selection mechanic. Outside that screen the themes are flat."
+    },
+    "rarity_ladder": {
+      "order": "Common, Fine, Rare, Epic, Epic +1, Epic +2, Legendary, Legendary +1, Legendary +2, Legendary +3, Mythic (max).",
+      "differs_from_gear": "Runes cap at Mythic - no Chaotic tier and no Mythic + variants, unlike gear.",
+      "f2p_outlook": "Mythic runes are realistically reachable for F2P but take a long time accumulating duplicates from Hunt drops, Rune Ruins, Promised Ruins and free chests. Legendary +3 on key runes is a comfortable mid-term F2P goal; Mythic is long-term."
+    },
+    "stat_unlock_mechanics": {
+      "one_stat_per_tier": "Each named rarity tier unlocks one new stat line, shown on the detail screen as a colour-dotted row.",
+      "dot_tiers": "Dots represent only the 6 named tiers: Common, Fine, Rare, Epic, Legendary, Mythic. A lock icon means not yet unlocked.",
+      "plus_variants": "Epic +1/+2 and Legendary +1/+2/+3 sit between the named tiers. On Ability, Enhancement and Blessing Runes they add no new rows - they amplify existing effect values and bump the cumulative primary stat.",
+      "primary_stat_row": "The top row shows the cumulative primary stat (knife icon = ATK PWR, heart icon = Max HP), which scales through every tier including the + variants and Mythic.",
+      "enchantment_unlock_position": "The Enchantment slot unlocks at Epic +2, between the Epic and Legendary dots, so it is not a dot row; it appears as a separate section at the bottom of the rune detail screen.",
+      "locked_row_reading": "Lock colour indicates the tier band: a yellow lock is the Legendary band (L, L+1, L+2, L+3 - 4 rows, top-to-bottom in that order), a red lock is Mythic (1 row). Locked text stays readable."
+    },
+    "unlock_counts_by_category": {
+      "ability_runes": "6 unlocks total, one per named tier. + variants only bump the cumulative primary stat.",
+      "enhancement_runes": "6 unlocks total, same as Ability. + variants are stat-value bumps only.",
+      "blessing_runes": "4 unlocks total (Rare, Epic, Legendary, Mythic). Common and Fine are absorbed into the cumulative ATK PWR + Max HP shown at the top of the detail screen.",
+      "etched_runes": "Up to 9 unlocks total - the 6 named tiers plus additional buff lines at Legendary +1, +2 and +3. Unique to Etched Runes; these L+ variants meaningfully grow the rune's kit, not just its numbers.",
+      "mythic_is_terminal": "Mythic is the top tier: final unlock, max stat values, no further upgrades."
+    },
+    "blessing_rune_primary_stats": "Blessing Runes show two primary stats. At Legendary +2 each displays roughly ATK PWR +570 and Max HP +2,280 as baseline cumulative stats.",
+    "ability_rune_ladders": {
+      "arrow_rain": {
+        "theme": "Main Weapon",
+        "common": "Main Weapon DMG +5",
+        "fine": "Main Weapon DMG +10",
+        "rare": "Max HP +200",
+        "epic": "Starting Skill: Every 7 shots triggers Arrow Rain",
+        "legendary": "Main weapon ATK SPD +15%",
+        "mythic": "Main weapon ATK SPD +30%"
+      },
+      "strike_potion": {
+        "theme": "Sword Strike",
+        "common": "Strike DMG +5",
+        "fine": "Strike DMG +10",
+        "rare": "Max HP +200",
+        "epic": "Start with a Strike Potion",
+        "legendary": "Trigger Sword Strike upon absorbing a potion",
+        "mythic": "Strike Potion has 50% chance to summon 2x Sword Strikes"
+      },
+      "sword_of_time": {
+        "theme": "Sword Strike",
+        "common": "Strike DMG +5",
+        "fine": "Strike DMG +10",
+        "rare": "Max HP +200",
+        "epic": "Starting Skill: Summon 1 Sword Strike every 3s",
+        "legendary": "Sword of Time's Sword Strike summoning is reduced to 1.5s",
+        "mythic": "Sword of Time has 50% chance to summon 2x Sword Strikes"
+      },
+      "star_of_time": {
+        "theme": "Meteor",
+        "common": "Meteor DMG +5",
+        "fine": "Meteor DMG +10",
+        "rare": "Max HP +200",
+        "epic": "Starting Skill: Summon 1 Meteor every 10s",
+        "legendary": "Star of Time's Meteor summoning time reduced to 5s",
+        "mythic": "Star of Time has 50% chance to summon 2x Meteors"
+      },
+      "star_of_fury": {
+        "theme": "Meteor",
+        "common": "Meteor DMG +5",
+        "fine": "Meteor DMG +10",
+        "rare": "Max HP +200",
+        "epic": "Starting Skill: When damaged, summon 3 Meteors to bombard the map",
+        "legendary": "Recover little HP when a Meteor hits",
+        "mythic": "When damaged, summon 7 Meteors to bombard the map",
+        "note": "Defensive Meteor rune (triggers on taking damage)."
+      },
+      "frostshock_touch": {
+        "theme": "Elemental",
+        "common": "Ice DMG +10",
+        "fine": "Lightning DMG +10",
+        "rare": "Max HP +200",
+        "epic": "Starting Skill: Strike a random enemy with lightning every 2s",
+        "legendary": "Starting Skill: Freeze a random enemy every 2s",
+        "mythic": "Lightning Touch can hit 2 enemies instead"
+      },
+      "flamenox_touch": {
+        "theme": "Elemental",
+        "common": "Poison DMG +10",
+        "fine": "Fire DMG +10",
+        "rare": "Max HP +200",
+        "epic": "Starting Skill: Ignite a random enemy every 2s",
+        "legendary": "Starting Skill: Poison a random enemy every 2s",
+        "mythic": "Flamenox Touch CD reduced to 1.5s"
+      },
+      "circle": {
+        "theme": "Circle",
+        "common": "Circle DMG +5",
+        "fine": "Circle DMG +10",
+        "rare": "Max HP +200",
+        "epic": "Start with 2 weak circling orbs",
+        "legendary": "Start with 2 strong circling orbs",
+        "mythic": "Start with 4 strong circling orbs"
+      },
+      "ring_of_agony": {
+        "theme": "Circle",
+        "common": "Circle DMG +5",
+        "fine": "Circle DMG +10",
+        "rare": "Max HP +200",
+        "epic": "Start with Ring of Agony. Enemies within the ring take 20% more DMG",
+        "legendary": "Ring of Agony deals DMG to enemies",
+        "mythic": "Ring of Agony becomes Ring of Lightning"
+      },
+      "plant_summon": {
+        "theme": "Plant",
+        "common": "Plant DMG +5",
+        "fine": "Plant DMG +10",
+        "rare": "Max HP +200",
+        "epic": "Summons 1 Plant Guardian around the player every 8s",
+        "legendary": "Summons 1 Plant Guardian around player every 4s. Plant Guardians summoned this way gain +2 Combo hits",
+        "mythic": "50% chance to summon 2 Plant Guardians"
+      },
+      "equinox_bloom": {
+        "theme": "Plant",
+        "common": "Plant DMG +5",
+        "fine": "Plant DMG +10",
+        "rare": "Max HP +200",
+        "epic": "When any plant dies, chance to grant Frenzy to 1 Plant Guardian (CRIT DMG / Crit Rate / ATK SPD for 5s; prioritizes units without Frenzy)",
+        "legendary": "When Plant dies, spawn Acid Swamp under random enemy",
+        "mythic": "When any Plant dies, chance to grant Frenzy to 2 allies. Increases CRIT DMG, Crit Rate, ATK SPD for 5s. Prioritizes units without Frenzy"
+      },
+      "melee_sprite": {
+        "theme": "Sprite",
+        "common": "Sprite DMG +5",
+        "fine": "Sprite DMG +10",
+        "rare": "Max HP +200",
+        "epic": "Start with a Melee Sprite (counts as 2 units for Sprite count)",
+        "legendary": "All Sprites gain +25% ATK. Melee Sprites gain additional +25% ATK",
+        "mythic": "All Sprites gain +25% ATK SPD. Melee Sprites gain additional +25% ATK SPD"
+      },
+      "healing_sprite": {
+        "theme": "Sprite",
+        "common": "Sprite DMG +5",
+        "fine": "Sprite DMG +10",
+        "rare": "Max HP +200",
+        "epic": "Start with a Healing Sprite that heals the character for a small amount of HP when it attacks (counts as 2 units for Sprite count)",
+        "legendary": "All Sprites gain +25% ATK. Healing Sprites gain additional +25% ATK",
+        "mythic": "All Sprites gain +25% ATK SPD. Healing Sprites gain additional +25% ATK SPD"
+      }
+    },
+    "enhancement_rune_ladders": {
+      "sharp_arrow": {
+        "theme": "Main Weapon",
+        "common": "Main Weapon DMG +5",
+        "fine": "Main Weapon DMG +10",
+        "rare": "ATK PWR +50",
+        "epic": "Main weapon DMG +10%",
+        "legendary": "Main weapon DMG +20%",
+        "mythic": "Main weapon DMG +30%",
+        "observed_enchantment": "Main Weapon CRIT Rate +30% equipped",
+        "mythic_specialized_enchantment": "Main Weapon bounces +4"
+      },
+      "sawblade_circle": {
+        "theme": "Circle",
+        "common": "Circle DMG +5",
+        "fine": "Circle DMG +10",
+        "rare": "ATK PWR +50",
+        "epic": "Circles become Sawblade Circles",
+        "legendary": "Sawblade Circle DMG +50%",
+        "mythic": "Sawblade Circle inherits main weapon's CRIT Rate",
+        "observed_enchantment": "Circle DMG +480"
+      },
+      "spin_spd_up": {
+        "theme": "Circle",
+        "common": "Circle DMG +5",
+        "fine": "Circle DMG +10",
+        "rare": "ATK PWR +50",
+        "epic": "Circle speed +50%",
+        "legendary": "Circle speed +100%",
+        "mythic": "Circles increase from 2 orbs per group to 3",
+        "observed_enchantment": "ATK PWR +120"
+      },
+      "sprite_multishot": {
+        "theme": "Sprite",
+        "common": "Sprite DMG +5",
+        "fine": "Sprite DMG +10",
+        "rare": "ATK PWR +50",
+        "epic": "Sprites have 30% chance to fire multiple shots",
+        "legendary": "Sprite ATK SPD +25%",
+        "mythic": "Sprite ATK SPD +50%",
+        "observed_enchantment": "Boss DMG +7.5%"
+      },
+      "sprite_link": {
+        "theme": "Sprite",
+        "common": "Sprite DMG +5",
+        "fine": "Sprite DMG +10",
+        "rare": "ATK PWR +50",
+        "epic": "Sprite DMG +5% for every extra Sprite",
+        "legendary": "Sprite DMG +10% for every extra Sprite",
+        "mythic": "Sprite DMG +15% for every extra Sprite",
+        "observed_enchantment": "Sprite CRIT Rate +15%"
+      },
+      "frostshock_seal": {
+        "theme": "Elemental",
+        "common": "Lightning DMG +10",
+        "fine": "Ice DMG +10",
+        "rare": "ATK PWR +50",
+        "epic": "Lightning strikes have a chance to cause paralysis",
+        "legendary": "Freeze deepens enemy wounds by 30%",
+        "mythic": "Lightning strike DMG to frozen enemies +30%",
+        "observed_enchantment": "CRIT DMG +4%",
+        "mythic_specialized_enchantment": "When attacking Paralyzed/Frozen targets, CRIT Rate +35%, CRIT DMG +79%"
+      },
+      "flamenox_seal": {
+        "theme": "Elemental",
+        "common": "Fire DMG +10",
+        "fine": "Poison DMG +10",
+        "rare": "ATK PWR +50",
+        "epic": "Fire DMG +50%",
+        "legendary": "Poison DMG +50%",
+        "mythic": "When Fire and Poison are present, an explosion occurs every 1 second",
+        "observed_enchantment": "Boss DMG +15%"
+      },
+      "potion_magnet": {
+        "theme": "Meteor",
+        "common": "Meteor DMG +5",
+        "fine": "Meteor DMG +10",
+        "rare": "ATK PWR +50",
+        "epic": "Auto absorbs Meteor Potions when dropped",
+        "legendary": "Meteor DMG +25%",
+        "mythic": "Meteor DMG +50%",
+        "observed_enchantment": "Boss DMG +7.5%"
+      },
+      "giant_meteor": {
+        "theme": "Meteor",
+        "common": "Meteor DMG +5",
+        "fine": "Meteor DMG +10",
+        "rare": "ATK PWR +50",
+        "epic": "Meteors have 20% chance to become Giant Meteors, +50% DMG",
+        "legendary": "After absorbing a Meteor Potion, 50% chance to summon +1 Meteor",
+        "mythic": "After summoning 5 Meteors, the next summon will be 1 Giant Meteor",
+        "observed_enchantment": "Boss DMG +7.5%"
+      },
+      "rootguard": {
+        "theme": "Plant",
+        "common": "Plant DMG +5",
+        "fine": "Plant DMG +10",
+        "rare": "ATK PWR +50",
+        "epic": "Gain a shield at intervals. The more Plant Guardians there are, the faster the shield is gained",
+        "legendary": "Summons 2 Plant Guardians when shield is gained or broken",
+        "mythic": "Max Plant Guardians in battle +50%. More Plant Guardians in battle increases their base ATK",
+        "observed_enchantment": "ATK PWR +20"
+      },
+      "vine_bind": {
+        "theme": "Plant",
+        "common": "Plant DMG +5",
+        "fine": "Plant DMG +10",
+        "rare": "ATK PWR +50",
+        "epic": "When summoned, Plant Guardians link with up to 2 other Plant Guardians. Links deal 10% ATK as Poison DMG/sec and apply Slow to enemies hit",
+        "legendary": "Plant Guardians spawn near highest-HP enemy. Player can also be link target",
+        "mythic": "Plant Guardians increase DMG taken of nearby enemies by 20%. Effect does not stack. Links prioritize player",
+        "observed_enchantment": "Slot unlocked but unused ('Unlocks Rune Enchantment' placeholder) even at Legendary +2"
+      },
+      "ricochet_strike": {
+        "theme": "Sword Strike",
+        "common": "Strike DMG +5",
+        "fine": "Strike DMG +10",
+        "rare": "ATK PWR +50",
+        "epic": "Sword Strikes have 35% chance to ricochet",
+        "legendary": "Sword Strike ricochet chance increases to 70%",
+        "mythic": "Sword Strikes always ricochet",
+        "observed_enchantment": "ATK PWR +40"
+      },
+      "dragonflight_sword": {
+        "theme": "Sword Strike",
+        "common": "Strike DMG +5",
+        "fine": "Strike DMG +10",
+        "rare": "ATK PWR +50",
+        "epic": "Sword Strikes have 35% chance to become Dragon Strike",
+        "legendary": "Dragon Strike chance increases to 70%",
+        "mythic": "Dragon Strike chance increases to 100%",
+        "observed_enchantment": "More damage VS minions +0.5%"
+      }
+    },
+    "blessing_rune_ladders": {
+      "guardian": {
+        "theme": "Pure defense",
+        "rare": "ATK PWR +60",
+        "epic": "DMG taken -5%",
+        "legendary": "DMG taken -5% (additional, stacks to -10%)",
+        "mythic": "DMG taken -5% (additional, stacks to -15%)",
+        "mythic_specialized_enchantment": "When HP drops below 50% for the first 2 times, gain a shield that blocks 1 attack"
+      },
+      "devil_pact": {
+        "theme": "Devil encounters",
+        "rare": "ATK PWR +60",
+        "epic": "Devil encounter chance +10% and reduces HP loss when exchanging skills by 25%",
+        "legendary": "Devil encounter chance +20%",
+        "mythic": "Reduces HP loss to 50% when exchanging skills with a Devil",
+        "mythic_specialized_enchantment": "Max HP lost when selecting Devil skills becomes direct HP lost. Also +5% for every Devil skill selected (Max 3 stacks)"
+      },
+      "rabbits_foot": {
+        "theme": "Skill quality / Valkyrie luck",
+        "rare": "ATK PWR +60",
+        "epic": "Chance of obtaining high-quality skill upon level-up increases to 20%",
+        "legendary": "Chance of landing on Valkyrie in Roulette +15%",
+        "mythic": "Chance of obtaining high-quality rewards upon meeting Valkyrie +20%",
+        "mythic_specialized_enchantment": "For each Epic or higher skill gained, ATK and HP +5% (Max 5 stacks)"
+      },
+      "revive": {
+        "theme": "Death save",
+        "rare": "Max HP +240",
+        "epic": "50% chance to revive upon death, with half of HP restored",
+        "legendary": "ATK PWR +20% after revival",
+        "mythic": "100% chance to revive upon death, with half of HP restored",
+        "mythic_specialized_enchantment": "Upon revival, ATK SPD +30%, and main weapon hits restore 1.5% HP. Lasts 10s"
+      },
+      "resilience": {
+        "theme": "Stat conversion",
+        "rare": "Max HP +240",
+        "epic": "Converts 15% ATK PWR to 20% Max HP",
+        "legendary": "Converts 15% ATK PWR to 25% Max HP",
+        "mythic": "Converts 15% ATK PWR to 30% Max HP",
+        "mythic_specialized_enchantment": "10% CRIT DMG is converted to 50% CRIT DMG Reduction"
+      },
+      "intelligence": {
+        "theme": "EXP / level",
+        "rare": "Max HP +240",
+        "epic": "EXP gain rate +10%",
+        "legendary": "EXP gain rate +20%",
+        "mythic": "Max level +1 during battle",
+        "mythic_specialized_enchantment": "In-battle skill refreshes +2, Max level +1"
+      },
+      "lucky_shadow": {
+        "theme": "Luck + dodge",
+        "rare": "Max HP +240",
+        "epic": "Luck +5% and Dodge +2%",
+        "legendary": "Luck +10% and Dodge +5%",
+        "mythic": "Luck +15% and Dodge +10%",
+        "mythic_specialized_enchantment": "DMG taken from monster collisions -30%"
+      }
+    },
+    "etched_rune_ladders": {
+      "arrow_of_echoes": {
+        "theme": "Main Weapon",
+        "common": "Main Weapon DMG +100",
+        "fine": "ATK PWR +100",
+        "rare": "Main weapon skills have increased chance to spawn",
+        "epic": "When firing more than 4 projectiles at once, they have a chance to form a web",
+        "legendary": "Starting Skill: Diagonal Arrow",
+        "legendary_plus_1": "For each Main Weapon skill obtained, Main Weapon DMG is increased (Max 10 stacks)",
+        "legendary_plus_2": "2x Projectile Web DMG",
+        "legendary_plus_3": "Main weapon skills have greatly increased chance to spawn",
+        "mythic": "When firing 4+ projectiles, Projectile Web chance is increased (Max 10 stacks)",
+        "source_verification": "Source verified this ladder from a screenshot at Legendary +1."
+      },
+      "echo_scythe": {
+        "theme": "Main Weapon",
+        "common": "Main Weapon DMG +100",
+        "fine": "ATK PWR +100",
+        "rare": "Main weapon skills have increased chance to spawn",
+        "epic": "Main weapon attacks have a chance to fire [Echo Scythes] in a fixed vertical direction (CD: 5s); deals 60% character ATK DMG, pierces, bounces 9 times, lasts 15s",
+        "legendary": "Each [Echo Scythe] bounce deals 115% of previous bounce's DMG; projectile size +15% per bounce",
+        "legendary_plus_1": "For each Main Weapon skill obtained, Main Weapon DMG is increased (Max 10 stacks)",
+        "legendary_plus_2": "[Echo Scythe] base DMG is increased to 100% of character's ATK",
+        "legendary_plus_3": "Main weapon skills have greatly increased chance to spawn",
+        "mythic": "When launching [Echo Scythe], 2 additional scythes are launched in a fixed horizontal direction",
+        "source_verification": "Source verified this ladder from screenshots at Legendary state."
+      },
+      "sprite_assist": {
+        "theme": "Sprite",
+        "common": "Sprite DMG +100",
+        "fine": "ATK PWR +100",
+        "rare": "Sprite skills have increased chance to spawn",
+        "epic": "Each time the main character attacks, Sprites have 50% chance to launch 1 attack as well",
+        "legendary": "When the main character attacks, Sprite has an 80% chance to immediately perform 1 synced ATK. During a synced ATK, there is a 15% chance to fire a small-area homing arrow",
+        "legendary_plus_1": "For each Sprite skill obtained, Sprite DMG is increased (Max 10 stacks)",
+        "legendary_plus_2": "Sprites inherit 40% of owner's Crit Rate",
+        "legendary_plus_3": "Sprite skills have greatly increased chance to spawn",
+        "mythic": "Sprite inherits 50% of Characters' CRIT DMG. The chance to fire a homing arrow during a synced ATK increases to 30%",
+        "source_verification": "Source verified this ladder from screenshots at Legendary state."
+      },
+      "sprites_awe": {
+        "theme": "Sprite",
+        "common": "Sprite DMG +100",
+        "fine": "ATK PWR +100",
+        "rare": "Sprite skills have increased chance to spawn",
+        "epic": "When main character is hurt/attacking, Sprites have chance to trigger clones that last 5s",
+        "legendary": "For every additional Sprite or Sprite clone, enemies in battle take 5% more DMG",
+        "legendary_plus_1": "For each Sprite skill obtained, Sprite DMG is increased (Max 10 stacks)",
+        "legendary_plus_2": "When Sprites attack, there is a small chance to unleash 1 Spinning Slash",
+        "legendary_plus_3": "Sprite skills have greatly increased chance to spawn",
+        "mythic": "In battle, Sprite summon Skill selection count +1 and additionally summons 1 random Elemental Sprite. Also, all Sprites' ATK and ATK SPD +10%",
+        "source_verification": "Source verified this ladder through Mythic from screenshots at Epic +2 state."
+      },
+      "pulsing_orb": {
+        "theme": "Circle",
+        "common": "Circle DMG +100",
+        "fine": "ATK PWR +100",
+        "rare": "Circle skills have increased chance to spawn",
+        "epic": "Rotating ball scales the range following the nearest enemy",
+        "legendary": "Circle trails deal DMG to enemies",
+        "legendary_plus_1": "For each Circle skill obtained, Circle DMG is increased (Max 10 stacks)",
+        "legendary_plus_2": "All Circle attacks have a very small chance to fire lasers",
+        "legendary_plus_3": "Circle skills have greatly increased chance to spawn",
+        "mythic": "All Circle attacks have a small chance to fire lasers",
+        "source_verification": "Source verified this ladder through Epic from a screenshot at Epic +2 state; higher tiers read from locked rows."
+      },
+      "orbital_orb": {
+        "theme": "Circle",
+        "common": "Circle DMG +100",
+        "fine": "ATK PWR +100",
+        "rare": "Circle skills have increased chance to spawn",
+        "epic": "When a Circle defeats an enemy, 50% chance to gain an Orbital Orb orbiting that circle, up to 3",
+        "legendary": "When a Circle defeats an enemy, gain 1 Orbital Orb orbiting that circle, up to 7",
+        "legendary_plus_1": "For each Circle skill obtained, Circle DMG is increased (Max 10 stacks)",
+        "legendary_plus_2": "When Circle hits an enemy, small chance to gain an Orbital Orb",
+        "legendary_plus_3": "Circle skills have greatly increased chance to spawn",
+        "mythic": "For each Orbital Orb owned, main Circle DMG +20%",
+        "source_verification": "Source verified this ladder through Mythic from screenshots at Epic +2 state."
+      },
+      "sword_strike_split": {
+        "theme": "Sword Strike",
+        "common": "Strike DMG +100",
+        "fine": "ATK PWR +100",
+        "rare": "Sword Strike skills have increased chance to spawn",
+        "epic": "Sword Strikes have chance to split into 3 mini-strikes when they fade",
+        "legendary": "Sword Strikes have chance to split into 5 homing strikes when they fade",
+        "legendary_plus_1": "For each Sword Strike skill obtained, Strike DMG is increased (Max 10 stacks)",
+        "legendary_plus_2": "When Sword Strikes defeat enemies, there is a small chance to restore 2% HP",
+        "legendary_plus_3": "Sword Strike skills have greatly increased chance to spawn",
+        "mythic": "Strike DMG +20% to enemies below 50% HP",
+        "source_verification": "Source verified this ladder through Epic from a screenshot at Epic +1 state."
+      },
+      "swordstrike_aerie": {
+        "theme": "Sword Strike",
+        "common": "Strike DMG +100",
+        "fine": "ATK PWR +100",
+        "rare": "Sword Strike skills have increased chance to spawn",
+        "epic": "Sword Strike hits have 25% chance to spawn 1 minor strike that deals half damage",
+        "legendary": "Sword Strike hits have 50% chance to spawn 1 minor strike that deals half damage",
+        "legendary_plus_1": "For each Sword Strike skill obtained, Strike DMG is increased (Max 10 stacks)",
+        "legendary_plus_2": "Sword Strikes have a very small chance to fire 1 more strike",
+        "legendary_plus_3": "Sword Strike skills have greatly increased chance to spawn",
+        "mythic": "Sword Strikes have a small chance to fire 1 more strike",
+        "source_verification": "Source verified this ladder through Legendary from screenshots at Epic state."
+      },
+      "life_surge": {
+        "theme": "Plant",
+        "common": "Plant DMG +100",
+        "fine": "ATK PWR +100",
+        "rare": "Increased chance for Plant-related skills to appear",
+        "epic": "Cast 1 Life Surge for every 5 Plant deaths",
+        "legendary": "Cast 1 Life Surge for every 2 Plant deaths",
+        "legendary_plus_1": "Plant DMG increases for each Plant-related skill obtained (up to 10 stacks)",
+        "legendary_plus_2": "Cast 1 Life Surge for every 2 Plant deaths, with 10% chance to summon a Plant Guardian when it hits a boss or player",
+        "legendary_plus_3": "Greatly increased chance for Plant-related skills to appear",
+        "mythic": "Cast 1 Life Surge for every 2 Plant deaths, with 30% chance to summon a Plant Guardian when it hits a boss or player",
+        "source_verification": "Source verified this ladder through Epic from screenshots at Epic state and flags higher-tier ordering as needing verification."
+      },
+      "meteor_split": {
+        "theme": "Meteor",
+        "common": "Meteor DMG +100",
+        "fine": "ATK PWR +100",
+        "rare": "Meteor skills have increased chance to spawn",
+        "epic": "Meteor drops have a chance to split",
+        "legendary": "Split meteors will bounce forever, reflecting away from the map's edges until their duration ends",
+        "legendary_plus_1": "For each Meteor skill obtained, Meteor DMG is increased (Max 10 stacks)",
+        "legendary_plus_2": "Meteor impact zones Burn for 2s",
+        "legendary_plus_3": "Meteor skills have greatly increased chance to spawn",
+        "mythic": "Meteor impact zones Burn for 4s",
+        "source_verification": "Source verified this ladder through Mythic from screenshots at Legendary state."
+      },
+      "potion_spring": {
+        "theme": "Meteor",
+        "common": "Meteor DMG +100",
+        "fine": "ATK PWR +100",
+        "rare": "Increased chance for Potion skills to spawn",
+        "epic": "25% chance to summon Potion Spring. Standing within the spring's range activates it, spraying forth large amounts of the same potion",
+        "legendary": "Doubles potions spawned by Potion Spring",
+        "legendary_plus_1": "For each Potion skill obtained, Meteor DMG is increased (Max 10 stacks)",
+        "legendary_plus_2": "When looting potions, there is a small chance to trigger a minor meteor bombardment",
+        "legendary_plus_3": "Greatly increased chance for Potion skills to spawn",
+        "mythic": "When looting potions, there is a chance to trigger a major meteor bombardment",
+        "source_verification": "Source verified this ladder through Mythic from screenshots at Legendary state."
+      },
+      "elemental_domain": {
+        "theme": "Elemental",
+        "common": "Elemental DMG +100",
+        "fine": "ATK PWR +100",
+        "rare": "Increased chance for Elemental skills to spawn",
+        "epic": "When an enemy is defeated by Elemental DMG, 30% chance to form an elemental area for 5s. Enemies in it take Elemental DMG",
+        "legendary": "Elemental Domain lasts 10s with increased DMG",
+        "legendary_plus_1": "For each Elemental skill obtained, Elemental DMG is increased (Max 10 stacks)",
+        "legendary_plus_2": "Elemental DMG +15% to enemies below 50% HP",
+        "legendary_plus_3": "Elemental skills have greatly increased chance to spawn",
+        "mythic": "Elemental DMG +30% to enemies below 50% HP",
+        "source_verification": "Source verified this ladder through Mythic from screenshots at Epic +2 state."
+      },
+      "elemental_crit": {
+        "theme": "Elemental",
+        "common": "Elemental DMG +100",
+        "fine": "ATK PWR +100",
+        "rare": "Increased chance for Elemental skills to spawn",
+        "epic": "Elemental DMG inherits 10% of the character's CRIT Rate and 10% of the character's CRIT DMG",
+        "legendary": "Elemental DMG inherits 30% of the character's CRIT Rate and 30% of the character's CRIT DMG",
+        "legendary_plus_1": "For each Elemental skill obtained, Elemental DMG is increased (Max 10 stacks)",
+        "legendary_plus_2": "Elemental critical hits trigger a small area elemental splash attack",
+        "legendary_plus_3": "Greatly increased chance for Elemental skills to spawn",
+        "mythic": "Elemental critical hits trigger a large area elemental splash attack",
+        "source_verification": "Source verified this ladder from screenshots at Legendary state. Flagged as a newer Elemental-themed Etched Rune."
+      }
+    },
+    "enchantment_system": {
+      "applies_to": "Ability, Enhancement and Blessing Runes only. Etched Runes do NOT have an Enchantment slot - they only have an Equip button.",
+      "unlock": "Unlocked at Epic +2 per rune (each rune individually must reach Epic +2), not account-wide.",
+      "archive": "Each rune has an Enchantment Archive - a pool of possible Enchantment Stats organised into categories specific to the rune type.",
+      "one_at_a_time": "Only ONE Enchantment can be equipped at a time per rune.",
+      "how_to_change": "Use the Enchant button on a rune to open the Enchantizer screen and swap which Enchantment Stat is active.",
+      "placeholder_text": "Until a selection is made after the Epic +2 unlock, the line displays the placeholder 'Unlocks Rune Enchantment'.",
+      "progression_bar": "A progression bar at the bottom of the Enchantizer (observed at 21/100) tracks toward additional Archive entries.",
+      "quality_range": "Each Archive entry has its own rarity, Common through Mythic, determined by the pull. The Specialized category is always Legendary or Mythic, never lower.",
+      "archive_rule": "In-game Rule 3: the affix archive stores unlocked affix types of the highest quality. They can be freely switched in unlocked rune slots and saved as different presets.",
+      "archive_keeps_best": "The Archive remembers only the highest-quality version of each affix ever pulled. A later Mythic replaces an earlier Legendary of the same affix.",
+      "free_switching": "Once an affix is in the Archive you can freely switch among entries with no re-rolling.",
+      "presets": "Presets can be saved per rune slot, e.g. one for boss fights and one for crowd clear.",
+      "obtained_label": "The 'Obtained' label next to an affix in the Rules popup means that affix is already in your Archive."
+    },
+    "enchantment_categories": {
+      "blessing_runes": "9 categories: ATK PWR; Max HP; Reduced Circle DMG taken; Reduced Sword Strike DMG taken; Reduced Sprite DMG taken; Reduced Main Weapon DMG taken; Reduced Meteor DMG taken; Reduced Elemental DMG taken; Specialized. Categories 1-8 roll Common to Mythic; Specialized always rolls Legendary or Mythic and is rune-specific.",
+      "enhancement_runes": "7 categories: ATK PWR; [Theme] DMG (varies by rune theme); Boss DMG; More damage VS minions; [Theme] CRIT Rate; CRIT DMG; Specialized. Categories 1-6 roll Common to Mythic; Specialized always rolls Legendary or Mythic.",
+      "ability_runes": "7 categories: Max HP; Elemental DMG; Boss DMG REDUC; Minion DMG REDUC; Elemental CRIT DMG; CRIT DMG REDUC; Specialized. Categories 1-6 roll Common to Mythic; Specialized always rolls Legendary or Mythic.",
+      "ability_vs_enhancement": "Ability Rune enchantments skew defensive and elemental (Max HP, REDUC stats); Enhancement skews offensive (ATK PWR, DMG bumps). Both have 7 categories with Specialized as the 7th.",
+      "open_question": "Source flags as unverified whether 'Elemental DMG' and 'Elemental CRIT DMG' on Ability Runes are literal or theme-flexible (e.g. whether Plant Summon shows 'Plant DMG' instead).",
+      "specialized_strategy": "Specialized is the only Blessing enchantment guaranteed Legendary+ and is uniquely tailored to that rune, so a Mythic Specialized roll is generally the strongest enchantment outcome.",
+      "specialized_coverage": "Every Ability, Enhancement and Blessing Rune has its own unique Mythic Specialized Enchantment. The source documents all 7 Blessing ones and 2 of 13 Enhancement ones (Sharp Arrow, Frostshock Seal); the remaining 11 Enhancement and all 13 Ability Specialized enchantments are undocumented."
+    },
+    "enchantizer_currencies": {
+      "enchantium": "Standard Enchantizer pull currency (green triangle with arrowhead icon).",
+      "advanced_enchantium": "Advanced Enchantizer pull currency (pink circle with arrowhead icon). Much rarer than standard Enchantium.",
+      "gems": "The standard top-bar gem currency. Convertible into Enchantium, but the enchanting cost itself is paid in Enchantium - gems and Enchantium are different currencies.",
+      "gem_to_enchantium_rate": "The gem cost per Enchantium batch escalates with attempts made that day: 300 gems/attempt for the 21st-30th purchase, 400 gems/attempt for the 31st-40th, with further escalation likely above.",
+      "daily_reset": "The gem cost ladder resets daily, so heavy converters should spread purchases across days rather than burning them in one sitting."
+    },
+    "standard_enchantizer": {
+      "cost": "1,000 Enchantium per attempt.",
+      "mechanic": "Each attempt rolls 3 random Enchantments from the rune's eligible affix pool, shown in a slot-machine-style 3-row UI. You choose one to equip or skip and re-roll.",
+      "skip_toggle": "When the Skip toggle is on, the machine auto-rolls past Common/Fine/Rare results.",
+      "auto_enchant": "Holding the Enchant button repeats pulls automatically and pauses on any Legendary or Mythic result (in-game Rule 2).",
+      "anti_dup_rule": "When enchanting runes of the same type, identical Mythic affixes will not be drawn - Mythic dupes are filtered.",
+      "drop_rates": {
+        "common": "~49.5% cumulative; 24.75% per option (2 options visible)",
+        "fine": "~37% cumulative; 9.31% per option (4 options visible)",
+        "rare": "varies; 2.05% per option",
+        "epic": "~2.25% cumulative (per-option rate unverified in source)",
+        "legendary": "0.50% total; 0.08% per option",
+        "mythic": "0.25% total; 0.06% per option"
+      },
+      "practical_rate": "Roughly 1 in 400 standard pulls is Mythic.",
+      "mythic_specialized_rate": "Pulling a Mythic Specialized via the Standard Enchantizer is roughly 1 in 1,667 pulls."
+    },
+    "advanced_enchantizer": {
+      "cost": "1 Advanced Enchantium per attempt.",
+      "pity_counter": "A 'Get Mythic affix in N draws' counter guarantees a Mythic affix within a rolling pity window (observed at 3 draws).",
+      "mechanic": "Same 3-row slot machine, Skip toggle and auto-enchant rules as the standard Enchantizer, with dramatically better odds.",
+      "drop_rates": {
+        "epic": "~70% cumulative (source flags exact % as needing verification)",
+        "legendary": "18.2% cumulative; 3.03% per option",
+        "mythic": "11% cumulative; 2.75% per option"
+      },
+      "practical_rate": "Roughly 1 in 9 Advanced pulls is Mythic, versus 1 in 400 standard.",
+      "earning_advanced_enchantium": "1 Advanced Enchantium per 100 standard Enchant pulls - the 21/100 counter at the bottom of the standard Enchantizer tracks this. That is 100,000 Enchantium spent per 1 Advanced Enchantium earned.",
+      "direct_purchase": "Advanced Enchantium can also be bought directly; store details undocumented in source.",
+      "strategic_note": "The Advanced Enchantizer's 11% Mythic rate plus its pity counter is what makes endgame Enchantments feasible. F2P accumulate Advanced Enchantium slowly."
+    },
+    "rune_workshop": {
+      "purpose": "Fuse/merge owned runes to produce a single higher-rarity rune.",
+      "warehouse": "The Warehouse view shows all available (non-equipped) runes.",
+      "quick_fuse": "Quick Fuse auto-selects optimal fusion candidates.",
+      "result": "The Fusion successful popup shows the result rune name, new rarity, a stat preview (old to new) and any newly unlocked stat lines.",
+      "equipped_excluded": "Equipped runes are excluded from fusion and show an 'Equipped' overlay."
+    },
+    "rune_ruins": {
+      "purpose": "Dig for random runes.",
+      "dig_x1": "Costs 1 Ruin Shovel, or falls back to Gems.",
+      "dig_x5": "Costs 1,000 Gems.",
+      "auto_dig": "Hold down to auto-dig for batch digs.",
+      "chests": {
+        "rusty_chest": "Random white or green runes",
+        "sturdy_chest": "Random green or blue runes",
+        "glorious_chest": "Random blue or purple runes"
+      },
+      "drop_rate_example": "Rusty Chest, excluding the minimum guarantee: overall rate 28.80% at the rune tier - 15 individual runes at 1.11% each, then more at 0.31% / 0.30% / 0.15% for rarer items. Higher-tier chests follow the same structure with higher rarity floors."
+    },
+    "promised_ruins": {
+      "purpose": "Same chest framework as Rune Ruins but category-targeted.",
+      "selection_rule": "You pick ONE category from EACH of the two groups (not 'or'), so every dig is guaranteed to draw from both selections.",
+      "group_a": "Pick one of: Circle, Main Weapon, Sword Strike.",
+      "group_b": "Pick one of: Meteor, Elemental, Plant, Sprite.",
+      "dig_x1": "300 Gems, or 1 Relic Shovel.",
+      "dig_x5": "1,500 Gems.",
+      "when_to_use": "Use Promised Ruins when building toward two specific themes; use Rune Ruins when fishing broadly."
+    },
+    "rune_packs": {
+      "daily_special_pack": "Refreshes every 24h. 6 packs ranging from 499 Aurocite up to $49.99 USD, all flagged '400% Value'.",
+      "weekly_special_pack": "Refreshes weekly, with additional packs at higher price points.",
+      "typical_contents": "Gems, gold, ruin shovels, relic shovels, runes directly, and rune-related upgrade materials."
+    },
+    "sources_summary": {
+      "hunt": "Best for bulk passive runes. Cost: free / energy / ad.",
+      "rune_ruins": "Best for random rune fishing. Cost: Ruin Shovels or Gems.",
+      "promised_ruins": "Best for targeted theme runes. Cost: Relic Shovels or Gems (300+).",
+      "packs": "Paid bundles with mixed contents. Cost: Aurocite or USD.",
+      "rune_workshop": "Upgrades rarity rather than granting new runes. Cost: existing duplicate runes."
+    },
+    "build_patterns": {
+      "principle": "You equip 4 Ability + 4 Enhancement runes simultaneously. Ability Runes give the building blocks (starting skills, summons, procs); Enhancement Runes amplify and reshape how those skills behave. Match Etched Runes to your equipped Ability Runes.",
+      "sprite_build": "2x Sprite Ability (Melee Sprite, Healing Sprite) + 2x Sprite Enhancement (Sprite Multishot, Sprite Link) + Sprite Etched (Sprite Assist, Sprite's Awe).",
+      "circle_build": "2x Circle Ability (Circle, Ring of Agony) + 2x Circle Enhancement (Sawblade Circle, Spin SPD Up) + Circle Etched (Pulsing Orb, Orbital Orb).",
+      "plant_build": "Plant Summon + Equinox Bloom + Rootguard + Vine Bind + Life Surge.",
+      "meteor_build": "Star of Time + Star of Fury + Potion Magnet + Giant Meteor + Meteor Split / Potion Spring.",
+      "etched_slots_declare_identity": "With only 3 Etched slots, your Etched Runes essentially declare which 3 categories the build leans on. Multi-category builds spread them thinner."
+    },
+    "_coverage": "Source catalogues 13 Ability, 13 Enhancement, 7 Blessing and 13 Etched Runes, and notes more Etched Runes likely exist beyond those documented."
+  }
+}

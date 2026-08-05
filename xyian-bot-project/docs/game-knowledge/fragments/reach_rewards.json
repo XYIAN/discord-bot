@@ -1,0 +1,39 @@
+{
+  "_meta": {
+    "source": "community markdown: reach_rewards.md",
+    "contributed": "2026-08-04",
+    "confidence": "mechanics reliable; numbers may be stale",
+    "conflictsWithLive": ["gold.gear_leveling", "gold.community_weapon_cap"]
+  },
+  "reach_rewards": {
+    "description": "One-time rewards for campaign progression, reached from the 'Reach [chapter-wave]' button on the main screen (e.g. Reach 123-50).",
+    "sub_tabs": "Three tabs: Clear Reward, Hard Mode Clear Reward, and Star Challenge.",
+    "clear_reward": {
+      "description": "Rewards granted one-time per wave reached in the campaign.",
+      "structure": "A chapter carousel lets you view rewards by chapter and wave. Each wave milestone gives a fixed reward bundle.",
+      "example": "Chapter 123, Wave 50: 200 Gems, 5 Energy, 13 Gear Scrolls.",
+      "advice": "Clear Rewards are one-time, so prioritize them whenever approaching a wave you have not been past before. After campaign progression, open Reach Rewards and claim the new milestones."
+    },
+    "gear_scrolls": {
+      "per_slot": "Gear Scrolls are slot-specific, not generic. Each scroll is one of: Weapon Scroll, Armor Scroll, Helmet Scroll, Ring Scroll, Amulet Scroll, Boots Scroll.",
+      "use": "Used to upgrade that slot's gear level (1-200).",
+      "same_as_hunt": "The same resource that drops from Hunt — Hunt's yellow scroll icon represents one of these 6 slot-specific scrolls."
+    },
+    "hard_mode_clear_reward": "Second sub-tab (gold crown). Contents were not documented in the source contribution.",
+    "star_challenge": {
+      "description": "Per-stage challenge objectives that grant up to 3 stars per stage.",
+      "how_stars_work": "Each stage lists 3 objectives. Meeting an objective on a clear earns 1 star, 3 stars max per stage.",
+      "common_objectives": "Clear time doesn't exceed [time] (e.g. 09:30); less than X attacks received (e.g. 5 or 10); doesn't trigger revive; defeat more than X monsters (e.g. 800).",
+      "attempt_cost": "5 energy per attempt (standard stage cost).",
+      "star_rewards": "Payouts are cumulative milestones on total stars across all stages. Every 3 stars (e.g. 306, 309, 312, 318, 321) gives 500 gems; major milestones (e.g. 315) give 5,000 gems.",
+      "reward_scaling": "Rewards start small at low star counts and build progressively as stars accumulate, with periodic large-bonus milestones. Exact cadence was not confirmed in the source contribution.",
+      "example_stages": {
+        "stage_100_altar_ruins": "Clear time <= 09:30 (and others).",
+        "stage_101_silentwood": "Clear time <= 09:30; less than 5 attacks; no revive.",
+        "stage_102_celestia_sanctum": "Defeat 800+ monsters; less than 10 attacks; no revive.",
+        "stage_103_mired_abyss": "Clear time <= 09:30; less than 5 attacks; no revive."
+      },
+      "advice": "A slow gem income channel. Attempt easier-stage stars first; the 5,000-gem milestones are worth chasing."
+    }
+  }
+}

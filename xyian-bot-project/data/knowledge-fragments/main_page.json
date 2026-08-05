@@ -1,0 +1,22 @@
+{
+  "_meta": {
+    "source": "community markdown: main_page.md",
+    "contributed": "2026-08-04",
+    "confidence": "mechanics reliable; numbers may be stale",
+    "conflictsWithLive": [
+      "game_modes.challenge.sky_tower"
+    ]
+  },
+  "main_screen": {
+    "energy": "Energy gates stage attempts and regenerates on a timer (snapshot showed 24/80 with 05:42 to the next tick). Base max energy is 20 for new players; the cap is raised by Privilege Cards and other buffs.",
+    "stage_energy_cost": "The 'x5' shown next to the large yellow Start button is the energy cost per stage attempt - 5 energy per attempt - not a multi-run multiplier.",
+    "power_level": "Power Level is your total combat power (e.g. 8.5M), shown in the top header with a gold arrow/chevron badge.",
+    "power_level_vs_aurocite": "Power Level (gold arrow/chevron badge) and Aurocite (pink triangle gem, seen only on shop and pack screens) are different things and are easy to confuse.",
+    "gems_not_pack_currency": "Gems are the green currency in the top header. They are NOT the payment currency for Privilege Cards or packs.",
+    "campaign_progress_display": "The centre of the main screen shows your current campaign stage by name (e.g. 'Poison Realm') with 'Best: X/Y', where X is the highest wave you have cleared and Y is the total waves in that stage.",
+    "sky_tower_gating": "A banner on the main screen names the Sky Tower floor you must clear to unlock the next campaign level - example text: clear Sky Tower Floor 1500 to access the next level once the current one is passed. Sky Tower clearance gates campaign progression.",
+    "hub_entry_points": "The main screen is the hub for everything else: Hunt (a quick-reward alternative to farming stages), Reach (current campaign progress such as 123-50, which opens the clearance rewards), Guild, Camp (Mystlings), Rankings, Task Center, Friends, and the five bottom tabs Shop, Gear, Campaign, Collectible and Events.",
+    "temporary_event_entries": "Eternal Lode and Contract Mystling are temporary events reached from the right side panel, alongside Island Treasure. Umbral Tempest is a large event opened from the bottom action bar.",
+    "rotating_deal_timer": "A countdown on the left panel tracks a rotating limited-time deal. The source notes most of these are not considered worthwhile to most players."
+  }
+}
