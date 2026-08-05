@@ -330,7 +330,10 @@ function knowledgeAsText() {
     // Rendering lives in lib/knowledge-render.js so it can be unit-tested — this
     // text is the bot's entire factual grounding, and a silent change to it is a
     // silent change to every answer. A golden test pins its exact output.
-    return knowledgeRender.renderKnowledge(knowledge, { suppress: SUPPRESSED_FROM_PROMPT });
+    return knowledgeRender.renderKnowledge(knowledge, {
+        suppress: SUPPRESSED_FROM_PROMPT,
+        compact: true,
+    });
 }
 
 function countFacts() {

@@ -4,6 +4,22 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.21.0] - 2026-08-04
+
+### Stale prices out of the prompt, and a correction to the numbers I published
+
+**A correction first.** Recent entries reported knowledge-base size using two different metrics and called both "keys". The 344 and 730 figures were counts of every nested key; the 1,033 → 1,083 in v3.19.0 was a count of leaf values. Both were internally consistent and neither matched the other — or the **347** the deploy notice actually prints. On one consistent metric the import took the base from 344 to 1,288 nested keys. From here the public number is `countFacts()` — currently **347** — because that is what `!ping`, `!facts` and the boot log all report.
+
+**Real-money prices no longer render as if current.** The bot answers strangers in a public channel, and quoting "80 gems for 99 Aurocite" is a monetary claim about money someone might actually spend. Four bulk price ladders are now held back from the prompt with a written reason each, logged every boot. But the honest finding is that removing paths does *not* solve this: prices also live in `privilege_cards`, `daily_rewards.packs`, `currencies.aurocite`, `runes.rune_packs` and `shop.wish`, and stripping them all would gut useful structural facts like "monthly cards renew in Aurocite, not gems". So the actual mechanism is a new prompt rule — quote a price only with an explicit "this may be out of date, check in-game", never present one as current, never advise whether a purchase is worth the money. A test asserts residual prices deliberately remain, so nobody later "fixes" it by chasing paths.
+
+**Prompt rendering extracted and pinned.** `knowledgeAsText()` moved from `bot.js` into `lib/knowledge-render.js`, proved byte-identical by running the original against the same data, and pinned with a golden hash. This text is the bot's entire factual grounding; it should not have been living somewhere untestable.
+
+**Byte-level compaction, measured rather than assumed.** Leading indentation stripped, and no-op `Epic +1: No additional buff` lines collapsed **within runes only**. Both guards are load-bearing and tested: 26 lines continue "...but unlocked rune enchantment capabilities" and must survive, and the rule licensing the collapse is scoped explicitly to Ability/Enhancement/Blessing runes — so the 7 equivalent lines in `weapons.*` stay, since removing them would turn a confirmed "this tier gives nothing" into silence.
+
+Net: **38,273 → 36,817 prompt tokens, −3.8%**, verified with a real tokenizer.
+
+**What was rejected, and why.** Reformatting the ~100 JSON-dumped entries into readable prose saves ~400 characters and *costs* ~590 tokens — the tokenizer handles dense punctuation better than indentation. Pruning the 11 truncated `weapons.*` entries as "superseded by gear_sets" would cause outright fabrication: ask "what does Griffin Armor give at Rare?" and the only surviving source is an unlabelled comma list offset by one, which a model reads as a rarity ladder and answers confidently and wrongly. And retrieval was rejected outright — it would make roughly 70% of verified facts invisible per question to save fractions of a cent, and testing the live bot at 38k tokens showed facts recalled byte-perfectly from 2%, 33% and 94% positions in the prompt, so there is no quality problem to justify the risk.
+
 ## [3.20.0] - 2026-08-04
 
 ### The bot now measures what it costs

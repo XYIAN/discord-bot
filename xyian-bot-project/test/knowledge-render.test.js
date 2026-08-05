@@ -165,4 +165,62 @@ test('community facts survive the live suppression list untouched', () => {
     for (const f of KNOWLEDGE.custom_facts || []) assert.ok(out.includes(f.text));
 });
 
+console.log('compact mode (slice 4) — byte removal that must not remove a fact');
+test('collapses no-op plus-tier lines inside runes', () => {
+    const kb = { runes: { r: 'Epic: Big buff\nEpic +1: No additional buff\nLegendary: Bigger buff' } };
+    const out = renderKnowledge(kb, { compact: true });
+    assert.ok(!out.includes('No additional buff'));
+    assert.ok(out.includes('Epic: Big buff') && out.includes('Legendary: Bigger buff'));
+});
+test('KEEPS "No additional buff BUT unlocked..." — the load-bearing lookahead', () => {
+    // 26 lines in the live data continue "but unlocked rune enchantment
+    // capabilities". They state when a rune gains enchantment. A collapse
+    // without (?! but) deletes that tier from all 26 at once.
+    const kb = { runes: { r: 'Epic +2: No additional buff but unlocked rune enchantment capabilities' } };
+    assert.ok(renderKnowledge(kb, { compact: true }).includes('unlocked rune enchantment'));
+});
+test('does NOT collapse in weapons — the scope guard', () => {
+    // The licensing rule (runes.stat_unlock_mechanics.plus_variants) is scoped
+    // to Ability/Enhancement/Blessing runes. No equivalent exists for gear, so
+    // collapsing there turns a confirmed negative into unlicensed silence.
+    const kb = { weapons: { w: 'Epic: x\nEpic +1: No additional buff' } };
+    assert.ok(renderKnowledge(kb, { compact: true }).includes('No additional buff'));
+});
+test('strips leading indentation without joining lines together', () => {
+    const kb = { runes: { r: 'Tiers:\n    Common: a\n        Rare: b' } };
+    const out = renderKnowledge(kb, { compact: true });
+    assert.ok(out.includes('\nCommon: a'));
+    assert.ok(out.includes('\nRare: b'));
+    assert.ok(!/\n[ \t]+/.test(out), 'indentation survived');
+});
+test('compact is OFF by default — the golden hash stays meaningful', () => {
+    const kb = { runes: { r: 'Epic +1: No additional buff' } };
+    assert.ok(renderKnowledge(kb).includes('No additional buff'));
+});
+
+console.log('compact against the LIVE data — counts that must not move');
+test('all 26 enchantment-unlock lines survive', () => {
+    const out = renderKnowledge(KNOWLEDGE, { compact: true });
+    assert.strictEqual((out.match(/No additional buff but/g) || []).length, 26);
+});
+test('all 15 real Legendary +N buff lines survive', () => {
+    const out = renderKnowledge(KNOWLEDGE, { compact: true });
+    assert.strictEqual((out.match(/Legendary \+\d+: (?!No additional buff)/g) || []).length, 15);
+});
+test('all 7 weapons no-op lines survive', () => {
+    // Render the category alone rather than slicing it out of the full text:
+    // weapons.griffin_armor contains a blank line, so slicing to the first
+    // '\n\n' silently truncates the section and the assertion passes/fails for
+    // the wrong reason. (It failed here first, which is how this was caught.)
+    const out = renderKnowledge({ weapons: KNOWLEDGE.weapons }, { compact: true });
+    assert.strictEqual((out.match(/(?:Epic|Legendary) \+\d+: No additional buff(?! but)/g) || []).length, 7);
+});
+test('the three general rules that LICENSE the collapse stay in the prompt', () => {
+    // If these ever leave, the collapse is no longer covered and must be undone.
+    const out = renderKnowledge(KNOWLEDGE, { compact: true });
+    for (const rule of ['plus_variants', 'enchantment_system', 'unlock_counts_by_category']) {
+        assert.ok(out.includes(rule), `licensing rule gone: ${rule}`);
+    }
+});
+
 console.log(`\n${passed} passed`);
