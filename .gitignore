@@ -102,3 +102,7 @@ ehthumbs.db
 Thumbs.db
 # knowledge.json merge backups
 *.bak
+
+# Runtime LLM usage telemetry — rewritten on every AI call. Lives on the
+# Railway volume in production; in the repo it would just be diff noise.
+xyian-bot-project/data/usage.json

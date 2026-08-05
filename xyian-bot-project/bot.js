@@ -36,6 +36,7 @@ const { createLogForwarder, attachConsole } = require('./lib/log-forwarder');
 const { reconcilePlan, backfillApprovers, approvedCountFor, mergeLedgers, mergeCustomFacts, mergeSeedTopics } = require('./lib/contributions');
 const modRules = require('./lib/moderation');
 const changelog = require('./lib/changelog');
+const usageLib = require('./lib/usage');
 require('dotenv').config();
 
 // Single source of truth: version + changelog are parsed from CHANGELOG.md.
@@ -260,6 +261,36 @@ function loadKnowledge() {
     } catch (e) {
         console.error('❌ Failed to load knowledge.json:', e.message);
         return { custom_facts: [] };
+    }
+}
+
+// ── LLM usage accounting ────────────────────────────────────────────────────
+// Records what each OpenAI call actually consumed, so prompt-size changes can
+// be measured instead of argued about. Deliberately best-effort throughout: a
+// failure to write the ledger must never stop the bot answering a question.
+const USAGE_PATH = path.join(__dirname, 'data', 'usage.json');
+
+function loadUsage() {
+    try {
+        return JSON.parse(fs.readFileSync(USAGE_PATH, 'utf8'));
+    } catch {
+        return usageLib.emptyState();
+    }
+}
+
+let usageState = loadUsage();
+
+/** ISO date in Pacific — the timezone every other report in this bot uses. */
+function usageDayKey() {
+    return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
+}
+
+function recordApiUsage(model, usage) {
+    try {
+        usageState = usageLib.recordUsage(usageState, { dayKey: usageDayKey(), model, usage });
+        fs.writeFileSync(USAGE_PATH, JSON.stringify(usageState, null, 2));
+    } catch (e) {
+        console.error('⚠️  Could not record API usage:', e.message);
     }
 }
 
@@ -1103,6 +1134,7 @@ async function askAI(question, username, userId) {
             max_tokens: 600,
             temperature: 0.4,
         });
+        recordApiUsage('gpt-4o-mini', res.usage);
         const answer = res.choices[0]?.message?.content?.trim();
         if (answer && answer.length > 5) {
             storeExchange(userId, question, answer);
@@ -1282,6 +1314,7 @@ async function askAIWithVision(question, imageUrls, username, userId) {
             max_tokens: 1000,  // bumped from 700 to leave room for CANDIDATES block
             temperature: 0.4,
         });
+        recordApiUsage('gpt-4o-mini', res.usage);
         const raw = res.choices[0]?.message?.content?.trim();
         if (raw && raw.length > 5) {
             const { reply, candidates } = splitVisionResponse(raw);
@@ -1851,7 +1884,8 @@ client.on('messageCreate', async (message) => {
                         '`!reconcile [dry]` — Re-apply earned contributor roles from the ledger\n' +
                         '`!role @user add|remove <role>` — Add or remove a role\n' +
                         '`!timeout @user <30m|2h|7d> [reason]` — Temporarily mute a member\n' +
-                        '`!untimeout @user [reason]` — Lift a timeout early\n\n' +
+                        '`!untimeout @user [reason]` — Lift a timeout early\n' +
+                        '`!usage [days]` — What the AI has cost (real token counts, default 7 days)\n\n' +
                         '**XYIAN OFFICIAL / Admin:**\n' +
                         '`!kick @user [reason]` — Remove a member (they can rejoin)\n' +
                         '`!ban @user [reason]` — Ban a member\n' +
@@ -2577,6 +2611,32 @@ client.on('messageCreate', async (message) => {
                     );
                 } catch { /* DMs disabled */ }
                 return message.reply(`✅ Assigned **${grantRoleName}** to ${mentioned.user.username}.`);
+            }
+
+            case 'usage': {
+                // Moderator+ : what the AI has actually cost. Reads the ledger
+                // written on every OpenAI call — real token counts from the API,
+                // not an estimate of the prompt size.
+                if (!isModerator(message.member) && !isAdmin(message.member) && !isOwner(message.author)) {
+                    return message.reply('❌ This command requires Moderator access.');
+                }
+                const windowDays = Math.min(60, Math.max(1, parseInt(argText, 10) || 7));
+                const sum = usageLib.summarise(usageState, { days: windowDays });
+                if (!sum.calls) {
+                    return message.reply('No AI calls recorded yet. Usage tracking started in v3.20.0 — ask me something and check back.');
+                }
+                const lines = sum.perDay.slice(-14).map(d =>
+                    `\`${d.day}\`  ${String(d.calls).padStart(4)} calls  ${String(d.promptTokens.toLocaleString()).padStart(10)} prompt  ${String(d.completionTokens.toLocaleString()).padStart(7)} out`);
+                const embed = new EmbedBuilder()
+                    .setTitle(`📊 AI usage — last ${sum.dayCount} day${sum.dayCount === 1 ? '' : 's'}`)
+                    .setColor(0x00ff88)
+                    .setDescription(
+                        `${usageLib.formatSummary(sum)}\n\n` +
+                        '```\n' + lines.join('\n') + '\n```\n' +
+                        '_Costs are estimated from a local copy of published pricing and may drift._')
+                    .setFooter({ text: 'XYIAN Bot — usage' })
+                    .setTimestamp();
+                return message.reply({ embeds: [embed] });
             }
 
             case 'setupreaction': {

@@ -4,6 +4,22 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.20.0] - 2026-08-04
+
+### The bot now measures what it costs
+
+The knowledge import tripled the system prompt — from roughly 12,000 tokens to 38,000 — because `knowledgeAsText()` inlines the *entire* knowledge base into every single question. That is a real multiplier, and there was no way to see it: every OpenAI response carries a `usage` block saying exactly what the call consumed, and the bot was throwing it away.
+
+So before changing anything about prompt size, here is the measurement. Otherwise any "improvement" is just an argument.
+
+- Every AI call — text **and** vision — now records its real token counts to `data/usage.json`, kept to 60 days and bucketed per day and per model.
+- `!usage [days]` (Moderator+) shows calls, prompt and completion tokens, the **average prompt size per call**, and an estimated cost, with a per-day breakdown.
+- Costs are estimated from a local copy of published pricing and labelled as estimates everywhere they appear. An unpriced model makes the total report as unknown rather than quietly undercounting.
+- Per-model buckets exist specifically so that switching models shows up as a visible before/after rather than vanishing into one total.
+- The whole path is best-effort: a malformed `usage` block, an unwritable file, or junk state records what it can and never interrupts answering. 21 tests cover exactly those failures, because accounting that breaks the feature it measures is worse than no accounting.
+
+For scale: one 38k-token question costs roughly $0.006 on gpt-4o-mini. The tripling is real but the absolute numbers are small at guild volume — which is worth knowing before optimising, and is precisely what could not be said yesterday.
+
 ## [3.19.1] - 2026-08-04
 
 ### Fix: the deploy notice's fact count was always one release behind
