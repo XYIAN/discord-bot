@@ -27,7 +27,14 @@
  * Matches both real newlines (plain string values) and the literal backslash-n
  * that appears inside JSON.stringify'd entries.
  */
-const NO_OP_PLUS_TIER = /(?:\\n|\n)?(?:Epic|Legendary) \+\d+: No additional buff(?! but)\.?/g;
+// The `[ \t]*` after the newline is load-bearing and was missing at first.
+// In the real data these lines are INDENTED — "\n        Epic +1: No additional
+// buff" — so without it the optional newline cannot match (the next character is
+// a space, not "E"), the engine backtracks, and only the text is removed. That
+// left 78 empty lines in the prompt, each still costing a token. The first
+// version of the test used un-indented sample data and passed for the wrong
+// reason; there is now a test with indentation.
+const NO_OP_PLUS_TIER = /(?:\\n|\n)?[ \t]*(?:Epic|Legendary) \+\d+: No additional buff(?! but)\.?/g;
 
 /** Leading whitespace on a continuation line, in either string form. */
 const LEADING_INDENT = /(\\n|\n)[ \t]+/g;
@@ -126,4 +133,38 @@ function renderKnowledge(knowledge, options) {
     return sections.join('\n\n');
 }
 
-module.exports = { renderKnowledge };
+/**
+ * Dotted paths held back from the prompt, with a mandatory reason each.
+ *
+ * Lives here rather than in bot.js so there is ONE copy. It was duplicated —
+ * bot.js held the real list and the test file held a hand-typed replica with a
+ * comment claiming they were kept in step by a test that did not actually
+ * compare them. Two lists that can silently disagree are worse than one.
+ *
+ * This is a SAFETY list before it is an optimisation: the bot answers strangers
+ * in a public channel, and quoting a stale real-money price is a claim about
+ * money someone might spend. Note that removing these paths does NOT by itself
+ * make the bot price-safe — figures also live in privilege_cards, daily_rewards,
+ * currencies, runes and shop.wish. The actual guarantee is the PRICES rule in
+ * the system prompt plus lib/price-guard.js; this only drops the bulk ladders.
+ */
+const SUPPRESSION_REASONS = {
+    'shop.top_up.gems': 'Aurocite/USD pack ladder — real-money prices Habby changes at will.',
+    'shop.top_up.aurocite': 'USD-only Aurocite ladder plus a Habby Store bonus percentage — all real-money.',
+    'shop.top_up.gold': "Gem-priced gold packs; the entry's own note says the section refreshes daily.",
+    'event_shop.island_store.milestone_gates': 'Island Points gates for one past Island Treasure Hunt run; the sibling `refresh` key says the whole stock cycles each event.',
+};
+
+/** The options the bot actually renders with in production. */
+const PRODUCTION_OPTIONS = {
+    suppress: Object.keys(SUPPRESSION_REASONS),
+    compact: true,
+};
+
+module.exports = {
+    renderKnowledge,
+    SUPPRESSION_REASONS,
+    PRODUCTION_OPTIONS,
+    NO_OP_PLUS_TIER,
+    COLLAPSIBLE_CATEGORIES,
+};

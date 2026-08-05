@@ -45,7 +45,13 @@ function splitVisionResponse(rawAnswer, categories) {
     const cleaned = [];
     for (const c of parsed) {
         if (!c || typeof c !== 'object') continue;
-        const text = (c.text || '').trim();
+        // Must be a type check, not `(c.text || '')`. A truthy non-string —
+        // `"text": 123`, an object, an array — has no .trim(), and the
+        // TypeError escapes this function into askAIWithVision's catch, where
+        // it is reported as "OpenAI vision error" and the user gets no answer
+        // at all. One odd model response should cost us a candidate, never the
+        // reply someone is waiting for.
+        const text = typeof c.text === 'string' ? c.text.trim() : '';
         if (text.length < 10) continue;
         const proposed_category = valid.has(c.category) ? c.category : null;
         const proposed_key = (typeof c.key === 'string' && /^[a-z0-9_]{2,40}$/i.test(c.key.trim()))

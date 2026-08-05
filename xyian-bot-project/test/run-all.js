@@ -15,6 +15,9 @@ const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
 
+/** Generous — the slowest file here runs in well under a second. */
+const TIMEOUT_MS = 60_000;
+
 const dir = __dirname;
 const files = fs
     .readdirSync(dir)
@@ -29,8 +32,20 @@ if (files.length === 0) {
 const failed = [];
 for (const f of files) {
     console.log(`\n── ${f} ${'─'.repeat(Math.max(0, 60 - f.length))}`);
-    const r = spawnSync(process.execPath, [path.join(dir, f)], { stdio: 'inherit' });
-    if (r.status !== 0) failed.push(f);
+    // A timeout is not optional. Without one, a test file that never exits
+    // hangs the whole run forever — in CI that is a stuck job rather than a
+    // failure, which is strictly worse than a red build.
+    const r = spawnSync(process.execPath, [path.join(dir, f)], {
+        stdio: 'inherit',
+        timeout: TIMEOUT_MS,
+    });
+    if (r.error && r.error.code === 'ETIMEDOUT') {
+        console.error(`\n✗ ${f} exceeded ${TIMEOUT_MS / 1000}s and was killed`);
+        failed.push(`${f} (timeout)`);
+    } else if (r.status !== 0 || r.error) {
+        if (r.error) console.error(`\n✗ ${f} failed to run: ${r.error.message}`);
+        failed.push(f);
+    }
 }
 
 console.log(`\n${'═'.repeat(64)}`);

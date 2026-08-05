@@ -25,12 +25,23 @@
  * "8,880 gold for 20 gems" is not flagged. Over-flagging trains people to
  * ignore the notice, which costs more than it saves.
  */
+// Markdown and light punctuation are allowed BETWEEN the number and the
+// currency word, because the model bolds figures: `**499** Aurocite` is a price
+// and must still be caught.
+const GAP = '[\\s*_`~]*';
+
 const PRICE_PATTERNS = [
-    /\d[\d,.]*\s*aurocite/i,      // 499 Aurocite
-    /aurocite\s*[\d,.]+/i,        // Aurocite 499
-    /(?:us)?\$\s?\d/i,            // $9.99, US$9.99
-    /\d[\d,.]*\s*usd\b/i,         // 9.99 USD
-    /\d[\d,.]*\s*(?:dollars|euros|pounds)\b/i,
+    new RegExp(`\\d[\\d,.]*${GAP}aurocite`, 'i'),   // 499 Aurocite, **499** Aurocite
+    // Every currency-first pattern must require a DIGIT after the gap. The
+    // original `aurocite\s*[\d,.]+` let the character class match a full stop,
+    // so "You can buy things with Aurocite." was flagged as a price — putting a
+    // spend warning on answers containing no figure at all, which is precisely
+    // the over-flagging that trains people to ignore the warning.
+    new RegExp(`aurocite${GAP}\\d`, 'i'),           // Aurocite 499
+    /(?:us)?\$\s?\d/i,                              // $9.99, US$9.99
+    /\d[\d,.]*[\s*_`~]*usd\b/i,                     // 9.99 USD
+    /\busd[\s*_`~]*\$?[\s*_`~]*\d/i,                // USD 4.99, USD $4.99
+    /\d[\d,.]*[\s*_`~]*(?:dollars|euros|pounds)\b/i,
 ];
 
 /** Phrases that mean a caveat is already present — don't stack a second one. */

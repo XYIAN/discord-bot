@@ -100,6 +100,27 @@ test('only the four expected fields survive — no extras smuggled through', () 
         ['confidence', 'proposed_category', 'proposed_key', 'text']);
 });
 
+console.log('a hostile candidate must not break the answer (code-review finding)');
+test('a non-string text field does not throw', () => {
+    // `(c.text || '').trim()` threw a TypeError on any truthy non-string. It
+    // escaped into askAIWithVision's catch, was reported as "OpenAI vision
+    // error", and the user got no answer at all — the whole reply lost to one
+    // malformed candidate. This pre-existed in bot.js and was copied verbatim.
+    for (const t of ['123', '{"a":1}', '["x"]', 'true']) {
+        const raw = `A.\n=== CANDIDATES ===\n[{"text":${t}}]`;
+        let r;
+        assert.doesNotThrow(() => { r = split(raw); }, `threw on text=${t}`);
+        assert.strictEqual(r.reply, 'A.');
+        assert.deepStrictEqual(r.candidates, [], `kept a non-string text=${t}`);
+    }
+});
+test('one bad candidate does not discard the good ones beside it', () => {
+    const raw = 'A.\n=== CANDIDATES ===\n[{"text":123},{"text":"a fact long enough to keep"}]';
+    const r = split(raw);
+    assert.strictEqual(r.candidates.length, 1);
+    assert.strictEqual(r.candidates[0].text, 'a fact long enough to keep');
+});
+
 console.log('the bot.js composition — split, then price-guard the reply');
 // Mirrors askAIWithVision exactly:
 //   const { reply: rawReply, candidates } = splitVisionResponse(raw);

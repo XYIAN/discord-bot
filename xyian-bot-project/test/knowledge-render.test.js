@@ -10,7 +10,9 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { renderKnowledge } = require('../lib/knowledge-render');
+const {
+    renderKnowledge, SUPPRESSION_REASONS, PRODUCTION_OPTIONS,
+} = require('../lib/knowledge-render');
 
 let passed = 0;
 function test(name, fn) {
@@ -119,16 +121,20 @@ test('community facts and opinions can never be suppressed', () => {
     assert.ok(out.includes('a community fact'));
 });
 
-console.log('the live suppression list (slice 3)');
-// Kept in step with bot.js by the test below that fails if a path stops existing.
-const LIVE_SUPPRESSED = [
-    'shop.top_up.gems',
-    'shop.top_up.aurocite',
-    'shop.top_up.gold',
-    'event_shop.island_store.milestone_gates',
-];
+console.log('the live suppression list');
+// Imported from the module, NOT hand-copied. A previous version of this file
+// retyped the list with a comment claiming a test kept the two in step; no test
+// actually compared them, so they could have drifted apart silently.
+const LIVE_SUPPRESSED = PRODUCTION_OPTIONS.suppress;
 const get = (obj, dotted) => dotted.split('.').reduce((o, k) => (o == null ? o : o[k]), obj);
 
+test('every suppressed path carries a written reason', () => {
+    assert.ok(LIVE_SUPPRESSED.length > 0);
+    for (const p of LIVE_SUPPRESSED) {
+        const why = SUPPRESSION_REASONS[p];
+        assert.ok(why && why.length > 20, `no reason given for ${p}`);
+    }
+});
 test('every suppressed path still EXISTS in knowledge.json', () => {
     // A suppression entry for a path that has been renamed or removed is dead
     // weight that silently stops protecting anything. Fail loudly instead.
@@ -221,6 +227,38 @@ test('the three general rules that LICENSE the collapse stay in the prompt', () 
     for (const rule of ['plus_variants', 'enchantment_system', 'unlock_counts_by_category']) {
         assert.ok(out.includes(rule), `licensing rule gone: ${rule}`);
     }
+});
+
+console.log('the PRODUCTION render — what the bot actually sends');
+test('pins the production configuration, not just the defaults', () => {
+    // The golden above renders with DEFAULT options, but production renders with
+    // { suppress, compact }. Pinning only the default left the real prompt
+    // unpinned — a change to suppression or compaction would not have moved it.
+    const out = renderKnowledge(KNOWLEDGE, PRODUCTION_OPTIONS);
+    assert.strictEqual(out.length, 145492, 'production render length changed');
+    assert.strictEqual(
+        sha(out),
+        '4dc2634bdea791dc6b65049beb8f439fac221d817ea4409bbcef24d6c2e3bfcf',
+        'production render content changed',
+    );
+});
+test('compact removes the no-op LINE, not merely its text', () => {
+    // The regression that motivated this test. Real data indents these lines,
+    // so a pattern that only optionally eats a preceding newline leaves an
+    // empty line behind — 78 of them, each still costing a token. The original
+    // test used UN-indented sample data and passed for the wrong reason.
+    const kb = { runes: { r: 'Tiers:\n    Epic: Big buff\n        Epic +1: No additional buff\n    Legendary: Bigger' } };
+    const out = renderKnowledge(kb, { compact: true });
+    assert.ok(!out.includes('No additional buff'), 'text not removed');
+    assert.ok(!/\n\s*\n/.test(out), `empty line left behind: ${JSON.stringify(out)}`);
+});
+test('the live render gains no empty lines from compaction', () => {
+    const plain = renderKnowledge({ runes: KNOWLEDGE.runes }).split('\n');
+    const compacted = renderKnowledge({ runes: KNOWLEDGE.runes }, { compact: true }).split('\n');
+    const emptyBefore = plain.filter((l) => l === '').length;
+    const emptyAfter = compacted.filter((l) => l === '').length;
+    assert.strictEqual(emptyAfter, emptyBefore, 'compaction introduced empty lines');
+    assert.ok(compacted.length < plain.length, 'no lines were actually removed');
 });
 
 console.log(`\n${passed} passed`);

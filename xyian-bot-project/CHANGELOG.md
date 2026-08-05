@@ -4,6 +4,24 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.22.0] - 2026-08-04
+
+### Code review found real bugs — including one that would have eaten vision replies
+
+An adversarial five-lens review of everything since v3.18.0. Four confirmed defects, each reproduced before being fixed.
+
+**A malformed candidate could destroy the whole vision answer.** `(c.text || '').trim()` throws a `TypeError` on any truthy non-string — `"text": 123`, an object, an array. The throw escaped into `askAIWithVision`'s catch, where it was reported as "OpenAI vision error", and the user got **no answer at all**. One odd candidate cost the entire reply. This pre-dated the recent work and was copied forward verbatim during the extraction; it is the same swallowed-exception shape as the `visionPrompt` bug fixed in v3.19.0.
+
+**The price guard fired on answers containing no price.** `aurocite\s*[\d,.]+` let the character class match a full stop, so *"You can buy things with Aurocite."* got a spend warning — precisely the over-flagging the module claims to avoid, and the fastest way to train people to ignore the notice. Every currency-first pattern now requires an actual digit. It also missed `**499** Aurocite` (the model bolds figures) and `USD 4.99`; both are caught now.
+
+**Compaction left 78 empty lines in the prompt.** The no-op collapse removed the *text* of each line but not the line, because the real data indents them — `\n        Epic +1: …` — so the optional newline could never match. **The original test passed for the wrong reason**: it used un-indented sample data. There is now a test with indentation, and it was verified to fail against the old pattern.
+
+**`OWNER_ID` was trimmed in one place and not another.** `matchesOwner` trims; the bot-owner protection in `canTargetMember` compared the raw value. With a stray space in the Railway variable, someone would be recognised as owner for permissions while *not* being protected from moderation. One accessor now.
+
+Also: the test runner had no timeout, so a test file that never exits would hang forever — a stuck CI job rather than a red build. Verified by making a file hang. The suppression list was duplicated between `bot.js` and the test file with a comment claiming a test kept them in step; no test compared them, so they now share one exported source. And the golden test pinned only the *default* render while production renders with suppression and compaction — the production configuration is pinned separately now.
+
+195 tests across 10 files.
+
 ## [3.21.2] - 2026-08-04
 
 ### Aurocite is money: 100 Aurocite = $1 USD

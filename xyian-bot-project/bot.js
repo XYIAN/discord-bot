@@ -307,35 +307,16 @@ function saveKnowledge() {
     }
 }
 
-// Dotted paths left OUT of the system prompt.
-//
-// This is a SAFETY list before it is an optimisation. The bot answers strangers
-// in a public channel, and the worst thing in the knowledge base is a stale
-// real-money price: quoting "$99 for 10,000 gems" is a monetary claim, and Habby
-// reprices packs whenever it likes. Better to say "I don't have that" and point
-// at !suggest than to be confidently wrong about what someone should pay.
-//
-// Every entry needs a reason. Suppression happens at RENDER time — data/knowledge.json
-// is never modified, so all of this is revertible by emptying this array, and
-// !facts still counts the entries. Sub-key granularity is deliberate: these
-// entries mix volatile prices with evergreen UI description, and dropping the
-// whole entry to lose the prices would take the description with it.
-const SUPPRESSION_REASONS = {
-    'shop.top_up.gems': 'Aurocite/USD pack ladder — real-money prices Habby changes at will.',
-    'shop.top_up.aurocite': 'USD-only Aurocite ladder plus a Habby Store bonus percentage — all real-money.',
-    'shop.top_up.gold': 'Gem-priced gold packs; the entry\'s own note says the section refreshes daily.',
-    'event_shop.island_store.milestone_gates': 'Island Points gates for one past Island Treasure Hunt run; the sibling `refresh` key says the whole stock cycles each event.',
-};
-const SUPPRESSED_FROM_PROMPT = Object.keys(SUPPRESSION_REASONS);
+// Suppression list and render options live in lib/knowledge-render.js so there
+// is exactly one copy — this used to be duplicated between here and the test
+// file, which could silently disagree.
+const SUPPRESSED_FROM_PROMPT = knowledgeRender.PRODUCTION_OPTIONS.suppress;
 
 function knowledgeAsText() {
     // Rendering lives in lib/knowledge-render.js so it can be unit-tested — this
     // text is the bot's entire factual grounding, and a silent change to it is a
     // silent change to every answer. A golden test pins its exact output.
-    return knowledgeRender.renderKnowledge(knowledge, {
-        suppress: SUPPRESSED_FROM_PROMPT,
-        compact: true,
-    });
+    return knowledgeRender.renderKnowledge(knowledge, knowledgeRender.PRODUCTION_OPTIONS);
 }
 
 function countFacts() {
@@ -646,7 +627,17 @@ async function checkActivityTierUpgrade(guild, userId, username, points) {
  *  and every owner-only command is dead — which used to look identical to
  *  "you personally are not the owner". See ownerDenialMessage(). */
 function ownerIdConfigured() {
-    return Boolean(String(process.env.OWNER_ID || '').trim());
+    return Boolean(configuredOwnerId());
+}
+
+/**
+ * The owner id, trimmed. Every consumer must use this rather than reading the
+ * env var directly: matchesOwner() trims, so a stray space in the Railway value
+ * would let someone be recognised as owner for PERMISSIONS while failing the
+ * raw-string comparison that protects the owner from being moderated.
+ */
+function configuredOwnerId() {
+    return String(process.env.OWNER_ID || '').trim();
 }
 
 /**
@@ -656,7 +647,7 @@ function ownerIdConfigured() {
  * isAdmin fallback so nothing visibly broke, which is exactly why it survived.
  */
 function isOwner(memberOrId) {
-    return modRules.matchesOwner(memberOrId, process.env.OWNER_ID);
+    return modRules.matchesOwner(memberOrId, configuredOwnerId());
 }
 
 /** Tell the truth about *why* an owner-only command was refused. */
@@ -727,7 +718,7 @@ function modGuard(message, action, targetMember) {
     const check = modRules.canTargetMember({
         actorId: message.author.id,
         targetId: targetMember.id,
-        ownerId: process.env.OWNER_ID,
+        ownerId: configuredOwnerId(),
         guildOwnerId: message.guild.ownerId,
         actorTopRole: message.member.roles.highest.position,
         targetTopRole: targetMember.roles.highest.position,

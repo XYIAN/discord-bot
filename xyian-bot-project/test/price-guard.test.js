@@ -54,6 +54,38 @@ test('handles empty and junk input', () => {
     for (const v of ['', null, undefined]) assert.strictEqual(mentionsRealMoneyPrice(v), false, String(v));
 });
 
+console.log('mentionsRealMoneyPrice — regressions found in code review');
+test('a currency NAME with no figure is not a price', () => {
+    // The original `aurocite\\s*[\\d,.]+` let the character class match a full
+    // stop, so "…with Aurocite." was flagged. That puts a spend warning on
+    // answers containing no figure at all — exactly the over-flagging this
+    // module claims to avoid.
+    for (const s of [
+        'You can buy things with Aurocite.',
+        'Renew with Aurocite, then check the shop',
+        'Aurocite is the premium currency',
+        'Privilege Cards renew in Aurocite, not gems.',
+    ]) assert.strictEqual(mentionsRealMoneyPrice(s), false, s);
+});
+test('markdown between the number and the currency still counts', () => {
+    // The model bolds figures; **499** Aurocite is a price.
+    for (const s of ['**499** Aurocite', '`499` Aurocite', '**$49.99**', '__9.99__ USD']) {
+        assert.strictEqual(mentionsRealMoneyPrice(s), true, s);
+    }
+});
+test('currency-first forms are caught', () => {
+    for (const s of ['USD 4.99', 'USD $4.99', 'Aurocite 499']) {
+        assert.strictEqual(mentionsRealMoneyPrice(s), true, s);
+    }
+});
+test('the dollars/euros/pounds pattern is actually exercised', () => {
+    // Previously present but never covered by a test.
+    for (const s of ['costs 5 dollars', 'about 12 euros', '3 pounds']) {
+        assert.strictEqual(mentionsRealMoneyPrice(s), true, s);
+    }
+    assert.strictEqual(mentionsRealMoneyPrice('pounds of damage'), false);
+});
+
 console.log('appendPriceCaveat');
 test('appends the caveat to a priced answer', () => {
     const out = appendPriceCaveat('Renewing a monthly Privilege Card costs 499 Aurocite.');
