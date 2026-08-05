@@ -4,6 +4,22 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.17.0] - 2026-08-05
+
+### Community knowledge import — 10 new topics, and a delivery gap closed
+
+A community member contributed 15 markdown files of game documentation. Converted, reviewed and merged in slices.
+
+**New topics the bot can now answer on:** Hunt, Shop, Currencies, Battle Pass, Mystlings, Daily Rewards, Reach Rewards, main screen layout, Event Shop and Skin Exchange Shop. Knowledge base went from 344 to 730 keys.
+
+**Repaired 5 truncated rune ladders.** `runes.etched_*` had been cut off mid-sentence at the Rare tier since v3.9.9 — losing Epic, Legendary +1/+2/+3 and Mythic entirely. Git history shows they were born truncated by a one-off migration, so the running bot was never at fault. The surviving Common/Fine/Rare text matched the contribution verbatim, which is what made the repair safe rather than a rewrite.
+
+**Closed a delivery gap that would have stranded all of it.** `seedDataFiles()` only hydrates a *missing* file and `mergeCustomFacts()` only appends `custom_facts` records — so a curated topic added to `seeds/` after the volume already existed had no route into production at all. `restoreCuratedFacts()` now merges curated topics too, additive-only with live always winning, plus an explicit `_repairs` allowlist for damaged values. Verified by simulating a real production boot: 10 topics added, 5 repairs applied, all 29 community facts preserved.
+
+**Not merged, deliberately:** characters, events, gear_sets, guild, privilege_cards and runes. Six of those report zero path conflicts, which is misleading — the contribution uses different sub-key names, so a merge would leave two descriptions of the same mechanic in one topic. Each needs a replace-vs-merge decision. `docs/game-knowledge/MERGE-REVIEW.md` has the list, including a direct contradiction on whether heroes have 7 or 8 stars.
+
+Also still outstanding: 11 `weapons.*` entries truncated at exactly 183 chars, same v3.9.9 origin. The contribution describes that gear as a flat effects list rather than a per-rarity ladder, so tier attribution can't be faithfully reconstructed from it.
+
 ## [3.16.0] - 2026-08-03
 
 ### Moderation commands for admins and moderators

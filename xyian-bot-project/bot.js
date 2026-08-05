@@ -33,7 +33,7 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const { createLogForwarder, attachConsole } = require('./lib/log-forwarder');
-const { reconcilePlan, backfillApprovers, approvedCountFor, mergeLedgers, mergeCustomFacts } = require('./lib/contributions');
+const { reconcilePlan, backfillApprovers, approvedCountFor, mergeLedgers, mergeCustomFacts, mergeSeedTopics } = require('./lib/contributions');
 const modRules = require('./lib/moderation');
 require('dotenv').config();
 
@@ -833,13 +833,24 @@ function restoreCuratedFacts() {
     try { seed = JSON.parse(fs.readFileSync(seedPath, 'utf8')); }
     catch (e) { console.error(`❌ Could not read seed knowledge: ${e.message}`); return 0; }
 
+    // Curated TOPICS first. seedDataFiles() only hydrates a missing file, so a
+    // topic added to seeds/ after the volume already existed had no route into
+    // production at all — that gap silently stranded an entire knowledge import.
+    // Additive only: live wins on anything that already exists.
+    const { knowledge: withTopics, addedPaths } = mergeSeedTopics(knowledge, seed);
+    if (addedPaths.length > 0) {
+        knowledge = withTopics;
+        const preview = addedPaths.slice(0, 8).join(', ');
+        console.log(`📚 Merged ${addedPaths.length} curated topic key(s) from seeds/: ${preview}${addedPaths.length > 8 ? ', …' : ''}`);
+    }
+
     const { knowledge: merged, added } = mergeCustomFacts(knowledge, seed);
     if (added > 0) {
         knowledge = merged;
-        saveKnowledge();
         console.log(`📚 Merged ${added} curated fact(s) from seeds/ into the knowledge base`);
     }
-    return added;
+    if (addedPaths.length > 0 || added > 0) saveKnowledge();
+    return added + addedPaths.length;
 }
 
 // One-time (idempotent) attribution backfill so every approval records who

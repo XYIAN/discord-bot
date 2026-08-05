@@ -154,7 +154,66 @@ function mergeCustomFacts(liveKb, seedKb) {
     return { knowledge: next, added: additions.length };
 }
 
+
+/**
+ * Merge curated TOPICS from the seed snapshot into the live knowledge base.
+ *
+ * seedDataFiles() only hydrates a MISSING file, and mergeCustomFacts() only
+ * appends custom_facts records — so a curated topic added to seeds/ after the
+ * volume already existed could never reach production. That gap silently
+ * stranded an entire knowledge import.
+ *
+ * ADDITIVE ONLY. Live always wins on any key that already exists, because live
+ * carries community contributions that seeds/ does not know about. Repairs to
+ * existing values are deliberately NOT handled here — those go through
+ * scripts/merge-knowledge.js with an explicit --repair flag, so a human has
+ * looked at them before they ship.
+ *
+ * @returns {{knowledge: object, addedPaths: string[]}}
+ */
+function mergeSeedTopics(liveKb, seedKb) {
+    const live = liveKb && typeof liveKb === 'object' ? liveKb : {};
+    const seed = seedKb && typeof seedKb === 'object' ? seedKb : {};
+    // Explicit repair allowlist. A seed file may carry `_repairs: ["a.b", ...]`
+    // naming paths that ARE permitted to overwrite live. This exists because
+    // additive-only merging cannot fix DAMAGED live values — and production has
+    // entries truncated mid-sentence since v3.9.9. Listing each path in the seed
+    // file keeps the decision reviewable in a diff, and the merge is a no-op
+    // once live already matches.
+    const repairs = new Set(Array.isArray(seed._repairs) ? seed._repairs : []);
+    // custom_facts and opinions are community-owned and handled elsewhere;
+    // never let a stale seed snapshot resurrect or reorder them here.
+    const SKIP = new Set(['custom_facts', 'opinions', '_meta']);
+    const addedPaths = [];
+    const next = { ...live };
+
+    const isObj = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
+
+    const walk = (target, source, prefix) => {
+        for (const key of Object.keys(source)) {
+            if (!prefix && (SKIP.has(key) || key === '_repairs')) continue;
+            if (key === '_meta') continue;
+            const path = prefix ? `${prefix}.${key}` : key;
+            if (target[key] === undefined) {
+                target[key] = JSON.parse(JSON.stringify(source[key]));
+                addedPaths.push(path);
+            } else if (isObj(target[key]) && isObj(source[key])) {
+                // Copy-on-write so we never mutate the caller's live object.
+                target[key] = { ...target[key] };
+                walk(target[key], source[key], path);
+            } else if (repairs.has(path) && JSON.stringify(target[key]) !== JSON.stringify(source[key])) {
+                target[key] = JSON.parse(JSON.stringify(source[key]));
+                addedPaths.push(`${path} (repair)`);
+            }
+            // Otherwise the existing leaf stands: live wins. That is the point.
+        }
+    };
+    walk(next, seed, '');
+    return { knowledge: addedPaths.length ? next : live, addedPaths };
+}
+
 module.exports = {
+    mergeSeedTopics,
     approvedCountFor,
     contributorTotals,
     earnedTier,

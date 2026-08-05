@@ -168,3 +168,80 @@ test('mergeCustomFacts is idempotent and safe on empty input', () => {
     }
     console.log(`\n${passed}/${cases.length} passed${process.exitCode ? ' — FAILURES' : ''}`);
 })();
+
+// ── mergeSeedTopics ─────────────────────────────────────────────────────────
+// Regression cover for a gap that silently stranded a whole knowledge import:
+// seedDataFiles() only hydrates a MISSING file and mergeCustomFacts() only
+// appends custom_facts, so a curated TOPIC added to seeds/ after the volume
+// existed could never reach production.
+{
+    const { mergeSeedTopics } = require('../lib/contributions');
+    let n = 0;
+    const t = (name, fn) => { try { fn(); n++; console.log(`  ✓ ${name}`); }
+        catch (e) { console.error(`  ✗ ${name}\n    ${e.message}`); process.exitCode = 1; } };
+
+    console.log('\nmergeSeedTopics');
+    t('adds a topic that exists only in seeds', () => {
+        const r = mergeSeedTopics({ a: 1 }, { a: 1, hunt: { x: 'y' } });
+        assert.deepStrictEqual(r.knowledge.hunt, { x: 'y' });
+        assert.deepStrictEqual(r.addedPaths, ['hunt']);
+    });
+    t('adds a new sub-key without disturbing siblings', () => {
+        const r = mergeSeedTopics({ runes: { a: 'live' } }, { runes: { a: 'seed', b: 'new' } });
+        assert.strictEqual(r.knowledge.runes.a, 'live', 'live value was overwritten');
+        assert.strictEqual(r.knowledge.runes.b, 'new');
+        assert.deepStrictEqual(r.addedPaths, ['runes.b']);
+    });
+    t('LIVE ALWAYS WINS on an existing value', () => {
+        const r = mergeSeedTopics({ runes: { a: 'live text' } }, { runes: { a: 'seed text' } });
+        assert.strictEqual(r.knowledge.runes.a, 'live text');
+        assert.deepStrictEqual(r.addedPaths, []);
+    });
+    t('never touches custom_facts or opinions', () => {
+        // Community-owned; a stale seed must not resurrect or reorder them.
+        const live = { custom_facts: [{ text: 'mine' }], opinions: [] };
+        const r = mergeSeedTopics(live, { custom_facts: [{ text: 'stale' }], opinions: [{ text: 'x' }] });
+        assert.deepStrictEqual(r.knowledge.custom_facts, [{ text: 'mine' }]);
+        assert.deepStrictEqual(r.addedPaths, []);
+    });
+    t('does not mutate the live object', () => {
+        const live = { runes: { a: 'x' } };
+        mergeSeedTopics(live, { runes: { b: 'y' }, hunt: {} });
+        assert.deepStrictEqual(live, { runes: { a: 'x' } });
+    });
+    t('returns the original object when there is nothing to add', () => {
+        const live = { a: 1 };
+        assert.strictEqual(mergeSeedTopics(live, { a: 1 }).knowledge, live);
+    });
+    t('handles missing or malformed input', () => {
+        assert.deepStrictEqual(mergeSeedTopics(null, null).addedPaths, []);
+        assert.deepStrictEqual(mergeSeedTopics({ a: 1 }, undefined).knowledge, { a: 1 });
+    });
+    console.log(`  (${n} mergeSeedTopics tests)`);
+}
+
+{
+    const { mergeSeedTopics } = require('../lib/contributions');
+    let n = 0;
+    const t = (name, fn) => { try { fn(); n++; console.log(`  ✓ ${name}`); }
+        catch (e) { console.error(`  ✗ ${name}\n    ${e.message}`); process.exitCode = 1; } };
+    console.log('\nmergeSeedTopics — _repairs allowlist');
+    t('repairs ONLY a path named in seed._repairs', () => {
+        const live = { runes: { a: 'truncated mid-', b: 'live b' } };
+        const seed = { _repairs: ['runes.a'], runes: { a: 'truncated mid-sentence, now complete.', b: 'seed b' } };
+        const r = mergeSeedTopics(live, seed);
+        assert.strictEqual(r.knowledge.runes.a, 'truncated mid-sentence, now complete.');
+        assert.strictEqual(r.knowledge.runes.b, 'live b', 'an unlisted key was overwritten');
+        assert.deepStrictEqual(r.addedPaths, ['runes.a (repair)']);
+    });
+    t('is a no-op once live already matches the repair', () => {
+        const same = { runes: { a: 'complete.' } };
+        const r = mergeSeedTopics(same, { _repairs: ['runes.a'], runes: { a: 'complete.' } });
+        assert.deepStrictEqual(r.addedPaths, []);
+    });
+    t('_repairs itself never lands in the knowledge base', () => {
+        const r = mergeSeedTopics({}, { _repairs: ['x'], hunt: { a: 1 } });
+        assert.strictEqual(r.knowledge._repairs, undefined);
+    });
+    console.log(`  (${n} allowlist tests)`);
+}

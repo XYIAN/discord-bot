@@ -246,8 +246,8 @@
       "description": "PvP resonance pairings ranked by effectiveness. Resonance requires characters at 3-star (1 slot) or 6-star (2 slots).",
       "s_tier_p2p": {
         "combo": "Phynx (Desert Tribunal) + Cleo (Ember Throne)",
-        "note": "Best PvP resonance combo in the game. Phynx bleeds stack with Cleo's fire marks for devastating damage. Expensive to build — both are epic/legendary and need high star levels.",
-        "cost": "P2P (pay to play) — high investment"
+        "note": "Best PvP resonance combo in the game. Phynx bleeds stack with Cleo's fire marks for devastating damage. Expensive to build \u2014 both are epic/legendary and need high star levels.",
+        "cost": "P2P (pay to play) \u2014 high investment"
       },
       "a_tier_f2p": [
         {
@@ -278,11 +278,11 @@
   },
   "skins": {
     "_placeholder": "Each character has skins with unique abilities and 5 star levels that upgrade the skin's stats. Data to be filled in later.",
-    "mymu_skin_note": "Mymu's skin is critical for PvP — it makes his Immortal Curse (revive) reliable. Without it, Mymu is not recommended for competitive play."
+    "mymu_skin_note": "Mymu's skin is critical for PvP \u2014 it makes his Immortal Curse (revive) reliable. Without it, Mymu is not recommended for competitive play."
   },
   "gold": {
     "description": "Gold is the primary currency in Archero 2. It has two main uses: buying items in the general store and leveling up gear.",
-    "gear_leveling": "The main use of gold. Gear levels are tied to the equipment slot, not the individual item. For example, if your boots are level 148, every pair of boots you equip will be level 148 — whether they're Mythic Griffin or Legendary Oracle. This means upgrading gear level benefits any item in that slot. Gets very expensive at higher levels.",
+    "gear_leveling": "The main use of gold. Gear levels are tied to the equipment slot, not the individual item. For example, if your boots are level 148, every pair of boots you equip will be level 148 \u2014 whether they're Mythic Griffin or Legendary Oracle. This means upgrading gear level benefits any item in that slot. Gets very expensive at higher levels.",
     "general_store": "Gold can be used to purchase items from the general store.",
     "profile_level_cards": "Gold can also be used to buy profile-level-up cards when you reach each 10th profile level. You can buy 10 cards per level; they are randomly generated (e.g. Health increase, skill refresh, Red heart healing+, speed bonus). This is a rarer, sometimes expensive use of gold.",
     "gear_tiers_vs_levels": "Gear tier is specific to the individual piece of equipment (e.g. Rare, Epic, Legendary, Mythic). Gear level is specific to the slot (boots, weapon, armor, etc.) and applies to whatever item is equipped in that slot.",
@@ -290,7 +290,7 @@
     "added_by_community": "fails_8743"
   },
   "guild": {
-    "donations": "Guild donations: You can donate 5 times per day. The first donation is free, then costs increase by 20 gems each (free → 20 → 40 → 60 → 80). Donations are how guilds level up.",
+    "donations": "Guild donations: You can donate 5 times per day. The first donation is free, then costs increase by 20 gems each (free \u2192 20 \u2192 40 \u2192 60 \u2192 80). Donations are how guilds level up.",
     "first_donation_daily": "The first guild donation of the day is free.",
     "max_level": "The max guild level is 11.",
     "added_by": "xyian"
@@ -311,11 +311,11 @@
     "dragoon_amulet": "The Dragoon Quality Skills: \nDragoon Amulet\nFine: ATK PWR+5%\nRare: CRIT DMG+12%\nEpic: Randomly detonates 2 enemies on the field every 2s\nEpic +1: No additional buff\nEpic +2: No additi",
     "dragoon_crossbow": "The Dragoon Quality Skills: \n\nDragoon Crossbow\nBase: Fires a powerful bolt\nFine: ATK PWR+5%\nRare: 50% chance to trigger area explosion on hit\nEpic: Explosion damage up, Meteor convert",
     "s_rank_overview": "There are 3 S-Rank Weapon Categories: Dragoon, Oracle, and Griffin. Each category has 6 unique gear pieces split into Weapon, Amulet, Ring, Helmet, Armor, and Boots. The weapon, amule",
-    "pve_vs_pvp_rankings": "Gear set rankings differ drastically between PvE and PvP. For PvE/campaign: Oracle is best, then Dragoon, then Griffin. For PvP: Griffin is best, then Dragoon, then Oracle. Dragoon is the best of both worlds and the perfect happy medium — if you want to optimize for one mode, lean Oracle (PvE) or Griffin (PvP).",
+    "pve_vs_pvp_rankings": "Gear set rankings differ drastically between PvE and PvP. For PvE/campaign: Oracle is best, then Dragoon, then Griffin. For PvP: Griffin is best, then Dragoon, then Oracle. Dragoon is the best of both worlds and the perfect happy medium \u2014 if you want to optimize for one mode, lean Oracle (PvE) or Griffin (PvP).",
     "added_by_pve_pvp": "_xyian"
   },
   "runes": {
-    "overview_4_types": "There are 4 different types of equipable runes, etched runes, blessing runes, enhancement runes, ability runes. A player can equip a max of 3 etched, 2 blessing, 4 enhancement and 4 ability at a time with all slots unlocked. Each rune has special abilities based off of its quality and enchantment stats.\n\nEtched Runes (13):\n    Main Weapon:\n        Arrow of Echoes\n        Echo Scythe\n    Sprites:\n        Sprite’s Awe\n        Sprite Assist\n    Strikes:\n        Sword Strike Split\n        Swordstrike Aerie\n    Meteors:\n        Meteor Split\n        Potion Spring \n    Circles:\n        Pulsing Orb\n        Orbital Orb\n    Elemental:\n        Elemental Domain\n        Elemental Crit\n    Plants:\n        Life Surge\n\nBlessing Runes (7):\n    Revive\n    Lucky Shadow\n    Intelligence\n    Rabbit’s Foot\n    Guardian\n    Devil Pact\n    Resilience\n\nEnhancement Runes (13):\nMain Weapon:    \nSharp Arrow\nElemental:\n    Flame-Poison Seal\n    Frost-Thunder Seal\nCircle:\n    Rotating SPD Up\n    Sawblade Circle\nMeteors:\n    Giant Meteor\n    Potion Magnet\nSprites:\n    Sprite Multishot\n    Sprite Link\nStrikes:\n    Dragonflight Sword\n    Ricocheting Strike\nPlants:\n    Rootguard\n    Vine Bind\n\nAbility Runes (13):\n    Main Weapon:\n        Arrow Rain\nElemental:\n    Flame-Poison Touch\n    Frost-Thunder Touch\nCircle:\n    Ring of Agony\n    Circle\nMeteors:\n    Star of Fury\n    Star of Time\nSprites:\n    Healing Sprite\n    Melee Sprite\nStrikes:\n    Sword of Time\n    Strike Potion\nPlants:\n    Plant Summon\n    Equinox Bloom",
+    "overview_4_types": "There are 4 different types of equipable runes, etched runes, blessing runes, enhancement runes, ability runes. A player can equip a max of 3 etched, 2 blessing, 4 enhancement and 4 ability at a time with all slots unlocked. Each rune has special abilities based off of its quality and enchantment stats.\n\nEtched Runes (13):\n    Main Weapon:\n        Arrow of Echoes\n        Echo Scythe\n    Sprites:\n        Sprite\u2019s Awe\n        Sprite Assist\n    Strikes:\n        Sword Strike Split\n        Swordstrike Aerie\n    Meteors:\n        Meteor Split\n        Potion Spring \n    Circles:\n        Pulsing Orb\n        Orbital Orb\n    Elemental:\n        Elemental Domain\n        Elemental Crit\n    Plants:\n        Life Surge\n\nBlessing Runes (7):\n    Revive\n    Lucky Shadow\n    Intelligence\n    Rabbit\u2019s Foot\n    Guardian\n    Devil Pact\n    Resilience\n\nEnhancement Runes (13):\nMain Weapon:    \nSharp Arrow\nElemental:\n    Flame-Poison Seal\n    Frost-Thunder Seal\nCircle:\n    Rotating SPD Up\n    Sawblade Circle\nMeteors:\n    Giant Meteor\n    Potion Magnet\nSprites:\n    Sprite Multishot\n    Sprite Link\nStrikes:\n    Dragonflight Sword\n    Ricocheting Strike\nPlants:\n    Rootguard\n    Vine Bind\n\nAbility Runes (13):\n    Main Weapon:\n        Arrow Rain\nElemental:\n    Flame-Poison Touch\n    Frost-Thunder Touch\nCircle:\n    Ring of Agony\n    Circle\nMeteors:\n    Star of Fury\n    Star of Time\nSprites:\n    Healing Sprite\n    Melee Sprite\nStrikes:\n    Sword of Time\n    Strike Potion\nPlants:\n    Plant Summon\n    Equinox Bloom",
     "enchantment_stats": "Blessing, Enhancement and Ability Runes also have another layer of Enchantment Stats. Enchantment Stats have multiple categories depending on the type of rune with only one enchantment selecti",
     "blessing_quality_revive": "Blessing Runes Quality Skills:\n\nRevive\n    Rare: Max HP +240\n    Epic: 50% Chance to revive upon death, with half of HP restored\n    Legendary: Increases ATK PWR by 20% after revival\n    Mythic",
     "etched_elemental": "Etched Runes Quality Skills:\n    Elemental:\n        Elemental Domain\n            Common: Elemental DMG +100\n            Fine: ATK PWR +100\n            Rare: Increased chance for Elemental skills to spawn\n            Epic: When an enemy is defeated by Elemental DMG, 30% chance to form an elemental area for 5s. Enemies in it take Elemental DMG\n            Legendary: Elemental Domain lasts 10s with increased DMG\n            Legendary +1: For each Elemental skill obtained, Elemental DMG is increased (Max 10 stacks)\n            Legendary +2: Elemental DMG +15% to enemies below 50% HP\n            Legendary +3: Elemental skills have greatly increased chance to spawn\n            Mythic: Elemental DMG +30% to enemies below 50% HP",
@@ -341,25 +341,25 @@
   "game_modes": {
     "overview": "There are four main game-mode categories: Campaign, Arena, Challenge, and Dungeon. Each contains sub-modes with different mechanics and rewards.",
     "campaign": {
-      "overview": "Campaign is the main PvE mode where you fight against computer enemies. It is vastly different from PvP — bonuses, gear rankings, and strategies change drastically between the two.",
+      "overview": "Campaign is the main PvE mode where you fight against computer enemies. It is vastly different from PvP \u2014 bonuses, gear rankings, and strategies change drastically between the two.",
       "farming_drops": "To optimize gear, runes, and scroll drops: choose campaign levels that have 50 floors, not the 6-minute or endless versions. 50-floor runs have 5 boss battles (one every 10th floor), so more boss drops per run. 6-minute or endless runs have only 2 boss battles total, so fewer drops per run.",
-      "fifty_floor_types": "There are two types of 50-floor campaign levels. One type requires walking through a door to change floors each time. The other type uses the same map for all 50 floors — e.g. Serenity Pool — so you never have to move; you can leave your character in one spot and farm easily. Same-map 50-floor levels like Serenity Pool are ideal for farming.",
+      "fifty_floor_types": "There are two types of 50-floor campaign levels. One type requires walking through a door to change floors each time. The other type uses the same map for all 50 floors \u2014 e.g. Serenity Pool \u2014 so you never have to move; you can leave your character in one spot and farm easily. Same-map 50-floor levels like Serenity Pool are ideal for farming.",
       "profile_exp_note": "Campaign is the only way to earn profile experience. See profile_experience category.",
       "hard_mode_note": "Later campaign levels introduce hard-mode mechanics that require Sky Tower progression to unlock (e.g. campaign 126 requires Sky Tower 1525 cleared)."
     },
     "arena": {
       "overview": "Arena is the PvP category. Sub-modes: Main Arena, Peak Arena, Rumble Ladder, and All Star Cup.",
       "main_arena": "The main arena has multiple tiers (Supreme is the top). Standard 1v1 PvP.",
-      "peak_arena": "Peak Arena is a 3v3 mode where you use three of your own characters against three of your opponent's. You pick separate loadouts for each character. If each character has unique/different gear and runes (e.g. one Circle build, one Meteor build, one Sprite build), you get a large bonus (~25% ATK and HP). Duplicate loadouts across characters give little to no bonus — the game rewards variety.",
+      "peak_arena": "Peak Arena is a 3v3 mode where you use three of your own characters against three of your opponent's. You pick separate loadouts for each character. If each character has unique/different gear and runes (e.g. one Circle build, one Meteor build, one Sprite build), you get a large bonus (~25% ATK and HP). Duplicate loadouts across characters give little to no bonus \u2014 the game rewards variety.",
       "rumble_ladder": "Rumble Ladder is a PvP ladder mode.",
-      "all_star_cup": "All Star Cup is one of the most recent PvP additions. Each season lasts about 12 days and features different bonuses for different runes and loadouts. Depending on the current season's bonuses and your loadout, you could dominate or struggle — adapting your build to the season's modifiers is key. When selecting a start time, Habby made the time slots actually localized for players.",
+      "all_star_cup": "All Star Cup is one of the most recent PvP additions. Each season lasts about 12 days and features different bonuses for different runes and loadouts. Depending on the current season's bonuses and your loadout, you could dominate or struggle \u2014 adapting your build to the season's modifiers is key. When selecting a start time, Habby made the time slots actually localized for players.",
       "all_star_added_by": "fails_8743"
     },
     "challenge": {
       "overview": "Challenge modes: Sky Tower, Seal Battle, and Magic Plant Defense.",
-      "sky_tower": "Sky Tower is linked to campaign progression. It unlocks higher campaign levels — for example, campaign level 126 requires clearing Sky Tower 1525. Sky Tower gates what campaign content you can access, usually becoming relevant around campaign level 50+.",
+      "sky_tower": "Sky Tower is linked to campaign progression. It unlocks higher campaign levels \u2014 for example, campaign level 126 requires clearing Sky Tower 1525. Sky Tower gates what campaign content you can access, usually becoming relevant around campaign level 50+.",
       "seal_battle": "Seal Battle is a boss battle mode where the goal is to deal the most damage to a boss.",
-      "magic_plant_defense": "Magic Plant Defense is a newer mode where you defend a magic plant across different levels. Max level is 195 until you clear Campaign Mode 140, which unlocks levels up to 250. Use all your plant defense eggs each week — if you're over a certain threshold you do NOT get the 3 tickets replenished."
+      "magic_plant_defense": "Magic Plant Defense is a newer mode where you defend a magic plant across different levels. Max level is 195 until you clear Campaign Mode 140, which unlocks levels up to 250. Use all your plant defense eggs each week \u2014 if you're over a certain threshold you do NOT get the 3 tickets replenished."
     },
     "events": {
       "fishing": "Fishing is one of the most recurring events, happening almost every month. It is one of the main ways to obtain etched runes. Players should prioritize fishing events when they appear."
@@ -403,7 +403,7 @@
   },
   "privilege_cards": {
     "description": "Privilege Cards provide improved pay-to-play benefits to enhance daily progress.",
-    "community_summary": "Permanent Ad-Free Card: 1200 gems on purchase + 20/day, skips ads. Lifetime Supply Card: 3900 gems on purchase + 800 gems/day — strong value for progression. See permanent_ad_free_card and lifetime_supply_card for structured details.",
+    "community_summary": "Permanent Ad-Free Card: 1200 gems on purchase + 20/day, skips ads. Lifetime Supply Card: 3900 gems on purchase + 800 gems/day \u2014 strong value for progression. See permanent_ad_free_card and lifetime_supply_card for structured details.",
     "community_added_by": "fails_8743",
     "permanent_ad_free_card": {
       "name": "Permanent Ad-Free Card",
@@ -424,7 +424,7 @@
     "overview": "Sacred Hall is a profile-wide progression system that gives permanent bonuses to all your characters. It is leveled up using currency earned from Abyssal Tide.",
     "building_effect": "The main upgrade path is the Building Effect. Each level gives an attack increase and a health increase.",
     "tier_upgrades": "Separate from building levels, there are tier upgrades that unlock special bonuses. Higher tiers can unlock extra skin slots, which ties into Resonance.",
-    "resonance_skin_interaction": "At base level, Resonance is only the ability of a specific character. But if that character has a skin, and your Sacred Hall tier is high enough, you can also get their skin bonus in resonance — not just the ability. This means Sacred Hall tier determines whether resonance includes just abilities or abilities + skins.",
+    "resonance_skin_interaction": "At base level, Resonance is only the ability of a specific character. But if that character has a skin, and your Sacred Hall tier is high enough, you can also get their skin bonus in resonance \u2014 not just the ability. This means Sacred Hall tier determines whether resonance includes just abilities or abilities + skins.",
     "added_by": "_xyian"
   },
   "custom_facts": [
@@ -606,7 +606,7 @@
       "source": "history_audit"
     },
     {
-      "text": "For PvP mixed set — Weapon: Crossbow, Amulet: Griffin Amulet, Ring: Griffin Ring, Helmet: Dragoon Helm.",
+      "text": "For PvP mixed set \u2014 Weapon: Crossbow, Amulet: Griffin Amulet, Ring: Griffin Ring, Helmet: Dragoon Helm.",
       "added_by": "faria88pt",
       "added_at": "2026-06-23",
       "source": "history_audit"
@@ -627,19 +627,19 @@
   "opinions": [],
   "damage_terminology": {
     "note": "Community-sourced from #arch-ai !suggest (recovered in full-channel audit). Attack Power, Main weapon DMG, and generic DMG are different stats that multiply together.",
-    "attack_power": "Attack Power (ATK / ATK PWR): baseline multiplier N × Attack Power for damage. Some skills claim to buff ATK but don't (e.g. Swift Arrow, source-specific buffs); others change ATK while describing something else (e.g. Stand Strong).",
+    "attack_power": "Attack Power (ATK / ATK PWR): baseline multiplier N \u00d7 Attack Power for damage. Some skills claim to buff ATK but don't (e.g. Swift Arrow, source-specific buffs); others change ATK while describing something else (e.g. Stand Strong).",
     "main_weapon_dmg": "Main weapon DMG: only the non-elemental portion of main weapon damage; does not include explosion damage from bow/crossbow. Affected by Front Arrow, Sharp Arrow rune, Chaotic Dragoon crossbow effect.",
     "generic_dmg": "Generic DMG buffs vary: some skills affect many damage sources (Swift Arrow, Tracking Eye, Bane of Bosses), some only one.",
     "stacking": "Attack Power, Main weapon DMG, and DMG are not the same stat; they multiply with each other.",
     "added_by": "faria88pt"
   },
   "collectibles": {
-    "overview": "Collectibles (found on the main screen via the Goblet Icon in the bottom toolbar) splice into two categories: Talent Cards & Artifacts\n\nTalent Cards:\nTalent Cards are cards that you are able to collect in game that boost a wide variety of stats. Each card is able to be upgraded to a maximum of 5 Star (Apart from the Glory and Tactics cards as these are 1 Star maximum). \n\nThere is a second set of talent cards that unlocks after collecting all cards from the first set. The list below is a comprehensive list of both sets when maxed out to 5 stars (apart from Glory and Tactics which have a maximum of 1 Star).\n\nThe list below states the talent card’s name and then function/boost, there are 32 in total:\n\nEpic Level:\nGlory: First Skill Selection Chance +1\nTactics: Skill Refreshes +1\nMaster Explorer: Scroll Drop Rate +18%\nBrave Adventurer: Gear Drop Rate +18%\nAlchemist: Rune Drop Rate +18%\nSwift Wind: ATK SPD +3% & MOV SPD +3%\nRefinement: Gears’ Base Stats Increase +6%\nWealth: Gold obtained in battle +18%\nUlt CRIT Rate: CRIT Rate +6%\nUlt CRIT DMG: CRIT DMG +12%\nUlt Dodge: Dodge +6%\n\nRare Level:\nSuper Vigor 2: HP +420\nSuper Strength 2: ATK PWR +105\nSuper Recovery 2: Heart Recovery +1%\nAngelic Embrace: Angel Recovery +1%\nDevil Discount: Devil's Pact HP cost reduced +1%\nSuper Vigor: Max HP +420\nSuper Strength: ATK PWR +105\nSuper Recovery: Red Heart Healing Value +105\nSuper Iron Wall: Collision DMG REDUC +48\nHealing: Heal on Level Up +120\nTitan: Max HP +150, ATK PWR +36 & CRIT DMG +6%\nSuper CRIT Rate: CRIT Rate +3%\nSuper CRIT DMG: CRIT DMG +9%\nSuper Dodge: Dodge +3%\n\nCommon Level:\nVigor 2    : HP +300\nStrength 2: ATK PWR +75\nRecovery 2: Heart Recovery +0.5%\nVigor: HP +300\nStrength: ATK PWR +75\nRecovery: Red Heart Healing Value +75\nIron Wall: Collision DMG REDUC +36\n\n\nTalent Cards can be bought by using in game Gold but require a ton of gold farming to complete. However, once complete, a player doesn’t really worry about them any longer. So if you’re in between upgrading gear (that also costs gold) or talent cards, the talent cards will always come with time. Typically they’re all unlocked between levels 50 - 55."
+    "overview": "Collectibles (found on the main screen via the Goblet Icon in the bottom toolbar) splice into two categories: Talent Cards & Artifacts\n\nTalent Cards:\nTalent Cards are cards that you are able to collect in game that boost a wide variety of stats. Each card is able to be upgraded to a maximum of 5 Star (Apart from the Glory and Tactics cards as these are 1 Star maximum). \n\nThere is a second set of talent cards that unlocks after collecting all cards from the first set. The list below is a comprehensive list of both sets when maxed out to 5 stars (apart from Glory and Tactics which have a maximum of 1 Star).\n\nThe list below states the talent card\u2019s name and then function/boost, there are 32 in total:\n\nEpic Level:\nGlory: First Skill Selection Chance +1\nTactics: Skill Refreshes +1\nMaster Explorer: Scroll Drop Rate +18%\nBrave Adventurer: Gear Drop Rate +18%\nAlchemist: Rune Drop Rate +18%\nSwift Wind: ATK SPD +3% & MOV SPD +3%\nRefinement: Gears\u2019 Base Stats Increase +6%\nWealth: Gold obtained in battle +18%\nUlt CRIT Rate: CRIT Rate +6%\nUlt CRIT DMG: CRIT DMG +12%\nUlt Dodge: Dodge +6%\n\nRare Level:\nSuper Vigor 2: HP +420\nSuper Strength 2: ATK PWR +105\nSuper Recovery 2: Heart Recovery +1%\nAngelic Embrace: Angel Recovery +1%\nDevil Discount: Devil's Pact HP cost reduced +1%\nSuper Vigor: Max HP +420\nSuper Strength: ATK PWR +105\nSuper Recovery: Red Heart Healing Value +105\nSuper Iron Wall: Collision DMG REDUC +48\nHealing: Heal on Level Up +120\nTitan: Max HP +150, ATK PWR +36 & CRIT DMG +6%\nSuper CRIT Rate: CRIT Rate +3%\nSuper CRIT DMG: CRIT DMG +9%\nSuper Dodge: Dodge +3%\n\nCommon Level:\nVigor 2    : HP +300\nStrength 2: ATK PWR +75\nRecovery 2: Heart Recovery +0.5%\nVigor: HP +300\nStrength: ATK PWR +75\nRecovery: Red Heart Healing Value +75\nIron Wall: Collision DMG REDUC +36\n\n\nTalent Cards can be bought by using in game Gold but require a ton of gold farming to complete. However, once complete, a player doesn\u2019t really worry about them any longer. So if you\u2019re in between upgrading gear (that also costs gold) or talent cards, the talent cards will always come with time. Typically they\u2019re all unlocked between levels 50 - 55."
   },
   "hunt": {
     "description": "Idle / AFK reward system reached from the Hunt button on the main screen. Pays out rewards passively instead of grinding earlier stages.",
     "accumulation": "Auto-gets rewards over time, accumulating while not playing.",
-    "max_accumulation": "24 hours. After 24h the buffer stops filling — claim before then to avoid wasted time.",
+    "max_accumulation": "24 hours. After 24h the buffer stops filling \u2014 claim before then to avoid wasted time.",
     "scaling": "Later chapters grant better rewards; Hunt's per-hour yield scales with campaign progression.",
     "reward_types": "Gold and EXP, plus a probabilistic mix of gear, gear scrolls and runes. Hunt does not drop hero/character shards.",
     "claim": "The Claim button collects whatever has accumulated, up to the 24h cap.",
@@ -651,14 +651,14 @@
     },
     "drop_rates": {
       "source": "In-game Rules popup.",
-      "gold": "100% — guaranteed every claim.",
-      "exp": "100% — guaranteed every claim.",
+      "gold": "100% \u2014 guaranteed every claim.",
+      "exp": "100% \u2014 guaranteed every claim.",
       "gear_pieces": "0.79% each, 18 pieces total.",
       "gear_scrolls": "11.90% each, 6 scrolls total.",
       "runes": "0.60% each, 24 runes total."
     },
     "gear_pieces": {
-      "sets": "Three sets — Destruction, Echo, Decisiveness — across 6 slots, 18 pieces total.",
+      "sets": "Three sets \u2014 Destruction, Echo, Decisiveness \u2014 across 6 slots, 18 pieces total.",
       "weapon": "Heroic Longbow, Beam Staff, Agile Knuckles",
       "armor": "Armor of Destruction, Echo Armor, Armor of Decisiveness",
       "boots": "Boots of Destruction, Echo Boots, Boots of Decisiveness",
@@ -674,7 +674,7 @@
       "list": "Sawblade Circle, Spin SPD Up, Dragonflight Sword, Ricochet Strike, Sprite Multishot, Sprite Link, Sharp Arrow, Giant Meteor, Potion Magnet, Flamenox Seal, Frostshock Seal, Rootguard, Vine Bind, Circle, Ring of Agony, Sword of Time, Strike Potion, Melee Sprite, Healing Sprite, Arrow Rain, Star of Time, Star of Fury, Plant Summon, Equinox Bloom."
     },
     "advice": {
-      "claim_before_cap": "Always claim Hunt before it caps at 24h — wasted time is wasted rewards.",
+      "claim_before_cap": "Always claim Hunt before it caps at 24h \u2014 wasted time is wasted rewards.",
       "f2p": "Use the 2 free daily ad chances; don't burn energy on Quick Hunt.",
       "hunting_warrior_card_owners": "Spam unlimited free Quick Hunts; energy-paid runs are situational.",
       "energy_efficiency": "Energy-paid Quick Hunts are most efficient at 25 energy / 5 runs.",
@@ -858,7 +858,7 @@
       "one_purchase_per_day": "Packs are limited to 1 purchase per day and reset daily.",
       "hero_swap": "You can swap heroes for different pack options; the selected hero changes which shards drop.",
       "bulk_discount": "Buying all packs at once gives a greater discount. Once you have purchased any pack individually, the bulk option becomes unavailable.",
-      "hero_lock": "After purchasing any paid pack, you can no longer swap hero packs — the selected hero is locked in for the day."
+      "hero_lock": "After purchasing any paid pack, you can no longer swap hero packs \u2014 the selected hero is locked in for the day."
     }
   },
   "main_screen": {
@@ -935,7 +935,7 @@
     "gear_scrolls": {
       "per_slot": "Gear Scrolls are slot-specific, not generic. Each scroll is one of: Weapon Scroll, Armor Scroll, Helmet Scroll, Ring Scroll, Amulet Scroll, Boots Scroll.",
       "use": "Used to upgrade that slot's gear level (1-200).",
-      "same_as_hunt": "The same resource that drops from Hunt — Hunt's yellow scroll icon represents one of these 6 slot-specific scrolls."
+      "same_as_hunt": "The same resource that drops from Hunt \u2014 Hunt's yellow scroll icon represents one of these 6 slot-specific scrolls."
     },
     "hard_mode_clear_reward": "Second sub-tab (gold crown). Contents were not documented in the source contribution.",
     "star_challenge": {
@@ -1091,5 +1091,12 @@
       "paying_gold_packs": "Skip Top Up gold packs - gold is easy to farm and the conversion rate is bad.",
       "paying_chest_pulls": "For Mythstone/Chromatic pulls, pull on the series matching your active gear progression (Griffin / Oracle / Dragoon)."
     }
-  }
+  },
+  "_repairs": [
+    "runes.etched_main_weapon",
+    "runes.etched_elemental",
+    "runes.etched_circles",
+    "runes.etched_meteors",
+    "runes.etched_strikes"
+  ]
 }
