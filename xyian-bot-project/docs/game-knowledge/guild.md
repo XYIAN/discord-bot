@@ -446,7 +446,7 @@ Tied directly to the [Camp & Mystlings](camp_mystlings.md) system. The Mystling 
   4. Buy daily Hero Shards from Guild Store (especially focused on a target Rare hero)
   5. Contribute to Guild Research progress
   6. Engage in Guild Expedition during active rounds (deploy + battle)
-- **Recruitment criteria** the player's guild XYIAN demands: 2M+ power, daily boss & research participation, daily bargain — typical for an active guild
+- **Recruitment criteria** the player's guild XYIAN demands: 6M+ power (raised from 2M on 2026-08-06), daily boss & research participation, daily bargain — typical for an active guild
 
 ## Open questions
 

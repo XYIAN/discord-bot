@@ -40,6 +40,7 @@ const usageLib = require('./lib/usage');
 const knowledgeRender = require('./lib/knowledge-render');
 const priceGuard = require('./lib/price-guard');
 const visionResponse = require('./lib/vision-response');
+const channelCleanup = require('./lib/channel-cleanup');
 require('dotenv').config();
 
 // Single source of truth: version + changelog are parsed from CHANGELOG.md.
@@ -977,19 +978,19 @@ async function sendViaWebhook(webhookUrl, channelId, trackingKey, content) {
         // - general: only delete if we're still the latest (don't remove if users replied).
         if (trackingKey && lastBotMessage[trackingKey] && channelId && client.isReady()) {
             try {
-                let shouldDelete = false;
-                if (trackingKey === 'recruit') {
-                    shouldDelete = true;
-                } else {
+                let latestIdInChannel = null;
+                if (trackingKey !== 'recruit') {
                     const channel = await client.channels.fetch(channelId);
                     if (channel) {
                         const recent = await channel.messages.fetch({ limit: 1 });
-                        const latest = recent.first();
-                        if (latest && latest.id === lastBotMessage[trackingKey]) {
-                            shouldDelete = true;
-                        }
+                        latestIdInChannel = recent.first()?.id ?? null;
                     }
                 }
+                const shouldDelete = channelCleanup.shouldDeletePrevious({
+                    trackingKey,
+                    previousId: lastBotMessage[trackingKey],
+                    latestIdInChannel,
+                });
                 if (shouldDelete) {
                     await wh.deleteMessage(lastBotMessage[trackingKey]);
                     console.log(`🗑️ Deleted previous ${trackingKey} message ${lastBotMessage[trackingKey]}`);
@@ -1001,7 +1002,9 @@ async function sendViaWebhook(webhookUrl, channelId, trackingKey, content) {
 
         const sent = await wh.send({ ...content, wait: true });
 
-        if (trackingKey && sent?.id) {
+        // Only rotating posts are recorded as deletable. A welcome passes a
+        // null tracking key, so nothing later can target it.
+        if (channelCleanup.isRotatingPost(trackingKey) && sent?.id) {
             lastBotMessage[trackingKey] = sent.id;
         }
 
@@ -1039,6 +1042,18 @@ async function sendToAdmin(content) {
 
 async function sendToGeneral(content) {
     return sendViaWebhook(webhooks.general, CONFIG.channels.general, 'general', content);
+}
+
+/**
+ * Post to #general WITHOUT joining the rotating-cleanup pool.
+ *
+ * Welcomes are addressed to one person, are part of the channel history, and
+ * carry the reaction role that grants AI access. They must never be deleted by
+ * a later daily reset — which is exactly what sendToGeneral's 'general'
+ * tracking key was doing to them.
+ */
+async function sendToGeneralPermanent(content) {
+    return sendViaWebhook(webhooks.general, CONFIG.channels.general, null, content);
 }
 
 async function sendToRecruit(content) {
@@ -1448,7 +1463,7 @@ async function sendGuildRecruitment() {
             '**We\'re looking for dedicated players to join our elite community!**\n\n' +
             '✨ **What we offer:**\n• Active daily community\n• Expert strategies and guides\n• Guild events and challenges\n• 10% discount on guild shop items\n• Supportive and friendly environment\n\n' +
             '🎯 **Requirements:**\n• Daily participation in guild activities\n• 2 Boss Battles per day\n• 1 Guild Donation per day\n• Active in Discord community\n\n' +
-            '💪 **Power Level:** 2M+ required\n\n**Ready to join the elite? Apply now!**'
+            '💪 **Power Level:** 6M+ required\n\n**Ready to join the elite? Apply now!**'
         )
         .setColor(0xffa500)
         .setTimestamp()
@@ -1700,7 +1715,7 @@ client.on('guildMemberAdd', async (member) => {
             `**${emoji} Want AI access?**\n` +
             `React with ${emoji} on this message to get the **${roleName}** role and start asking Archero 2 questions in <#${CONFIG.channels.archAi}>!\n\n` +
             '**About XYIAN OFFICIAL (Guild ID: 213797):**\n' +
-            'We\'re an active Archero 2 guild — daily activity and 2M+ power required.'
+            'We\'re an active Archero 2 guild — daily activity and 6M+ power required.'
         )
         .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
         .setColor(0x00ff88)
@@ -1708,7 +1723,7 @@ client.on('guildMemberAdd', async (member) => {
         .setFooter({ text: 'Arch 2 Addicts — React 🤖 for AI access!' });
 
     try {
-        const welcomeMsg = await sendToGeneral({ embeds: [embed] });
+        const welcomeMsg = await sendToGeneralPermanent({ embeds: [embed] });
         if (welcomeMsg?.id) {
             reactionRoleMessages.add(welcomeMsg.id);
             const channel = CONFIG.channels.general ? await client.channels.fetch(CONFIG.channels.general).catch(() => null) : null;
@@ -2085,7 +2100,7 @@ client.on('messageCreate', async (message) => {
                     .setTitle('🏰 XYIAN OFFICIAL — Guild Requirements')
                     .setDescription('**Requirements for active members (Guild ID: 213797)**')
                     .addFields(
-                        { name: '💪 Power Level', value: '**2M+ required**\n• Minimum power to join and stay active', inline: false },
+                        { name: '💪 Power Level', value: '**6M+ required**\n• Minimum power to join and stay active', inline: false },
                         { name: '⚔️ Daily Boss Battles', value: '**2 per day**\n• Required for active status\n• Tracked automatically', inline: false },
                         { name: '💰 Guild Donations', value: '**1 per day**\n• First donation of the day is free\n• Next 4 cost 20 → 40 → 60 → 80 gems (200 gems total if all 5)\n• Tracked automatically', inline: false },
                         { name: '📊 Activity', value: '**Daily participation in Discord**\n• Inactive players may be removed\n• Exceptions for valid reasons', inline: false }

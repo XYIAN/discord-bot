@@ -4,6 +4,26 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.23.0] - 2026-08-06
+
+### Welcome messages were being deleted moments after they posted
+
+Kyle noticed a member joined and no welcome appeared in #general. The welcome **was** posted — and then deleted.
+
+`sendViaWebhook` deletes the previous message it sent to a channel before posting a new one. That exists for **rotating** posts: only one recruitment ad and one daily-reset notice should ever be visible. Welcome messages were quietly swept into the same mechanism, because they post through `sendToGeneral()` and inherited its `'general'` tracking key — the one whose own declaration comment reads *"message ID of last daily reset we sent"*.
+
+So a member joins, gets a welcome, and the next daily reset sees that welcome sitting there as the newest message in #general and removes it. On a quiet server that is every welcome, every time.
+
+**Two things broke, not one.** The missing message is the visible half. The welcome embed also carries the 🤖 reaction role — so deleting it removed the only route a new member had to grant themselves AI access. They arrived to a channel with no welcome and no way in.
+
+Welcomes now post permanently: they never delete anything, and nothing later can delete them. The daily reset and recruitment ad still tidy up after themselves exactly as before, including the existing rule that #general is left alone if a member has posted since (deleting then would orphan their reply).
+
+The decision now lives in `lib/channel-cleanup.js` with seven tests, verified to fail when welcomes are put back into the rotating pool.
+
+### Guild requirement raised to 6M power
+
+`2M+` → `6M+` in all three places it appears: the recruitment post, the join welcome, and `!requirements`.
+
 ## [3.22.2] - 2026-08-04
 
 ### The cost figure was never actually checked for being correct
