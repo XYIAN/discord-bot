@@ -4,6 +4,26 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.27.0] - 2026-08-06
+
+### A dead webhook is now caught at boot instead of by its silence
+
+Slices 6–7, the last of the messaging work.
+
+Every webhook is checked once at startup. A rotated or deleted one makes sends return `null`, which almost no caller distinguishes from success — that's what hid the #general outage long enough to need its own changelog entry. `ADMIN_WEBHOOK` is the worst case, since its failure silences the very channel that would report a failure, so that one is logged hard to stdout where Railway still shows it.
+
+**Webhook clients are now built once** instead of on every send. Rate-limit buckets are per-instance, so a fresh client per send meant cross-send backoff couldn't work at all — under a burst the bot fired straight into a 429 with no memory of the last one. Each also leaked two uncleared sweep timers.
+
+### The welcome is posted by the bot itself
+
+One message, not a transport change. It matters for this one because the 🤖 reaction *is* the point of the welcome: we now get a real message back and react to it directly, with no second fetch and no second thing to fail on.
+
+The old path could silently skip attaching the reaction and **still report the welcome as a success** to admins. Now a missing reaction is reported explicitly, and an unresolvable channel is reported instead of quietly doing nothing.
+
+---
+
+**Messaging work complete.** Across 3.23.0–3.27.0: welcomes stopped being deleted, the 🤖 role survives deploys, recurring posts send before they clean up and retry skipped cleanups, the recruitment ad actually posts, the daily reset can't double-post or skip, and a dead webhook announces itself. 13 test files.
+
 ## [3.26.0] - 2026-08-06
 
 ### The guild recruitment ad had essentially never posted by itself

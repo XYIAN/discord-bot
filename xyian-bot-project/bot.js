@@ -203,6 +203,70 @@ const webhooks = {
     admin: process.env.ADMIN_WEBHOOK,
 };
 
+/**
+ * One WebhookClient per URL, built once.
+ *
+ * These used to be constructed on every send. Each `new WebhookClient` builds
+ * its own REST manager with two sweep intervals that are never cleared, and —
+ * more importantly — rate-limit buckets are per-instance, so a fresh client per
+ * send meant cross-send backoff could not function at all. Under a burst the
+ * bot would keep firing straight into a 429 with no memory of the last one.
+ */
+const webhookClients = new Map();
+function webhookClientFor(url) {
+    if (!url) return null;
+    let client = webhookClients.get(url);
+    if (!client) {
+        client = new WebhookClient({ url });
+        webhookClients.set(url, client);
+    }
+    return client;
+}
+
+/**
+ * Check every configured webhook once at boot.
+ *
+ * A rotated or deleted webhook makes sendViaWebhook return null, which almost
+ * no caller distinguishes from success — that is what hid the #general outage
+ * long enough for it to need its own changelog entry. ADMIN_WEBHOOK is the
+ * worst case: it is the alert channel, so its failure silences the very
+ * mechanism that would report a failure. That one is logged hard to stdout,
+ * where Railway will still show it.
+ */
+async function checkWebhookHealth() {
+    const results = [];
+    for (const [name, url] of Object.entries(webhooks)) {
+        if (!url) { results.push({ name, ok: false, reason: 'not configured' }); continue; }
+        try {
+            const res = await fetch(url, { method: 'GET' });
+            results.push(res.ok
+                ? { name, ok: true }
+                : { name, ok: false, reason: `HTTP ${res.status} — likely rotated or deleted` });
+        } catch (e) {
+            results.push({ name, ok: false, reason: e.message });
+        }
+    }
+
+    const broken = results.filter((r) => !r.ok);
+    if (!broken.length) {
+        console.log(`✅ Webhooks healthy: ${results.map((r) => r.name).join(', ')}`);
+        return results;
+    }
+
+    for (const b of broken) {
+        // stdout, unconditionally — if admin is the broken one, this is the
+        // only place the problem can surface.
+        console.error(`🚨 WEBHOOK DEGRADED: ${b.name} — ${b.reason}`);
+    }
+    const adminBroken = broken.some((b) => b.name === 'admin');
+    if (!adminBroken) {
+        await sendToAdmin({
+            content: `🚨 **Webhook degraded at boot**\n${broken.map((b) => `• \`${b.name}\` — ${b.reason}`).join('\n')}\n\nVerify the Railway env vars match live webhooks in Discord.`,
+        });
+    }
+    return results;
+}
+
 // ── OpenAI (optional) ───────────────────────────────────────────────────────
 
 let openai = null;
@@ -1025,7 +1089,7 @@ function knownWebhookIds() {
 
 async function sendViaWebhook(webhookUrl, channelId, trackingKey, content) {
     if (!webhookUrl) return null;
-    const wh = new WebhookClient({ url: webhookUrl });
+    const wh = webhookClientFor(webhookUrl);
 
     // Permanent posts — welcomes, admin alerts — are a plain send. They neither
     // delete anything nor become deletable.
@@ -1094,7 +1158,8 @@ async function sendViaWebhook(webhookUrl, channelId, trackingKey, content) {
 const logForwarder = createLogForwarder({
     send: async (text) => {
         if (!webhooks.admin) return;
-        const wh = new WebhookClient({ url: webhooks.admin });
+        const wh = webhookClientFor(webhooks.admin);
+        if (!wh) return;
         await wh.send({ content: text, allowedMentions: { parse: [] } });
     },
 });
@@ -1882,23 +1947,41 @@ client.on('guildMemberAdd', async (member) => {
         .setFooter({ text: 'Arch 2 Addicts — React 🤖 for AI access!' });
 
     try {
-        const welcomeMsg = await sendToGeneral({ embeds: [embed] });
-        if (welcomeMsg?.id) {
-            trackReactionRoleMessage(welcomeMsg.id);
-            const channel = CONFIG.channels.general ? await client.channels.fetch(CONFIG.channels.general).catch(() => null) : null;
-            if (channel) {
-                try {
-                    const fetched = await channel.messages.fetch(welcomeMsg.id);
-                    await fetched.react(emoji);
-                } catch (reactErr) {
-                    await sendToAdmin({ content: `⚠️ **Welcome react** — Could not add ${emoji} to welcome msg for ${member.user.username}: ${reactErr.message}` });
-                }
-            }
-            await sendToAdmin({ content: `👋 **Welcome #general** — <@${member.id}> (${member.user.username}) — msg \`${welcomeMsg.id}\`` });
-        } else {
+        // Sent with the BOT TOKEN, not the #general webhook. This is one
+        // message, not a transport migration — but for this message it matters:
+        //
+        //  - we get a real Message back, so .react() works directly with no
+        //    second fetch and no second permission surface to fail on;
+        //  - the reaction the member needs for AI access is the whole point of
+        //    the welcome, and the old path could silently skip attaching it
+        //    (if `channel` resolved to null the `if (channel)` was skipped) and
+        //    STILL report "👋 Welcome #general" as a success to admins;
+        //  - author.id === client.user.id, which makes a future boot-time
+        //    backfill of welcome ids possible. Webhook messages are owned by
+        //    the webhook, so they can never be recovered that way.
+        const generalChannel = CONFIG.channels.general
+            ? await client.channels.fetch(CONFIG.channels.general).catch(() => null)
+            : null;
+
+        if (!generalChannel) {
             await sendToAdmin({
-                content: `❌ **Welcome #general failed** — No message sent for <@${member.id}> (${member.user.username}). ` +
-                    `Webhook or send returned null. Check GENERAL_CHAT_WEBHOOK and bot logs.`,
+                content: `❌ **Welcome #general failed** — could not resolve channel \`${CONFIG.channels.general || '(unset)'}\` for <@${member.id}> (${member.user.username}). No welcome posted.`,
+            });
+        } else {
+            const welcomeMsg = await generalChannel.send({ embeds: [embed] });
+            trackReactionRoleMessage(welcomeMsg.id);
+
+            let reacted = true;
+            try {
+                await welcomeMsg.react(emoji);
+            } catch (reactErr) {
+                reacted = false;
+                await sendToAdmin({
+                    content: `⚠️ **Welcome react** — Could not add ${emoji} to the welcome for ${member.user.username}: ${reactErr.message}. They have NO route to AI access from this message.`,
+                });
+            }
+            await sendToAdmin({
+                content: `👋 **Welcome #general** — <@${member.id}> (${member.user.username}) — msg \`${welcomeMsg.id}\`${reacted ? '' : ' — ⚠️ reaction missing'}`,
             });
         }
     } catch (e) {
@@ -3116,6 +3199,8 @@ client.once('clientReady', async () => {
     // The Set is built at declaration from CONFIG ids + the persisted store,
     // so there is nothing to seed here — just report what survived the deploy.
     console.log(`📌 Tracking ${reactionRoleMessages.size} reaction-role message(s) (persisted across deploys)`);
+
+    checkWebhookHealth().catch((e) => console.error('⚠️  Webhook health check failed:', e.message));
 
     setupDailyResetMessaging();
     setupDailyMessaging();
