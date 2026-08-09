@@ -25,8 +25,20 @@
  * something a later post may delete.
  */
 
-/** Tracking keys whose posts rotate — a newer one supersedes the older. */
-const ROTATING_KEYS = new Set(['general', 'recruit']);
+/**
+ * Tracking keys whose posts rotate — a newer one supersedes the older.
+ *
+ * These name WHAT THE POST IS, not which channel it goes to. That distinction
+ * is the root-cause fix. The keys used to be 'general' and 'recruit' — channel
+ * names — so any caller reaching for the natural-looking sendToGeneral()
+ * silently claimed the daily reset's delete slot. That is exactly how welcome
+ * messages ended up being deleted by the next daily reset.
+ *
+ * Keyed by post identity, two different recurring posts can share a channel
+ * without fighting over one slot, and a caller that is not a recurring post
+ * cannot accidentally become one.
+ */
+const ROTATING_KEYS = new Set(['daily-reset', 'recruitment']);
 
 /**
  * Is this post one we are allowed to clean up later?
@@ -52,10 +64,15 @@ function shouldDeletePrevious({ trackingKey, previousId, latestIdInChannel }) {
     if (!previousId) return false;
 
     // Recruitment: always collapse to a single visible ad.
-    if (trackingKey === 'recruit') return true;
+    if (trackingKey === 'recruitment') return true;
 
-    // #general: only tidy up if nobody has posted since. If a member replied to
-    // our notice, deleting it would orphan their reply.
+    // Daily reset: only tidy up if no MEMBER has posted since. Kyle's rule —
+    // "ideally no, it won't be deleted if someone posts between the reset
+    // messages". Deleting then would orphan a reply.
+    //
+    // The bot's own posts do not count as "someone". A welcome landing between
+    // two resets used to block cleanup forever, which is how yesterday's reset
+    // became permanently undeletable and the resets stacked up anyway.
     return Boolean(latestIdInChannel) && latestIdInChannel === previousId;
 }
 

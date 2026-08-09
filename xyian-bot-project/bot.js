@@ -964,9 +964,12 @@ async function checkTierUpgrade(guild, userId, username) {
 
 // Track the last message ID we sent per channel so we can delete it if
 // nobody else posted since then (keeps channels tidy).
+// Keyed by WHAT THE POST IS, not which channel it lands in — see
+// lib/channel-cleanup.js. Keying on the channel is what let welcome messages
+// inherit the daily reset's delete slot and get removed.
 const lastBotMessage = {
-    general: null,  // message ID of last daily reset we sent
-    recruit: null,  // message ID of last recruitment we sent
+    'daily-reset': null,   // message ID of the last daily reset we sent
+    'recruitment': null,   // message ID of the last recruitment ad we sent
 };
 
 async function sendViaWebhook(webhookUrl, channelId, trackingKey, content) {
@@ -980,7 +983,7 @@ async function sendViaWebhook(webhookUrl, channelId, trackingKey, content) {
         if (trackingKey && lastBotMessage[trackingKey] && channelId && client.isReady()) {
             try {
                 let latestIdInChannel = null;
-                if (trackingKey !== 'recruit') {
+                if (trackingKey !== 'recruitment') {
                     const channel = await client.channels.fetch(channelId);
                     if (channel) {
                         const recent = await channel.messages.fetch({ limit: 1 });
@@ -1041,24 +1044,23 @@ async function sendToAdmin(content) {
     return sendViaWebhook(webhooks.admin, null, null, content);
 }
 
-async function sendToGeneral(content) {
-    return sendViaWebhook(webhooks.general, CONFIG.channels.general, 'general', content);
-}
-
 /**
- * Post to #general WITHOUT joining the rotating-cleanup pool.
+ * Post to #general. PERMANENT by default.
  *
- * Welcomes are addressed to one person, are part of the channel history, and
- * carry the reaction role that grants AI access. They must never be deleted by
- * a later daily reset — which is exactly what sendToGeneral's 'general'
- * tracking key was doing to them.
+ * The default used to be "deletable", which meant a new caller had to know to
+ * opt out or its message would be removed by the next recurring post. Welcome
+ * messages did not know, and were deleted. Inverting the default is the fix:
+ * permanence is now what you get for free, and joining the rotating-cleanup
+ * pool is an explicit, named choice.
+ *
+ * @param {string|null} trackingKey  'daily-reset' to rotate; omit for permanent
  */
-async function sendToGeneralPermanent(content) {
-    return sendViaWebhook(webhooks.general, CONFIG.channels.general, null, content);
+async function sendToGeneral(content, trackingKey = null) {
+    return sendViaWebhook(webhooks.general, CONFIG.channels.general, trackingKey, content);
 }
 
 async function sendToRecruit(content) {
-    return sendViaWebhook(webhooks.recruit, CONFIG.channels.guildRecruit, 'recruit', content);
+    return sendViaWebhook(webhooks.recruit, CONFIG.channels.guildRecruit, 'recruitment', content);
 }
 
 async function sendToChangelog(content) {
@@ -1422,7 +1424,7 @@ async function sendGeneralResetMessage() {
             embed.addFields({ name: '🧙 Arch AI has a question...', value: question, inline: false });
         }
         embed.setColor(0x00ff88).setTimestamp().setFooter({ text: 'Arch 2 Addicts — Daily Reset' });
-        const sent = await sendToGeneral({ embeds: [embed] });
+        const sent = await sendToGeneral({ embeds: [embed] }, 'daily-reset');
         if (!sent) {
             // sendViaWebhook swallows webhook errors and returns null (e.g. a
             // rotated/deleted GENERAL_CHAT_WEBHOOK → 404). Surface it loudly
@@ -1760,7 +1762,7 @@ client.on('guildMemberAdd', async (member) => {
         .setFooter({ text: 'Arch 2 Addicts — React 🤖 for AI access!' });
 
     try {
-        const welcomeMsg = await sendToGeneralPermanent({ embeds: [embed] });
+        const welcomeMsg = await sendToGeneral({ embeds: [embed] });
         if (welcomeMsg?.id) {
             trackReactionRoleMessage(welcomeMsg.id);
             const channel = CONFIG.channels.general ? await client.channels.fetch(CONFIG.channels.general).catch(() => null) : null;
