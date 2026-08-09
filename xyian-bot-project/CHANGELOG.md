@@ -4,6 +4,30 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.26.0] - 2026-08-06
+
+### The guild recruitment ad had essentially never posted by itself
+
+Slice 5. It ran on a 24-hour timer with a counter starting at zero, sending only on even ticks — so the first automatic post was **48 hours after the bot booted**, and the counter was wiped by every restart.
+
+Checked against the real history: **32 deploys in the last fortnight, and only 2 gaps longer than 48 hours.** So in practice the ad only ever went out when someone typed `!recruit`.
+
+It's now anchored on when it last actually posted, stored on disk. A redeploy no longer restarts the clock, downtime over the window catches up on the next check instead of skipping, and the clock only advances on a *real* send — a failed post retries in an hour rather than waiting another two days.
+
+### The daily reset can no longer double-post or skip a day
+
+A restart inside the 5pm window could post it twice; a restart just after could skip the day entirely. It's now idempotent per Pacific calendar day.
+
+`!reset` and `!recruit` both force a send, so the manual triggers still work regardless of the guards.
+
+### Fixed while wiring it up
+
+`sendGuildRecruitment()` didn't return anything, so the new "only advance the clock on a real send" check would have read every successful post as a failure — and re-posted the ad **every hour**. Caught before shipping; it now returns the sent message so a swallowed webhook failure is distinguishable from success.
+
+Also renamed two local `schedule` variables that shadowed the new schedule module.
+
+9 scheduling tests, table-driven over (last posted, now).
+
 ## [3.25.0] - 2026-08-06
 
 ### Recurring posts: send first, and never lose track of one again

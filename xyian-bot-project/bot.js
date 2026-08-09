@@ -42,6 +42,7 @@ const priceGuard = require('./lib/price-guard');
 const visionResponse = require('./lib/vision-response');
 const stateStore = require('./lib/state-store');
 const rotatingPost = require('./lib/rotating-post');
+const schedule = require('./lib/schedule');
 require('dotenv').config();
 
 // Single source of truth: version + changelog are parsed from CHANGELOG.md.
@@ -1432,7 +1433,9 @@ function extractImageUrls(message) {
 // ── Scheduled messages ──────────────────────────────────────────────────────
 
 function setupDailyResetMessaging() {
-    const schedule = () => {
+    // Named scheduleNext, not schedule — the schedule module is imported at the
+    // top of this file and a local `schedule` would shadow it inside here.
+    const scheduleNext = () => {
         const now = new Date();
         // Target next 5:00 PM America/Los_Angeles. In PST that's 01:00 UTC (next day), in PDT that's 00:00 UTC.
         let next = null;
@@ -1449,15 +1452,22 @@ function setupDailyResetMessaging() {
         if (!next) next = new Date(now.getTime() + 60 * 60 * 1000); // fallback: 1 hour from now
         const ms = Math.max(0, next.getTime() - now.getTime());
         console.log(`⏰ Next daily reset: ${next.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })} (5pm Pacific)`);
-        setTimeout(() => { sendGeneralResetMessage(); schedule(); }, ms);
+        setTimeout(() => { sendGeneralResetMessage(); scheduleNext(); }, ms);
     };
-    schedule();
+    scheduleNext();
     console.log('✅ Daily reset scheduled (5:00 PM Pacific Standard Time / 1:00 AM UTC)');
 }
 
 let resetLock = false;
-async function sendGeneralResetMessage() {
+async function sendGeneralResetMessage({ force = false } = {}) {
     if (resetLock) return;
+    // A restart inside the 5pm window used to be able to post the reset twice;
+    // a restart just after it could skip the day entirely. The day key makes
+    // the post idempotent per Pacific calendar day.
+    if (!force && schedule.alreadyPostedToday(scheduleState.lastResetDayKey, Date.now())) {
+        console.log('⏭️  Daily reset already posted today — skipping');
+        return;
+    }
     resetLock = true;
     try {
         const embed = new EmbedBuilder()
@@ -1503,6 +1513,8 @@ async function sendGeneralResetMessage() {
             await sendToAdmin({ content: `🚨 Daily reset NOT delivered to #general — ${reason}` });
             return;
         }
+        scheduleState.lastResetDayKey = schedule.dayKey(Date.now());
+        saveScheduleState();
         console.log('✅ Daily reset message sent');
     } catch (e) {
         console.error('❌ Daily reset error:', e);
@@ -1512,17 +1524,52 @@ async function sendGeneralResetMessage() {
     }
 }
 
-let recruitDayCounter = 0;
+/**
+ * Clocks for the recurring posts, PERSISTED.
+ *
+ * Recruitment previously used a module-level counter and a boot-anchored
+ * setInterval: first send 48h after BOOT, counter reset by every deploy. With
+ * 32 deploys in the last fortnight and only 2 gaps over 48h, the ad had
+ * effectively never posted by itself — only !recruit ever ran it.
+ */
+const SCHEDULE_STORE = 'schedule-state';
+const scheduleState = stateStore.loadState(SCHEDULE_STORE, {
+    lastRecruitmentPostedAt: null,
+    lastResetDayKey: null,
+});
+
+function saveScheduleState() {
+    stateStore.saveState(SCHEDULE_STORE, scheduleState);
+}
+
+const RECRUITMENT_INTERVAL_HOURS = 48;
+/** How often we CHECK whether recruitment is due. Cheap, and survives drift. */
+const RECRUITMENT_CHECK_MS = 60 * 60 * 1000;
+
+async function maybeSendRecruitment({ force = false } = {}) {
+    const now = Date.now();
+    if (!force && !schedule.isDue(scheduleState.lastRecruitmentPostedAt, now, RECRUITMENT_INTERVAL_HOURS)) {
+        return false;
+    }
+    const sent = await sendGuildRecruitment();
+    // Only advance the clock on an actual send, so a failed post retries on the
+    // next check instead of waiting another full interval.
+    if (sent) {
+        scheduleState.lastRecruitmentPostedAt = new Date(now).toISOString();
+        saveScheduleState();
+        console.log('✅ Guild recruitment sent');
+    } else {
+        console.warn('⚠️  Guild recruitment did not send — will retry on the next check');
+    }
+    return Boolean(sent);
+}
+
 function setupDailyMessaging() {
-    const dailyMs = 24 * 60 * 60 * 1000;
-    setInterval(async () => {
-        recruitDayCounter++;
-        if (recruitDayCounter % 2 === 0) {
-            await sendGuildRecruitment();
-            console.log('✅ Guild recruitment sent');
-        }
-    }, dailyMs);
-    console.log('✅ Guild recruit scheduled (every other day)');
+    const check = () => { maybeSendRecruitment().catch((e) => console.error('❌ Recruitment check failed:', e.message)); };
+    setInterval(check, RECRUITMENT_CHECK_MS);
+    check(); // catch up at boot if the interval has already elapsed
+    const waitMs = schedule.msUntilDue(scheduleState.lastRecruitmentPostedAt, Date.now(), RECRUITMENT_INTERVAL_HOURS);
+    console.log(`✅ Guild recruit scheduled (every ${RECRUITMENT_INTERVAL_HOURS}h, anchored on last post — ${waitMs === 0 ? 'due now' : `next in ~${Math.round(waitMs / 3600000)}h`})`);
 }
 
 async function sendGuildRecruitment() {
@@ -1538,7 +1585,11 @@ async function sendGuildRecruitment() {
         .setColor(0xffa500)
         .setTimestamp()
         .setFooter({ text: 'XYIAN OFFICIAL — Arch 2 Addicts' });
-    await sendToRecruit({ embeds: [embed] });
+    // Returned so the caller can tell a real send from a swallowed failure.
+    // sendViaWebhook returns null on a rotated webhook, and without this the
+    // schedule clock would advance on a post that never happened — or, worse,
+    // never advance and re-post every check.
+    return sendToRecruit({ embeds: [embed] });
 }
 
 // ── Weekly knowledge sync report ────────────────────────────────────────────
@@ -1657,17 +1708,19 @@ function nextWeeklyReportTime(now) {
 }
 
 function setupWeeklyKnowledgeReport() {
-    const schedule = () => {
+    // scheduleNext, not schedule — see setupDailyResetMessaging; a local
+    // `schedule` shadows the module imported at the top of this file.
+    const scheduleNext = () => {
         const now = new Date();
         const next = nextWeeklyReportTime(now);
         const ms = Math.max(0, next.getTime() - now.getTime());
         console.log(`🧠 Next weekly knowledge report: ${next.toISOString()} (~${Math.round(ms / 3_600_000)}h)`);
         setTimeout(() => {
             postWeeklyKnowledgeReport().catch(e => console.log(`⚠️  Weekly report error: ${e.message}`));
-            schedule();
+            scheduleNext();
         }, ms);
     };
-    schedule();
+    scheduleNext();
 }
 
 // ── Discord client ──────────────────────────────────────────────────────────
@@ -2194,7 +2247,7 @@ client.on('messageCreate', async (message) => {
                 if (!isAdmin(message.member)) {
                     return message.reply('❌ This command requires the **XYIAN OFFICIAL** or **Admin** role.');
                 }
-                await sendGuildRecruitment();
+                await maybeSendRecruitment({ force: true });
                 return message.reply('🏰 Guild recruitment sent!');
             }
 
@@ -2222,7 +2275,7 @@ client.on('messageCreate', async (message) => {
                 if (!isAdmin(message.member)) {
                     return message.reply('❌ This command requires the **XYIAN OFFICIAL** or **Admin** role.');
                 }
-                await sendGeneralResetMessage();
+                await sendGeneralResetMessage({ force: true });
                 return message.reply('🔄 Daily reset message sent!');
             }
 
