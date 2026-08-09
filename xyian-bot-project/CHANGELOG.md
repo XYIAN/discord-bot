@@ -4,6 +4,26 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.25.0] - 2026-08-06
+
+### Recurring posts: send first, and never lose track of one again
+
+Slices 2–4 of the messaging-layer work. No new commands — this is the root cause behind the deleted welcomes, fixed properly.
+
+**The slot now names the post, not the channel.** It used to be `general` and `recruit`. Anything posting to #general inherited the daily reset's delete slot, which is exactly how welcome messages came to be deleted. It's now `daily-reset` and `recruitment`, so two recurring posts could share a channel without fighting, and something that isn't a recurring post can't accidentally become one.
+
+**Permanence is the default.** `sendToGeneral()` no longer marks your message deletable; rotation is an explicit choice. Previously a new caller was deletable unless it remembered to opt out — and the welcome didn't know the opt-out existed. A new caller getting the safe behaviour for free is the actual fix.
+
+**Send first, then delete.** The old order deleted the previous post *before* sending the replacement. If the send then failed — a rotated webhook returns a 404 that gets swallowed into a silent null — the channel was left with nothing at all until the next cycle, which for recruitment is 48 hours.
+
+**Skipped cleanups are retried instead of stranded.** A member posting between two daily resets blocks cleanup so their reply is never orphaned — that part was right. But the stored ID was overwritten anyway, so a skipped delete meant that message could *never* be cleaned up, and the resets piled up regardless. Skipped deletes now go on a pending list and are retried once the channel goes quiet.
+
+**And the bot's own posts don't count as "someone".** A welcome landing between two resets used to block cleanup forever. Members block it; the bot doesn't.
+
+**All of it now survives a deploy.** The tracking was a module-level object, so "only one daily reset visible" quietly stopped holding every time the bot restarted — 32 deploys in the last fortnight.
+
+23 tests, and `lib/channel-cleanup.js` is folded into `lib/rotating-post.js` — it had become one concept split across two modules with a dead function in it.
+
 ## [3.24.0] - 2026-08-06
 
 ### The 🤖 reaction stopped granting AI access after every deploy

@@ -40,8 +40,8 @@ const usageLib = require('./lib/usage');
 const knowledgeRender = require('./lib/knowledge-render');
 const priceGuard = require('./lib/price-guard');
 const visionResponse = require('./lib/vision-response');
-const channelCleanup = require('./lib/channel-cleanup');
 const stateStore = require('./lib/state-store');
+const rotatingPost = require('./lib/rotating-post');
 require('dotenv').config();
 
 // Single source of truth: version + changelog are parsed from CHANGELOG.md.
@@ -965,58 +965,125 @@ async function checkTierUpgrade(guild, userId, username) {
 // Track the last message ID we sent per channel so we can delete it if
 // nobody else posted since then (keeps channels tidy).
 // Keyed by WHAT THE POST IS, not which channel it lands in — see
-// lib/channel-cleanup.js. Keying on the channel is what let welcome messages
+// lib/rotating-post.js. Keying on the channel is what let welcome messages
 // inherit the daily reset's delete slot and get removed.
-const lastBotMessage = {
-    'daily-reset': null,   // message ID of the last daily reset we sent
-    'recruitment': null,   // message ID of the last recruitment ad we sent
-};
+//
+// PERSISTED, because this used to be a module-level object and Railway wipes
+// those on every deploy — so "only one daily reset visible" silently stopped
+// holding across a redeploy, and there were 32 deploys in a fortnight.
+//
+// Each entry keeps the message we last posted AND a pending list of earlier
+// ones we still want gone. A cleanup skipped because a member posted is
+// deferred, not forgotten; the old code overwrote the id unconditionally, so a
+// skipped delete stranded that message forever and the posts stacked up anyway.
+const ROTATING_POSTS_STORE = 'rotating-posts';
+const rotatingPosts = stateStore.loadState(ROTATING_POSTS_STORE, {});
+
+function rotatingRecord(key) {
+    const r = rotatingPosts[key] || {};
+    return { lastId: r.lastId || null, pending: Array.isArray(r.pending) ? r.pending : [] };
+}
+
+function saveRotatingRecord(key, record) {
+    rotatingPosts[key] = record;
+    stateStore.saveState(ROTATING_POSTS_STORE, rotatingPosts);
+}
+
+/**
+ * Has a real person posted since our last message in this channel?
+ *
+ * Kyle's rule: "ideally no, it won't be deleted if someone posts between the
+ * reset messages." The bot's own posts are not "someone" — a welcome landing
+ * between two resets used to block cleanup permanently.
+ */
+async function memberPostedSinceOurs(channelId, previousId) {
+    if (!previousId || !channelId || !client.isReady()) return false;
+    try {
+        const channel = await client.channels.fetch(channelId);
+        if (!channel) return false;
+        const after = await channel.messages.fetch({ after: previousId, limit: 50 });
+        return rotatingPost.memberPostedSince(
+            [...after.values()].map((m) => ({ webhookId: m.webhookId, authorId: m.author?.id })),
+            { webhookIds: knownWebhookIds(), botUserId: client.user?.id },
+        );
+    } catch (e) {
+        // Unknown means unsafe: assume a member posted rather than risk
+        // deleting something somebody replied to.
+        console.log(`⚠️  Could not check for member posts after ${previousId}: ${e.message} — skipping cleanup`);
+        return true;
+    }
+}
+
+/** Webhook ids we own, so our own posts are not mistaken for a member's. */
+function knownWebhookIds() {
+    return Object.values(webhooks)
+        .filter(Boolean)
+        .map((url) => (url.match(/webhooks\/(\d+)\//) || [])[1])
+        .filter(Boolean);
+}
 
 async function sendViaWebhook(webhookUrl, channelId, trackingKey, content) {
     if (!webhookUrl) return null;
+    const wh = new WebhookClient({ url: webhookUrl });
+
+    // Permanent posts — welcomes, admin alerts — are a plain send. They neither
+    // delete anything nor become deletable.
+    if (!rotatingPost.isRotatingPost(trackingKey)) {
+        try {
+            return await wh.send({ ...content, wait: true });
+        } catch (e) {
+            console.error(`❌ sendViaWebhook(${trackingKey || 'admin'}) failed:`, e.message);
+            return null;
+        }
+    }
+
+    // Rotating posts: SEND FIRST, then clean up. Deleting first meant a failed
+    // send left the channel empty until the next cycle — 48 hours for
+    // recruitment.
+    const record = rotatingRecord(trackingKey);
+    const backlog = record.lastId ? [...record.pending, record.lastId] : [...record.pending];
+
+    // Recruitment always collapses to one ad. The daily reset defers to members.
+    const mayDelete = rotatingPost.mayDeleteFor(
+        trackingKey,
+        trackingKey === 'recruitment' ? false : await memberPostedSinceOurs(channelId, record.lastId),
+    );
+
+    let outcome;
     try {
-        const wh = new WebhookClient({ url: webhookUrl });
-
-        // Delete our previous message before sending so the channel stays tidy.
-        // - recruit: always delete our last post so only one recruitment message is visible.
-        // - general: only delete if we're still the latest (don't remove if users replied).
-        if (trackingKey && lastBotMessage[trackingKey] && channelId && client.isReady()) {
-            try {
-                let latestIdInChannel = null;
-                if (trackingKey !== 'recruitment') {
-                    const channel = await client.channels.fetch(channelId);
-                    if (channel) {
-                        const recent = await channel.messages.fetch({ limit: 1 });
-                        latestIdInChannel = recent.first()?.id ?? null;
-                    }
-                }
-                const shouldDelete = channelCleanup.shouldDeletePrevious({
-                    trackingKey,
-                    previousId: lastBotMessage[trackingKey],
-                    latestIdInChannel,
-                });
-                if (shouldDelete) {
-                    await wh.deleteMessage(lastBotMessage[trackingKey]);
-                    console.log(`🗑️ Deleted previous ${trackingKey} message ${lastBotMessage[trackingKey]}`);
-                }
-            } catch (e) {
-                console.log(`⚠️  Could not clean old ${trackingKey} message: ${e.message}`);
-            }
-        }
-
-        const sent = await wh.send({ ...content, wait: true });
-
-        // Only rotating posts are recorded as deletable. A welcome passes a
-        // null tracking key, so nothing later can target it.
-        if (channelCleanup.isRotatingPost(trackingKey) && sent?.id) {
-            lastBotMessage[trackingKey] = sent.id;
-        }
-
-        return sent;
+        outcome = await rotatingPost.replacePrevious({
+            send: () => wh.send({ ...content, wait: true }),
+            deleteMessage: (id) => wh.deleteMessage(id),
+            pending: backlog,
+            mayDelete,
+        });
     } catch (e) {
-        console.error(`❌ sendViaWebhook(${trackingKey || 'admin'}) failed:`, e.message);
+        console.error(`❌ sendViaWebhook(${trackingKey}) failed:`, e.message);
         return null;
     }
+
+    if (!outcome.sent?.id) {
+        // Nothing replaced it, so nothing was removed and the backlog stands.
+        saveRotatingRecord(trackingKey, { lastId: record.lastId, pending: record.pending });
+        return null;
+    }
+
+    saveRotatingRecord(trackingKey, { lastId: outcome.sent.id, pending: outcome.pending });
+
+    if (outcome.deleted.length) {
+        console.log(`🗑️ Cleaned ${outcome.deleted.length} old ${trackingKey} message(s)`);
+    }
+    if (!mayDelete && backlog.length) {
+        console.log(`⏸️  ${trackingKey}: a member posted since — deferring ${backlog.length} cleanup(s) to the next cycle`);
+    }
+    if (outcome.failed.length) {
+        const detail = outcome.failed.map((f) => `${f.id} (${f.message})`).join(', ');
+        console.warn(`⚠️  ${trackingKey}: ${outcome.failed.length} delete(s) failed, will retry — ${detail}`);
+        if (outcome.pending.length > 10) {
+            await sendToAdmin({ content: `⚠️ **${trackingKey} cleanup backlog is ${outcome.pending.length}** — deletes keep failing: ${detail}` });
+        }
+    }
+    return outcome.sent;
 }
 
 // Continuous debug-log forwarder: streams console errors/warnings to
