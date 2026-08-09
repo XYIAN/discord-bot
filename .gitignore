@@ -106,3 +106,10 @@ Thumbs.db
 # Runtime LLM usage telemetry — rewritten on every AI call. Lives on the
 # Railway volume in production; in the repo it would just be diff noise.
 xyian-bot-project/data/usage.json
+
+# Runtime message/state tracking — lives on the Railway volume, never committed.
+# These are recreated from defaults when missing, so there is nothing to seed.
+xyian-bot-project/data/reaction-role-messages.json
+xyian-bot-project/data/rotating-posts.json
+xyian-bot-project/data/schedule-state.json
+xyian-bot-project/data/*.json.tmp

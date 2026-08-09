@@ -41,6 +41,7 @@ const knowledgeRender = require('./lib/knowledge-render');
 const priceGuard = require('./lib/price-guard');
 const visionResponse = require('./lib/vision-response');
 const channelCleanup = require('./lib/channel-cleanup');
+const stateStore = require('./lib/state-store');
 require('dotenv').config();
 
 // Single source of truth: version + changelog are parsed from CHANGELOG.md.
@@ -1615,7 +1616,37 @@ const client = new Client({
 
 // ── Reaction-role system ────────────────────────────────────────────────────
 
-const reactionRoleMessages = new Set();
+/**
+ * Message ids that grant a role when reacted to.
+ *
+ * PERSISTED. This used to be an in-memory Set rebuilt at boot from the three
+ * hardcoded ids in CONFIG.reactionRole.messageIds. Every welcome added its own
+ * id at runtime and lost it on the next deploy — so a member who joined
+ * yesterday, reacted 🤖 today, and was told in the embed that this grants AI
+ * access, got nothing at all. The handler returns before it logs, so there was
+ * no trace of it anywhere.
+ */
+const REACTION_ROLE_STORE = 'reaction-role-messages';
+/** Bound so a long-lived file cannot grow without limit, same as processedMembers. */
+const MAX_TRACKED_REACTION_MESSAGES = 500;
+
+const reactionRoleMessages = new Set([
+    ...(CONFIG.reactionRole.messageIds || []),
+    ...stateStore.loadState(REACTION_ROLE_STORE, []),
+]);
+
+/** Record a message as reaction-role bearing, and remember it across deploys. */
+function trackReactionRoleMessage(messageId) {
+    if (!messageId || reactionRoleMessages.has(messageId)) return;
+    reactionRoleMessages.add(messageId);
+    while (reactionRoleMessages.size > MAX_TRACKED_REACTION_MESSAGES) {
+        reactionRoleMessages.delete(reactionRoleMessages.values().next().value);
+    }
+    // The hardcoded CONFIG ids are re-added at load, so they need not be stored.
+    const configIds = new Set(CONFIG.reactionRole.messageIds || []);
+    stateStore.saveState(REACTION_ROLE_STORE, [...reactionRoleMessages].filter((id) => !configIds.has(id)));
+}
+
 const welcomeDmMessages = new Map();
 
 client.on('messageReactionAdd', async (reaction, user) => {
@@ -1639,7 +1670,13 @@ client.on('messageReactionAdd', async (reaction, user) => {
     }
 
     if (reaction.emoji.name !== '🤖') return;
-    if (!reactionRoleMessages.has(reaction.message.id)) return;
+    if (!reactionRoleMessages.has(reaction.message.id)) {
+        // Used to be a bare `return`. The silence is why nobody noticed that
+        // every welcome stopped granting the role after a deploy — a member
+        // reacted, nothing happened, and no log line existed to explain it.
+        console.warn(`⚠️  🤖 reaction on untracked message ${reaction.message.id} by ${user.tag || user.id} — no role granted`);
+        return;
+    }
 
     try {
         if (reaction.partial) await reaction.fetch();
@@ -1725,7 +1762,7 @@ client.on('guildMemberAdd', async (member) => {
     try {
         const welcomeMsg = await sendToGeneralPermanent({ embeds: [embed] });
         if (welcomeMsg?.id) {
-            reactionRoleMessages.add(welcomeMsg.id);
+            trackReactionRoleMessage(welcomeMsg.id);
             const channel = CONFIG.channels.general ? await client.channels.fetch(CONFIG.channels.general).catch(() => null) : null;
             if (channel) {
                 try {
@@ -2648,11 +2685,11 @@ client.on('messageCreate', async (message) => {
                     .setFooter({ text: 'XYIAN Bot — React 🤖 for access!' });
                 const posted = await message.channel.send({ embeds: [setupEmbed] });
                 await posted.react(emoji);
-                reactionRoleMessages.add(posted.id);
+                trackReactionRoleMessage(posted.id);
                 await sendToAdmin({
                     content: `📌 **Reaction-role message posted**\nChannel: <#${message.channel.id}>\nMessage ID: ${posted.id}\nRole: **${roleName}**\nEmoji: ${emoji}`,
                 });
-                return message.reply(`✅ Reaction-role message posted! Message ID: \`${posted.id}\`\n⚠️ Add this ID to \`CONFIG.reactionRole.messageIds\` so it persists across restarts.`);
+                return message.reply(`✅ Reaction-role message posted! Message ID: \`${posted.id}\`\nTracked and persisted — it will keep working across restarts.`);
             }
 
             default:
@@ -2954,11 +2991,9 @@ client.once('clientReady', async () => {
             `⏰ ${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })} Pacific`,
     });
 
-    // Seed known reaction-role message IDs so reactions work after restart
-    if (CONFIG.reactionRole.messageIds) {
-        CONFIG.reactionRole.messageIds.forEach(id => reactionRoleMessages.add(id));
-        console.log(`📌 Tracking ${CONFIG.reactionRole.messageIds.length} reaction-role message(s)`);
-    }
+    // The Set is built at declaration from CONFIG ids + the persisted store,
+    // so there is nothing to seed here — just report what survived the deploy.
+    console.log(`📌 Tracking ${reactionRoleMessages.size} reaction-role message(s) (persisted across deploys)`);
 
     setupDailyResetMessaging();
     setupDailyMessaging();

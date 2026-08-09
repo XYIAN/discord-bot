@@ -4,6 +4,26 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.24.0] - 2026-08-06
+
+### The 🤖 reaction stopped granting AI access after every deploy
+
+Slice 1 of the messaging-layer root-cause work.
+
+A member joins, gets a welcome, and the embed tells them to react 🤖 for AI access. If they react *before* the next deploy it works. After a deploy it does nothing — no role, no error, nothing in the logs. The handler returned before it logged anything, so this was completely invisible.
+
+The tracking Set was rebuilt at boot from three message IDs hardcoded in config. Every welcome added its own ID at runtime and lost it on the next restart. There were **32 deploys in the last fortnight**, so "after a deploy" is the normal case, not an edge case. `!setupreaction` already admitted the gap — it told you to paste the ID into config by hand, which nobody can do for one welcome per join.
+
+Reaction-role IDs are now persisted, so the 🤖 keeps working indefinitely. Existing welcomes that were forgotten stay forgotten (their IDs are gone), but every one from here on sticks.
+
+An unrecognised 🤖 now logs a warning instead of returning silently — the silence is the reason this went unnoticed.
+
+### New: `lib/state-store.js`
+
+Atomic, synchronous JSON state — tmp-file plus rename, so a process killed mid-write leaves the previous file intact rather than a truncated one. The six existing `load*/save*` pairs in `bot.js` all write straight over their target and can be silently emptied by a bad shutdown; they are untouched for now, but new state uses this.
+
+Nine tests, including the two that matter: a corrupt file falls back to defaults instead of throwing, and a leftover `.tmp` cannot corrupt the real file.
+
 ## [3.23.0] - 2026-08-06
 
 ### Welcome messages were being deleted moments after they posted
