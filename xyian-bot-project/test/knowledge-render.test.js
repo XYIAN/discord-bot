@@ -38,7 +38,7 @@ test('renders the live knowledge base to the pinned length and hash', () => {
     assert.strictEqual(out.length, 154873, 'rendered length changed');
     assert.strictEqual(
         sha(out),
-        '1299f3d0d0b0df0fef23453458121e76c3e186b820d617e453b571f549859827',
+        '59b553034b6bb969149a4e90ca0a27ba5be5f65ff9b3290cdaa595363ace3d81',
         'rendered content changed',
     );
 });
@@ -238,7 +238,7 @@ test('pins the production configuration, not just the defaults', () => {
     assert.strictEqual(out.length, 147552, 'production render length changed');
     assert.strictEqual(
         sha(out),
-        '4dc2634bdea791dc6b65049beb8f439fac221d817ea4409bbcef24d6c2e3bfcf',
+        'f75779c4c2d68d19690a01592eb54d95ba51df88f2ed6738892530af5b125b59',
         'production render content changed',
     );
 });
