@@ -4,6 +4,15 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.29.2] - 2026-08-18
+
+### Fact sync
+
+- 📦 Synced 8 community entries from the live bot into permanent memory: faria88pt's PvP mixed gear set (filed under `gear_sets.pvp_mixed_set`), the Cleo skins fact, _xyian's two twinborn rune-forging facts, and four approved suggestions
+- 🎖️ Contributors credited: **faria88pt** (now 8 approved — Arch Scholar, 7 from Arch Sage)
+- First sync produced by the new `!syncreport` command, so it includes same-day approvals
+- Golden render re-pinned for the data change: 152,813 → 154,873 (default), 145,492 → 147,552 (production)
+
 ## [3.29.1] - 2026-08-18
 
 ### `!syncreport` actually reports now

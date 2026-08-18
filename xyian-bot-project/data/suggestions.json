@@ -520,5 +520,14 @@
     "approvedBy": "528059607826825226",
     "approvedByName": "XYIAN (history audit)",
     "note": "Credited from #arch-ai history; contribution was never recorded."
+  },
+  {
+    "id": 58,
+    "text": "Cleo has 2 skins: Fiery Reckoning and Eternal Nightglow. The best is Fiery Reckoning",
+    "by": "faria88pt",
+    "userId": "1429274216657719368",
+    "at": "2026-08-17T00:00:00.000Z",
+    "status": "approved",
+    "approvedVia": "fact_sync"
   }
 ]
