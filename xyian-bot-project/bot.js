@@ -163,7 +163,7 @@ const CONFIG = {
     },
     // Roles allowed to use vision (image attachments) in #arch-ai. Anyone else
     // who attaches an image gets a redirect embed and zero OpenAI calls.
-    visionTrustedRoleNames: ['XYIAN OFFICIAL', 'Admin', 'Moderator', 'Arch Legend'],
+    visionTrustedRoleNames: ['XYIAN OFFICIAL', 'ProjectXY Official', 'Admin', 'Moderator', 'Arch Legend'],
     reactionRole: {
         emoji: '🤖',
         roleName: 'AI Enabled',
@@ -727,7 +727,7 @@ function ownerDenialMessage() {
 
 function isAdmin(member) {
     if (!member || !member.roles) return false;
-    return member.roles.cache.some(r => r.name === 'XYIAN OFFICIAL' || r.name === 'Admin');
+    return member.roles.cache.some(r => r.name === 'XYIAN OFFICIAL' || r.name === 'ProjectXY Official' || r.name === 'Admin');
 }
 
 function isModerator(member) {
@@ -737,7 +737,7 @@ function isModerator(member) {
 
 function hasVerifiedRole(member) {
     if (!member || !member.roles) return false;
-    const allowed = ['XYIAN OFFICIAL', 'XYIAN Guild Verified', 'Admin', 'Moderator', 'Server Booster'];
+    const allowed = ['XYIAN OFFICIAL', 'XYIAN Guild Verified', 'ProjectXY Official', 'ProjectXY Guild Verified', 'Admin', 'Moderator', 'Server Booster'];
     return member.roles.cache.some(r => allowed.includes(r.name));
 }
 
@@ -2634,6 +2634,18 @@ client.on('messageCreate', async (message) => {
                 recordSuggestion(message.author.id);
                 await sendToAdmin({ content: `💡 **New suggestion** from ${message.author.username}:\n> ${argText.substring(0, 500)}` });
                 return message.reply('💡 Thanks! Your suggestion has been submitted for admin review.');
+            }
+
+            case 'syncreport': {
+                if (!isModerator(message.member)) {
+                    return message.reply('❌ This command requires the **Moderator**, **XYIAN OFFICIAL**, or **Admin** role.');
+                }
+                // The weekly knowledge report + dated backup, on demand. Exists
+                // so a fact sync into the repo can use a backup that includes
+                // TODAY's approvals instead of waiting for Saturday's timer.
+                await message.reply('🧠 Generating knowledge report + backup…');
+                await postWeeklyKnowledgeReport();
+                return;
             }
 
             case 'suggestions': {

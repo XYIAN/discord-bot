@@ -4,6 +4,14 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.29.0] - 2026-08-18
+
+### ProjectXY gets its roles and its room
+
+Two new roles, exact mirrors of the XYIAN pair: **ProjectXY Official** (same access as XYIAN OFFICIAL everywhere — admin commands, screenshot Q&A, verified perks) and **ProjectXY Guild Verified**. And one new channel: **#official-projectxy-guild**, in the guild category right beside its XYIAN sibling — private to everyone except the two ProjectXY roles, XYIAN OFFICIAL, and Admins.
+
+Also new: `!syncreport` (moderators) generates the weekly knowledge report and dated backup on demand, so a fact sync into the repo can include today's approvals instead of waiting for Saturday.
+
 ## [3.28.0] - 2026-08-15
 
 ### Welcome to the family, ProjectXY 🚀
