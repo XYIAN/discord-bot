@@ -2644,7 +2644,11 @@ client.on('messageCreate', async (message) => {
                 // so a fact sync into the repo can use a backup that includes
                 // TODAY's approvals instead of waiting for Saturday's timer.
                 await message.reply('🧠 Generating knowledge report + backup…');
-                await postWeeklyKnowledgeReport();
+                // force=true: the weekly guard skips silently within 6 days of
+                // the Saturday run, which is exactly when a manual sync is
+                // wanted. First version omitted this and no-opped after the
+                // "Generating…" reply.
+                await postWeeklyKnowledgeReport(true);
                 return;
             }
 

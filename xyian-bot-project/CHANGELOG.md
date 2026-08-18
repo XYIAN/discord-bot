@@ -4,6 +4,12 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.29.1] - 2026-08-18
+
+### `!syncreport` actually reports now
+
+First use revealed it replied "Generating…" and then silently did nothing: the weekly job's once-per-6-days guard also applied to the manual trigger, which is exactly when you *want* to bypass it. It now forces the run.
+
 ## [3.29.0] - 2026-08-18
 
 ### ProjectXY gets its roles and its room
