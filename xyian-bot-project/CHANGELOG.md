@@ -4,6 +4,16 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.30.0] - 2026-08-18
+
+### Guild verification knows both guilds now
+
+The ⚔️ verification flow was half-wired even before ProjectXY: the admin ping said "use `!grant`", but `!grant` assigns AI access — no command actually granted a Guild Verified role.
+
+Now there's **`!verify @user xyian|projectxy`** (moderators). It assigns the right Guild Verified role, DMs the member a welcome, and logs who verified whom into which guild. Deliberately **no default guild** — with two guilds, a silent default would verify people into the wrong one, so the command refuses to guess. Aliases work: `official`, `pxy`, `main`, `sub`, or the in-game guild IDs `213797` / `214890`.
+
+The welcome DM now asks "Already in XYIAN OFFICIAL **or ProjectXY**?", and the ⚔️ admin ping names both guilds with the right commands.
+
 ## [3.29.2] - 2026-08-18
 
 ### Fact sync

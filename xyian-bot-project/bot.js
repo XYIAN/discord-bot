@@ -41,6 +41,7 @@ const knowledgeRender = require('./lib/knowledge-render');
 const priceGuard = require('./lib/price-guard');
 const visionResponse = require('./lib/vision-response');
 const stateStore = require('./lib/state-store');
+const guildVerify = require('./lib/guild-verify');
 const rotatingPost = require('./lib/rotating-post');
 const schedule = require('./lib/schedule');
 require('dotenv').config();
@@ -1850,7 +1851,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
             await sendToAdmin({
                 content: `⚔️ **Guild verification request**\n` +
                     `User: **${info.username}** (<@${info.userId}>)\n` +
-                    `They reacted to their welcome DM — verify they're in XYIAN OFFICIAL and use \`!grant @user\` to assign the role.`,
+                    `They reacted to their welcome DM — check which guild they're in (XYIAN OFFICIAL \`213797\` or ProjectXY \`214890\`) and run ${guildVerify.usageLine()}. Add \`!grant @user\` too if they still need AI access.`,
             });
             await user.send('⚔️ Your guild verification request has been sent! An admin will review it shortly.');
         } catch (e) {
@@ -2016,7 +2017,7 @@ client.on('guildMemberAdd', async (member) => {
                 '`!suggest <text>` — Submit a correction or new info\n' +
                 '`!help` — Full command list\n' +
                 '`!contributors` — See top contributors\n\n' +
-                '⚔️ **Already in XYIAN OFFICIAL?**\n' +
+                '⚔️ **Already in XYIAN OFFICIAL or ProjectXY?**\n' +
                 'React with ⚔️ on this message to request **guild verification**. An admin will confirm and get you set up.\n\n' +
                 '*Thank you in advance for being here. Whether you ask a question, drop a suggestion, or just hang out — you\'re making this community better.*'
             )
@@ -2120,6 +2121,7 @@ client.on('messageCreate', async (message) => {
                         '`!unban <user id> [reason]` — Lift a ban\n' +
                         '`!setupreaction` — Post a reaction-role message\n' +
                         '`!recruit` — Send guild recruitment now\n' +
+                        '`!verify @user xyian|projectxy` — Verify a guild member (assigns the Guild Verified role)\n' +
                         '`!post-guild-requirements` — Post guild requirements embed\n' +
                         '`!reset` — Send daily reset now\n\n' +
                         '**Owner only:**\n' +
@@ -2824,6 +2826,36 @@ client.on('messageCreate', async (message) => {
                 }
 
                 return message.reply(`🗑️ Suggestion #${rejectId} rejected. Reason: ${reason}`);
+            }
+
+            case 'verify': {
+                if (!isModerator(message.member)) {
+                    return message.reply('❌ This command requires the **Moderator**, **XYIAN OFFICIAL**, or **Admin** role.');
+                }
+                const target = message.mentions.members?.first();
+                const guild = guildVerify.resolveGuildArg(argText);
+                if (!target || !guild) {
+                    // NO default guild: with two guilds a silent default would
+                    // verify people into the wrong one.
+                    return message.reply(`Usage: ${guildVerify.usageLine()}`);
+                }
+                const role = message.guild.roles.cache.find(r => r.name === guild.roleName);
+                if (!role) return message.reply(`❌ Role "${guild.roleName}" not found in this server.`);
+                if (target.roles.cache.has(role.id)) {
+                    return message.reply(`${target.user.username} already has **${guild.roleName}**.`);
+                }
+                await target.roles.add(role);
+                await sendToAdmin({
+                    content: `⚔️ **Guild verified**\nUser: **${target.user.username}** (${target.id})\nGuild: **${guild.label}** (${guild.gameGuildId})\nRole: **${guild.roleName}**\nVerified by: ${message.author.username}`,
+                });
+                try {
+                    await target.user.send(
+                        `⚔️ **You're verified as a ${guild.label} guild member!**\n\n` +
+                        `You now have the **${guild.roleName}** role and access to the private guild channels here.\n\n` +
+                        `Welcome to the family — see you in the guild chat!`
+                    );
+                } catch { /* DMs disabled */ }
+                return message.reply(`✅ **${target.user.username}** verified as **${guild.label}** (${guild.gameGuildId}) — assigned **${guild.roleName}**.`);
             }
 
             case 'grant': {
