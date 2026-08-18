@@ -41,10 +41,11 @@ Two cases, both because no API exists:
    wiki worth trusting; the only source is the game itself. See
    `the Tempest repo's docs/capture/treasures-runes.md`, and note the hard rules there — the Shop
    screen has cost real money.
-2. **Driving Discord in the browser AS KYLE**, to send a message from his
-   account for testing. The bot cannot ask itself a question, and neither can a
-   bot token: the bot ignores its own messages. If a change needs testing
-   against a real member-shaped message in a real channel, that is the way.
+2. **Acting as Kyle on Discord** — test messages, admin-only commands like
+   `!recruit`. The bot cannot ask itself a question, and neither can a bot
+   token: the bot ignores its own messages. Use **Claude in Chrome** (Kyle's
+   real logged-in browser), NEVER desktop screen control of the Discord app.
+   Desktop control is reserved for iPhone Mirroring alone.
 
 Anything else — reading, checking, measuring — should be text.
 

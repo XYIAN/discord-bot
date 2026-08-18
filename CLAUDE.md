@@ -49,9 +49,10 @@ gh api repos/XYIAN/discord-bot/deployments   # deploy status
 Reviewing member conversations by screenshotting the Discord app is slow, takes
 a dozen round trips to read what one command prints, and has already typed into
 somebody's half-written DM. **Screen/browser control has exactly two legitimate
-uses: driving Discord in the browser AS Kyle to send a test message from his
-account (the bot ignores its own messages, so there is no other way to test a
-real member-shaped message), and iPhone Mirroring to capture game data.**
+uses, each with its own tool: acting as Kyle on Discord (test messages, admin
+commands like `!recruit`) via Claude in Chrome — his real logged-in browser,
+never the desktop app — and iPhone Mirroring via desktop control, for game
+data capture only.**
 Everything else — reading, checking, measuring — has a text path. Find it or
 write it.
 
