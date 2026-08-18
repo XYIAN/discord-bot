@@ -1639,17 +1639,20 @@ function setupDailyMessaging() {
 
 async function sendGuildRecruitment() {
     const embed = new EmbedBuilder()
-        .setTitle('🏰 XYIAN OFFICIAL — Guild Recruitment')
+        .setTitle('🏰 XYIAN Family — Guild Recruitment')
         .setDescription(
-            '**Guild ID: 213797**\n\n' +
-            '**We\'re looking for dedicated players to join our elite community!**\n\n' +
-            '✨ **What we offer:**\n• Active daily community\n• Expert strategies and guides\n• Guild events and challenges\n• 10% discount on guild shop items\n• Supportive and friendly environment\n\n' +
-            '🎯 **Requirements:**\n• Daily participation in guild activities\n• 2 Boss Battles per day\n• 1 Guild Donation per day\n• Active in Discord community\n\n' +
-            '💪 **Power Level:** 6M+ required\n\n**Ready to join the elite? Apply now!**'
+            '**One community, two guilds — and the door is open at ProjectXY!**\n\n' +
+            '🚀 **ProjectXY** — `Guild ID: 214890` — **NOW RECRUITING**\n' +
+            'Our brand-new sister guild and the primary home for new members. XYIAN OFFICIAL filled up, so we built the next chapter — same community, same Discord, same standards, fresh leaderboard climb.\n\n' +
+            '🏆 **XYIAN OFFICIAL** — `Guild ID: 213797` — currently full\n' +
+            'Our founding guild. Join ProjectXY and you\'re part of the same family from day one.\n\n' +
+            '✨ **What we offer:**\n• Active daily community\n• Expert strategies and guides (+ our Arch AI)\n• Guild events and challenges\n• Supportive and friendly environment\n\n' +
+            '🎯 **Requirements (both guilds):**\n• 💪 6M+ power\n• Daily boss battles & research (2x minimum)\n• Daily bargain (1x minimum)\n• Active in Discord\n\n' +
+            '**Apply in game → search Guild ID `214890` (ProjectXY). Welcome to the family!**'
         )
         .setColor(0xffa500)
         .setTimestamp()
-        .setFooter({ text: 'XYIAN OFFICIAL — Arch 2 Addicts' });
+        .setFooter({ text: 'XYIAN OFFICIAL + ProjectXY — Arch 2 Addicts' });
     // Returned so the caller can tell a real send from a swallowed failure.
     // sendViaWebhook returns null on a rotated webhook, and without this the
     // schedule clock would advance on a post that never happened — or, worse,
@@ -1938,8 +1941,10 @@ client.on('guildMemberAdd', async (member) => {
             '🎬 <#1419944149410648116> — Share your best clips and highlights\n\n' +
             `**${emoji} Want AI access?**\n` +
             `React with ${emoji} on this message to get the **${roleName}** role and start asking Archero 2 questions in <#${CONFIG.channels.archAi}>!\n\n` +
-            '**About XYIAN OFFICIAL (Guild ID: 213797):**\n' +
-            'We\'re an active Archero 2 guild — daily activity and 6M+ power required.'
+            '**Our guilds:**\n' +
+            '🚀 **ProjectXY** (Guild ID: 214890) — our new sister guild and the primary home for new members. Now recruiting!\n' +
+            '🏆 **XYIAN OFFICIAL** (Guild ID: 213797) — our founding guild, currently full.\n' +
+            'Both: daily activity and 6M+ power. One community, one Discord.'
         )
         .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
         .setColor(0x00ff88)

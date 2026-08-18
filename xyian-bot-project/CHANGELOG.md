@@ -4,6 +4,16 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.28.0] - 2026-08-15
+
+### Welcome to the family, ProjectXY 🚀
+
+XYIAN OFFICIAL filled up — so we expanded. **ProjectXY (Guild ID: 214890)** is our new sister guild and the primary home for new members, with the same standards: 6M+ power, daily boss battles & research (2×), daily bargain (1×), active in Discord.
+
+The recurring recruitment ad now covers **both guilds** and points applicants at ProjectXY, since the main guild has no open slots. The new-member welcome does the same. One deliberate promise is baked into all of it: **we are not expanding past one sub-guild** — two guilds, one community, one Discord, nobody left in the dust.
+
+Announcements went out to #general, #guild-recruit-chat and #official-xyian-guild, each written for its audience — including a heads-up to existing guildmates that some members may be randomly selected to transfer over to help seed the new guild.
+
 ## [3.27.0] - 2026-08-06
 
 ### A dead webhook is now caught at boot instead of by its silence
