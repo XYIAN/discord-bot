@@ -112,4 +112,5 @@ xyian-bot-project/data/usage.json
 xyian-bot-project/data/reaction-role-messages.json
 xyian-bot-project/data/rotating-posts.json
 xyian-bot-project/data/schedule-state.json
+xyian-bot-project/data/welcome-dm-messages.json
 xyian-bot-project/data/*.json.tmp

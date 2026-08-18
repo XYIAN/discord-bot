@@ -1838,15 +1838,35 @@ function trackReactionRoleMessage(messageId) {
     stateStore.saveState(REACTION_ROLE_STORE, [...reactionRoleMessages].filter((id) => !configIds.has(id)));
 }
 
-const welcomeDmMessages = new Map();
+/**
+ * Welcome-DM message ids awaiting a possible ⚔️ verification reaction.
+ *
+ * PERSISTED — this was an in-memory Map, and that is why ZERO guild
+ * verification requests exist in the entire admin channel history: every
+ * deploy (32 in one fortnight) wiped the tracked ids, so a member reacting
+ * ⚔️ more than a few hours after joining hit a dead map and got silence.
+ * The welcome DM promised a flow that structurally could not hear them.
+ */
+const WELCOME_DM_STORE = 'welcome-dm-messages';
+const welcomeDmMessages = new Map(stateStore.loadState(WELCOME_DM_STORE, []));
+
+function saveWelcomeDmMessages() {
+    stateStore.saveState(WELCOME_DM_STORE, [...welcomeDmMessages.entries()]);
+}
 
 client.on('messageReactionAdd', async (reaction, user) => {
     if (user.bot) return;
 
     // ⚔️ Guild verification request via DM
+    if (reaction.emoji.name === '⚔️' && !welcomeDmMessages.has(reaction.message.id)) {
+        // Visibility, mirroring the 🤖 fix: the silent path is how a dead flow
+        // went unnoticed for its entire life.
+        console.warn(`⚠️  ⚔️ reaction on untracked DM ${reaction.message.id} by ${user.tag || user.id} — no verification request sent`);
+    }
     if (reaction.emoji.name === '⚔️' && welcomeDmMessages.has(reaction.message.id)) {
         const info = welcomeDmMessages.get(reaction.message.id);
         welcomeDmMessages.delete(reaction.message.id);
+        saveWelcomeDmMessages();
         try {
             await sendToAdmin({
                 content: `⚔️ **Guild verification request**\n` +
@@ -2031,6 +2051,7 @@ client.on('guildMemberAdd', async (member) => {
             const oldest = welcomeDmMessages.keys().next().value;
             welcomeDmMessages.delete(oldest);
         }
+        saveWelcomeDmMessages();
     } catch { /* DMs disabled */ }
 });
 

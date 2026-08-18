@@ -4,6 +4,16 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.30.1] - 2026-08-18
+
+### Why nobody ever requested guild verification
+
+An audit for retroactive damage from the half-wired ⚔️ flow found something better and worse at once: **zero verification requests in the entire admin channel history** — nobody was mis-verified, because nobody's request ever got through.
+
+The tracked welcome-DM IDs lived in an in-memory Map, wiped by every deploy — the same bug that silently killed the 🤖 reaction role. React ⚔️ more than a few hours after joining and the bot simply couldn't hear you. All 26 current Guild Verified members were assigned by hand in the Discord UI.
+
+The map is now persisted, and an untracked ⚔️ logs a warning instead of vanishing — silence is how this went unnoticed for its entire life.
+
 ## [3.30.0] - 2026-08-18
 
 ### Guild verification knows both guilds now
