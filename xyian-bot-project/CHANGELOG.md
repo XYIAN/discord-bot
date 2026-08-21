@@ -4,6 +4,18 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.31.0] - 2026-08-21
+
+### 🌿 New channel: #dab-corner
+
+The community has grown big enough to have real pockets in it, so we're giving each one a home — starting with the 420 crew, who turn out to be a solid chunk of the server.
+
+**#dab-corner** is live in Text Channels, public to everyone, right below #clips-and-highlights. Sesh check-ins, setup pics, munchies discourse, and the stages you cleared with no memory of clearing them.
+
+House rules are pinned: 21+ and legal where you are, and **no sourcing, sales or trades** — that's the one that gets whole servers deleted, so it isn't negotiable.
+
+Roles and perks for the regulars are being designed now. Post ideas in the channel.
+
 ## [3.30.1] - 2026-08-18
 
 ### Why nobody ever requested guild verification
