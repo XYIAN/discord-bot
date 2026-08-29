@@ -16,6 +16,12 @@
  * Facts from the in-game guild screen: ProjectXY, ID 214890, Lv.10, active
  * players 6M+, daily boss & research 2x min, daily bargain 1x min.
  *
+ * ⚠️  SUPERSEDED — DO NOT RE-RUN AS-IS. This is a record of what was posted on
+ * 2026-08-15. The requirements changed on 2026-08-24: XYIAN OFFICIAL is 8M+,
+ * ProjectXY is 6M+, and the daily requirement is 2x DONATIONS, not a bargain
+ * (different systems). Re-running this would post the superseded numbers to
+ * three channels. Build any new announcement from lib/guild-requirements.js.
+ *
  * Usage:
  *   node scripts/post-projectxy-announcements.js          # post all three
  *   node scripts/post-projectxy-announcements.js --dry    # print, post nothing

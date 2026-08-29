@@ -223,7 +223,7 @@ See **`docs/ARCH-AI-AUDIT.md`** for what it checks and the latest snapshot.
 
 | Channel | Content |
 |---------|---------|
-| #guild-requirements | Power minimum (6M+), daily boss battles, donation requirements and costs |
+| #guild-requirements | Power minimum (XYIAN OFFICIAL 8M+ / ProjectXY 6M+), daily boss battles, donation requirements and costs |
 | #community-rules-and-safety | Community guidelines, prohibited behavior, violation consequences |
 | #arch-ai-privacy-policy | AI data disclosure, OpenAI processing, what's not private |
 | #community-ai-discussion | Quick-reference guide (commands, tiers) + 🤖 reaction-role |

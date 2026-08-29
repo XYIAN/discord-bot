@@ -26,8 +26,73 @@ How to add, update, and maintain data in `data/knowledge.json` — the single so
 | `resources` | Useful links and references | Started |
 | `privilege_cards` | Premium cards and their benefits | Active |
 | `profile_experience` | Profile level, 10-level cards for gold, campaign-only source | Active |
+| `umbral_tempest` | The Umbral Tempest seasonal event | **Season 4 announcement only** — carries a `coverage_caveat` |
+| `collaborations` | Limited-time crossover events (Rick and Morty) | Active |
 | `custom_facts` | One-off facts added via `!addfact` | Active |
 | `opinions` | Unverified player opinions/theories via `!opinion` | Active |
+
+## How to add data — use a fragment, don't hand-edit
+
+`data/knowledge.json` is applied to, never typed into. Write a fragment under
+`data/knowledge-fragments/` and merge it:
+
+```bash
+node scripts/merge-knowledge.js data/knowledge-fragments/my-drop.json --dry-run
+node scripts/merge-knowledge.js data/knowledge-fragments/my-drop.json
+```
+
+A fragment mirrors the knowledge base's own shape, plus an optional `_meta`
+block recording where the data came from and how confident you are. It can carry
+structured topics **and** a `custom_facts` array; both are applied by the same
+command, which takes a timestamped backup, validates the JSON before writing,
+and mirrors `seeds/`.
+
+The merge is **additive only**. An existing value is never overwritten unless
+you name its exact dotted path with `--repair`, which forces a human to have
+looked at it — the file was wiped once by an infrastructure incident and the
+posture is deliberately paranoid.
+
+### Correcting a `custom_fact` — `custom_facts_repairs`
+
+`custom_facts` is an ARRAY, so the additive merge can only ever append to it.
+That left no way to correct a fact once filed, which bites hardest exactly when
+it matters most: when a provisional source (an in-game *Update Preview*, a
+leak, a translation) gets a NAME wrong and the official notes later correct it.
+The stale fact keeps sitting in the `ADDITIONAL FACTS` block contradicting the
+corrected category — and gpt-4o-mini does not reconcile two facts that
+disagree, it picks one. A wrong name left behind is a coin-flip on the answer.
+
+A fragment may therefore carry a `custom_facts_repairs` array:
+
+```json
+"custom_facts_repairs": [
+  {
+    "match_text": "the EXACT existing fact text, verbatim",
+    "text": "the corrected fact text",
+    "reason": "official patch notes name it X, not Y",
+    "repaired_at": "2026-08-28"
+  }
+]
+```
+
+- Matching is by **verbatim text, never by array index** — indices shift on
+  every append, so an index-keyed repair rewrites the wrong entry as soon as
+  anything lands before it. (Whitespace and case are normalised.)
+- It is gated on `--repair custom_facts` (the array, not an index). Without the
+  flag it reports a `custom_facts[N]` conflict and changes nothing.
+- The entry keeps its `added_by` / `added_at` provenance and gains
+  `repair_reason`.
+- A repair whose `match_text` matches **nothing at all** is reported loudly, so
+  a typo cannot no-op and look like success.
+- Re-running an applied repair is a clean no-op — the replacement is already
+  present, so there is nothing stale to report.
+
+**A fragment must replay as a clean no-op.** Re-run it after applying; if it
+still reports additions or conflicts, the fragment and the knowledge base
+disagree, and the fragment is no longer an accurate record of what landed.
+
+The sections below describe the SHAPE of each category — what to put in a
+fragment, not how to apply it.
 
 ## How to Add Data
 
@@ -85,6 +150,18 @@ Custom facts are simple text entries in the `custom_facts` array:
 ```
 
 These are also added live by users via `!addfact` — see [Fact Sync Workflow](#fact-sync-workflow) below.
+
+> **The table above is not exhaustive.** `knowledge.json` has 34 top-level keys;
+> the table lists the ones you are most likely to edit. `knowledgeAsText()`
+> iterates every top-level key, so an unlisted category still reaches the prompt.
+> Check the live file before assuming a category does not exist.
+
+> **`KNOWLEDGE_CATEGORIES` in `bot.js` is a separate, narrower list.** It gates
+> which categories `!approve <#> <category> <key>` will accept and which a vision
+> candidate may propose. A live category missing from it cannot be extended by
+> the community. Ten still are: `hunt`, `battle_pass`, `mystlings`, `currencies`,
+> `daily_rewards`, `main_screen`, `event_shop`, `skin_exchange_shop`,
+> `reach_rewards`, `shop`. Add a category to BOTH places when you create one.
 
 ### 5. Adding a community opinion
 
@@ -179,6 +256,26 @@ Each sync is a patch version bump with its own CHANGELOG entry.
 - After any manual edit to `data/knowledge.json`, mirror it forward with: `cp xyian-bot-project/data/knowledge.json xyian-bot-project/seeds/knowledge.json` and commit both.
 
 If `seeds/` and `data/` ever drift, the active bot keeps using `data/` — `seeds/` only matters on the first boot after a fresh volume attach.
+
+## Verify the ANSWER, not just the render
+
+A fact reaching the prompt is not the same as the bot saying it. Before shipping
+a change to `knowledge.json`:
+
+```bash
+node scripts/answer-check.js     # needs OPENAI_API_KEY, ~$0.05 a run
+```
+
+Two rules this has already caught the hard way:
+
+- **Make an enumeration complete before you qualify it.** "A and B are event-only.
+  C and D are likewise limited-time" gets answered as "A and B" — a small model
+  follows the leading directive clause and does not reconcile the qualifier
+  behind it. Write "A, B, C and D are event-only" and qualify afterwards.
+- **Put a caveat inside the value it qualifies.** A staleness warning filed as a
+  `custom_fact` sits in the `ADDITIONAL FACTS` bullet list, nowhere near the
+  category section holding the stale data — and loses to it. Prefix the entry
+  itself, or add a sibling key inside the same object.
 
 ## Validation
 

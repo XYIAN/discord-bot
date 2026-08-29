@@ -273,7 +273,7 @@
     "rarity_vs_power": "Rarity does not directly imply power. A fully-leveled lower-rarity hero can outperform a low-star higher-rarity hero.",
     "acquisition_daily_rewards": "Daily Rewards Bonus Pack gives random shards for the selected hero (default Phynx); shard quantity scales with rarity (x1 70%, x2 25%).",
     "acquisition_limited_offers": "Limited Offer packs supply event/seasonal hero shards.",
-    "acquisition_event_only_heroes": "Nezha and Wukong are obtainable only during their corresponding limited-time events.",
+    "acquisition_event_only_heroes": "The event-only heroes — obtainable ONLY during a limited-time event — are: Nezha, Wukong, Rick, and Morty. Nezha and Wukong each return with their own recurring event; Rick and Morty come from [Interdimensional Summon] during the Archero 2 x Rick and Morty collab.",
     "acquisition_not_from_chests_or_hunt": "Hero shards do NOT drop from Mythstone or Chromatic Chests, and do NOT drop from Hunt. Chests give gear; Hunt gives gear, runes, gear scrolls, gold and EXP only.",
     "shards": "Heroes are unlocked and starred up with shards, shown as an 'X/Y' counter on the hero card (X/150 and X/100 counters observed). Sources: Daily Rewards Bonus Pack, Limited Offer packs, events. Not Hunt.",
     "shard_exchange": "Excess hero shards convert one-way into Character Shadows, not into other heroes' shards.",
@@ -285,8 +285,8 @@
       "description": "PvP resonance pairings ranked by effectiveness. Resonance requires characters at 3-star (1 slot) or 6-star (2 slots).",
       "s_tier_p2p": {
         "combo": "Phynx (Desert Tribunal) + Cleo (Ember Throne)",
-        "note": "Best PvP resonance combo in the game. Phynx bleeds stack with Cleo's fire marks for devastating damage. Expensive to build \u2014 both are epic/legendary and need high star levels.",
-        "cost": "P2P (pay to play) \u2014 high investment"
+        "note": "Best PvP resonance combo in the game. Phynx bleeds stack with Cleo's fire marks for devastating damage. Expensive to build — both are epic/legendary and need high star levels.",
+        "cost": "P2P (pay to play) — high investment"
       },
       "a_tier_f2p": [
         {
@@ -317,11 +317,11 @@
   },
   "skins": {
     "_placeholder": "Each character has skins with unique abilities and 5 star levels that upgrade the skin's stats. Data to be filled in later.",
-    "mymu_skin_note": "Mymu's skin is critical for PvP \u2014 it makes his Immortal Curse (revive) reliable. Without it, Mymu is not recommended for competitive play."
+    "mymu_skin_note": "Mymu's skin is critical for PvP — it makes his Immortal Curse (revive) reliable. Without it, Mymu is not recommended for competitive play."
   },
   "gold": {
     "description": "Gold is the primary currency in Archero 2. It has two main uses: buying items in the general store and leveling up gear.",
-    "gear_leveling": "The main use of gold. Gear levels are tied to the equipment slot, not the individual item. For example, if your boots are level 148, every pair of boots you equip will be level 148 \u2014 whether they're Mythic Griffin or Legendary Oracle. This means upgrading gear level benefits any item in that slot. Gets very expensive at higher levels.",
+    "gear_leveling": "The main use of gold. Gear levels are tied to the equipment slot, not the individual item. For example, if your boots are level 148, every pair of boots you equip will be level 148 — whether they're Mythic Griffin or Legendary Oracle. This means upgrading gear level benefits any item in that slot. Gets very expensive at higher levels.",
     "general_store": "Gold can be used to purchase items from the general store.",
     "profile_level_cards": "Gold can also be used to buy profile-level-up cards when you reach each 10th profile level. You can buy 10 cards per level; they are randomly generated (e.g. Health increase, skill refresh, Red heart healing+, speed bonus). This is a rarer, sometimes expensive use of gold.",
     "gear_tiers_vs_levels": "Gear tier is specific to the individual piece of equipment (e.g. Rare, Epic, Legendary, Mythic). Gear level is specific to the slot (boots, weapon, armor, etc.) and applies to whatever item is equipped in that slot.",
@@ -329,20 +329,21 @@
     "added_by_community": "fails_8743"
   },
   "guild": {
-    "donations": "Guild donations: You can donate 5 times per day. The first donation is free, then costs increase by 20 gems each (free \u2192 20 \u2192 40 \u2192 60 \u2192 80). Donations are how guilds level up.",
+    "donations": "Guild donations: You can donate 5 times per day. The first donation is free, then costs increase by 20 gems each (free → 20 → 40 → 60 → 80). Donations are how guilds level up.",
     "first_donation_daily": "The first guild donation of the day is free.",
     "max_level": "The max guild level is 11.",
     "added_by": "xyian",
-    "overview": "Guilds are persistent social groups with shared progression and competitive content. The Guild hub is a map view with six buildings, each its own sub-feature.",
+    "overview": "Guilds are persistent social groups with shared progression and competitive content. The Guild hub is a map view of buildings, each its own sub-feature. The building list here predates the Starlight Gala, which the August 2026 notes add as a new guild feature without saying whether it is a building.",
     "member_cap": "Up to 30 members at base. Raising the guild level increases the member cap.",
-    "leadership": "Leaders can appoint Vice Leaders to help manage. Leaders cannot leave the guild \u2014 they must transfer leadership or be the last person to disband it.",
+    "leadership": "Leaders can appoint Vice Leaders to help manage. Leaders cannot leave the guild — they must transfer leadership or be the last person to disband it.",
     "inactive_leader": "Leadership auto-transfers when a leader is inactive for 7 days.",
-    "hub_buildings": "Six buildings: Guild Hall (members, roles, research, leaderboard), Monster Invasion (guild boss raids), Guild Expedition (multi-guild PvP tournament), Shop / Guild Store (hero shards and random Epic runes), Guild Merchant (community bargain mechanic), and Guild Aid.",
+    "hub_buildings": "Guild Hall (members, roles, research, leaderboard), Monster Invasion (guild boss raids), Guild Expedition (multi-guild PvP tournament), Shop / Guild Store (hero shards and random Epic runes), Guild Merchant (community bargain mechanic), and Guild Aid. The Starlight Gala was added later and is not in this list.",
     "guild_hall": {
-      "contents": "Guild name, ID, emblem with guild level, member count, Recruit button, aggregate guild power, guild XP progress bar toward the next level, and a leader-editable description box.",
+      "contents": "PRE-UPGRADE LAYOUT — the Guild Hall UI was fully upgraded on 2026-08-23 and this may no longer match the current screen. Before that upgrade it showed: guild name, ID, emblem with guild level, member count, Recruit button, aggregate guild power, guild XP progress bar toward the next level, and a leader-editable description box.",
       "member_row": "Each member row shows avatar, role, name, power level, daily contribution count, contribution score, and online/offline status.",
       "roles": "Leader (1), Vice Leader (multiple, appointed by the Leader), and Guild Members.",
-      "buttons": "Log (guild activity history: joins, leaves, kicks with timestamps), Guild Research, and Manage Member (kick / promote, Leader and Vice Leader only)."
+      "buttons": "Log (guild activity history: joins, leaves, kicks with timestamps), Guild Research, and Manage Member (kick / promote, Leader and Vice Leader only).",
+      "ui_upgraded_august_2026": "The Guild Hall was fully upgraded in this update: an all-new UI bringing guild info, member management and access to all guild modes together in one place. Every OTHER guild_hall detail here describes the pre-upgrade screen — say so when describing the Guild Hall. Official patch notes, 28 Aug 2026."
     },
     "guild_research": {
       "overview": "A grid of unlockable research nodes, each with 5 levels (Lv 1-5). Each node grants a buff that applies to all members of the guild.",
@@ -365,7 +366,7 @@
         "clash_clearance_ii": "Content unlock: unlocks Monster Invasion chest tiers (maxed unlocks Tier 10-12 chests).",
         "other_nodes_observed": "Node names seen but with effects not documented: Clash, Stamina Cycle II, Contribution Return II, Assist Accel II, Reflexes, Assist Enhancement II."
       },
-      "strategy": "Research is the cleanest source of permanent guild-wide stat buffs, and they apply to every member, so donating is high-leverage even for nodes you will not personally use. Focus Tier II of the stats your build prioritizes \u2014 Battle Will II for ATK builds, Vitality II for tanky builds, Wealth Boost II for gold farming."
+      "strategy": "Research is the cleanest source of permanent guild-wide stat buffs, and they apply to every member, so donating is high-leverage even for nodes you will not personally use. Focus Tier II of the stats your build prioritizes — Battle Will II for ATK builds, Vitality II for tanky builds, Wealth Boost II for gold farming."
     },
     "monster_invasion": {
       "overview": "A guild-wide boss raid where members collectively damage a single boss for tiered rewards.",
@@ -382,7 +383,9 @@
         "rank_61_100": "3,000 / 1,650",
         "rank_100_plus": "2,500 / 1,500"
       },
-      "strategy": "Being in a Top-100 guild is a meaningful daily Guild Coin source. The driver is total guild damage, so a guild with many members hitting the per-player milestones out-damages one with only a few high-damage members."
+      "strategy": "Being in a Top-100 guild is a meaningful daily Guild Coin source. The driver is total guild damage, so a guild with many members hitting the per-player milestones out-damages one with only a few high-damage members.",
+      "alias": "Monster Invasion is commonly shortened to MI in guild chat. A question about 'MI' means Monster Invasion.",
+      "guild_requirement": "The Arch 2 Addicts guilds require 2 Monster Invasion (MI) runs per day as a minimum activity standard, for both XYIAN OFFICIAL and ProjectXY. That is a guild rule set by XYIAN, not a game rule — Archero 2 itself does not require a number of runs."
     },
     "guild_expedition": {
       "overview": "A multi-guild PvP tournament with seasonal rounds. Your guild faces other guilds in deployment-based combat.",
@@ -394,13 +397,13 @@
         "battle_phase": "Fri 00:00 - Sun 23:59. Round-robin combat. Deployments and character progress lock at Fri 12:00 UTC, and the opposing guild's deployment becomes viewable within 2 hours after lock."
       },
       "format": "A group of 4 guilds competes round-robin, giving 3 matches per guild per cycle. Each match has 3 routes (Left / Middle / Right); each route deploys 8 members and the top 8 by Battle Power per lane fight. Capturing flags across the 3 routes determines wins.",
-      "combat_rules": "Matches use spectator mode with the arena's presets. Characters' HP and ATK use default values rather than live stats, so gear and runes do not directly determine fight outcomes \u2014 talent and Expedition Talents do. The guild that defeats all enemy players on a route claims that route's flag.",
+      "combat_rules": "Matches use spectator mode with the arena's presets. Characters' HP and ATK use default values rather than live stats, so gear and runes do not directly determine fight outcomes — talent and Expedition Talents do. The guild that defeats all enemy players on a route claims that route's flag.",
       "season_structure": "A season lasts 12 weeks (84 days) across 12 rounds of 1 week each. Performance accumulates league points across rounds, driving promotion or demotion at season end.",
       "match_scoring": "Within a round: a win (more flags captured) is 3 points and a draw (equal flags) is 1 point each. These determine placement within your weekly 4-guild bracket.",
       "round_points": "End-of-round bracket placement gives league points: 1st +50, 2nd +35, 3rd +10, 4th -15.",
       "win_streak_bonus": "Win streaks add bonus points: a 2-match win streak gives +5, a 3-match win streak gives +10.",
       "season_reset": {
-        "note": "At season reset a guild's points auto-reset to a soft floor based on final points \u2014 higher finishes keep more progress.",
+        "note": "At season reset a guild's points auto-reset to a soft floor based on final points — higher finishes keep more progress.",
         "0_599": "No reset, stays the same",
         "600_699": "Resets to 550",
         "700_799": "Resets to 600",
@@ -420,21 +423,25 @@
       "currency": "Guild Coins (orange icon), alongside gold.",
       "hero_shards": "Alex, Nyanja, Helix, Hela, Mymu, and Hou Yi shards at 900 Guild Coins each, limit 50 purchases each per day.",
       "runes": "Random Epic Enhancement Rune, Random Epic Ability Rune, and Random Epic Blessing Rune, bought with gems, limit 10 each.",
-      "strategy": "All 6 hero shards on offer are Rare-tier heroes, so the Guild Store is a strong farm path for Rare hero progression \u2014 up to 300 Rare hero shards per day per member.",
-      "shop_tabs": "Sub-tabs at the bottom of the Shop: Guild Store (default), Guild Expedition Shop, Event Shop, Arena Shop, and Skin Exchange Shop."
+      "strategy": "All 6 hero shards on offer are Rare-tier heroes, so the Guild Store is a strong farm path for Rare hero progression — up to 300 Rare hero shards per day per member.",
+      "shop_tabs": "Sub-tabs at the bottom of the Shop: Guild Store (default), Guild Expedition Shop, Event Shop, Arena Shop, and Skin Exchange Shop.",
+      "promised_ruin_shovel": "The Promised Ruin Shovel was added to the Guild Shop in this update. The notes do not say which sub-tab carries it, what it costs, or what it is used for. Official patch notes, 28 Aug 2026."
     },
     "guild_expedition_shop": {
       "overview": "A tab inside the Guild Shop selling themed random Epic runes plus specific named runes. Refreshes roughly every 2 days.",
       "currency": "Paid for with a currency earned from Guild Expedition (2,700 per item; the source could not confirm the currency name, likely Expedition Coins).",
       "items": "Random Epic Circle, Meteor, Sword Strike, Sprite, Main Weapon, Elemental, Plant, and Blessing Runes, plus Arrow of Echoes (a specific Etched rune). All at 2,700 with 1 purchase each.",
-      "strategy": "The cleanest path for theme-targeted rune farming \u2014 if you are building a Sprite or Plant build, the Random Epic [Theme] Rune options let you spend Expedition currency directly toward that theme."
+      "strategy": "The cleanest path for theme-targeted rune farming — if you are building a Sprite or Plant build, the Random Epic [Theme] Rune options let you spend Expedition currency directly toward that theme."
     },
     "guild_merchant": {
       "overview": "A community-driven bargain mechanic. Guild members collectively contribute bargains to lower the price of merchant items for the whole guild. Items rotate daily.",
       "how_it_works": "A panda merchant offers items each day at a base price in gems. Each member can place a Bargain, a small contribution toward the price cut. The more members who Bargain, the cheaper items get for everyone.",
       "refunds": "The price difference is returned via mail the next day, so anyone who bought at a higher price is refunded once the cut is finalized.",
       "daily_window": "The bargain runs on a daily timer window.",
-      "community_expectation": "Bargaining once daily is a common guild requirement, not just a personal tool."
+      "community_expectation": "Bargaining once daily is a common guild requirement, not just a personal tool.",
+      "bargain_vs_donation": "Bargain and donation are DIFFERENT systems and are commonly confused. DONATIONS are in the main guild tab: 5 per day, first free then 20/40/60/80 gems, and they level the guild up. BARGAIN is its own section in the guild menu: one rotating item per day whose gem price the whole guild collectively drives down. Contributing to one does nothing for the other.",
+      "bargain_contribution_size": "Each member's Bargain automatically takes a small amount off the day's item price for everyone — roughly 5% of the price per bargain. The cut applies to the whole guild, not just to the member who bargained.",
+      "buy_early_or_wait": "There is NO advantage to waiting for the guild to finish bargaining before you buy. If you buy at the higher price and the guild then bargains it lower, the difference is returned to you in gems by mail the next day. The only real difference is how many gems you need up front on the day itself."
     },
     "guild_aid": {
       "overview": "A Mystling-specific member help system. Guildmates can speed up each other's Pact Sanctum upgrade timers and Mystling egg hatch times.",
@@ -443,14 +450,27 @@
     },
     "guild_coins_source": "Guild Coins (used in the Guild Store) come from Monster Invasion guild ranking rewards and guild donation rewards. Consistent Monster Invasion damage plus donating to Guild Research is the loop that funds Guild Store purchases.",
     "daily_routine": "A typical active guild day: claim Pact Sanctum if upgraded, run Monster Invasion (Quick-Raid if you own the Sealing Master card), place 1 Bargain at Guild Merchant, buy daily hero shards from the Guild Store, contribute to Guild Research, and deploy/battle in Guild Expedition during active rounds.",
-    "why_it_matters": "Active guild membership is essential for endgame progression \u2014 Monster Invasion rewards, Guild Expedition coins, daily merchant bargains, hero shard farming, and guild-wide research buffs all require active participation.",
-    "open_questions": "Not documented in this contribution: what Manage Member reveals, how Expedition Hearts are earned, and the full league ladder above and below Thunderbound Oath."
+    "why_it_matters": "Active guild membership is essential for endgame progression — Monster Invasion rewards, Guild Expedition coins, daily merchant bargains, hero shard farming, and guild-wide research buffs all require active participation.",
+    "open_questions": "Not documented in this contribution: what Manage Member reveals, how Expedition Hearts are earned, and the full league ladder above and below Thunderbound Oath.",
+    "requirements": {
+      "overview": "The Arch 2 Addicts community runs two Archero 2 guilds. Both carry the same activity standards; only the power minimum differs. Set by XYIAN, effective 2026-08-24.",
+      "xyian_official_power": "XYIAN OFFICIAL (Guild ID 213797), the founding guild, requires 8M+ power.",
+      "projectxy_power": "ProjectXY (Guild ID 214890), the sister guild and the primary home for new members, requires 6M+ power.",
+      "shared_activity": "Both guilds require the same activity: daily Monster Invasion (the guild boss battle, called MI) and guild research at 2x minimum per day; daily guild donations at 2x minimum per day; and being active in Discord. The donation minimum is 2 rather than 1 because the first donation of the day is free, so a single donation costs nothing and proves nothing.",
+      "why_two_guilds": "XYIAN OFFICIAL filled up, so ProjectXY was created as a sister guild in August 2026. One community, one Discord, and a deliberate commitment not to expand past a single sub-guild."
+    },
+    "starlight_gala": {
+      "overview": "Starlight Gala is a weekly guild feature — 'Who's the guild's brightest star this week?' Winners are picked from each member's activity and contribution over the past week, receiving a range of honor awards, and one member is named guild MVP. Official patch notes, 28 Aug 2026.",
+      "how_winners_are_chosen": "Winners are picked from each member's activity and contribution over the PAST week: a range of honor awards is given out, and one member is named guild MVP. Official patch notes, 28 Aug 2026.",
+      "during_the_event": "During the gala you can watch the award ceremony, send emotes to join in, claim rewards, and review records from past galas. Official patch notes, 28 Aug 2026.",
+      "name": "The official name is Starlight Gala. The in-game Update Preview of 23 Aug 2026 called this same feature the 'Guild Starlight Celebration' — a superseded preview name for one feature, not a second event. Always call it the Starlight Gala."
+    }
   },
   "gear_sets": {
     "godforge": "On Godforge, you will need Gear Essence and Crystals to upgrade your gear. You need to salvage any gear (excluding S-tier) to get Gear Essence and you also need to salvage the corresponding S-tier set pieces to get Crystals. You can only salvage S-tier pieces that you have already on Chaotic lvl.",
     "overview": "Six core gear sets: three base sets and three S-Ranked counterparts. Only S-Ranked gear can be upgraded past Legendary.",
     "gear_slots": "Six gear slots per hero: Helmet, Armor, Weapon, Boots, Ring, Amulet.",
-    "loadouts": "Every player has 8 saved loadouts they can name and configure freely. Loadouts are player-level slots, not hero-level \u2014 they persist independent of which hero is selected.",
+    "loadouts": "Every player has 8 saved loadouts they can name and configure freely. Loadouts are player-level slots, not hero-level — they persist independent of which hero is selected.",
     "set_pairs": {
       "destruction": "Base set, caps at Legendary. S-Ranked counterpart: Dragoon.",
       "decisiveness": "Base set, caps at Legendary. S-Ranked counterpart: Griffin.",
@@ -486,7 +506,7 @@
     "piece_detail_fields": "A gear piece's detail screen shows name + rarity tier, level X/200, Skin Skills (set-specific abilities) and Quality Skills (stat bonuses).",
     "stat_snapshot_caveat": "Per-piece stats below were captured at the Chaotic rarity tier. Lower rarities show a subset of these effects, and flat values scale with the piece's level.",
     "griffin_set": {
-      "theme": "Theme observed: proximity / melee-range bonuses \u2014 multiple 'more enemies in melee range' effects, closer-distance DMG and CRIT bonuses, a 7m damage-over-time aura, and dodge while moving. Reads as a close-range crowd-fighting set. (Contributor flagged this as an interpretation to confirm.)",
+      "theme": "Theme observed: proximity / melee-range bonuses — multiple 'more enemies in melee range' effects, closer-distance DMG and CRIT bonuses, a 7m damage-over-time aura, and dodge while moving. Reads as a close-range crowd-fighting set. (Contributor flagged this as an interpretation to confirm.)",
       "recurring_pattern": "Every Griffin piece has: a flat primary stat (ATK PWR on offensive slots, Max HP on defensive slots), a matching % primary stat, a slot-flavored secondary stat, [Slot]'s base stats +20% / +30% / +40% as three tiered upgrades, and one or two conditional effects that scale by rarity (the second tier roughly doubles the first).",
       "griffin_claw": {
         "slot": "Weapon",
@@ -521,7 +541,7 @@
       }
     },
     "oracle_set": {
-      "theme": "Theme observed: combo hits, multishot / projectile mechanics, and CRIT scaling with sustained combat \u2014 'for every 5 combo hits' and 'when combo reaches +40 hits' triggers, piercing beams, diagonal arrows, and Multishot procs. Reads as a sustained ranged DPS combo build, the opposite identity from Griffin.",
+      "theme": "Theme observed: combo hits, multishot / projectile mechanics, and CRIT scaling with sustained combat — 'for every 5 combo hits' and 'when combo reaches +40 hits' triggers, piercing beams, diagonal arrows, and Multishot procs. Reads as a sustained ranged DPS combo build, the opposite identity from Griffin.",
       "structure_note": "Same structural pattern as Griffin: flat + % primary stats, slot-flavored secondary, base-stat tiers, and conditional effects.",
       "oracle_spear": {
         "slot": "Weapon",
@@ -564,7 +584,7 @@
       "two_layers": "Each skin has two layers with different activation rules: Collectible Stats and Skin Skills.",
       "collectible_stats": "Static and always active once you own the skin, whether or not it is equipped. Owning more skins stacks their Collectible Stats permanently across the account.",
       "skin_skills": "Only active while that skin is equipped. The active ability proc (Snowball, Lacerate DoT, Cudgel Jab, summoned hoops, etc.) only triggers on the currently equipped skin.",
-      "star_upgrades": "Every skin has 6 effective tiers: an 'owned' baseline (0 stars) plus 1 star through 5 stars. You upgrade only by acquiring duplicate skins \u2014 each duplicate is one star. There is no currency-based upgrade path.",
+      "star_upgrades": "Every skin has 6 effective tiers: an 'owned' baseline (0 stars) plus 1 star through 5 stars. You upgrade only by acquiring duplicate skins — each duplicate is one star. There is no currency-based upgrade path.",
       "star_benefits": "Higher stars give stronger Collectible Stats (bigger per-piece-equipped bonuses) and stronger Skin Skills (more damage, procs, and stacks).",
       "skin_rarity": "Skins have their own rarities; icon background color is a tell (purple-magenta = lower, gold-yellow = higher). Higher-rarity skins give bigger Collectible Stats at every star tier. More rarity tiers exist beyond these two, with different ratios; the full ladder was not captured.",
       "collectible_stats_gold_rarity": {
@@ -585,7 +605,7 @@
         "4_star": "ATK +42, HP +168",
         "5_star": "ATK +50, HP +200"
       },
-      "set_tie": "Each skin is tied to a specific gear set (Griffin / Dragoon / Oracle). Its Collectible Stats only count matching-set gear \u2014 equipping a Griffin skin while wearing Oracle gear means the Collectible Stats have nothing to count.",
+      "set_tie": "Each skin is tied to a specific gear set (Griffin / Dragoon / Oracle). Its Collectible Stats only count matching-set gear — equipping a Griffin skin while wearing Oracle gear means the Collectible Stats have nothing to count.",
       "acquisition": "Hero Skin Shop is the primary source; Reforger Shop is an alternative source/exchange. The skin tooltip header reads 'Skin Exchange Shop'.",
       "strategy": "Two different priorities: Collectible Stats reward breadth (owning many skins, even at low stars, builds a permanent passive power floor), while Skin Skills reward depth (level your best equipped skin to 5 stars via duplicates).",
       "holly_blitz": {
@@ -661,11 +681,11 @@
     "dragoon_amulet": "The Dragoon Quality Skills: \nDragoon Amulet\nFine: ATK PWR+5%\nRare: CRIT DMG+12%\nEpic: Randomly detonates 2 enemies on the field every 2s\nEpic +1: No additional buff\nEpic +2: No additi",
     "dragoon_crossbow": "The Dragoon Quality Skills: \n\nDragoon Crossbow\nBase: Fires a powerful bolt\nFine: ATK PWR+5%\nRare: 50% chance to trigger area explosion on hit\nEpic: Explosion damage up, Meteor convert",
     "s_rank_overview": "There are 3 S-Rank Weapon Categories: Dragoon, Oracle, and Griffin. Each category has 6 unique gear pieces split into Weapon, Amulet, Ring, Helmet, Armor, and Boots. The weapon, amule",
-    "pve_vs_pvp_rankings": "Gear set rankings differ drastically between PvE and PvP. For PvE/campaign: Oracle is best, then Dragoon, then Griffin. For PvP: Griffin is best, then Dragoon, then Oracle. Dragoon is the best of both worlds and the perfect happy medium \u2014 if you want to optimize for one mode, lean Oracle (PvE) or Griffin (PvP).",
+    "pve_vs_pvp_rankings": "Gear set rankings differ drastically between PvE and PvP. For PvE/campaign: Oracle is best, then Dragoon, then Griffin. For PvP: Griffin is best, then Dragoon, then Oracle. Dragoon is the best of both worlds and the perfect happy medium — if you want to optimize for one mode, lean Oracle (PvE) or Griffin (PvP).",
     "added_by_pve_pvp": "_xyian"
   },
   "runes": {
-    "overview_4_types": "There are 4 different types of equipable runes, etched runes, blessing runes, enhancement runes, ability runes. A player can equip a max of 3 etched, 2 blessing, 4 enhancement and 4 ability at a time with all slots unlocked. Each rune has special abilities based off of its quality and enchantment stats.\n\nEtched Runes (13):\n    Main Weapon:\n        Arrow of Echoes\n        Echo Scythe\n    Sprites:\n        Sprite\u2019s Awe\n        Sprite Assist\n    Strikes:\n        Sword Strike Split\n        Swordstrike Aerie\n    Meteors:\n        Meteor Split\n        Potion Spring \n    Circles:\n        Pulsing Orb\n        Orbital Orb\n    Elemental:\n        Elemental Domain\n        Elemental Crit\n    Plants:\n        Life Surge\n\nBlessing Runes (7):\n    Revive\n    Lucky Shadow\n    Intelligence\n    Rabbit\u2019s Foot\n    Guardian\n    Devil Pact\n    Resilience\n\nEnhancement Runes (13):\nMain Weapon:    \nSharp Arrow\nElemental:\n    Flame-Poison Seal\n    Frost-Thunder Seal\nCircle:\n    Rotating SPD Up\n    Sawblade Circle\nMeteors:\n    Giant Meteor\n    Potion Magnet\nSprites:\n    Sprite Multishot\n    Sprite Link\nStrikes:\n    Dragonflight Sword\n    Ricocheting Strike\nPlants:\n    Rootguard\n    Vine Bind\n\nAbility Runes (13):\n    Main Weapon:\n        Arrow Rain\nElemental:\n    Flame-Poison Touch\n    Frost-Thunder Touch\nCircle:\n    Ring of Agony\n    Circle\nMeteors:\n    Star of Fury\n    Star of Time\nSprites:\n    Healing Sprite\n    Melee Sprite\nStrikes:\n    Sword of Time\n    Strike Potion\nPlants:\n    Plant Summon\n    Equinox Bloom",
+    "overview_4_types": "There are 4 different types of equipable runes, etched runes, blessing runes, enhancement runes, ability runes. A player can equip a max of 3 etched, 2 blessing, 4 enhancement and 4 ability at a time with all slots unlocked. Each rune has special abilities based off of its quality and enchantment stats.\n\nEtched Runes (13):\n    Main Weapon:\n        Arrow of Echoes\n        Echo Scythe\n    Sprites:\n        Sprite’s Awe\n        Sprite Assist\n    Strikes:\n        Sword Strike Split\n        Swordstrike Aerie\n    Meteors:\n        Meteor Split\n        Potion Spring \n    Circles:\n        Pulsing Orb\n        Orbital Orb\n    Elemental:\n        Elemental Domain\n        Elemental Crit\n    Plants:\n        Life Surge\n\nBlessing Runes (7):\n    Revive\n    Lucky Shadow\n    Intelligence\n    Rabbit’s Foot\n    Guardian\n    Devil Pact\n    Resilience\n\nEnhancement Runes (13):\nMain Weapon:    \nSharp Arrow\nElemental:\n    Flame-Poison Seal\n    Frost-Thunder Seal\nCircle:\n    Rotating SPD Up\n    Sawblade Circle\nMeteors:\n    Giant Meteor\n    Potion Magnet\nSprites:\n    Sprite Multishot\n    Sprite Link\nStrikes:\n    Dragonflight Sword\n    Ricocheting Strike\nPlants:\n    Rootguard\n    Vine Bind\n\nAbility Runes (13):\n    Main Weapon:\n        Arrow Rain\nElemental:\n    Flame-Poison Touch\n    Frost-Thunder Touch\nCircle:\n    Ring of Agony\n    Circle\nMeteors:\n    Star of Fury\n    Star of Time\nSprites:\n    Healing Sprite\n    Melee Sprite\nStrikes:\n    Sword of Time\n    Strike Potion\nPlants:\n    Plant Summon\n    Equinox Bloom",
     "enchantment_stats": "Blessing, Enhancement and Ability Runes also have another layer of Enchantment Stats. Enchantment Stats have multiple categories depending on the type of rune with only one enchantment selecti",
     "blessing_quality_revive": "Blessing Runes Quality Skills:\n\nRevive\n    Rare: Max HP +240\n    Epic: 50% Chance to revive upon death, with half of HP restored\n    Legendary: Increases ATK PWR by 20% after revival\n    Mythic",
     "etched_elemental": "Etched Runes Quality Skills:\n    Elemental:\n        Elemental Domain\n            Common: Elemental DMG +100\n            Fine: ATK PWR +100\n            Rare: Increased chance for Elemental skills to spawn\n            Epic: When an enemy is defeated by Elemental DMG, 30% chance to form an elemental area for 5s. Enemies in it take Elemental DMG\n            Legendary: Elemental Domain lasts 10s with increased DMG\n            Legendary +1: For each Elemental skill obtained, Elemental DMG is increased (Max 10 stacks)\n            Legendary +2: Elemental DMG +15% to enemies below 50% HP\n            Legendary +3: Elemental skills have greatly increased chance to spawn\n            Mythic: Elemental DMG +30% to enemies below 50% HP",
@@ -845,18 +865,22 @@
   "game_modes": {
     "overview": "There are four main game-mode categories: Campaign, Arena, Challenge, and Dungeon. Each contains sub-modes with different mechanics and rewards.",
     "campaign": {
-      "overview": "Campaign is the main PvE mode where you fight against computer enemies. It is vastly different from PvP \u2014 bonuses, gear rankings, and strategies change drastically between the two.",
+      "overview": "Campaign is the main PvE mode where you fight against computer enemies. It is vastly different from PvP — bonuses, gear rankings, and strategies change drastically between the two.",
       "farming_drops": "To optimize gear, runes, and scroll drops: choose campaign levels that have 50 floors, not the 6-minute or endless versions. 50-floor runs have 5 boss battles (one every 10th floor), so more boss drops per run. 6-minute or endless runs have only 2 boss battles total, so fewer drops per run.",
-      "fifty_floor_types": "There are two types of 50-floor campaign levels. One type requires walking through a door to change floors each time. The other type uses the same map for all 50 floors \u2014 e.g. Serenity Pool \u2014 so you never have to move; you can leave your character in one spot and farm easily. Same-map 50-floor levels like Serenity Pool are ideal for farming.",
+      "fifty_floor_types": "There are two types of 50-floor campaign levels. One type requires walking through a door to change floors each time. The other type uses the same map for all 50 floors — e.g. Serenity Pool — so you never have to move; you can leave your character in one spot and farm easily. Same-map 50-floor levels like Serenity Pool are ideal for farming.",
       "profile_exp_note": "Campaign is the only way to earn profile experience. See profile_experience category.",
-      "hard_mode_note": "Later campaign levels introduce hard-mode mechanics that require Sky Tower progression to unlock (e.g. campaign 126 requires Sky Tower 1525 cleared)."
+      "hard_mode_note": "Later campaign levels introduce hard-mode mechanics that require Sky Tower progression to unlock (e.g. campaign 126 requires Sky Tower 1525 cleared).",
+      "hard_vs_heroic_naming": "Hard Mode and Heroic Mode are TWO NAMES FOR THE SAME campaign track — the harder second track that runs alongside the Normal Mode chapters. Chapter numbering is one continuous sequence across both names: update 1.1.7 added 166-175 and the 2026-08-23 update added 176-185. A question about 'Heroic chapter N' and 'Hard chapter N' means the same stage.",
+      "stage_ranges_august_2026": "The August 2026 hotfix adds Campaign (Normal) stages 191-200 and Hard stages 176-185. Official patch notes, 28 Aug 2026.",
+      "difficulty_reductions": "Two SEPARATE difficulty reductions, both true and neither replacing the other: update 1.1.7 lowered the difficulty of campaign stages after Chapter 80, and the August 2026 hotfix lowered it for campaign stages after Chapter 130.",
+      "track_name_mapping": "The official patch notes call the two tracks 'Campaign Stages' and 'Hard Stages'. These are the same two tracks recorded elsewhere as Main Chapters and Heroic Chapters: Campaign = Main = Normal Mode, and Hard = Heroic."
     },
     "arena": {
-      "overview": "Arena is the PvP category. Sub-modes: Main Arena, Peak Arena, Rumble Ladder, and All Star Cup.",
+      "overview": "Arena is the PvP category. Sub-modes: Main Arena, Peak Arena, Rumble Ladder, All-Star Cup, and Mega All-Star Cup.",
       "main_arena": "The main arena has multiple tiers (Supreme is the top). Standard 1v1 PvP.",
-      "peak_arena": "Peak Arena is a 3v3 mode where you use three of your own characters against three of your opponent's. You pick separate loadouts for each character. If each character has unique/different gear and runes (e.g. one Circle build, one Meteor build, one Sprite build), you get a large bonus (~25% ATK and HP). Duplicate loadouts across characters give little to no bonus \u2014 the game rewards variety.",
+      "peak_arena": "Peak Arena is a 3v3 mode where you use three of your own characters against three of your opponent's. You pick separate loadouts for each character. If each character has unique/different gear and runes (e.g. one Circle build, one Meteor build, one Sprite build), you get a large bonus (~25% ATK and HP). Duplicate loadouts across characters give little to no bonus — the game rewards variety.",
       "rumble_ladder": "Rumble Ladder is a PvP ladder mode.",
-      "all_star_cup": "All Star Cup is one of the most recent PvP additions. Each season lasts about 12 days and features different bonuses for different runes and loadouts. Depending on the current season's bonuses and your loadout, you could dominate or struggle \u2014 adapting your build to the season's modifiers is key. When selecting a start time, Habby made the time slots actually localized for players.",
+      "all_star_cup": "All Star Cup is one of the most recent PvP additions. Each season lasts about 12 days and features different bonuses for different runes and loadouts. Depending on the current season's bonuses and your loadout, you could dominate or struggle — adapting your build to the season's modifiers is key. When selecting a start time, Habby made the time slots actually localized for players.",
       "all_star_added_by": "fails_8743",
       "main_arena_tiers": "6 tiers, low to high. Bronze: 50 players per group, top 15 promoted. Gold: 100 per group, top 30 promoted, bottom 40 demoted. Diamond: 200 per group, top 20 promoted, bottom 100 demoted. Master: no group limit, top 20% promoted, bottom 40% demoted. Transcendent: no limit, top 20% promoted, bottom 40% demoted. Supreme: top tier, no promotion possible - the top 40% keep their tier and the rest are demoted.",
       "main_arena_settlement": "Weekly settlement. If a group holds fewer players than expected, results are assigned in priority order: same-ranked players, then promoted players, then demoted players. The in-game example is a 45-player group where 20 first stay at the same rank, then the top 20 are promoted, then the last 5 are demoted.",
@@ -887,13 +911,20 @@
       "main_arena_mechanics": "1v1 ranked PvP ladder on weekly seasons that settle and reset on a 7-day cycle. Challenge attempts are limited (snapshot showed 'Challenge x1', apparently daily-restored). Runs one of your 8 saved preset loadouts. The screen header is named after your current tier, e.g. 'Transcendent Battle'.",
       "peak_arena_mechanics": "PvP mode where each player dispatches 3 characters to attack or defend; duplicate characters are allowed. Weekly seasons. The Peak1 / Peak2 / Peak3 loadout slots in the gear system exist for this mode.",
       "rumble_ladder_mechanics": "6-player free-for-all PvP survival, run in periodic seasons (Off-Season at snapshot). Matches last 3 minutes: collect EXP to gain power, defeat monsters to earn gifts, and deliver gifts to storage zones to score points, competing for top rank inside the 3 minutes.",
-      "all_star_cup_mechanics": "Periodic 3-stage tournament with themed seasons (Sword Strike Season at snapshot). You must have reached Campaign Chapter 15 to take part in any cycle. Servers are grouped into zones by launch schedule and estimated participant count to balance competition."
+      "all_star_cup_mechanics": "Periodic 3-stage tournament with themed seasons (Sword Strike Season at snapshot). You must have reached Campaign Chapter 15 to take part in any cycle. Servers are grouped into zones by launch schedule and estimated participant count to balance competition.",
+      "starlight_cup_is_all_star_cup": "Starlight Cup IS the All-Star Cup: a PvP tournament, NOT the Starlight Gala guild event — they only share the word 'Starlight'. 'Starlight Cup' and 'Super Starlight Cup' were preview names for All-Star Cup and Mega All-Star Cup. Answer any Starlight Cup question from the All-Star Cup entries, never from the Gala's.",
+      "all_star_cup_vs_starlight_gala": "All-Star Cup is a PvP tournament; the Starlight Gala is a guild event. They are different things that both contain 'Star' — do not merge them, and do not describe one using the other's rules.",
+      "all_star_cup_battle_changes": "In All-Star Cup and Mega All-Star Cup, Boss death animations no longer play and the stage timer pauses while you are selecting a Boss. Official patch notes, 28 Aug 2026.",
+      "all_star_cup_qualifier_scaling": "All-Star Cup qualifier monster strength is now scaled by server group. All-Star Cup already groups servers into zones by launch schedule and estimated participant count. Official patch notes, 28 Aug 2026.",
+      "mega_all_star_cup": "Mega All-Star Cup is named in the official patch notes (28 Aug 2026) alongside All-Star Cup and receives the same battle change. Nothing else is documented — what it is, how you enter it, what it rewards, and whether it is a separate mode or a higher tier of All-Star Cup are all unrecorded. Say so plainly and point at !suggest.",
+      "arena_shop_promised_ruin_shovel": "The Promised Ruin Shovel was added to the Arena Shop in this update; its price and daily limit were not given. The arena_shop item list here predates that addition. Official patch notes, 28 Aug 2026.",
+      "starlight_cup_mapping_basis": "That mapping is an inference, not a stated one: both sources describe the identical pair of changes in the same update, and the official notes never mention a Starlight Cup. The same preview also said 'Sword Intent' for Sword Will and 'Guild Starlight Celebration' for Starlight Gala."
     },
     "challenge": {
       "overview": "Challenge modes: Sky Tower, Seal Battle, and Magic Plant Defense.",
-      "sky_tower": "Sky Tower is linked to campaign progression. It unlocks higher campaign levels \u2014 for example, campaign level 126 requires clearing Sky Tower 1525. Sky Tower gates what campaign content you can access, usually becoming relevant around campaign level 50+.",
+      "sky_tower": "Sky Tower is linked to campaign progression. It unlocks higher campaign levels — for example, campaign level 126 requires clearing Sky Tower 1525. Sky Tower gates what campaign content you can access, usually becoming relevant around campaign level 50+.",
       "seal_battle": "Seal Battle is a boss battle mode where the goal is to deal the most damage to a boss.",
-      "magic_plant_defense": "Magic Plant Defense is a newer mode where you defend a magic plant across different levels. Max level is 195 until you clear Campaign Mode 140, which unlocks levels up to 250. Use all your plant defense eggs each week \u2014 if you're over a certain threshold you do NOT get the 3 tickets replenished.",
+      "magic_plant_defense": "Magic Plant Defense is a newer mode where you defend a magic plant across different levels. Max level is 195 until you clear Campaign Mode 140, which unlocks levels up to 250. Use all your plant defense eggs each week — if you're over a certain threshold you do NOT get the 3 tickets replenished.",
       "magic_plant_defense_stages": "New stages unlock based on campaign progress. In co-op both players must have the stage unlocked, so you cannot carry a lower-progression friend into a stage they have not reached.",
       "magic_plant_defense_rewards": "Clear rewards include Mystling Eggs and Mystling materials, making it the primary source for hatching new Mystlings. Drops vary by stage and higher stages drop better. In co-op the host's drop rates apply and assisting players get reduced rates.",
       "magic_plant_defense_drop_rates": "Drop rates from the in-game rules, observed at Stage 191: blue gem item 70.00%, purple gem item 24.00%, yellow item 6.00%. Rates scale upward by stage. The rules popup has separate Rules and Drop Rate tabs.",
@@ -929,7 +960,11 @@
     },
     "events_tab": "The Events tab groups three categories: Arena (4 PvP modes), Challenge (Magic Plant Defense, Seal Battle, Sky Tower) and Dungeon (Abyssal Tide, Gold Cave, Shackled Jungle). Each sub-feature has its own season or cycle, rewards and shop.",
     "event_shop_currencies": "Every Arena mode has its own shop and its own currency, so running all four yields different shard pools: Arena Coins for Phynx and Nezha shards, Peak Arena Coins for Loki shards, All-Star Cup tokens for Universal Artifact Shards.",
-    "privilege_card_raid_synergy": "The Sealing Master, Cave Explorer and Abyssium Conqueror Privilege Cards enable Quick-Raid on most Challenge and Dungeon modes and raise their daily run counts. They are the highest-leverage cards for active event grinders."
+    "privilege_card_raid_synergy": "The Sealing Master, Cave Explorer and Abyssium Conqueror Privilege Cards enable Quick-Raid on most Challenge and Dungeon modes and raise their daily run counts. They are the highest-leverage cards for active event grinders.",
+    "in_run": {
+      "blocking_shield_order": "When multiple blocking shields are active at once, the one with the shortest remaining duration is consumed first. Official patch notes, 28 Aug 2026.",
+      "battle_speed_tiers": "Battle speed tiers are standardised: the modes that offer a speed-up run at exactly 1.5x, 2x and 3x. Official patch notes, 28 Aug 2026."
+    }
   },
   "profile_experience": {
     "description": "Profile experience is your general account or profile level, separate from character or hero stars. It is earned only by playing campaign mode.",
@@ -962,7 +997,7 @@
   },
   "privilege_cards": {
     "description": "Privilege Cards provide improved pay-to-play benefits to enhance daily progress.",
-    "community_summary": "Permanent Ad-Free Card: 1200 gems on purchase + 20/day, skips ads. Lifetime Supply Card: 3900 gems on purchase + 800 gems/day \u2014 strong value for progression. See permanent_ad_free_card and lifetime_supply_card for structured details.",
+    "community_summary": "Permanent Ad-Free Card: 1200 gems on purchase + 20/day, skips ads. Lifetime Supply Card: 3900 gems on purchase + 800 gems/day — strong value for progression. See permanent_ad_free_card and lifetime_supply_card for structured details.",
     "community_added_by": "fails_8743",
     "permanent_ad_free_card": {
       "name": "Permanent Ad-Free Card",
@@ -1033,9 +1068,9 @@
       "total": "1,330 gems/day"
     },
     "recommendation_policy": {
-      "default_rule": "Do NOT recommend purchases to F2P players \u2014 it gets annoying fast and is the wrong frame for that audience.",
+      "default_rule": "Do NOT recommend purchases to F2P players — it gets annoying fast and is the wrong frame for that audience.",
       "f2p_players": "Focus advice on free progression, daily routines, and best use of free gems. Mention lifetime cards only if the player asks specifically about value or clearly invites it, and frame them as optional.",
-      "paying_players": "Lifetime Ad-Free plus Lifetime Supply are the two purchases broadly worth recommending to anyone playing actively \u2014 they pay back over time.",
+      "paying_players": "Lifetime Ad-Free plus Lifetime Supply are the two purchases broadly worth recommending to anyone playing actively — they pay back over time.",
       "monthly_card_matching": "Monthly cards are situational, matched to player activity: heavy Quick Hunts user to Hunting Warrior; active in Gold Cave / Rune Ruins to Cave Explorer; active in Seal Battle / Monster Invasion to Sealing Master; active in Abyssal Tide / Shackled Jungle / Sky Tower to Abyssium Conqueror; heavy Arena player to Monthly Card."
     }
   },
@@ -1043,7 +1078,7 @@
     "overview": "Sacred Hall is a profile-wide progression system that gives permanent bonuses to all your characters. It is leveled up using currency earned from Abyssal Tide.",
     "building_effect": "The main upgrade path is the Building Effect. Each level gives an attack increase and a health increase.",
     "tier_upgrades": "Separate from building levels, there are tier upgrades that unlock special bonuses. Higher tiers can unlock extra skin slots, which ties into Resonance.",
-    "resonance_skin_interaction": "At base level, Resonance is only the ability of a specific character. But if that character has a skin, and your Sacred Hall tier is high enough, you can also get their skin bonus in resonance \u2014 not just the ability. This means Sacred Hall tier determines whether resonance includes just abilities or abilities + skins.",
+    "resonance_skin_interaction": "At base level, Resonance is only the ability of a specific character. But if that character has a skin, and your Sacred Hall tier is high enough, you can also get their skin bonus in resonance — not just the ability. This means Sacred Hall tier determines whether resonance includes just abilities or abilities + skins.",
     "added_by": "_xyian",
     "access": "Reached from the Sacred Hall button on the hero portrait. A building structure providing global ATK and HP bonuses plus account-wide privileges.",
     "sub_tabs": {
@@ -1250,7 +1285,7 @@
       "source": "history_audit"
     },
     {
-      "text": "For PvP mixed set \u2014 Weapon: Crossbow, Amulet: Griffin Amulet, Ring: Griffin Ring, Helmet: Dragoon Helm.",
+      "text": "For PvP mixed set — Weapon: Crossbow, Amulet: Griffin Amulet, Ring: Griffin Ring, Helmet: Dragoon Helm.",
       "added_by": "faria88pt",
       "added_at": "2026-06-23",
       "source": "history_audit"
@@ -1306,24 +1341,107 @@
       "text": "twinborn forging can only be done with specific runes of the same type for example frost shock rune can only be merged with flamenox",
       "added_by": "_xyian",
       "added_at": "2026-07-29"
+    },
+    {
+      "text": "An in-game Update Preview dated 2026-08-23 announced a hotfix update for that week, bringing a brand-new chapter, the Starlight Gala, and Umbral Tempest Season 4. The official patch notes name that guild feature the Starlight Gala; 'Guild Starlight Celebration' was the preview name for the same feature.",
+      "added_by": "XYIAN",
+      "added_at": "2026-08-24",
+      "source": "patch_notes",
+      "announced": "2026-08-23",
+      "repair_reason": "Official patch notes (2026-08-28) name the feature Starlight Gala.",
+      "repaired_at": "2026-08-28"
+    },
+    {
+      "text": "The August 2026 hotfix adds Main Chapters 191-200 and Heroic Chapters 176-185. The official patch notes call these same two tracks 'Campaign Stages' and 'Hard Stages'.",
+      "added_by": "XYIAN",
+      "added_at": "2026-08-24",
+      "source": "patch_notes",
+      "announced": "2026-08-23",
+      "repair_reason": "Aligns the vocabulary with the official notes so the two records do not read as different content.",
+      "repaired_at": "2026-08-28"
+    },
+    {
+      "text": "The Guild Hall was fully upgraded in the hotfix announced on 2026-08-23: a new UI that centralises guild information and the access points for guild features. Any description of the Guild Hall screen layout in these notes predates that upgrade.",
+      "added_by": "XYIAN",
+      "added_at": "2026-08-24",
+      "source": "patch_notes",
+      "announced": "2026-08-23"
+    },
+    {
+      "text": "The August 2026 hotfix adds battle scene switching in the profile interface, so Arena and Peak Arena battle scenes can be set separately.",
+      "added_by": "XYIAN",
+      "added_at": "2026-08-24",
+      "source": "patch_notes",
+      "announced": "2026-08-23",
+      "repair_reason": "Official notes say 'battle scene'; 'combat scene' was a preview coinage and the corpus already uses 'battle scenes' elsewhere.",
+      "repaired_at": "2026-08-28"
+    },
+    {
+      "text": "All-Star Cup and Mega All-Star Cup battles were optimized in the August 2026 hotfix: Boss death animations no longer play, and the stage timer pauses while you are selecting a Boss. The 2026-08-23 preview called these two modes 'Starlight Cup' and 'Super Starlight Cup'.",
+      "added_by": "XYIAN",
+      "added_at": "2026-08-24",
+      "source": "patch_notes",
+      "announced": "2026-08-23",
+      "repair_reason": "Official patch notes attribute this exact change to All-Star Cup and Mega All-Star Cup.",
+      "repaired_at": "2026-08-28"
+    },
+    {
+      "text": "The August 2026 hotfix adds a 100x Draw option to all Gear Chests, a x10 option to Quick Hunt, and an Unequip All option on BOTH Gear and Rune presets that clears the current preset in one tap.",
+      "added_by": "XYIAN",
+      "added_at": "2026-08-24",
+      "source": "patch_notes",
+      "announced": "2026-08-23",
+      "repair_reason": "Official notes say Gear Chests (not Equipment Chests) and say Unequip All covers Gear presets as well as Rune presets.",
+      "repaired_at": "2026-08-28"
+    },
+    {
+      "text": "The hotfix announced on 2026-08-23 adds new achievements for player level, new stages, and other related milestones.",
+      "added_by": "XYIAN",
+      "added_at": "2026-08-24",
+      "source": "patch_notes",
+      "announced": "2026-08-23"
+    },
+    {
+      "text": "Official Archero 2 patch notes for the August 2026 hotfix were published on 2026-08-28. They give no version number. They supersede the in-game Update Preview of 2026-08-23, which used different English names for several of the same features.",
+      "added_by": "XYIAN",
+      "added_at": "2026-08-28",
+      "source": "patch_notes"
+    },
+    {
+      "text": "The August 2026 hotfix adds Campaign stages 191-200 and Hard stages 176-185, and reduces the difficulty of Campaign stages after Chapter 130.",
+      "added_by": "XYIAN",
+      "added_at": "2026-08-28",
+      "source": "patch_notes"
+    },
+    {
+      "text": "The August 2026 hotfix standardised battle speed tiers so the modes that offer a speed-up run at exactly 1.5x, 2x and 3x, and changed in-run shield handling so that when multiple blocking shields are active at once the one with the shortest remaining duration is consumed first.",
+      "added_by": "XYIAN",
+      "added_at": "2026-08-28",
+      "source": "patch_notes"
+    },
+    {
+      "text": "The August 2026 hotfix added the Promised Ruin Shovel to both the Guild Shop and the Arena Shop.",
+      "added_by": "XYIAN",
+      "added_at": "2026-08-28",
+      "source": "patch_notes"
     }
   ],
   "opinions": [],
   "damage_terminology": {
     "note": "Community-sourced from #arch-ai !suggest (recovered in full-channel audit). Attack Power, Main weapon DMG, and generic DMG are different stats that multiply together.",
-    "attack_power": "Attack Power (ATK / ATK PWR): baseline multiplier N \u00d7 Attack Power for damage. Some skills claim to buff ATK but don't (e.g. Swift Arrow, source-specific buffs); others change ATK while describing something else (e.g. Stand Strong).",
+    "attack_power": "Attack Power (ATK / ATK PWR): baseline multiplier N × Attack Power for damage. Some skills claim to buff ATK but don't (e.g. Swift Arrow, source-specific buffs); others change ATK while describing something else (e.g. Stand Strong).",
     "main_weapon_dmg": "Main weapon DMG: only the non-elemental portion of main weapon damage; does not include explosion damage from bow/crossbow. Affected by Front Arrow, Sharp Arrow rune, Chaotic Dragoon crossbow effect.",
     "generic_dmg": "Generic DMG buffs vary: some skills affect many damage sources (Swift Arrow, Tracking Eye, Bane of Bosses), some only one.",
     "stacking": "Attack Power, Main weapon DMG, and DMG are not the same stat; they multiply with each other.",
     "added_by": "faria88pt"
   },
   "collectibles": {
-    "overview": "Collectibles (found on the main screen via the Goblet Icon in the bottom toolbar) splice into two categories: Talent Cards & Artifacts\n\nTalent Cards:\nTalent Cards are cards that you are able to collect in game that boost a wide variety of stats. Each card is able to be upgraded to a maximum of 5 Star (Apart from the Glory and Tactics cards as these are 1 Star maximum). \n\nThere is a second set of talent cards that unlocks after collecting all cards from the first set. The list below is a comprehensive list of both sets when maxed out to 5 stars (apart from Glory and Tactics which have a maximum of 1 Star).\n\nThe list below states the talent card\u2019s name and then function/boost, there are 32 in total:\n\nEpic Level:\nGlory: First Skill Selection Chance +1\nTactics: Skill Refreshes +1\nMaster Explorer: Scroll Drop Rate +18%\nBrave Adventurer: Gear Drop Rate +18%\nAlchemist: Rune Drop Rate +18%\nSwift Wind: ATK SPD +3% & MOV SPD +3%\nRefinement: Gears\u2019 Base Stats Increase +6%\nWealth: Gold obtained in battle +18%\nUlt CRIT Rate: CRIT Rate +6%\nUlt CRIT DMG: CRIT DMG +12%\nUlt Dodge: Dodge +6%\n\nRare Level:\nSuper Vigor 2: HP +420\nSuper Strength 2: ATK PWR +105\nSuper Recovery 2: Heart Recovery +1%\nAngelic Embrace: Angel Recovery +1%\nDevil Discount: Devil's Pact HP cost reduced +1%\nSuper Vigor: Max HP +420\nSuper Strength: ATK PWR +105\nSuper Recovery: Red Heart Healing Value +105\nSuper Iron Wall: Collision DMG REDUC +48\nHealing: Heal on Level Up +120\nTitan: Max HP +150, ATK PWR +36 & CRIT DMG +6%\nSuper CRIT Rate: CRIT Rate +3%\nSuper CRIT DMG: CRIT DMG +9%\nSuper Dodge: Dodge +3%\n\nCommon Level:\nVigor 2    : HP +300\nStrength 2: ATK PWR +75\nRecovery 2: Heart Recovery +0.5%\nVigor: HP +300\nStrength: ATK PWR +75\nRecovery: Red Heart Healing Value +75\nIron Wall: Collision DMG REDUC +36\n\n\nTalent Cards can be bought by using in game Gold but require a ton of gold farming to complete. However, once complete, a player doesn\u2019t really worry about them any longer. So if you\u2019re in between upgrading gear (that also costs gold) or talent cards, the talent cards will always come with time. Typically they\u2019re all unlocked between levels 50 - 55."
+    "overview": "Collectibles (found on the main screen via the Goblet Icon in the bottom toolbar) splice into two categories: Talent Cards & Artifacts\n\nTalent Cards:\nTalent Cards are cards that you are able to collect in game that boost a wide variety of stats. Each card is able to be upgraded to a maximum of 5 Star (Apart from the Glory and Tactics cards as these are 1 Star maximum). \n\nThere is a second set of talent cards that unlocks after collecting all cards from the first set. The list below is a comprehensive list of both sets when maxed out to 5 stars (apart from Glory and Tactics which have a maximum of 1 Star).\n\nThe list below states the talent card’s name and then function/boost, there are 32 in total:\n\nEpic Level:\nGlory: First Skill Selection Chance +1\nTactics: Skill Refreshes +1\nMaster Explorer: Scroll Drop Rate +18%\nBrave Adventurer: Gear Drop Rate +18%\nAlchemist: Rune Drop Rate +18%\nSwift Wind: ATK SPD +3% & MOV SPD +3%\nRefinement: Gears’ Base Stats Increase +6%\nWealth: Gold obtained in battle +18%\nUlt CRIT Rate: CRIT Rate +6%\nUlt CRIT DMG: CRIT DMG +12%\nUlt Dodge: Dodge +6%\n\nRare Level:\nSuper Vigor 2: HP +420\nSuper Strength 2: ATK PWR +105\nSuper Recovery 2: Heart Recovery +1%\nAngelic Embrace: Angel Recovery +1%\nDevil Discount: Devil's Pact HP cost reduced +1%\nSuper Vigor: Max HP +420\nSuper Strength: ATK PWR +105\nSuper Recovery: Red Heart Healing Value +105\nSuper Iron Wall: Collision DMG REDUC +48\nHealing: Heal on Level Up +120\nTitan: Max HP +150, ATK PWR +36 & CRIT DMG +6%\nSuper CRIT Rate: CRIT Rate +3%\nSuper CRIT DMG: CRIT DMG +9%\nSuper Dodge: Dodge +3%\n\nCommon Level:\nVigor 2    : HP +300\nStrength 2: ATK PWR +75\nRecovery 2: Heart Recovery +0.5%\nVigor: HP +300\nStrength: ATK PWR +75\nRecovery: Red Heart Healing Value +75\nIron Wall: Collision DMG REDUC +36\n\n\nTalent Cards can be bought by using in game Gold but require a ton of gold farming to complete. However, once complete, a player doesn’t really worry about them any longer. So if you’re in between upgrading gear (that also costs gold) or talent cards, the talent cards will always come with time. Typically they’re all unlocked between levels 50 - 55."
   },
   "hunt": {
     "description": "Idle / AFK reward system reached from the Hunt button on the main screen. Pays out rewards passively instead of grinding earlier stages.",
     "accumulation": "Auto-gets rewards over time, accumulating while not playing.",
-    "max_accumulation": "24 hours. After 24h the buffer stops filling \u2014 claim before then to avoid wasted time.",
+    "max_accumulation": "24 hours. After 24h the buffer stops filling — claim before then to avoid wasted time.",
     "scaling": "Later chapters grant better rewards; Hunt's per-hour yield scales with campaign progression.",
     "reward_types": "Gold and EXP, plus a probabilistic mix of gear, gear scrolls and runes. Hunt does not drop hero/character shards.",
     "claim": "The Claim button collects whatever has accumulated, up to the 24h cap.",
@@ -1331,18 +1449,18 @@
       "description": "Instantly receive Hunting rewards without waiting. Two options: free (watch an ad) or an energy run.",
       "free_ad_option": "1 ad per use. Base 2 free chances per day; more can be earned from various sources.",
       "hunting_warrior_card": "The Hunting Warrior Privilege Card grants unlimited free Quick Hunt chances.",
-      "energy_option": "Configurable per click: 5 energy = 1 run, 10 energy = 2 runs, 25 energy = 5 runs."
+      "energy_option": "Configurable per click: 5 energy = 1 run, 10 energy = 2 runs, 25 energy = 5 runs. The August 2026 hotfix added a x10 option; its energy cost was not given in the notes."
     },
     "drop_rates": {
       "source": "In-game Rules popup.",
-      "gold": "100% \u2014 guaranteed every claim.",
-      "exp": "100% \u2014 guaranteed every claim.",
+      "gold": "100% — guaranteed every claim.",
+      "exp": "100% — guaranteed every claim.",
       "gear_pieces": "0.79% each, 18 pieces total.",
       "gear_scrolls": "11.90% each, 6 scrolls total.",
       "runes": "0.60% each, 24 runes total."
     },
     "gear_pieces": {
-      "sets": "Three sets \u2014 Destruction, Echo, Decisiveness \u2014 across 6 slots, 18 pieces total.",
+      "sets": "Three sets — Destruction, Echo, Decisiveness — across 6 slots, 18 pieces total.",
       "weapon": "Heroic Longbow, Beam Staff, Agile Knuckles",
       "armor": "Armor of Destruction, Echo Armor, Armor of Decisiveness",
       "boots": "Boots of Destruction, Echo Boots, Boots of Decisiveness",
@@ -1358,10 +1476,10 @@
       "list": "Sawblade Circle, Spin SPD Up, Dragonflight Sword, Ricochet Strike, Sprite Multishot, Sprite Link, Sharp Arrow, Giant Meteor, Potion Magnet, Flamenox Seal, Frostshock Seal, Rootguard, Vine Bind, Circle, Ring of Agony, Sword of Time, Strike Potion, Melee Sprite, Healing Sprite, Arrow Rain, Star of Time, Star of Fury, Plant Summon, Equinox Bloom."
     },
     "advice": {
-      "claim_before_cap": "Always claim Hunt before it caps at 24h \u2014 wasted time is wasted rewards.",
+      "claim_before_cap": "Always claim Hunt before it caps at 24h — wasted time is wasted rewards.",
       "f2p": "Use the 2 free daily ad chances; don't burn energy on Quick Hunt.",
       "hunting_warrior_card_owners": "Spam unlimited free Quick Hunts; energy-paid runs are situational.",
-      "energy_efficiency": "Energy-paid Quick Hunts are most efficient at 25 energy / 5 runs.",
+      "energy_efficiency": "Of the captured tiers, energy-paid Quick Hunts cost the same 5 energy per run at 5/1, 10/2 and 25/5, so none is more efficient than another. The August 2026 hotfix added a x10 option whose energy cost was not given.",
       "push_campaign": "Push deeper into the campaign to raise Hunt's hourly rate."
     }
   },
@@ -1495,8 +1613,9 @@
       },
       "chromatic_chest_key": "Used to open Chromatic chests.",
       "wish_coin": "Currency for the Wish system; further detail not captured (TBD).",
-      "relic_shovel": "Used in the Rune Ruins / digging mechanic.",
-      "draw_item_choice_chest": "When opened, lets you pick one of: 1x Chromatic Chest key, 1x Wish Coin, 2x Relic Shovel."
+      "relic_shovel": "Relic Shovel is a digging item. runes.promised_ruins records it as the Promised Ruins dig cost ('300 Gems, or 1 Relic Shovel'); Rune Ruins uses a Ruin Shovel instead. See shovel_disambiguation.",
+      "draw_item_choice_chest": "When opened, lets you pick one of: 1x Chromatic Chest key, 1x Wish Coin, 2x Relic Shovel.",
+      "shovel_disambiguation": "Three shovel names appear in the data: Ruin Shovel (Rune Ruins dig cost), Relic Shovel (Promised Ruins dig cost), and Promised Ruin Shovel, added to the Guild Shop and Arena Shop in the August 2026 hotfix. Whether the Promised Ruin Shovel is the same item as the Relic Shovel is NOT documented — do not treat them as the same, and say so if asked."
     }
   },
   "daily_rewards": {
@@ -1543,7 +1662,7 @@
       "one_purchase_per_day": "Packs are limited to 1 purchase per day and reset daily.",
       "hero_swap": "You can swap heroes for different pack options; the selected hero changes which shards drop.",
       "bulk_discount": "Buying all packs at once gives a greater discount. Once you have purchased any pack individually, the bulk option becomes unavailable.",
-      "hero_lock": "After purchasing any paid pack, you can no longer swap hero packs \u2014 the selected hero is locked in for the day."
+      "hero_lock": "After purchasing any paid pack, you can no longer swap hero packs — the selected hero is locked in for the day."
     }
   },
   "main_screen": {
@@ -1620,7 +1739,7 @@
     "gear_scrolls": {
       "per_slot": "Gear Scrolls are slot-specific, not generic. Each scroll is one of: Weapon Scroll, Armor Scroll, Helmet Scroll, Ring Scroll, Amulet Scroll, Boots Scroll.",
       "use": "Used to upgrade that slot's gear level (1-200).",
-      "same_as_hunt": "The same resource that drops from Hunt \u2014 Hunt's yellow scroll icon represents one of these 6 slot-specific scrolls."
+      "same_as_hunt": "The same resource that drops from Hunt — Hunt's yellow scroll icon represents one of these 6 slot-specific scrolls."
     },
     "hard_mode_clear_reward": "Second sub-tab (gold crown). Contents were not documented in the source contribution.",
     "star_challenge": {
@@ -1709,7 +1828,8 @@
           "rare_gear": "40.00% overall, 2.22% per item, 18 items",
           "fine_gear": "56.00% overall, 3.11% per item, 18 items"
         }
-      }
+      },
+      "draw_options": "All Gear Chests have a 100x Draw option, added in the August 2026 hotfix. Official patch notes, 28 Aug 2026."
     },
     "wish": {
       "description": "Pull artifacts from a wish mechanic, with a small angel-like character animation.",
@@ -1776,5 +1896,37 @@
       "paying_gold_packs": "Skip Top Up gold packs - gold is easy to farm and the conversion rate is bad.",
       "paying_chest_pulls": "For Mythstone/Chromatic pulls, pull on the series matching your active gear progression (Griffin / Oracle / Dragoon)."
     }
+  },
+  "umbral_tempest": {
+    "overview": "Umbral Tempest is a large recurring seasonal event in Archero 2, opened from the bottom action bar on the home screen. It runs in numbered seasons.",
+    "season_4_status": "Umbral Tempest Season 4 begins 31 August 2026. Season 4 detail here comes from the official Archero 2 patch notes of 28 Aug 2026 and describes the season as ANNOUNCED, not as observed in play.",
+    "season_4_class_abilities": "Umbral Tempest Season 4 gives each class a new exclusive Class Ability: Ranger gains 'Sword Will', Alchemist gains 'Thermancy', Druid gains 'Symbiosis', and Diviner gains 'Star Eclipse'. Each class gets more distinct combat mechanics and skill combinations. Official patch notes, 28 Aug 2026.",
+    "season_4_monster_mechanic": "Umbral Tempest Season 4 adds the 'Main Weapon Restriction Shield' monster mechanic: while the shield is active the damage dealt by your main weapon is limited, so break it fast using your other skills rather than leaning on your main weapon. Official patch notes, 28 Aug 2026.",
+    "ebonrot_front": "Ebonrot Front is named in the Umbral Tempest Season 4 notes, which improve its stage difficulty, its unlock pacing and its weekly resource progress, and list it as one of the four objective areas of the Season Launch 7-Day Tasks. What Ebonrot Front actually is is NOT stated — it has stages, and nothing else about it is documented.",
+    "doomsday_clash": "Doomsday Clash is a boss encounter in Umbral Tempest Season 4. Season 4 improves its boss unlock pacing and adds a Solo Challenge mode, and it is one of the four objective areas of the Season Launch 7-Day Tasks. Official patch notes, 28 Aug 2026.",
+    "season_4_launch_missions": "Umbral Tempest Season 4 adds Season Launch 7-Day Tasks spanning four objective areas — Class Talent, Ebonrot Front, Solitary Trial and Doomsday Clash — whose objectives you complete to claim the task rewards. Official patch notes, 28 Aug 2026.",
+    "season_talent_system": "The Season Talent System is Umbral Tempest's per-season talent tree. Season 4 upgrades it with talent branches, special nodes, and 6 class skill nodes, allowing targeted enhancement of Class Abilities. Official patch notes, 28 Aug 2026.",
+    "season_talent_resets": "From Umbral Tempest Season 4, Season Talent reset rules are 7 resets per week with a weekly reset, for more freedom in your build. Official patch notes, 28 Aug 2026.",
+    "coverage_caveat": "Coverage of Umbral Tempest is thin: everything recorded is Season 4 announcement material. The event's core loop, currencies, rewards and past seasons are NOT documented. Do not infer general Umbral Tempest mechanics from these Season 4 notes.",
+    "season_4_class_ability_old_names": "'Sword Intent' is NOT a current ability name — it is the superseded preview name for the Ranger's Season 4 Class Ability, which is officially called 'Sword Will'. Likewise 'Boiling' is the superseded preview name for the Alchemist's 'Thermancy'. Always answer with Sword Will and Thermancy, and say the old name was replaced.",
+    "solitary_trial": "Solitary Trial is named in the official Umbral Tempest Season 4 patch notes (28 Aug 2026) only as one of the four objective areas of the Season Launch 7-Day Tasks. Nothing else about it is documented.",
+    "class_talent": "Class Talent is named in the Season 4 notes only as one of the four objective areas of the Season Launch 7-Day Tasks. It is NOT the same thing as a Class Ability (the new per-class skill) or the Season Talent System (the per-season talent tree). Nothing else about Class Talent is documented.",
+    "solitary_trial_vs_solo_challenge": "Two different solo-named things in Season 4: Solitary Trial is one of the four 7-Day Task objective areas, and Solo Challenge is a mode added to Doomsday Clash. They are not the same, and neither is documented beyond that. Do not describe one using the other.",
+    "classes": "Umbral Tempest has its own CLASSES — Ranger, Alchemist, Druid and Diviner — which are separate from the heroes in the characters category. How you pick or change class is NOT documented; only the Season 4 Class Abilities are.",
+    "sword_will_not_sword_strike": "'Sword Will' is the Ranger's Umbral Tempest Season 4 Class Ability. It is NOT 'Sword Strike', which is a rune theme, an Etched rune family, a Promised Ruins group and an All-Star Cup season theme. Different things — do not answer one with the other's data.",
+    "alchemist_class_not_talent_card": "The Alchemist in Umbral Tempest Season 4 is a CLASS that gains the 'Thermancy' Class Ability. It is not the 'Alchemist' Talent Card in collectibles, which grants Rune Drop Rate +18%. Same word, two unrelated things.",
+    "main_weapon_restriction_shield_disambiguation": "The 'Main Weapon Restriction Shield' is a Season 4 MONSTER mechanic. It is unrelated to the 'Main Weapon' rune theme and its Etched/Ability rune families. Do not answer a question about this shield with rune-theme data."
+  },
+  "collaborations": {
+    "overview": "Collaborations are limited-time crossover events in Archero 2 that add guest characters, skins and event gameplay from another franchise.",
+    "rick_and_morty_overview": "The Archero 2 x Rick and Morty crossover was announced in an in-game 'Collaboration Event Preview' Notice. It brings new characters, exclusive gameplay, and a set of limited-time events. Rick & Morty and all related characters are (c) & TM Cartoon Network.",
+    "rick_and_morty_rick": "Rick is a Legendary crossover character. His combat style revolves around [Garage Inventions] and [Inspiration], combining unpredictable outcomes with powerful scaling. Obtained for a limited time through [Interdimensional Summon] during the event.",
+    "rick_and_morty_morty": "Morty is a Legendary crossover character. His gameplay revolves around the cycle between [Morty Waves], [Lame Adventure] and [Aw Geez Adventure]. On entering battle [Morty Waves] activates automatically, periodically cleansing 1 debuff (excluding control effects) from each ally within range while granting [Lame Adventure] stacks. Obtained for a limited time through [Interdimensional Summon].",
+    "rick_and_morty_meeseeks": "Mr. Meeseeks is a Legendary Mystling debuting in the Rick and Morty collab. His combat style is built around rapid triggers and escalating power; when activated, his skill deals damage to enemies in the target area. Obtained through participation or summoning in the [Meeseeks Directive] event during the collab.",
+    "rick_and_morty_space_adventures": "[Space Adventures] is the collab's limited-time themed stage: a two-player co-op challenge mode. The Rick and Morty collab characters are provided for players to use, so the mode focuses on teamwork and on hands-on experience with each character's skills. Entered from the main event screen. Completing battle quests earns event currency and rare items.",
+    "rick_and_morty_event_features": "Five limited-time features run during the collab: [Interdimensional Summon] (recruitment for Rick and Morty), [Prime Protocol] (recruitment for character and weapon skins), [Meeseeks Directive] (obtain the Legendary Mystling Mr. Meeseeks), [21-Day Login Event] (free login rewards through the event period), and [Server Support Pack] plus [Alliance Treasure] (free rewards or high-value rare items).",
+    "rick_and_morty_skins": "[Prime Protocol] is the collab's limited-time skin recruitment, covering both character skins and weapon skins. Each Rick and Morty collab character has 2 skin sets: one based on the original animated style, and one exclusive to Archero 2. This applies to the collab characters, not to the base roster.",
+    "rick_and_morty_requirements": "To access all Rick and Morty collab content, chapter progress must reach Chapter 3 wave 10 or above, which is what unlocks the in-game event system. The [Alliance Treasure] gameplay additionally requires the player to have joined a guild.",
+    "rick_and_morty_dates": "The Archero 2 x Rick and Morty collab event ends on or about 11 September 2026 — XYIAN reported on 2026-08-24 that it had exactly 18 days left. The start date is not recorded. The in-game event screen carries the authoritative countdown, so point players there for the exact end time."
   }
 }

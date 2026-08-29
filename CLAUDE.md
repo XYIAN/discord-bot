@@ -35,6 +35,18 @@ better structured — worth copying *decisions* from, not its architecture.
   run for weeks because nobody added it to the `&&` chain.
 - `node --check xyian-bot-project/bot.js` — bot.js is a large single file; check
   syntax before committing.
+- `node xyian-bot-project/scripts/answer-check.js` — asks the REAL model the real
+  questions and asserts on the ANSWER. Needs `OPENAI_API_KEY`, ~$0.08 and a few
+  minutes (it paces itself under the 200k/min TPM ceiling). **Run it before
+  shipping any change to `data/knowledge.json` or to a prompt.** Every other
+  test checks what was RENDERED into the prompt; only this checks what the bot
+  SAYS, and it has already caught four defects the render tests passed clean.
+- **Knowledge changes go through a fragment**, never by hand-editing the JSON:
+  write `data/knowledge-fragments/<name>.json`, then
+  `node xyian-bot-project/scripts/merge-knowledge.js <fragment> --dry-run`.
+  Additive by default; `--repair <dotted.path>` to overwrite one reviewed value.
+  It backs up, validates, mirrors `seeds/`, and handles `custom_facts` too. A
+  fragment must replay as a clean no-op — that is what makes it a record.
 
 ## Inspecting the live bot — read text, don't drive the screen
 
@@ -61,7 +73,13 @@ write it.
 - **`bot.js` is a monolith.** The pattern for anything worth testing is to
   extract it to `lib/` with a `test/*.test.js` beside it — see `changelog.js`,
   `usage.js`, `price-guard.js`, `knowledge-render.js`, `vision-response.js`,
-  `rotating-post.js`, `state-store.js`.
+  `rotating-post.js`, `state-store.js`, `prompt.js`, `guild-requirements.js`.
+- **Anything a member READS in a channel and can also ASK the bot must have one
+  source.** The guild power minimums lived in three bot.js strings and again in
+  `knowledge.json` with nothing comparing them, so the bot could state a number
+  the recruitment ad contradicted. `lib/guild-requirements.js` owns them and
+  `test/guild-requirements.test.js` fails if any surface drifts. Same reasoning
+  put both system prompts in `lib/prompt.js`.
 - **Messaging goes through per-channel WEBHOOKS**, not the bot token. This is
   historical and Kyle dislikes it ("webhook spaghetti"). Notable consequences: a
   rotated webhook returns 404 and `sendViaWebhook` swallows it into a `null`

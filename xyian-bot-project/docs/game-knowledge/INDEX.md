@@ -24,7 +24,10 @@ _Contributed 2026-08-04 by stacey-fails. Describes an earlier game update — a 
 
 ## Pending sections
 
-- **umbral_tempest.md** — major event not yet documented; needs fresh screenshots
+- **umbral_tempest.md** — still needs fresh screenshots for the core loop,
+  currencies and rewards. As of v3.32.0 the knowledge base has an
+  `umbral_tempest` category, but it holds **only** the Season 4 announcement of
+  2026-08-23 and carries a `coverage_caveat` saying so.
 - **gear.md → Dragoon set** — no screenshots in `Gear/Gear/Dragoon/` yet
 - **collectible.md** — Collectible bottom-nav tab not yet documented (no screenshots provided)
 

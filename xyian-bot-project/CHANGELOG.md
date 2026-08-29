@@ -4,6 +4,84 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.33.0] - 2026-08-28
+
+### Official patch notes are in — and they renamed four things
+
+Arch AI now knows the August 2026 hotfix: **Campaign stages 191-200**, **Hard stages 176-185**, difficulty reduced after **Chapter 130**, the new **Starlight Gala** guild feature, and all of **Umbral Tempest Season 4** (starts **31 Aug**).
+
+The interesting part is what the official notes *corrected*. We'd loaded this update a week ago from the in-game Update Preview, and the official version uses different names for the same things:
+
+- Ranger's Season 4 ability is **Sword Will**, not "Sword Intent"
+- Alchemist's is **Thermancy**, not "Boiling"
+- The guild feature is the **Starlight Gala**, not "Guild Starlight Celebration"
+- "Starlight Cup" and "Super Starlight Cup" are the **All-Star Cup** and **Mega All-Star Cup** — the same modes under preview names
+
+That last one mattered most. The bot had been told *"do not merge Starlight Cup with All Star Cup"* — a standing instruction that outranked every correct All-Star Cup fact we hold. Ask it about the Starlight Cup now and it answers from the real All-Star Cup data. Ask it about "Sword Intent" and it tells you the name was replaced.
+
+Also new: the Main Weapon Restriction Shield and what it does, Solitary Trial, Class Talent, Mega All-Star Cup, the 100x Gear Chest draw, Unequip All on **both** Gear and Rune presets, x10 Quick Hunt, blocking-shield order, 1.5x/2x/3x speed tiers, and the Promised Ruin Shovel in the Guild and Arena shops.
+
+Where the notes don't say something, the bot now says so instead of guessing — Mega All-Star Cup's rules, what Ebonrot Front actually is, and whether the Promised Ruin Shovel is the same item as the Relic Shovel are all recorded as unknown.
+
+## [3.32.0] - 2026-08-24
+
+### The 8M/6M split — and one place that decides it
+
+XYIAN OFFICIAL asks **8M+**; ProjectXY asks **6M+**. Both ask for the same activity: daily Monster Invasion (MI) and research 2x, **daily guild donations 2x**, active in Discord.
+
+The donation minimum is 2, not 1, because the first donation of the day is free — asking for one costs a member nothing and measures nothing. And it is a **donation**, not a bargain. The recruitment post had been asking for a daily *bargain* while the requirements embed asked for a daily *donation*; those are different systems in different menus, so at most one could be right. It was the donation.
+
+All of it now comes from **`lib/guild-requirements.js`**. It had been written out in three unrelated bot.js strings with nothing comparing them, which is why the last change to the power minimum had to be found by grep. `test/guild-requirements.test.js` fails if any surface drifts, if a bare power literal reappears in bot.js, or if the knowledge base stops agreeing with the code.
+
+**And the bot knows its own requirements now** — it never did. Three channels displayed the answer while Arch AI, asked directly, had nothing.
+
+### Two in-game notices, folded in
+
+From the **Update Preview of 2026-08-23**: Umbral Tempest Season 4 (begins **31 August**), the new **Guild Starlight Celebration**, Main Chapters 191-200 and Heroic Chapters 176-185, the Guild Hall UI overhaul, and the QoL batch — 100x Equipment Chest draws, x10 Quick Hunt, one-click Rune Preset unequip, Starlight Cup timer pauses, combat scene switching.
+
+From the **Rick and Morty collaboration**: Rick and Morty as Legendary crossover characters, Mr. Meeseeks as a Legendary Mystling, the two-player co-op [Space Adventures] stage, and all five limited-time features. The event ends **on or about 11 September 2026**.
+
+**Umbral Tempest was effectively undocumented** — one passing sentence, against a live #umbral-tempest channel. It is now a real category carrying a `coverage_caveat` that says out loud it holds only the Season 4 announcement, so the bot cannot be read as knowing the whole event.
+
+Also settled: **Hard Mode and Heroic Mode are the same track** under two names, with one continuous chapter sequence. And **bargain is not donation** — one rotating item a day whose price the whole guild drives down, roughly 5% a member, with **no advantage to waiting**: buy at the high price and the difference comes back in gems by mail the next day. The knowledge base had the mechanic but not the conclusion, which is the half a player actually asks about.
+
+### `scripts/answer-check.js`, and the four bugs it found
+
+Every test here checked what got **rendered into the prompt**. None checked what the bot **says**. That gap shipped a real failure in the sibling Tempest bot with 211 tests green.
+
+It found four defects in this release, every one of them passing the render tests clean:
+
+- **Event-only heroes** listed Nezha and Wukong, then added Rick and Morty in a trailing sentence. Asked which heroes are event-only, the bot answered "Nezha and Wukong."
+- **The Guild Hall staleness caveat** was filed as a `custom_fact`, which put it in the ADDITIONAL FACTS bullet list — nowhere near the `GUILD:` section holding the layout it qualified. The bot recited the pre-upgrade layout as current.
+- **"What is the Starlight Cup?"** got "a shiny new addition to the guild events… likely tied to guild activity." Nothing says that. It matched on the word *Starlight* against the **Guild Starlight Celebration**, added to the same knowledge base in the same drop.
+- **"How many MI do I need daily?"** got the damage thresholds and "no strict number of runs required" — true of the game, false of the guild. The requirement was filed under `guild.requirements`; the question pointed at `guild.monster_invasion`.
+
+All four are one shape: **the answer has to live where the question points, and a caveat placed away from the data it qualifies loses to that data.** 16/16 answer checks pass.
+
+### One prompt, one place
+
+Writing that checker reproduced a bug this repo already fixed once. The system prompt got copied into it verbatim — so editing the prompt in bot.js would have left a verification tool quietly validating a prompt that no longer shipped. v3.22.0 fixed exactly this shape for the render suppression list: two copies, a comment claiming a test kept them in step, and no test that compared them.
+
+**`lib/prompt.js`** now owns both prompts — the text one and the vision one, which had been repeating the persona preamble word for word. Verified byte-identical to what production shipped before the extraction. `test/prompt.test.js` pins both and fails if a second copy reappears in either file.
+
+### One way to add knowledge
+
+A knowledge drop needed two mechanisms: a reviewed fragment through `merge-knowledge.js` for structured topics, and a hand-written one-shot script for `custom_facts` — because `mergeFragment` saw two arrays, called it a conflict, and could never append. The script came with its own dedup rule, no backup and a non-atomic write, against a file CLAUDE.md is explicit was wiped once already.
+
+`lib/knowledge-merge.js` now appends `custom_facts` too, so a fragment is the whole drop and inherits the backup and the validation. The one-shot script is deleted. Dedup is an exact normalised match rather than the old first-60-characters rule — four facts in this batch open with the same 39 characters, leaving 21 to tell them apart, and a collision there drops a fact silently.
+
+Both fragments now replay as clean no-ops, which is the property that makes them a record rather than a script that already ran.
+
+### Also
+
+- `umbral_tempest` and `collaborations` added to `KNOWLEDGE_CATEGORIES`, so `!approve` and vision candidates can file into them. Ten pre-existing categories are still missing from that list and are now named in `KNOWLEDGE-GUIDE.md` rather than left to be rediscovered.
+- `answer-check.js` applies the same price guard bot.js does, fails with a clear message when `OPENAI_API_KEY` is unset instead of an opaque SDK error, and paces itself under the org's tokens-per-minute ceiling. The first 16-case run died on a 429 partway through and exited non-zero — a gate that cannot tell a rate limit from a real failure is worse than no gate, because it teaches you to ignore it.
+- Every new guard was verified by breaking it: drift the knowledge base from the code, hardcode a power literal back into bot.js, reintroduce a prompt copy, edit the prompt text. Four sabotages, four red tests, all restored.
+- Golden render re-pinned: 154,873 → 165,877 (default), 147,552 → 158,556 (production). The prompt every question carries is **7.5% larger**.
+- 16 test files, up from 14.
+
+**⚠️ Post-deploy step:** the #guild-requirements channel still shows the embed posted in March. Deploying does not update an already-posted message — run `!post-guild-requirements` and delete the old one, or members keep reading 6M+ for both guilds.
+
 ## [3.31.0] - 2026-08-21
 
 ### 🌿 New channel: #dab-corner

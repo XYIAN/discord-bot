@@ -446,7 +446,13 @@ Tied directly to the [Camp & Mystlings](camp_mystlings.md) system. The Mystling 
   4. Buy daily Hero Shards from Guild Store (especially focused on a target Rare hero)
   5. Contribute to Guild Research progress
   6. Engage in Guild Expedition during active rounds (deploy + battle)
-- **Recruitment criteria** the player's guild XYIAN demands: 6M+ power (raised from 2M on 2026-08-06), daily boss & research participation, daily bargain — typical for an active guild
+- **Recruitment criteria** the community's two guilds demand. Superseded 2026-08-24 — the
+  authoritative source is now `lib/guild-requirements.js`, mirrored into
+  `knowledge.json` `guild.requirements` and bound by `test/guild-requirements.test.js`.
+  As of that date: **XYIAN OFFICIAL 8M+**, **ProjectXY 6M+**, daily Monster Invasion (MI)
+  & research 2x, daily guild donations 2x, active in Discord. *(Historic: 2M+ until
+  2026-08-06, then 6M+ for both guilds; the daily requirement was recorded as a bargain
+  rather than a donation, which was wrong — those are different systems.)*
 
 ## Open questions
 

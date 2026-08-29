@@ -1,0 +1,32 @@
+{
+  "_meta": {
+    "source": "XYIAN (Kyle), 2026-08-24, answering open questions raised while folding in the 2026-08-23 update notice and the Rick and Morty collaboration notice. Firsthand player knowledge, not a game notice.",
+    "confidence": "high — from the guild leader, who plays daily. The ~5% bargain figure is his approximation and is written as approximate."
+  },
+  "game_modes": {
+    "campaign": {
+      "hard_vs_heroic_naming": "Hard Mode and Heroic Mode are TWO NAMES FOR THE SAME campaign track — the harder second track that runs alongside the Normal Mode chapters. Chapter numbering is one continuous sequence across both names: update 1.1.7 added 166-175 and the 2026-08-23 update added 176-185. A question about 'Heroic chapter N' and 'Hard chapter N' means the same stage."
+    },
+    "arena": {
+      "starlight_cup": "Starlight Cup and Super Starlight Cup are named in the 2026-08-23 update, which removed Boss death animations from them and made stage timers pause while selecting a Boss. That one change is the ONLY information available: what these modes are, how they work and what they reward is NOT documented. Say so plainly if asked, and point at !suggest.",
+      "starlight_cup_not_to_be_confused": "Starlight Cup is NOT the Guild Starlight Celebration — that is a separate guild event announced in the same 2026-08-23 update. Its relationship to All Star Cup is also unconfirmed. Do not merge Starlight Cup with either of them, and do not describe it using their rules."
+    }
+  },
+  "guild": {
+    "guild_merchant": {
+      "bargain_vs_donation": "Bargain and donation are DIFFERENT systems and are commonly confused. DONATIONS are in the main guild tab: 5 per day, first free then 20/40/60/80 gems, and they level the guild up. BARGAIN is its own section in the guild menu: one rotating item per day whose gem price the whole guild collectively drives down. Contributing to one does nothing for the other.",
+      "bargain_contribution_size": "Each member's Bargain automatically takes a small amount off the day's item price for everyone — roughly 5% of the price per bargain. The cut applies to the whole guild, not just to the member who bargained.",
+      "buy_early_or_wait": "There is NO advantage to waiting for the guild to finish bargaining before you buy. If you buy at the higher price and the guild then bargains it lower, the difference is returned to you in gems by mail the next day. The only real difference is how many gems you need up front on the day itself."
+    },
+    "requirements": {
+      "shared_activity": "Both guilds require the same activity: daily Monster Invasion (the guild boss battle, called MI) and guild research at 2x minimum per day; daily guild donations at 2x minimum per day; and being active in Discord. The donation minimum is 2 rather than 1 because the first donation of the day is free, so a single donation costs nothing and proves nothing."
+    },
+    "monster_invasion": {
+      "alias": "Monster Invasion is commonly shortened to MI in guild chat. A question about 'MI' means Monster Invasion.",
+      "guild_requirement": "The Arch 2 Addicts guilds require 2 Monster Invasion (MI) runs per day as a minimum activity standard, for both XYIAN OFFICIAL and ProjectXY. That is a guild rule set by XYIAN, not a game rule — Archero 2 itself does not require a number of runs."
+    }
+  },
+  "collaborations": {
+    "rick_and_morty_dates": "The Archero 2 x Rick and Morty collab event ends on or about 11 September 2026 — XYIAN reported on 2026-08-24 that it had exactly 18 days left. The start date is not recorded. The in-game event screen carries the authoritative countdown, so point players there for the exact end time."
+  }
+}

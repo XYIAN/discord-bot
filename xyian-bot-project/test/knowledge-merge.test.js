@@ -109,4 +109,201 @@ test('does NOT flag ordinary complete sentences', () => {
     assert.deepStrictEqual(truncatedValues({ a: { b: 'Increases ATK by 20%' } }), []);
 });
 
+
+console.log('custom_facts append — one path for every knowledge drop');
+test('appends a new fact to an empty base', () => {
+    const { merged, addedFacts } = mergeFragment({}, { custom_facts: [{ text: 'Bargain is not donation.' }] });
+    assert.strictEqual(addedFacts.length, 1);
+    assert.strictEqual(merged.custom_facts[0].text, 'Bargain is not donation.');
+});
+test('a re-run is a clean no-op — the whole point of applying by file', () => {
+    const frag = { custom_facts: [{ text: 'The first guild donation of the day is free.' }] };
+    const once = mergeFragment({}, frag);
+    const twice = mergeFragment(once.merged, frag);
+    assert.strictEqual(twice.addedFacts.length, 0);
+    assert.strictEqual(twice.merged.custom_facts.length, 1);
+});
+test('a fact already stated ANYWHERE in the base is not duplicated', () => {
+    // The same claim can already live as a structured entry. Re-adding it as a
+    // loose bullet gives gpt-4o-mini the same fact twice in one prompt.
+    const live = { guild: { donations: 'The first donation is free.' } };
+    const { addedFacts } = mergeFragment(live, { custom_facts: [{ text: 'the first donation is free.' }] });
+    assert.strictEqual(addedFacts.length, 0, 'duplicated a fact already present as a structured value');
+});
+test('dedup is whitespace- and case-insensitive but NOT prefix-based', () => {
+    // The scripts this replaces keyed on the first 60 chars. Four facts sharing
+    // a 39-char opening left 21 to tell them apart, and a collision dropped one
+    // silently. These two share 44 characters and are different facts.
+    const a = 'The hotfix announced on 2026-08-23 adds new chapters.';
+    const b = 'The hotfix announced on 2026-08-23 adds new achievements.';
+    const { addedFacts } = mergeFragment({}, { custom_facts: [{ text: a }, { text: b }] });
+    assert.strictEqual(addedFacts.length, 2, 'a long shared prefix must not collapse two distinct facts');
+    const same = mergeFragment({}, { custom_facts: [{ text: '  THE   Same  Fact. ' }, { text: 'the same fact.' }] });
+    assert.strictEqual(same.addedFacts.length, 1, 'whitespace/case variants are the same fact');
+});
+test('entry metadata is carried through, not just the text', () => {
+    const { merged } = mergeFragment({}, { custom_facts: [{ text: 'x', added_by: 'XYIAN', source: 'patch_notes' }] });
+    assert.strictEqual(merged.custom_facts[0].added_by, 'XYIAN');
+    assert.strictEqual(merged.custom_facts[0].source, 'patch_notes');
+});
+test('a malformed entry is skipped, never thrown on', () => {
+    // Fragments are hand-authored; a missing text field must not abort a merge
+    // that has already applied structured topics.
+    const { merged, addedFacts } = mergeFragment({}, {
+        custom_facts: [null, {}, { text: 123 }, { text: '' }, { text: 'the good one' }],
+    });
+    assert.strictEqual(addedFacts.length, 1);
+    assert.strictEqual(merged.custom_facts.length, 1);
+});
+test('existing facts are never reordered or dropped', () => {
+    // Contributor credit is computed elsewhere, but these are the visible half.
+    const live = { custom_facts: [{ text: 'first' }, { text: 'second' }] };
+    const { merged } = mergeFragment(live, { custom_facts: [{ text: 'third' }] });
+    assert.deepStrictEqual(merged.custom_facts.map((f) => f.text), ['first', 'second', 'third']);
+});
+test('custom_facts never appears as a conflict or an added PATH', () => {
+    const live = { custom_facts: [{ text: 'a' }] };
+    const r = mergeFragment(live, { custom_facts: [{ text: 'b' }] });
+    assert.deepStrictEqual(r.conflicts, []);
+    assert.ok(!r.added.includes('custom_facts'), 'array leaked into the object-walk results');
+});
+test('the caller is not mutated', () => {
+    const live = { custom_facts: [{ text: 'a' }] };
+    mergeFragment(live, { custom_facts: [{ text: 'b' }] });
+    assert.strictEqual(live.custom_facts.length, 1);
+});
+
+console.log('\nmergeFragment — custom_facts repairs');
+// custom_facts was append-only, so a fact filed from a provisional source could
+// never be corrected when the official source renamed the thing. A stale name
+// left in ADDITIONAL FACTS contradicts the corrected category, and gpt-4o-mini
+// picks one of two disagreeing facts at random.
+test('a repair rewrites the matching fact in place, keeping its other fields', () => {
+    const live = { custom_facts: [
+        { text: 'The Guild Starlight Celebration ships this week.', added_by: 'XYIAN', added_at: '2026-08-24' },
+    ] };
+    const r = mergeFragment(live, {
+        custom_facts_repairs: [{ match_text: 'The Guild Starlight Celebration ships this week.', text: 'The Starlight Gala ships this week.', reason: 'official name' }],
+    }, { allowRepair: ['custom_facts'] });
+    assert.strictEqual(r.merged.custom_facts[0].text, 'The Starlight Gala ships this week.');
+    assert.strictEqual(r.merged.custom_facts[0].added_by, 'XYIAN', 'provenance must survive a repair');
+    assert.strictEqual(r.merged.custom_facts[0].repair_reason, 'official name');
+    assert.deepStrictEqual(r.repaired, ['custom_facts[0]']);
+});
+test('WITHOUT --repair custom_facts it is a conflict, and the fact is untouched', () => {
+    // The whole posture of this module: never change what you were not told to.
+    const live = { custom_facts: [{ text: 'old name' }] };
+    const r = mergeFragment(live, { custom_facts_repairs: [{ match_text: 'old name', text: 'new name' }] });
+    assert.strictEqual(r.merged.custom_facts[0].text, 'old name');
+    assert.deepStrictEqual(r.repaired, []);
+    assert.deepStrictEqual(r.conflicts, ['custom_facts[0]']);
+});
+test('replaying an applied repair is a CLEAN no-op, not an error', () => {
+    // "A fragment must replay as a clean no-op" — docs/KNOWLEDGE-GUIDE.md.
+    const live = { custom_facts: [{ text: 'new name' }] };
+    const r = mergeFragment(live, { custom_facts_repairs: [{ match_text: 'old name', text: 'new name' }] }, { allowRepair: ['custom_facts'] });
+    assert.deepStrictEqual(r.repaired, []);
+    assert.deepStrictEqual(r.conflicts, []);
+    assert.deepStrictEqual(r.unmatchedRepairs, [], 'the replacement is already present, so nothing is stale');
+});
+test('a repair matching NOTHING at all is reported, never silent', () => {
+    // A typo in match_text would otherwise no-op and look like success, leaving
+    // the wrong fact live — the exact failure this whole module exists to prevent.
+    const live = { custom_facts: [{ text: 'something else' }] };
+    const r = mergeFragment(live, { custom_facts_repairs: [{ match_text: 'a typo', text: 'corrected' }] }, { allowRepair: ['custom_facts'] });
+    assert.deepStrictEqual(r.unmatchedRepairs, ['a typo']);
+    assert.deepStrictEqual(r.repaired, []);
+});
+test('matching is by TEXT, not index — the right fact is repaired after appends', () => {
+    // Index-keyed repairs rewrite the wrong entry as soon as anything lands
+    // before them, and custom_facts is appended to on every drop.
+    const live = { custom_facts: [{ text: 'zero' }, { text: 'one' }, { text: 'target' }] };
+    const r = mergeFragment(live, {
+        custom_facts: [{ text: 'freshly appended' }],
+        custom_facts_repairs: [{ match_text: 'target', text: 'repaired' }],
+    }, { allowRepair: ['custom_facts'] });
+    assert.strictEqual(r.merged.custom_facts[2].text, 'repaired');
+    assert.strictEqual(r.merged.custom_facts[0].text, 'zero', 'an unrelated fact was rewritten');
+    assert.strictEqual(r.merged.custom_facts[3].text, 'freshly appended');
+});
+test('custom_facts_repairs never leaks into the object walk as a topic', () => {
+    const r = mergeFragment({}, { custom_facts_repairs: [{ match_text: 'a', text: 'b' }] });
+    assert.strictEqual(r.merged.custom_facts_repairs, undefined);
+    assert.ok(!r.added.includes('custom_facts_repairs'));
+});
+test('whitespace differences do not defeat a repair', () => {
+    const live = { custom_facts: [{ text: 'a   fact  with   odd spacing' }] };
+    const r = mergeFragment(live, { custom_facts_repairs: [{ match_text: 'a fact with odd spacing', text: 'fixed' }] }, { allowRepair: ['custom_facts'] });
+    assert.strictEqual(r.merged.custom_facts[0].text, 'fixed');
+});
+
+console.log('\nmergeFragment — key renames');
+// Object KEYS are rendered into the prompt verbatim, so a key is a retrieval
+// label. When an official source renames a feature, repairing only the string
+// values leaves the old name standing as the topic heading.
+test('a gated rename moves the value and REMOVES the old key', () => {
+    const live = { guild: { starlight_celebration: { overview: 'x' }, other: 1 } };
+    const r = mergeFragment(live, { _renames: [{ from: 'guild.starlight_celebration', to: 'guild.starlight_gala' }] },
+        { allowRepair: ['guild.starlight_celebration'] });
+    assert.deepStrictEqual(r.merged.guild.starlight_gala, { overview: 'x' });
+    assert.ok(!('starlight_celebration' in r.merged.guild), 'the OLD key must be gone — it is rendered into the prompt');
+    assert.deepStrictEqual(r.renamed, ['guild.starlight_celebration -> guild.starlight_gala']);
+});
+test('WITHOUT --repair the rename is a conflict and nothing moves', () => {
+    const live = { guild: { starlight_celebration: { overview: 'x' } } };
+    const r = mergeFragment(live, { _renames: [{ from: 'guild.starlight_celebration', to: 'guild.starlight_gala' }] });
+    assert.ok('starlight_celebration' in r.merged.guild);
+    assert.deepStrictEqual(r.renamed, []);
+    assert.deepStrictEqual(r.conflicts, ['guild.starlight_celebration']);
+});
+test('key ORDER is preserved — key order is prompt order', () => {
+    // A renamed key jumping to the end silently reorders the prompt, which
+    // moves a fact away from the entries that give it context.
+    const live = { guild: { a: 1, old: 2, z: 3 } };
+    const r = mergeFragment(live, { _renames: [{ from: 'guild.old', to: 'guild.neu' }] }, { allowRepair: ['guild.old'] });
+    assert.deepStrictEqual(Object.keys(r.merged.guild), ['a', 'neu', 'z']);
+});
+test('a rename NEVER clobbers an existing destination', () => {
+    const live = { guild: { old: 'a', neu: 'ALREADY HERE' } };
+    const r = mergeFragment(live, { _renames: [{ from: 'guild.old', to: 'guild.neu' }] }, { allowRepair: ['guild.old'] });
+    assert.strictEqual(r.merged.guild.neu, 'ALREADY HERE');
+    assert.deepStrictEqual(r.conflicts, ['guild.neu']);
+    assert.deepStrictEqual(r.renamed, []);
+});
+test('replaying an applied rename is a CLEAN no-op', () => {
+    const live = { guild: { starlight_gala: { overview: 'x' } } };
+    const r = mergeFragment(live, { _renames: [{ from: 'guild.starlight_celebration', to: 'guild.starlight_gala' }] },
+        { allowRepair: ['guild.starlight_celebration'] });
+    assert.deepStrictEqual(r.renamed, []);
+    assert.deepStrictEqual(r.conflicts, []);
+    assert.deepStrictEqual(r.unmatchedRenames, []);
+});
+test('a rename matching nothing at all is reported, never silent', () => {
+    const r = mergeFragment({ guild: {} }, { _renames: [{ from: 'guild.ghost', to: 'guild.spook' }] }, { allowRepair: ['guild.ghost'] });
+    assert.deepStrictEqual(r.unmatchedRenames, ['guild.ghost']);
+});
+test('a rename across different parents is refused, not silently flattened', () => {
+    const r = mergeFragment({ a: { k: 1 }, b: {} }, { _renames: [{ from: 'a.k', to: 'b.k' }] }, { allowRepair: ['a.k'] });
+    assert.strictEqual(r.merged.a.k, 1);
+    assert.deepStrictEqual(r.renamed, []);
+    assert.strictEqual(r.unmatchedRenames.length, 1);
+});
+test('_renames never leaks into the object walk as a topic', () => {
+    const r = mergeFragment({}, { _renames: [{ from: 'a.b', to: 'a.c' }] });
+    assert.strictEqual(r.merged._renames, undefined);
+    assert.ok(!r.added.includes('_renames'));
+});
+test('rename THEN add: the fragment can refill the renamed key in one pass', () => {
+    // The real usage: rename the topic, then write corrected values into it.
+    const live = { guild: { starlight_celebration: { overview: 'OLD NAME text', keep: 'kept' } } };
+    const r = mergeFragment(live, {
+        _renames: [{ from: 'guild.starlight_celebration', to: 'guild.starlight_gala' }],
+        guild: { starlight_gala: { overview: 'Starlight Gala is …', cadence: 'weekly' } },
+    }, { allowRepair: ['guild.starlight_celebration', 'guild.starlight_gala.overview'] });
+    assert.strictEqual(r.merged.guild.starlight_gala.overview, 'Starlight Gala is …');
+    assert.strictEqual(r.merged.guild.starlight_gala.cadence, 'weekly');
+    assert.strictEqual(r.merged.guild.starlight_gala.keep, 'kept', 'untouched siblings survive');
+    assert.ok(!('starlight_celebration' in r.merged.guild));
+});
+
 console.log(`\n${passed} passed`);

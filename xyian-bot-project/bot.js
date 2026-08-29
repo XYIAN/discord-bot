@@ -38,6 +38,8 @@ const modRules = require('./lib/moderation');
 const changelog = require('./lib/changelog');
 const usageLib = require('./lib/usage');
 const knowledgeRender = require('./lib/knowledge-render');
+const prompts = require('./lib/prompt');
+const guildReqs = require('./lib/guild-requirements');
 const priceGuard = require('./lib/price-guard');
 const visionResponse = require('./lib/vision-response');
 const stateStore = require('./lib/state-store');
@@ -1243,23 +1245,7 @@ function storeExchange(userId, question, answer) {
 async function askAI(question, username, userId) {
     if (!openai) return null;
 
-    const systemPrompt =
-        'You are Arch AI — a cybernetic wizard who serves as the knowledge keeper for the XYIAN guild in Archero 2. ' +
-        'You are deeply knowledgeable, loyal to your guildmates, and genuinely passionate about helping them improve. ' +
-        'Your tone is dry wit meets warmth — think Gandalf crossed with Robin Williams in Flubber. ' +
-        'You can be funny, but it\'s subtle and smart, never forced. You take the game seriously but not yourself.\n\n' +
-        'RULES:\n' +
-        '- Answer using ONLY the verified facts below. Never guess or fabricate information.\n' +
-        '- If your knowledge doesn\'t cover the question, admit it honestly with personality ' +
-        '(e.g. "I\'ve searched every corner of my memory and came up empty. Someone help me out — use !suggest").\n' +
-        '- Keep answers concise — under 1500 characters. Be helpful first, entertaining second.\n' +
-        '- Always say "guild" never "clan".\n' +
-        '- When you don\'t know something, nudge them toward !suggest to help fill the gap.\n' +
-        '- You care about accuracy above all. Wrong info hurts the guild.\n' +
-        '- The user may ask follow-up questions. Use the conversation history to understand context.\n' +
-        '- When referencing community opinions, clearly note they are opinions from players, not verified facts.\n' +
-        '- PRICES: any real-money price (Aurocite, USD, $) or paid-pack cost in these facts is a snapshot from when it was recorded, and Habby changes them. If you quote one, say plainly that it may be out of date and to check in-game. Never present a real-money price as current, and never advise on whether a purchase is worth the money.\n\n' +
-        '--- VERIFIED FACTS ---\n' + knowledgeAsText();
+    const systemPrompt = prompts.buildTextPrompt(knowledgeAsText());
 
     const priorContext = getUserContext(userId);
 
@@ -1336,6 +1322,14 @@ const KNOWLEDGE_CATEGORIES = new Set([
     'guild', 'gear_sets', 'weapons', 'runes', 'blessings', 'game_modes',
     'profile_experience', 'tips', 'skills', 'resources', 'privilege_cards',
     'sacred_hall', 'damage_terminology', 'collectibles',
+    // Added with the 2026-08-23 update drop. A live category missing from this
+    // whitelist cannot be an !approve target and cannot be proposed by a vision
+    // candidate, so the community has no route to extend it — which is the
+    // whole point of seeding a topic. NOTE: ten OTHER live categories (hunt,
+    // battle_pass, mystlings, currencies, daily_rewards, main_screen,
+    // event_shop, skin_exchange_shop, reach_rewards, shop) are still missing
+    // here and have the same problem; that predates this change.
+    'umbral_tempest', 'collaborations',
 ]);
 
 function knowledgeCategoryList() {
@@ -1358,50 +1352,7 @@ async function askAIWithVision(question, imageUrls, username, userId) {
         return { reply, candidates: [] };
     }
 
-    const visionPrompt =
-        'You are Arch AI — a cybernetic wizard who serves as the knowledge keeper for the XYIAN guild in Archero 2. ' +
-        'You are deeply knowledgeable, loyal to your guildmates, and genuinely passionate about helping them improve. ' +
-        'Your tone is dry wit meets warmth — think Gandalf crossed with Robin Williams in Flubber. ' +
-        'You can be funny, but it\'s subtle and smart, never forced. You take the game seriously but not yourself.\n\n' +
-        'VISION MODE — the user has attached one or more Archero 2 screenshots. Carefully observe what is visible:\n' +
-        '- Character / hero (name, level, stars/ascension, skin)\n' +
-        '- Equipped gear (weapon, armor pieces, set bonuses, gear levels)\n' +
-        '- Stats panel (ATK, HP, crit, damage modifiers, total power)\n' +
-        '- Active runes, blessings, skills, sacred hall picks, resonance slots\n' +
-        '- Currency, event progress, chapter/floor, PvP/peak-arena rank, leaderboard entries\n' +
-        '- UI cues that reveal which menu, event, or game mode is being shown\n\n' +
-        'RULES IN VISION MODE:\n' +
-        '- Describing what you OBSERVE in the screenshot is fine — observation is not fabrication.\n' +
-        '- For ADVICE about what you see (build recommendations, upgrade priority, meta tier, value calls), ' +
-        'still ground that advice in the verified facts below. Do not invent meta opinions.\n' +
-        '- If the user asked a specific question, answer it using the screenshot + verified facts together. ' +
-        'If they posted only the image, give them an in-character rundown of what you see and offer to dig deeper.\n' +
-        '- If something in the image is cropped, blurry, or you genuinely can\'t tell what it is, say so honestly.\n' +
-        '- Keep your in-character reply under 1500 characters.\n' +
-        '- Always say "guild" never "clan". When referencing community opinions, label them as opinions.\n' +
-        '- The user may ask follow-up questions. Use the conversation history to understand context.\n\n' +
-        'KNOWLEDGE-GROWTH PASS — after your in-character reply, add a CANDIDATES block listing concrete factual ' +
-        'claims you observed in the screenshot that AREN\'T already covered by the verified facts below. ' +
-        'These will go into a queue for admin review, NOT auto-added to the knowledge base.\n' +
-        'STRICT RULES for candidates:\n' +
-        '- Only universal Archero 2 facts. SKIP user-specific values: their roll on a piece of gear, their ' +
-        'upgrade level, their owned counts, their personal currency, their leaderboard rank, their power level.\n' +
-        '- Skip anything already present in the verified facts below.\n' +
-        '- Skip ambiguous numbers, blurry text, or anything you\'re unsure about.\n' +
-        '- Each candidate must be self-contained and intelligible without the screenshot.\n' +
-        '- Propose a `category` from this list ONLY: ' + knowledgeCategoryList() + '. ' +
-        'If none fit, omit the category field and it will land in custom_facts.\n' +
-        '- Propose a short `key` (lowercase letters, digits, underscores; e.g. "frostshard_rune"). ' +
-        'Used as the entry name within the category.\n' +
-        '- Set `confidence` to "high", "medium", or "low" based on how clear the on-screen evidence is.\n' +
-        '- If nothing new and clear is visible, output an empty array.\n\n' +
-        'OUTPUT FORMAT — your response MUST end exactly like this (no commentary after):\n' +
-        '<your in-character reply here>\n' +
-        '=== CANDIDATES ===\n' +
-        '```json\n' +
-        '[{"text": "...", "category": "runes", "key": "frostshard_rune", "confidence": "high"}]\n' +
-        '```\n\n' +
-        '--- VERIFIED FACTS ---\n' + knowledgeAsText();
+    const visionPrompt = prompts.buildVisionPrompt(knowledgeAsText(), knowledgeCategoryList());
 
     const priorContext = getUserContext(userId);
 
@@ -1648,7 +1599,7 @@ async function sendGuildRecruitment() {
             '🏆 **XYIAN OFFICIAL** — `Guild ID: 213797` — currently full\n' +
             'Our founding guild. Join ProjectXY and you\'re part of the same family from day one.\n\n' +
             '✨ **What we offer:**\n• Active daily community\n• Expert strategies and guides (+ our Arch AI)\n• Guild events and challenges\n• Supportive and friendly environment\n\n' +
-            '🎯 **Requirements (both guilds):**\n• 💪 6M+ power\n• Daily boss battles & research (2x minimum)\n• Daily bargain (1x minimum)\n• Active in Discord\n\n' +
+            '🎯 **Requirements:**\n' + guildReqs.recruitmentBullets() + '\n\n' +
             '**Apply in game → search Guild ID `214890` (ProjectXY). Welcome to the family!**'
         )
         .setColor(0xffa500)
@@ -1965,7 +1916,7 @@ client.on('guildMemberAdd', async (member) => {
             '**Our guilds:**\n' +
             '🚀 **ProjectXY** (Guild ID: 214890) — our new sister guild and the primary home for new members. Now recruiting!\n' +
             '🏆 **XYIAN OFFICIAL** (Guild ID: 213797) — our founding guild, currently full.\n' +
-            'Both: daily activity and 6M+ power. One community, one Discord.'
+            guildReqs.welcomeLine()
         )
         .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
         .setColor(0x00ff88)
@@ -2367,17 +2318,21 @@ client.on('messageCreate', async (message) => {
                     return message.reply('❌ This command requires the **XYIAN OFFICIAL** or **Admin** role.');
                 }
                 const reqEmbed = new EmbedBuilder()
-                    .setTitle('🏰 XYIAN OFFICIAL — Guild Requirements')
-                    .setDescription('**Requirements for active members (Guild ID: 213797)**')
+                    .setTitle('🏰 Guild Requirements — XYIAN OFFICIAL & ProjectXY')
+                    .setDescription('**Requirements for active members of both guilds**')
                     .addFields(
-                        { name: '💪 Power Level', value: '**6M+ required**\n• Minimum power to join and stay active', inline: false },
-                        { name: '⚔️ Daily Boss Battles', value: '**2 per day**\n• Required for active status\n• Tracked automatically', inline: false },
-                        { name: '💰 Guild Donations', value: '**1 per day**\n• First donation of the day is free\n• Next 4 cost 20 → 40 → 60 → 80 gems (200 gems total if all 5)\n• Tracked automatically', inline: false },
+                        // Power is the ONLY requirement that differs between the two
+                        // guilds; every number here comes from lib/guild-requirements.js
+                        // so this embed cannot drift from the recruitment post or from
+                        // knowledge.json guild.requirements.
+                        { name: '💪 Power Level', value: guildReqs.powerField(), inline: false },
+                        { name: `⚔️ Daily Monster Invasion (${guildReqs.SHARED.monsterInvasionAlias})`, value: `**${guildReqs.SHARED.monsterInvasion} per day**\n• The guild boss battle\n• Required for active status`, inline: false },
+                        { name: '💰 Guild Donations', value: `**${guildReqs.SHARED.donations} per day minimum**\n• The first donation of the day is free, which is why the minimum is ${guildReqs.SHARED.donations}\n• You may donate up to 5; the next 4 cost 20 → 40 → 60 → 80 gems (200 total if all 5)`, inline: false },
                         { name: '📊 Activity', value: '**Daily participation in Discord**\n• Inactive players may be removed\n• Exceptions for valid reasons', inline: false }
                     )
                     .setColor(0xFFD700)
                     .setTimestamp()
-                    .setFooter({ text: 'XYIAN OFFICIAL — Arch 2 Addicts' });
+                    .setFooter({ text: 'XYIAN OFFICIAL + ProjectXY — Arch 2 Addicts' });
                 await message.channel.send({ embeds: [reqEmbed] });
                 return message.reply('✅ Guild requirements embed posted. You can delete the old message and this reply.');
             }

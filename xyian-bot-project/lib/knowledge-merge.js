@@ -9,6 +9,37 @@
 // ONLY. An existing value is never changed unless the caller names that exact
 // key path in `allowRepair`, which forces a human to have looked at it.
 
+/** Normalised form used to decide whether a fact is already known. */
+function normFactText(t) {
+    return String(t || '').replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+/**
+ * Every piece of prose already in the knowledge base, normalised.
+ *
+ * Deliberately an EXACT normalised match, not a prefix match. The scripts this
+ * replaces keyed on the first 60 characters, and a curated batch routinely
+ * shares a long opening clause — "The hotfix announced on 2026-08-23 adds …"
+ * is 39 of those 60 characters, leaving 21 to tell four facts apart. A
+ * collision there drops a fact silently and reports a smaller count with no
+ * warning. Fragments are authored, not scraped, so exact matching is the right
+ * trade: it cannot produce a false duplicate, and a genuine re-run is still a
+ * clean no-op.
+ */
+function collectFactTexts(kb) {
+    const out = new Set();
+    const walk = (o) => {
+        if (Array.isArray(o)) return o.forEach(walk);
+        if (o && typeof o === 'object') {
+            if (typeof o.text === 'string') out.add(normFactText(o.text));
+            return Object.values(o).forEach(walk);
+        }
+        if (typeof o === 'string') out.add(normFactText(o));
+    };
+    walk(kb);
+    return out;
+}
+
 /** Deep-ish clone adequate for JSON knowledge data. */
 function clone(o) {
     return JSON.parse(JSON.stringify(o));
@@ -26,7 +57,7 @@ function isPlainObject(v) {
  * @param {{allowRepair?: string[]}} [opts]
  *        allowRepair: exact dotted key paths permitted to OVERWRITE an existing
  *        value. Anything not listed is reported as a conflict and left alone.
- * @returns {{merged:object, added:string[], repaired:string[], conflicts:string[], skippedMeta:boolean}}
+ * @returns {{merged:object, added:string[], repaired:string[], conflicts:string[], addedFacts:string[], skippedMeta:boolean}}
  */
 function mergeFragment(live, fragment, opts) {
     const allowRepair = new Set((opts && opts.allowRepair) || []);
@@ -34,11 +65,132 @@ function mergeFragment(live, fragment, opts) {
     const added = [];
     const repaired = [];
     const conflicts = [];
+    const addedFacts = [];
+    const unmatchedRepairs = [];
+    const renamed = [];
+    const unmatchedRenames = [];
+
+    // custom_facts is an ARRAY, so the object walk below would see two arrays,
+    // find them unequal and report a conflict — it could never append. That gap
+    // is why a curated drop needed a hand-written one-shot script beside this
+    // one, with its own dedup rule and no backup. Appending here means one path
+    // for every knowledge drop, and the caller's backup covers all of it.
+    const incomingFacts = fragment && Array.isArray(fragment.custom_facts) ? fragment.custom_facts : null;
+    if (incomingFacts) {
+        const known = collectFactTexts(merged);
+        if (!Array.isArray(merged.custom_facts)) merged.custom_facts = [];
+        for (const entry of incomingFacts) {
+            const text = entry && typeof entry.text === 'string' ? entry.text : null;
+            if (!text) continue;                       // a fact with no text is not a fact
+            const key = normFactText(text);
+            if (!key || known.has(key)) continue;      // already known; a re-run is a no-op
+            merged.custom_facts.push(clone(entry));
+            known.add(key);
+            addedFacts.push(text);
+        }
+    }
+
+    // ── KEY RENAMES ────────────────────────────────────────────────────────
+    // Object KEYS are rendered into the prompt verbatim ("starlight_celebration:
+    // {...}"), so a key is a retrieval label, not just an internal handle. When
+    // an official source renames a feature, repairing only the string values
+    // leaves the old name sitting in the prompt as the topic heading.
+    //
+    // A rename cannot be expressed as an add: adding the new key would leave the
+    // old one beside it, and the same content under two names is worse than the
+    // stale name alone — that IS the contradiction we are removing.
+    //
+    // Gated on --repair <from-path>, same as any other overwrite.
+    const renames = fragment && Array.isArray(fragment._renames) ? fragment._renames : null;
+    if (renames) {
+        for (const r of renames) {
+            const from = r && typeof r.from === 'string' ? r.from : null;
+            const to = r && typeof r.to === 'string' ? r.to : null;
+            if (!from || !to) continue;
+            const fromParts = from.split('.');
+            const toParts = to.split('.');
+            const fromKey = fromParts[fromParts.length - 1];
+            const toKey = toParts[toParts.length - 1];
+            const parentPath = fromParts.slice(0, -1);
+            if (toParts.slice(0, -1).join('.') !== parentPath.join('.')) {
+                unmatchedRenames.push(`${from} -> ${to} (must stay in the same parent)`);
+                continue;
+            }
+            let parent = merged;
+            for (const seg of parentPath) {
+                if (!isPlainObject(parent[seg])) { parent = null; break; }
+                parent = parent[seg];
+            }
+            if (!parent) { unmatchedRenames.push(from); continue; }
+            if (!(fromKey in parent)) {
+                // Already renamed by an earlier run → clean no-op on replay.
+                if (!(toKey in parent)) unmatchedRenames.push(from);
+                continue;
+            }
+            if (toKey in parent) { conflicts.push(to); continue; }   // never clobber a destination
+            if (!allowRepair.has(from)) { conflicts.push(from); continue; }
+            // Rebuild the parent so the renamed key keeps its original position
+            // rather than jumping to the end — key order is prompt order.
+            const rebuilt = {};
+            for (const k of Object.keys(parent)) {
+                if (k === fromKey) rebuilt[toKey] = parent[k];
+                else rebuilt[k] = parent[k];
+            }
+            for (const k of Object.keys(parent)) delete parent[k];
+            Object.assign(parent, rebuilt);
+            renamed.push(`${from} -> ${to}`);
+        }
+    }
+
+    // ── custom_facts REPAIRS ────────────────────────────────────────────────
+    // custom_facts is append-only above, which left no way to correct a fact
+    // once filed. That gap bites hardest exactly when it matters: when an
+    // official source renames something a provisional source got wrong. The
+    // stale fact keeps sitting in ADDITIONAL FACTS contradicting the corrected
+    // category, and gpt-4o-mini does not reconcile two facts that disagree — it
+    // picks one. So a wrong name left here is a coin-flip on the answer.
+    //
+    // Matched by VERBATIM TEXT, never by array index: indices shift every time
+    // a fact is appended, so an index-keyed repair silently rewrites the wrong
+    // entry the moment anything lands before it.
+    //
+    // Still gated on --repair custom_facts, so a human had to look.
+    const repairs = fragment && Array.isArray(fragment.custom_facts_repairs) ? fragment.custom_facts_repairs : null;
+    if (repairs) {
+        const allowed = allowRepair.has('custom_facts');
+        if (!Array.isArray(merged.custom_facts)) merged.custom_facts = [];
+        for (const r of repairs) {
+            const from = r && typeof r.match_text === 'string' ? r.match_text : null;
+            const to = r && typeof r.text === 'string' ? r.text : null;
+            if (!from || !to) continue;
+            const fromKey = normFactText(from);
+            const toKey = normFactText(to);
+            const idx = merged.custom_facts.findIndex((f) => f && normFactText(f.text) === fromKey);
+            if (idx === -1) {
+                // Already repaired by an earlier run → a clean no-op, which is
+                // what "a fragment must replay as a no-op" requires. Only report
+                // when the replacement is absent too, i.e. the repair is stale
+                // and matched nothing at all.
+                const satisfied = merged.custom_facts.some((f) => f && normFactText(f.text) === toKey);
+                if (!satisfied) unmatchedRepairs.push(from);
+                continue;
+            }
+            if (!allowed) { conflicts.push(`custom_facts[${idx}]`); continue; }
+            const entry = clone(merged.custom_facts[idx]);
+            entry.text = to;
+            if (r.reason) entry.repair_reason = r.reason;
+            if (r.repaired_at) entry.repaired_at = r.repaired_at;
+            merged.custom_facts[idx] = entry;
+            repaired.push(`custom_facts[${idx}]`);
+        }
+    }
 
     function walk(target, source, prefix) {
         for (const key of Object.keys(source)) {
             // _meta is provenance for humans, never knowledge for the bot.
-            if (key === '_meta') continue;
+            if (key === '_meta' || key === '_renames') continue;
+            // handled above — never let the array reach the leaf comparison
+            if (!prefix && (key === 'custom_facts' || key === 'custom_facts_repairs')) continue;
             const path = prefix ? `${prefix}.${key}` : key;
             const incoming = source[key];
             const current = target[key];
@@ -66,7 +218,7 @@ function mergeFragment(live, fragment, opts) {
     }
 
     walk(merged, fragment || {}, '');
-    return { merged, added, repaired, conflicts, skippedMeta: Boolean(fragment && fragment._meta) };
+    return { merged, added, repaired, conflicts, addedFacts, unmatchedRepairs, renamed, unmatchedRenames, skippedMeta: Boolean(fragment && fragment._meta) };
 }
 
 /**
@@ -125,4 +277,4 @@ function truncatedValues(obj, prefix) {
     return out;
 }
 
-module.exports = { mergeFragment, oversizedValues, truncatedValues };
+module.exports = { mergeFragment, oversizedValues, truncatedValues, normFactText, collectFactTexts };

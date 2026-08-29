@@ -49,7 +49,7 @@ function countKeys(o) {
 const live = readJson(LIVE);
 const fragment = readJson(fragmentPath);
 
-const { merged, added, repaired, conflicts } = mergeFragment(live, fragment, { allowRepair });
+const { merged, added, repaired, conflicts, addedFacts, unmatchedRepairs, renamed, unmatchedRenames } = mergeFragment(live, fragment, { allowRepair });
 
 console.log(`\nFragment: ${path.basename(fragmentPath)}`);
 if (fragment._meta) {
@@ -63,9 +63,30 @@ console.log(`\n  ADDED (${added.length}):`);
 for (const a of added.slice(0, 20)) console.log(`    + ${a}`);
 if (added.length > 20) console.log(`    … ${added.length - 20} more`);
 
+if (addedFacts.length) {
+    console.log(`\n  CUSTOM FACTS APPENDED (${addedFacts.length}):`);
+    for (const f of addedFacts) console.log(`    + ${f.slice(0, 100)}${f.length > 100 ? '…' : ''}`);
+}
+
 if (repaired.length) {
     console.log(`\n  REPAIRED — existing values overwritten because you passed --repair (${repaired.length}):`);
     for (const r of repaired) console.log(`    ~ ${r}`);
+}
+
+if (renamed.length) {
+    console.log(`\n  RENAMED KEYS — the old name is GONE from the prompt (${renamed.length}):`);
+    for (const r of renamed) console.log(`    → ${r}`);
+}
+
+if (unmatchedRenames.length) {
+    console.log(`\n  ⚠️  renames that matched NOTHING (${unmatchedRenames.length}):`);
+    for (const u of unmatchedRenames) console.log(`     ? ${u}`);
+}
+
+if (unmatchedRepairs.length) {
+    console.log(`\n  ⚠️  custom_facts repairs that matched NOTHING (${unmatchedRepairs.length}):`);
+    for (const u of unmatchedRepairs) console.log(`     ? ${u.slice(0, 100)}${u.length > 100 ? '…' : ''}`);
+    console.log('     The fact text must match VERBATIM. Check it still reads exactly like this.');
 }
 
 if (conflicts.length) {
@@ -73,6 +94,9 @@ if (conflicts.length) {
     for (const c of conflicts.slice(0, 30)) console.log(`    ! ${c}`);
     if (conflicts.length > 30) console.log(`    … ${conflicts.length - 30} more`);
     console.log('    Re-run with --repair <path> for each one you have reviewed and want replaced.');
+    if (conflicts.some((c) => c.startsWith('custom_facts['))) {
+        console.log("    For a custom_facts[N] conflict the flag is --repair custom_facts (the array, not the index).");
+    }
 }
 
 // Quality gates on what would actually land.
@@ -94,7 +118,7 @@ if (dryRun) {
     process.exit(0);
 }
 
-if (!added.length && !repaired.length) {
+if (!added.length && !repaired.length && !addedFacts.length && !renamed.length) {
     console.log('\n  Nothing to do.\n');
     process.exit(0);
 }

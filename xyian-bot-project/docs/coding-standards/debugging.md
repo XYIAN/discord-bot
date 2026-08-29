@@ -56,7 +56,22 @@ Both bots have been bitten by this.
 - **Checking retrieval instead of the answer.** In the Tempest bot every test
   asked "is this fact retrieved?" and none asked "what does the bot say?", so a
   stale instruction suppressed correct data while 211 tests passed. This repo
-  has the same exposure: nothing verifies what `#arch-ai` actually replies.
+  had the same exposure until v3.32.0; `scripts/answer-check.js` now closes it.
+
+  ```bash
+  node xyian-bot-project/scripts/answer-check.js   # needs OPENAI_API_KEY, ~$0.05
+  ```
+
+  Run it by hand before shipping a change to `data/knowledge.json` or to the
+  system prompt — it is deliberately not under `test/` because `npm test` must
+  stay free and offline. On its first run it caught two defects the render
+  tests passed clean, both the same shape: **a caveat placed away from the data
+  it qualifies loses to that data.** One fact listed two event-only heroes and
+  appended two more in a trailing sentence — the model read the leading clause
+  and answered with two. One caveat about a stale Guild Hall layout sat in the
+  `ADDITIONAL FACTS` bullet list while the layout itself sat in `GUILD:` — the
+  model recited the stale layout as current. Put the qualification inside the
+  value being read, and make enumerations complete before qualifying them.
 - **Measuring a different source than production reads.** Here, 11 of 14
   `weapons.*` entries are truncated at 183 characters in `data/knowledge.json`,
   so every Legendary and Mythic tier is missing from the rendered prompt — while

@@ -1,0 +1,101 @@
+{
+  "_meta": {
+    "source": "Two official in-game notices captured by XYIAN and transcribed 2026-08-24: (1) the Update Preview popup signed 'Archero 2 Team', dated 2026/8/23; (2) the 'Collaboration Event Preview' Notice for the Archero 2 x Rick and Morty crossover. Plus guild recruitment requirements set by XYIAN, effective 2026-08-24.",
+    "confidence": "high for the notice text — transcribed verbatim, nothing inferred beyond what the notices state. Season 4 items are ANNOUNCED, not observed in play."
+  },
+  "umbral_tempest": {
+    "overview": "Umbral Tempest is a large recurring seasonal event in Archero 2, opened from the bottom action bar on the home screen. It runs in numbered seasons.",
+    "season_4_status": "Umbral Tempest Season 4 begins 31 August 2026. Everything recorded here about Season 4 comes from the in-game Update Preview dated 2026-08-23 and describes the season as ANNOUNCED, not as observed in play.",
+    "season_4_class_abilities": "The Umbral Tempest Season 4 announcement (2026-08-23) names four classes, each receiving a brand-new exclusive ability: Ranger gains 'Sword Intent', Alchemist gains 'Boiling', Druid gains 'Symbiosis', and Diviner gains 'Star Eclipse'. Habby described this as a major upgrade to build variety.",
+    "season_4_monster_mechanic": "Umbral Tempest Season 4 adds the 'Main Weapon Restriction Shield' monster mechanic. Announced 2026-08-23.",
+    "ebonrot_front": "Ebonrot Front is named in the Umbral Tempest Season 4 announcement (2026-08-23), which optimizes its difficulty, its unlock pacing, and its weekly resource progression. The announcement gave no further detail about what Ebonrot Front is.",
+    "doomsday_clash": "Doomsday Clash is a boss encounter named in the Umbral Tempest Season 4 announcement (2026-08-23), which optimizes its Boss unlock pacing and adds a solo challenge mode.",
+    "season_4_launch_missions": "Umbral Tempest Season 4 adds 7-day Season Launch missions. Announced 2026-08-23.",
+    "season_talent_system": "The Season Talent System is Umbral Tempest's per-season talent tree. Season 4 (announced 2026-08-23) upgrades it with talent branches, special nodes, and 6 class skill nodes, allowing targeted enhancement of class abilities.",
+    "season_talent_resets": "From Umbral Tempest Season 4 (announced 2026-08-23), Season Talent reset rules are 7 resets per week with weekly resets. Habby's stated intent was to make build combinations more flexible.",
+    "coverage_caveat": "Coverage of Umbral Tempest is thin. Everything recorded is from the Season 4 announcement of 2026-08-23; the event's core loop, currencies, rewards and past seasons are NOT documented. Do not infer general Umbral Tempest mechanics from these Season 4 notes."
+  },
+  "collaborations": {
+    "overview": "Collaborations are limited-time crossover events in Archero 2 that add guest characters, skins and event gameplay from another franchise.",
+    "rick_and_morty_overview": "The Archero 2 x Rick and Morty crossover was announced in an in-game 'Collaboration Event Preview' Notice. It brings new characters, exclusive gameplay, and a set of limited-time events. Rick & Morty and all related characters are (c) & TM Cartoon Network.",
+    "rick_and_morty_rick": "Rick is a Legendary crossover character. His combat style revolves around [Garage Inventions] and [Inspiration], combining unpredictable outcomes with powerful scaling. Obtained for a limited time through [Interdimensional Summon] during the event.",
+    "rick_and_morty_morty": "Morty is a Legendary crossover character. His gameplay revolves around the cycle between [Morty Waves], [Lame Adventure] and [Aw Geez Adventure]. On entering battle [Morty Waves] activates automatically, periodically cleansing 1 debuff (excluding control effects) from each ally within range while granting [Lame Adventure] stacks. Obtained for a limited time through [Interdimensional Summon].",
+    "rick_and_morty_meeseeks": "Mr. Meeseeks is a Legendary Mystling debuting in the Rick and Morty collab. His combat style is built around rapid triggers and escalating power; when activated, his skill deals damage to enemies in the target area. Obtained through participation or summoning in the [Meeseeks Directive] event during the collab.",
+    "rick_and_morty_space_adventures": "[Space Adventures] is the collab's limited-time themed stage: a two-player co-op challenge mode. The Rick and Morty collab characters are provided for players to use, so the mode focuses on teamwork and on hands-on experience with each character's skills. Entered from the main event screen. Completing battle quests earns event currency and rare items.",
+    "rick_and_morty_event_features": "Five limited-time features run during the collab: [Interdimensional Summon] (recruitment for Rick and Morty), [Prime Protocol] (recruitment for character and weapon skins), [Meeseeks Directive] (obtain the Legendary Mystling Mr. Meeseeks), [21-Day Login Event] (free login rewards through the event period), and [Server Support Pack] plus [Alliance Treasure] (free rewards or high-value rare items).",
+    "rick_and_morty_skins": "[Prime Protocol] is the collab's limited-time skin recruitment, covering both character skins and weapon skins. Each Rick and Morty collab character has 2 skin sets: one based on the original animated style, and one exclusive to Archero 2. This applies to the collab characters, not to the base roster.",
+    "rick_and_morty_requirements": "To access all Rick and Morty collab content, chapter progress must reach Chapter 3 wave 10 or above, which is what unlocks the in-game event system. The [Alliance Treasure] gameplay additionally requires the player to have joined a guild."
+  },
+  "guild": {
+    "requirements": {
+      "overview": "The Arch 2 Addicts community runs two Archero 2 guilds. Both carry the same activity standards; only the power minimum differs. Set by XYIAN, effective 2026-08-24.",
+      "xyian_official_power": "XYIAN OFFICIAL (Guild ID 213797), the founding guild, requires 8M+ power.",
+      "projectxy_power": "ProjectXY (Guild ID 214890), the sister guild and the primary home for new members, requires 6M+ power.",
+      "shared_activity": "Both guilds require the same activity: daily Monster Invasion (the guild boss battle, called MI) and guild research at 2x minimum per day; daily guild donations at 2x minimum per day; and being active in Discord. The donation minimum is 2 rather than 1 because the first donation of the day is free, so a single donation costs nothing and proves nothing.",
+      "why_two_guilds": "XYIAN OFFICIAL filled up, so ProjectXY was created as a sister guild in August 2026. One community, one Discord, and a deliberate commitment not to expand past a single sub-guild."
+    },
+    "starlight_celebration": {
+      "overview": "Guild Starlight Celebration is a guild event announced in the in-game Update Preview dated 2026-08-23, shipping with that week's hotfix update. It highlights the guild's standout members from the previous week.",
+      "how_winners_are_chosen": "Multiple honorary awards and a Guild MVP are selected based on guild members' activity and contributions during the PREVIOUS week.",
+      "during_the_event": "Players can watch the award ceremony, send emojis to interact with it, and claim rewards."
+    },
+    "guild_hall": {
+      "contents": "PRE-UPGRADE LAYOUT — the Guild Hall UI was fully upgraded on 2026-08-23 and this may no longer match the current screen. Before that upgrade it showed: guild name, ID, emblem with guild level, member count, Recruit button, aggregate guild power, guild XP progress bar toward the next level, and a leader-editable description box.",
+      "ui_upgraded_2026_08_23": "The Guild Hall was fully upgraded in the update announced 2026-08-23: a new UI that centralises guild information and the access points for guild features. What the new UI contains is NOT recorded. Every other guild_hall detail here describes the pre-upgrade screen — say so when describing the Guild Hall."
+    }
+  },
+  "characters": {
+    "acquisition_event_only_heroes": "The event-only heroes — obtainable ONLY during a limited-time event — are: Nezha, Wukong, Rick, and Morty. Nezha and Wukong each return with their own recurring event; Rick and Morty come from [Interdimensional Summon] during the Archero 2 x Rick and Morty collab."
+  },
+  "custom_facts": [
+    {
+      "text": "An in-game Update Preview dated 2026-08-23 announced a hotfix update for that week, bringing a brand-new chapter, the Guild Starlight Celebration, and Umbral Tempest Season 4.",
+      "added_by": "XYIAN",
+      "added_at": "2026-08-24",
+      "source": "patch_notes",
+      "announced": "2026-08-23"
+    },
+    {
+      "text": "The hotfix announced on 2026-08-23 adds Main Chapters 191-200 and Heroic Chapters 176-185.",
+      "added_by": "XYIAN",
+      "added_at": "2026-08-24",
+      "source": "patch_notes",
+      "announced": "2026-08-23"
+    },
+    {
+      "text": "The Guild Hall was fully upgraded in the hotfix announced on 2026-08-23: a new UI that centralises guild information and the access points for guild features. Any description of the Guild Hall screen layout in these notes predates that upgrade.",
+      "added_by": "XYIAN",
+      "added_at": "2026-08-24",
+      "source": "patch_notes",
+      "announced": "2026-08-23"
+    },
+    {
+      "text": "The hotfix announced on 2026-08-23 adds combat scene switching in the profile interface, so Arena and Peak Arena can be set to different combat scenes.",
+      "added_by": "XYIAN",
+      "added_at": "2026-08-24",
+      "source": "patch_notes",
+      "announced": "2026-08-23"
+    },
+    {
+      "text": "Starlight Cup and Super Starlight Cup battles were optimized in the hotfix announced on 2026-08-23: Boss death animations were removed, and stage timers pause while you are selecting a Boss.",
+      "added_by": "XYIAN",
+      "added_at": "2026-08-24",
+      "source": "patch_notes",
+      "announced": "2026-08-23"
+    },
+    {
+      "text": "The hotfix announced on 2026-08-23 adds 100x draws to Equipment Chests, a x10 option to Quick Hunt, and a one-click unequip function for Rune Presets.",
+      "added_by": "XYIAN",
+      "added_at": "2026-08-24",
+      "source": "patch_notes",
+      "announced": "2026-08-23"
+    },
+    {
+      "text": "The hotfix announced on 2026-08-23 adds new achievements for player level, new stages, and other related milestones.",
+      "added_by": "XYIAN",
+      "added_at": "2026-08-24",
+      "source": "patch_notes",
+      "announced": "2026-08-23"
+    }
+  ]
+}
