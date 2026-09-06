@@ -57,7 +57,9 @@ const CASES = [
     // The everyday names. "XY" must land on XYIAN OFFICIAL (8M), never on
     // ProjectXY, whose full name also contains the letters XY.
     { q: 'How much power do I need for XY?',                    say: [/8 ?m/i],            notSay: [/\b6 ?m\+? (?:power )?(?:required|minimum|to join)/i] },
-    { q: 'What is PXY?',                                        say: [/projectxy/i, /6 ?m/i], notSay: [] },
+    // Kyle: 'we are all one clan but we are all competitive and PXY is no different' — the live bot
+    // called PXY 'a great place to start', which is the little-brother framing he rejects.
+    { q: 'What is PXY?',                                        say: [/projectxy/i, /6 ?m/i], notSay: [/place to start|starter|beginner|feeder|little brother|before (?:moving|joining) (?:up|xy)/i] },
     { q: 'How many guild donations do I need per day?',         say: [/\b2\b|two/i], notSay: [] },
     { q: 'How many MI do I need to do daily?',                  say: [/\b2\b|two/i, /monster invasion/i], notSay: [] },
     // The daily requirement is DONATIONS, not bargain — different systems, and

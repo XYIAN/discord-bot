@@ -1,0 +1,18 @@
+{
+  "_meta": {
+    "source": "Live answer test in #arch-ai, 2026-09-06, after v3.33.2 deployed. Two answers were off: 'Super All-Star Cup' was described as 'the same mode as the All-Star Cup' (it is the MEGA All-Star Cup — the entry asserted 'higher tier' and then said that was unrecorded, and the model collapsed the contradiction); and ProjectXY was described as a starter guild, which XYIAN explicitly rejects: 'we are all one clan but we are all competitive and PXY is no different'.",
+    "confidence": "high — first is a wording repair of an entry whose two halves disagreed; second is the guild owner's own framing.",
+    "conflictsWithLive": ["game_modes.arena.mega_all_star_cup", "game_modes.arena.super_all_star_cup_naming", "guild.requirements.projectxy_power"]
+  },
+  "game_modes": {
+    "arena": {
+      "mega_all_star_cup": "Mega All-Star Cup is a DIFFERENT name from All-Star Cup: it is named beside All-Star Cup in the official August 2026 notice, which also writes it as 'Super All-Star Cup' — both spellings are official and mean this one thing. It receives the same battle change as All-Star Cup (no Boss death animations; the stage timer pauses while selecting a Boss). How it relates to All-Star Cup — separate mode or higher tier — how you enter it, and what it rewards are all unrecorded. Never describe it as simply 'the All-Star Cup'.",
+      "super_all_star_cup_naming": "'Super All-Star Cup' means the Mega All-Star Cup — NOT the plain All-Star Cup. Both 'Super' and 'Mega' appear in the same official August 2026 notice for one mode; the 2026-08-23 preview called it 'Super Starlight Cup'. When asked about Super All-Star Cup, say it is the Mega All-Star Cup, then that its rules and rewards are undocumented, and point at !suggest."
+    }
+  },
+  "guild": {
+    "requirements": {
+      "projectxy_power": "ProjectXY — called PXY for short (Guild ID 214890) — is XYIAN OFFICIAL's sister guild and requires 6M+ power. It is where most new members land, and it is a competitive guild in its own right: same standards, same daily expectations, same ambition to climb to the top. One community, two guilds, both competitive — PXY is not a feeder, a starter guild, or a 'little brother'. Do not describe it as a place to start before moving on to XY."
+    }
+  }
+}

@@ -39,7 +39,7 @@ const GUILDS = Object.freeze({
         short: 'PXY',
         id: '214890',
         power: '6M+',
-        blurb: 'our sister guild and the primary home for new members',
+        blurb: 'our sister guild — same standards, same ambition, and where most new members land',
     }),
 });
 

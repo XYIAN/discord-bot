@@ -4,6 +4,16 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.33.3] - 2026-09-06
+
+### Two answers the live test caught
+
+Asked in #arch-ai right after v3.33.2 went up. Three questions, two clean, one off — and one framing fix.
+
+**"What is the Super All-Star Cup?"** got "the same mode as the All-Star Cup." It isn't — it's the *Mega* All-Star Cup, which the notice spells both ways. The entry said "higher tier" in one sentence and "whether it's a higher tier is unrecorded" in the next, and a small model resolves a contradiction like that by flattening it. Rewritten so the two halves agree.
+
+**"What is PXY?"** got "a great place to start." That's the little-brother framing we don't do. PXY is where most new members land *and* a competitive guild in its own right — same standards, same daily expectations, same ambition. One community, two guilds, both competitive. The bot now says so, and won't describe PXY as a stepping stone to XY.
+
 ## [3.33.2] - 2026-09-06
 
 ### XY and PXY — the names members actually use
