@@ -6,7 +6,7 @@
 const assert = require('assert');
 const {
     approvedCountFor, contributorTotals, earnedTier, earnedTierNames,
-    reconcilePlan, backfillApprovers,
+    reconcilePlan, backfillApprovers, mergeSeedTopics, applyCustomFactRepairs,
 } = require('../lib/contributions');
 
 // Mirrors CONFIG.roleTiers
@@ -225,6 +225,42 @@ test('mergeCustomFacts is idempotent and safe on empty input', () => {
     let n = 0;
     const t = (name, fn) => { try { fn(); n++; console.log(`  ✓ ${name}`); }
         catch (e) { console.error(`  ✗ ${name}\n    ${e.message}`); process.exitCode = 1; } };
+    console.log('\napplyCustomFactRepairs — corrections reach the volume');
+    // mergeCustomFacts is additive and dedups by TEXT, so a corrected fact used
+    // to be appended as a new fact while the stale one stood beside it.
+    t('rewrites the stale fact in place, keeping its provenance', () => {
+        const live = { custom_facts: [{ text: 'the Guild Starlight Celebration ships', added_by: 'XYIAN' }] };
+        const seed = { _custom_facts_repairs: [{ match_text: 'the Guild Starlight Celebration ships', text: 'the Starlight Gala ships', reason: 'official name' }] };
+        const r = applyCustomFactRepairs(live, seed);
+        assert.strictEqual(r.repaired, 1);
+        assert.strictEqual(r.knowledge.custom_facts[0].text, 'the Starlight Gala ships');
+        assert.strictEqual(r.knowledge.custom_facts[0].added_by, 'XYIAN');
+        assert.strictEqual(r.knowledge.custom_facts[0].repair_reason, 'official name');
+    });
+    t('REMOVES the stale fact when the corrected text is already live (an earlier boot appended it)', () => {
+        const live = { custom_facts: [{ text: 'old wording' }, { text: 'new wording' }] };
+        const seed = { _custom_facts_repairs: [{ match_text: 'old wording', text: 'new wording' }] };
+        const r = applyCustomFactRepairs(live, seed);
+        assert.strictEqual(r.removed, 1);
+        assert.deepStrictEqual(r.knowledge.custom_facts.map((f) => f.text), ['new wording'], 'no duplicate may survive');
+    });
+    t('is idempotent — a second boot changes nothing', () => {
+        const once = applyCustomFactRepairs({ custom_facts: [{ text: 'old' }] }, { _custom_facts_repairs: [{ match_text: 'old', text: 'new' }] }).knowledge;
+        const twice = applyCustomFactRepairs(once, { _custom_facts_repairs: [{ match_text: 'old', text: 'new' }] });
+        assert.strictEqual(twice.repaired + twice.removed, 0);
+        assert.strictEqual(twice.knowledge, once, 'must return the same object when nothing changed');
+    });
+    t('never mutates the live object', () => {
+        const live = { custom_facts: [{ text: 'old' }] };
+        applyCustomFactRepairs(live, { _custom_facts_repairs: [{ match_text: 'old', text: 'new' }] });
+        assert.strictEqual(live.custom_facts[0].text, 'old');
+    });
+    t('_custom_facts_repairs never lands in the knowledge base as a topic', () => {
+        const r = mergeSeedTopics({ a: 1 }, { _custom_facts_repairs: [{ match_text: 'x', text: 'y' }], b: 2 });
+        assert.strictEqual(r.knowledge._custom_facts_repairs, undefined);
+        assert.deepStrictEqual(r.addedPaths, ['b']);
+    });
+
     console.log('\nmergeSeedTopics — _repairs allowlist');
     t('repairs ONLY a path named in seed._repairs', () => {
         const live = { runes: { a: 'truncated mid-', b: 'live b' } };

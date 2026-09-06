@@ -14,7 +14,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { mergeFragment, oversizedValues, truncatedValues } = require('../lib/knowledge-merge');
+const { mergeFragment, oversizedValues, truncatedValues, withSeedManifests, normFactText } = require('../lib/knowledge-merge');
 
 const LIVE = path.join(__dirname, '..', 'data', 'knowledge.json');
 const SEED = path.join(__dirname, '..', 'seeds', 'knowledge.json');
@@ -133,8 +133,22 @@ const out = `${JSON.stringify(merged, null, 2)}\n`;
 JSON.parse(out); // fail loudly rather than write something unparseable
 fs.writeFileSync(LIVE, out);
 // seeds/ is what restores the volume on first mount — keep it in step or the
-// next volume incident loses exactly this work.
-if (fs.existsSync(SEED)) fs.writeFileSync(SEED, out);
+// next volume incident loses exactly this work. It ALSO carries the repair
+// manifests: without `_repairs` naming each overwritten path, the boot merge
+// (additive, live-wins) never applies a repair to the volume, and production
+// keeps answering with the value the repair fixed.
+if (fs.existsSync(SEED)) {
+    const existingSeed = readJson(SEED);
+    const liveTexts = new Set((merged.custom_facts || []).map((f) => normFactText(f && f.text)));
+    const appliedCustomRepairs = (fragment.custom_facts_repairs || []).filter((r) => r && liveTexts.has(normFactText(r.text)));
+    const seedOut = withSeedManifests(existingSeed, merged, repaired, appliedCustomRepairs);
+    fs.writeFileSync(SEED, `${JSON.stringify(seedOut, null, 2)}\n`);
+    const n = (seedOut._repairs || []).length;
+    const m = (seedOut._custom_facts_repairs || []).length;
+    if (repaired.length || appliedCustomRepairs.length) {
+        console.log(`  🌱 seeds/ repair manifests: ${n} path(s), ${m} custom fact(s) — these are what reach production`);
+    }
+}
 
 console.log(`\n  ✅ written to data/knowledge.json${fs.existsSync(SEED) ? ' and seeds/knowledge.json' : ''}`);
 console.log(`  backup: ${path.basename(backup)}\n`);

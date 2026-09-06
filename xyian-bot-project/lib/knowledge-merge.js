@@ -277,4 +277,54 @@ function truncatedValues(obj, prefix) {
     return out;
 }
 
-module.exports = { mergeFragment, oversizedValues, truncatedValues, normFactText, collectFactTexts };
+/**
+ * Build what seeds/knowledge.json must contain: the merged knowledge PLUS the
+ * two repair manifests the boot merge honours.
+ *
+ * WHY: mergeSeedTopics() in lib/contributions.js is additive — live wins on any
+ * key that already exists — unless the path is named in `seed._repairs`. This
+ * script wrote repaired values into seeds/ for weeks without ever naming them
+ * there, so every --repair reached the repo and stopped. Production kept the
+ * old value, and the live bot kept giving the answer the repair had fixed.
+ *
+ * Manifests accumulate across runs (a repair recorded once must survive every
+ * later seed rewrite) and are deduplicated. custom_facts repairs are matched by
+ * text at boot, so the recorded shape is {match_text, text, reason?, repaired_at?}.
+ */
+function withSeedManifests(existingSeed, merged, repairedPaths, customRepairs) {
+    const prev = existingSeed && typeof existingSeed === 'object' ? existingSeed : {};
+    const repairs = new Set(Array.isArray(prev._repairs) ? prev._repairs : []);
+    for (const p of repairedPaths || []) if (p && !p.startsWith('custom_facts[')) repairs.add(p);
+
+    const cf = Array.isArray(prev._custom_facts_repairs) ? prev._custom_facts_repairs.slice() : [];
+    const seen = new Set(cf.map((r) => normFactText(r && r.match_text)));
+    for (const r of customRepairs || []) {
+        if (!r || typeof r.match_text !== 'string' || typeof r.text !== 'string') continue;
+        const key = normFactText(r.match_text);
+        if (!key || seen.has(key)) continue;
+        cf.push({
+            match_text: r.match_text,
+            text: r.text,
+            ...(r.reason ? { reason: r.reason } : {}),
+            ...(r.repaired_at ? { repaired_at: r.repaired_at } : {}),
+        });
+        seen.add(key);
+    }
+
+    const out = clone(merged);
+    delete out._repairs;
+    delete out._custom_facts_repairs;
+    if (repairs.size) out._repairs = [...repairs];
+    if (cf.length) out._custom_facts_repairs = cf;
+    return out;
+}
+
+/** The seed file with its manifests stripped — what must equal data/knowledge.json. */
+function withoutSeedManifests(seed) {
+    const out = clone(seed || {});
+    delete out._repairs;
+    delete out._custom_facts_repairs;
+    return out;
+}
+
+module.exports = { mergeFragment, oversizedValues, truncatedValues, normFactText, collectFactTexts, withSeedManifests, withoutSeedManifests };

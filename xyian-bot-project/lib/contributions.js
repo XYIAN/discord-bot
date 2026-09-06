@@ -156,6 +156,53 @@ function mergeCustomFacts(liveKb, seedKb) {
 
 
 /**
+ * Apply seed-carried custom_facts REPAIRS to the live ledger.
+ *
+ * mergeCustomFacts() is additive and dedups by text, so when a curated fact is
+ * CORRECTED in the repo (scripts/merge-knowledge.js --repair custom_facts), the
+ * next boot ADDED the corrected text as a brand-new fact and left the stale one
+ * standing beside it — a contradiction the small model resolves by coin-flip.
+ *
+ * Matched by normalised text, never by index. If the corrected text is already
+ * live (an earlier boot added it), the stale entry is REMOVED rather than
+ * rewritten, so no duplicate survives. A repair whose match_text is absent is
+ * a no-op, which is what makes every boot idempotent.
+ *
+ * @returns {{knowledge: object, repaired: number, removed: number}}
+ */
+function applyCustomFactRepairs(liveKb, seedKb) {
+    const live = liveKb && typeof liveKb === 'object' ? liveKb : {};
+    const seed = seedKb && typeof seedKb === 'object' ? seedKb : {};
+    const repairs = Array.isArray(seed._custom_facts_repairs) ? seed._custom_facts_repairs : [];
+    if (repairs.length === 0 || !Array.isArray(live.custom_facts)) return { knowledge: live, repaired: 0, removed: 0 };
+    const facts = live.custom_facts.slice();
+    let repaired = 0;
+    let removed = 0;
+    for (const r of repairs) {
+        const from = normalizeText(r && r.match_text);
+        const to = normalizeText(r && r.text);
+        if (!from || !to) continue;
+        const idx = facts.findIndex((f) => f && normalizeText(f.text) === from);
+        if (idx === -1) continue;
+        const alreadyLive = facts.some((f, i) => i !== idx && f && normalizeText(f.text) === to);
+        if (alreadyLive) {
+            facts.splice(idx, 1);
+            removed++;
+        } else {
+            facts[idx] = {
+                ...facts[idx],
+                text: r.text,
+                ...(r.reason ? { repair_reason: r.reason } : {}),
+                ...(r.repaired_at ? { repaired_at: r.repaired_at } : {}),
+            };
+            repaired++;
+        }
+    }
+    if (repaired === 0 && removed === 0) return { knowledge: live, repaired: 0, removed: 0 };
+    return { knowledge: { ...live, custom_facts: facts }, repaired, removed };
+}
+
+/**
  * Merge curated TOPICS from the seed snapshot into the live knowledge base.
  *
  * seedDataFiles() only hydrates a MISSING file, and mergeCustomFacts() only
@@ -183,7 +230,7 @@ function mergeSeedTopics(liveKb, seedKb) {
     const repairs = new Set(Array.isArray(seed._repairs) ? seed._repairs : []);
     // custom_facts and opinions are community-owned and handled elsewhere;
     // never let a stale seed snapshot resurrect or reorder them here.
-    const SKIP = new Set(['custom_facts', 'opinions', '_meta']);
+    const SKIP = new Set(['custom_facts', 'opinions', '_meta', '_custom_facts_repairs']);
     const addedPaths = [];
     const next = { ...live };
 
@@ -213,6 +260,7 @@ function mergeSeedTopics(liveKb, seedKb) {
 }
 
 module.exports = {
+    applyCustomFactRepairs,
     mergeSeedTopics,
     approvedCountFor,
     contributorTotals,

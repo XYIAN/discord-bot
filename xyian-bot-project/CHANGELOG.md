@@ -4,6 +4,16 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.33.4] - 2026-09-06
+
+### The repairs never left the repo
+
+After v3.33.3 deployed, Arch AI still described PXY as "the primary home for new members" — the exact sentence that release had replaced. That wasn't a model quirk. **No knowledge repair since v3.33.0 had ever reached production.**
+
+On boot the bot folds the shipped knowledge into the live volume *additively*: new keys land, existing keys keep their live value. There is an allowlist for values that are meant to overwrite — but nothing was writing to it, so every correction stopped at the repo while every test stayed green (they were checking the repo, and the repo was right).
+
+Fixed at the root: the merge tool now records every repair in the seed manifest, custom-fact corrections replace their stale entry on boot instead of being appended beside it, and a new test fails if a repair exists in the repo without a route to production. All twenty-four outstanding repairs are backfilled and land with this deploy — including the PXY and Mega/Super All-Star Cup fixes from the last two releases.
+
 ## [3.33.3] - 2026-09-06
 
 ### Two answers the live test caught

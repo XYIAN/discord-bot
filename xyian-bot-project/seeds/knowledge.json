@@ -1951,5 +1951,58 @@
     "rick_and_morty_skins": "[Prime Protocol] is the collab's limited-time skin recruitment, covering both character skins and weapon skins. Each Rick and Morty collab character has 2 skin sets: one based on the original animated style, and one exclusive to Archero 2. This applies to the collab characters, not to the base roster.",
     "rick_and_morty_requirements": "To access all Rick and Morty collab content, chapter progress must reach Chapter 3 wave 10 or above, which is what unlocks the in-game event system. The [Alliance Treasure] gameplay additionally requires the player to have joined a guild.",
     "rick_and_morty_dates": "The Archero 2 x Rick and Morty collab event ends on or about 11 September 2026 — XYIAN reported on 2026-08-24 that it had exactly 18 days left. The start date is not recorded. The in-game event screen carries the authoritative countdown, so point players there for the exact end time."
-  }
+  },
+  "_repairs": [
+    "umbral_tempest.season_4_class_abilities",
+    "umbral_tempest.season_4_status",
+    "umbral_tempest.coverage_caveat",
+    "umbral_tempest.ebonrot_front",
+    "umbral_tempest.season_4_monster_mechanic",
+    "umbral_tempest.season_4_launch_missions",
+    "umbral_tempest.doomsday_clash",
+    "hunt.quick_hunt.energy_option",
+    "game_modes.arena.overview",
+    "guild.overview",
+    "guild.hub_buildings",
+    "hunt.advice.energy_efficiency",
+    "umbral_tempest.season_talent_system",
+    "umbral_tempest.season_talent_resets",
+    "currencies.pack_and_chest_items.relic_shovel",
+    "guild.requirements.xyian_official_power",
+    "game_modes.arena.mega_all_star_cup",
+    "game_modes.arena.super_all_star_cup_naming",
+    "guild.requirements.projectxy_power"
+  ],
+  "_custom_facts_repairs": [
+    {
+      "match_text": "An in-game Update Preview dated 2026-08-23 announced a hotfix update for that week, bringing a brand-new chapter, the Guild Starlight Celebration, and Umbral Tempest Season 4.",
+      "text": "An in-game Update Preview dated 2026-08-23 announced a hotfix update for that week, bringing a brand-new chapter, the Starlight Gala, and Umbral Tempest Season 4. The official patch notes name that guild feature the Starlight Gala; 'Guild Starlight Celebration' was the preview name for the same feature.",
+      "reason": "Official patch notes (2026-08-28) name the feature Starlight Gala.",
+      "repaired_at": "2026-08-28"
+    },
+    {
+      "match_text": "The hotfix announced on 2026-08-23 adds combat scene switching in the profile interface, so Arena and Peak Arena can be set to different combat scenes.",
+      "text": "The August 2026 hotfix adds battle scene switching in the profile interface, so Arena and Peak Arena battle scenes can be set separately.",
+      "reason": "Official notes say 'battle scene'; 'combat scene' was a preview coinage and the corpus already uses 'battle scenes' elsewhere.",
+      "repaired_at": "2026-08-28"
+    },
+    {
+      "match_text": "Starlight Cup and Super Starlight Cup battles were optimized in the hotfix announced on 2026-08-23: Boss death animations were removed, and stage timers pause while you are selecting a Boss.",
+      "text": "All-Star Cup and Mega All-Star Cup battles were optimized in the August 2026 hotfix: Boss death animations no longer play, and the stage timer pauses while you are selecting a Boss. The 2026-08-23 preview called these two modes 'Starlight Cup' and 'Super Starlight Cup'.",
+      "reason": "Official patch notes attribute this exact change to All-Star Cup and Mega All-Star Cup.",
+      "repaired_at": "2026-08-28"
+    },
+    {
+      "match_text": "The hotfix announced on 2026-08-23 adds 100x draws to Equipment Chests, a x10 option to Quick Hunt, and a one-click unequip function for Rune Presets.",
+      "text": "The August 2026 hotfix adds a 100x Draw option to all Gear Chests, a x10 option to Quick Hunt, and an Unequip All option on BOTH Gear and Rune presets that clears the current preset in one tap.",
+      "reason": "Official notes say Gear Chests (not Equipment Chests) and say Unequip All covers Gear presets as well as Rune presets.",
+      "repaired_at": "2026-08-28"
+    },
+    {
+      "match_text": "The hotfix announced on 2026-08-23 adds Main Chapters 191-200 and Heroic Chapters 176-185.",
+      "text": "The August 2026 hotfix adds Main Chapters 191-200 and Heroic Chapters 176-185. The official patch notes call these same two tracks 'Campaign Stages' and 'Hard Stages'.",
+      "reason": "Aligns the vocabulary with the official notes so the two records do not read as different content.",
+      "repaired_at": "2026-08-28"
+    }
+  ]
 }

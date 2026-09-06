@@ -7,7 +7,7 @@
 // behaviour these tests pin down is "never change anything you were not explicitly
 // told to change".
 const assert = require('assert');
-const { mergeFragment, oversizedValues, truncatedValues } = require('../lib/knowledge-merge');
+const { mergeFragment, oversizedValues, truncatedValues, withSeedManifests, withoutSeedManifests } = require('../lib/knowledge-merge');
 
 let passed = 0;
 function test(name, fn) {
@@ -304,6 +304,36 @@ test('rename THEN add: the fragment can refill the renamed key in one pass', () 
     assert.strictEqual(r.merged.guild.starlight_gala.cadence, 'weekly');
     assert.strictEqual(r.merged.guild.starlight_gala.keep, 'kept', 'untouched siblings survive');
     assert.ok(!('starlight_celebration' in r.merged.guild));
+});
+
+console.log('\nwithSeedManifests — a repair is not done until seeds/ names it');
+// The boot merge is additive unless seed._repairs names the path. This script
+// wrote repaired values into seeds/ for weeks without naming them, so every
+// --repair reached the repo and stopped there.
+test('records each repaired path in _repairs', () => {
+    const out = withSeedManifests({}, { a: { b: 'fixed' } }, ['a.b'], []);
+    assert.deepStrictEqual(out._repairs, ['a.b']);
+    assert.strictEqual(out.a.b, 'fixed');
+});
+test('manifests ACCUMULATE across runs and never duplicate', () => {
+    const first = withSeedManifests({}, { a: 1 }, ['x.y'], [{ match_text: 'old', text: 'new' }]);
+    const second = withSeedManifests(first, { a: 2 }, ['x.y', 'p.q'], [{ match_text: 'old', text: 'new' }, { match_text: 'o2', text: 'n2' }]);
+    assert.deepStrictEqual(second._repairs, ['x.y', 'p.q']);
+    assert.deepStrictEqual(second._custom_facts_repairs.map((r) => r.match_text), ['old', 'o2']);
+});
+test('custom_facts[N] paths are NOT topic repairs — they go in the fact manifest by text', () => {
+    const out = withSeedManifests({}, {}, ['custom_facts[36]', 'a.b'], []);
+    assert.deepStrictEqual(out._repairs, ['a.b']);
+});
+test('stripping the manifests gives back exactly the knowledge', () => {
+    const kb = { a: { b: 'x' }, custom_facts: [{ text: 't' }] };
+    const seed = withSeedManifests({}, kb, ['a.b'], [{ match_text: 'o', text: 't' }]);
+    assert.deepStrictEqual(withoutSeedManifests(seed), kb);
+});
+test('never mutates the merged knowledge it was given', () => {
+    const kb = { a: 1 };
+    withSeedManifests({}, kb, ['a'], []);
+    assert.strictEqual(kb._repairs, undefined);
 });
 
 console.log(`\n${passed} passed`);

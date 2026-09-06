@@ -99,8 +99,16 @@ function saveKnowledgeWithSeedMirror(knowledge) {
     try {
         const seedsDir = path.dirname(SEEDS_KNOWLEDGE_PATH);
         if (!fs.existsSync(seedsDir)) fs.mkdirSync(seedsDir, { recursive: true });
-        saveJSON(SEEDS_KNOWLEDGE_PATH, knowledge);
-        console.log('🌱 seeds/knowledge.json refreshed (kept in sync with data/knowledge.json)');
+        // Preserve the repair manifests — they live ONLY in seeds/ and are what
+        // makes a --repair reach the Railway volume at boot.
+        let manifests = {};
+        try {
+            const prev = JSON.parse(fs.readFileSync(SEEDS_KNOWLEDGE_PATH, 'utf8'));
+            if (Array.isArray(prev._repairs)) manifests._repairs = prev._repairs;
+            if (Array.isArray(prev._custom_facts_repairs)) manifests._custom_facts_repairs = prev._custom_facts_repairs;
+        } catch { /* no seed yet */ }
+        saveJSON(SEEDS_KNOWLEDGE_PATH, { ...knowledge, ...manifests });
+        console.log('🌱 seeds/knowledge.json refreshed (kept in sync with data/knowledge.json; repair manifests preserved)');
     } catch (e) {
         console.error('⚠️  Could not refresh seeds/knowledge.json:', e.message);
     }

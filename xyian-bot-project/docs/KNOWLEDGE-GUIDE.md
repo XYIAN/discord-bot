@@ -87,6 +87,30 @@ A fragment may therefore carry a `custom_facts_repairs` array:
 - Re-running an applied repair is a clean no-op — the replacement is already
   present, so there is nothing stale to report.
 
+### How a repair reaches production — the seed manifests
+
+The Railway volume is NOT overwritten on deploy. On boot the bot folds
+`seeds/knowledge.json` into the volume **additively** — a key that already
+exists on the volume keeps its live value — *unless* the path is named in
+`seeds/knowledge.json._repairs`. Custom-fact corrections likewise only apply if
+listed in `_custom_facts_repairs`.
+
+`merge-knowledge.js` writes both manifests automatically whenever `--repair`
+is used, and `sync-facts.js` preserves them when it mirrors seeds. **You never
+edit them by hand**, but you should know they exist, because for three
+releases they didn't: every `--repair` from v3.33.0 to v3.33.3 reached the
+repo and stopped, and the live bot kept reciting the sentence the repair had
+fixed. `test/seed-manifest.test.js` now fails if a fragment's applied repair
+is missing from the manifest.
+
+Consequences worth remembering:
+
+- `seeds/knowledge.json` == `data/knowledge.json` **plus** the two manifests.
+  Do not `cp data → seeds`; that drops them. Let the scripts write seeds.
+- A key **deleted** from the repo is *not* deleted from the volume. Prefer
+  repairing a value to a corrected one over deleting the key.
+- The only proof a repair is live is the answer in `#arch-ai`. Ask.
+
 **A fragment must replay as a clean no-op.** Re-run it after applying; if it
 still reports additions or conflicts, the fragment and the knowledge base
 disagree, and the fragment is no longer an accurate record of what landed.

@@ -111,6 +111,13 @@ write it.
   suggestions, activity, sync-report) write straight over their target — a
   SIGKILL mid-write truncates the file and the next load silently swallows it
   into defaults. Use `lib/state-store.js` for anything new.
+- **A `--repair` is not live until `seeds/knowledge.json._repairs` names it.**
+  The volume is merged additively on boot (live wins) except for paths in
+  that manifest. `merge-knowledge.js` writes it now; for v3.33.0–v3.33.3 it
+  did not, and production kept the old values while every unit test stayed
+  green — they checked the repo, and the repo was right. Deleting a key from
+  the repo does NOT delete it from the volume. `test/seed-manifest.test.js`
+  guards the manifest; a live question in `#arch-ai` is the only real proof.
 - `findKnowledgeGaps()` derives the daily "🧙 Arch AI has a question…" post.
   It has been observed inventing gaps for topics the knowledge base fully
   documents, so the bot publicly announces ignorance it does not have.

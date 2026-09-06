@@ -33,7 +33,7 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const { createLogForwarder, attachConsole } = require('./lib/log-forwarder');
-const { reconcilePlan, backfillApprovers, approvedCountFor, mergeLedgers, mergeCustomFacts, mergeSeedTopics } = require('./lib/contributions');
+const { reconcilePlan, backfillApprovers, approvedCountFor, mergeLedgers, mergeCustomFacts, mergeSeedTopics, applyCustomFactRepairs } = require('./lib/contributions');
 const modRules = require('./lib/moderation');
 const changelog = require('./lib/changelog');
 const usageLib = require('./lib/usage');
@@ -948,13 +948,21 @@ function restoreCuratedFacts() {
         console.log(`📚 Merged ${addedPaths.length} curated topic key(s) from seeds/: ${preview}${addedPaths.length > 8 ? ', …' : ''}`);
     }
 
+    // Corrections BEFORE additions: a corrected fact's new text must replace
+    // its stale entry, not be appended beside it by the dedup-by-text merge.
+    const { knowledge: corrected, repaired, removed } = applyCustomFactRepairs(knowledge, seed);
+    if (repaired + removed > 0) {
+        knowledge = corrected;
+        console.log(`📚 Applied ${repaired} custom fact repair(s) from seeds/, removed ${removed} superseded duplicate(s)`);
+    }
+
     const { knowledge: merged, added } = mergeCustomFacts(knowledge, seed);
     if (added > 0) {
         knowledge = merged;
         console.log(`📚 Merged ${added} curated fact(s) from seeds/ into the knowledge base`);
     }
-    if (addedPaths.length > 0 || added > 0) saveKnowledge();
-    return added + addedPaths.length;
+    if (addedPaths.length > 0 || added > 0 || repaired + removed > 0) saveKnowledge();
+    return added + addedPaths.length + repaired + removed;
 }
 
 // One-time (idempotent) attribution backfill so every approval records who
