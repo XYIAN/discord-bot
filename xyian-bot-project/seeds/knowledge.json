@@ -454,10 +454,11 @@
     "open_questions": "Not documented in this contribution: what Manage Member reveals, how Expedition Hearts are earned, and the full league ladder above and below Thunderbound Oath.",
     "requirements": {
       "overview": "The Arch 2 Addicts community runs two Archero 2 guilds. Both carry the same activity standards; only the power minimum differs. Set by XYIAN, effective 2026-08-24.",
-      "xyian_official_power": "XYIAN OFFICIAL (Guild ID 213797), the founding guild, requires 8M+ power.",
-      "projectxy_power": "ProjectXY (Guild ID 214890), the sister guild and the primary home for new members, requires 6M+ power.",
+      "xyian_official_power": "XYIAN OFFICIAL — called XY for short (Guild ID 213797), the founding guild — requires 8M+ power.",
+      "projectxy_power": "ProjectXY — called PXY for short (Guild ID 214890), the sister guild and the primary home for new members — requires 6M+ power.",
       "shared_activity": "Both guilds require the same activity: daily Monster Invasion (the guild boss battle, called MI) and guild research at 2x minimum per day; daily guild donations at 2x minimum per day; and being active in Discord. The donation minimum is 2 rather than 1 because the first donation of the day is free, so a single donation costs nothing and proves nothing.",
-      "why_two_guilds": "XYIAN OFFICIAL filled up, so ProjectXY was created as a sister guild in August 2026. One community, one Discord, and a deliberate commitment not to expand past a single sub-guild."
+      "why_two_guilds": "XYIAN OFFICIAL filled up, so ProjectXY was created as a sister guild in August 2026. One community, one Discord, and a deliberate commitment not to expand past a single sub-guild.",
+      "short_names": "Members use short names for both guilds: XY means XYIAN OFFICIAL and PXY means ProjectXY. A question about 'XY' is about XYIAN OFFICIAL (8M+), NOT about ProjectXY — even though ProjectXY's full name also contains the letters XY. A question about 'PXY' is about ProjectXY (6M+). Use the short names naturally in replies, the way members do."
     },
     "starlight_gala": {
       "overview": "Starlight Gala is a weekly guild feature — 'Who's the guild's brightest star this week?' Winners are picked from each member's activity and contribution over the past week, receiving a range of honor awards, and one member is named guild MVP. Official patch notes, 28 Aug 2026.",

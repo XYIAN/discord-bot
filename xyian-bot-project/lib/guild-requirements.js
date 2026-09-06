@@ -19,16 +19,24 @@
 // this module and that bot.js holds no loose power literal, so a future change
 // here cannot silently leave a surface behind.
 
-/** The two guilds. Power is the ONLY requirement that differs between them. */
+/**
+ * The two guilds. Power is the ONLY requirement that differs between them.
+ *
+ * `short` is what members actually type — XY and PXY are the everyday names in
+ * chat, and a question about "XY" has to land on XYIAN OFFICIAL, not on
+ * ProjectXY (whose full name also contains the letters XY).
+ */
 const GUILDS = Object.freeze({
     xyian: Object.freeze({
         name: 'XYIAN OFFICIAL',
+        short: 'XY',
         id: '213797',
         power: '8M+',
         blurb: 'our founding guild',
     }),
     projectxy: Object.freeze({
         name: 'ProjectXY',
+        short: 'PXY',
         id: '214890',
         power: '6M+',
         blurb: 'our sister guild and the primary home for new members',

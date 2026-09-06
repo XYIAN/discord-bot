@@ -83,6 +83,20 @@ test('guild.requirements exists at all', () => {
     // for my own guild?" while three channels displayed the answer.
     assert.ok(reqs, 'knowledge.json has no guild.requirements');
 });
+test('each guild has a short name, and the two are distinct', () => {
+    // XY and PXY are what members type. "XY" must not resolve by substring to
+    // ProjectXY, whose full name also contains those letters.
+    for (const g of Object.values(GUILDS)) assert.match(g.short, /^[A-Z]{2,4}$/, `${g.name} short name looks wrong`);
+    assert.notStrictEqual(GUILDS.xyian.short, GUILDS.projectxy.short);
+});
+test('the knowledge base states each short name beside its FULL guild name', () => {
+    // Beside, not merely somewhere: a small model reads the line it retrieved.
+    const blob = JSON.stringify(reqs);
+    for (const g of Object.values(GUILDS)) {
+        const re = new RegExp(`${g.name}[^.]{0,40}\\b${g.short}\\b`);
+        assert.ok(re.test(blob), `knowledge.json never says ${g.name} is ${g.short}`);
+    }
+});
 test('each guild power minimum appears in the knowledge base', () => {
     const blob = JSON.stringify(reqs);
     for (const g of Object.values(GUILDS)) {

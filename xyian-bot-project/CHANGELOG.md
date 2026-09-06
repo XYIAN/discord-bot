@@ -4,6 +4,16 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.33.2] - 2026-09-06
+
+### XY and PXY — the names members actually use
+
+Everyone calls the guilds **XY** (XYIAN OFFICIAL) and **PXY** (ProjectXY), and Arch AI now knows that too. Ask "how much power for XY?" and you get 8M+, not a confused answer about ProjectXY — whose full name also contains the letters XY, which is exactly the trap a small model falls into without being told.
+
+The short names live in the same single source as the power minimums, and the test that keeps the knowledge base honest against that source now checks the abbreviations sit *beside* the full name, not just somewhere in the file.
+
+Moderators: `!verify @user xy` and `!verify @user pxy` both work now.
+
 ## [3.33.1] - 2026-09-06
 
 ### The tail of the hotfix notes — and one mode with two official names

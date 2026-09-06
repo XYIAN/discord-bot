@@ -1,0 +1,14 @@
+{
+  "_meta": {
+    "source": "XYIAN (Kyle), 2026-09-06: 'xyian is XY for short and projectxy is PXY for short and most members know this'. Guild-owner statement of everyday community vocabulary.",
+    "confidence": "high — the guild owner describing how his own members talk.",
+    "conflictsWithLive": ["guild.requirements.xyian_official_power", "guild.requirements.projectxy_power"]
+  },
+  "guild": {
+    "requirements": {
+      "xyian_official_power": "XYIAN OFFICIAL — called XY for short (Guild ID 213797), the founding guild — requires 8M+ power.",
+      "projectxy_power": "ProjectXY — called PXY for short (Guild ID 214890), the sister guild and the primary home for new members — requires 6M+ power.",
+      "short_names": "Members use short names for both guilds: XY means XYIAN OFFICIAL and PXY means ProjectXY. A question about 'XY' is about XYIAN OFFICIAL (8M+), NOT about ProjectXY — even though ProjectXY's full name also contains the letters XY. A question about 'PXY' is about ProjectXY (6M+). Use the short names naturally in replies, the way members do."
+    }
+  }
+}

@@ -23,6 +23,8 @@ test('mod-typed variants resolve: case, punctuation, aliases, game guild ids', (
     assert.strictEqual(resolveGuildArg('ProjectXY').key, 'projectxy');
     assert.strictEqual(resolveGuildArg('official').key, 'xyian');
     assert.strictEqual(resolveGuildArg('pxy').key, 'projectxy');
+    assert.strictEqual(resolveGuildArg('xy').key, 'xyian', 'XY is the everyday short name');
+    assert.strictEqual(resolveGuildArg('XY').key, 'xyian');
     assert.strictEqual(resolveGuildArg('213797').key, 'xyian');
     assert.strictEqual(resolveGuildArg('214890').key, 'projectxy');
     assert.strictEqual(resolveGuildArg('Project-XY').key, 'projectxy');

@@ -29,7 +29,7 @@ const GUILDS = {
 
 /** Everything a mod might reasonably type for each guild. */
 const ALIASES = new Map([
-    ['xyian', 'xyian'], ['official', 'xyian'], ['xyianofficial', 'xyian'],
+    ['xyian', 'xyian'], ['xy', 'xyian'], ['official', 'xyian'], ['xyianofficial', 'xyian'],
     ['main', 'xyian'], ['213797', 'xyian'],
     ['projectxy', 'projectxy'], ['project', 'projectxy'], ['pxy', 'projectxy'],
     ['sub', 'projectxy'], ['214890', 'projectxy'],
@@ -56,7 +56,7 @@ function resolveGuildArg(argText) {
 
 /** For usage messages and the ⚔️ admin ping. */
 function usageLine() {
-    return '`!verify @user xyian` or `!verify @user projectxy`';
+    return '`!verify @user xy` or `!verify @user pxy`';
 }
 
 module.exports = { GUILDS, resolveGuildArg, usageLine };
