@@ -1,0 +1,36 @@
+{
+  "_meta": {
+    "source": "Six in-game Notice screenshots of the Archero 2 'Hotfix' Update Log, captured by XYIAN and transcribed 2026-09-06. Screens 1-4 duplicate the official patch-note text already folded in as v3.33.0; screens 5-6 carry the TAIL of the Gameplay Optimizations list (items 12-15) that the pasted text omitted.",
+    "confidence": "high — transcribed verbatim from the in-game notice. Nothing inferred beyond what the notice states; where the notice is silent about what a named thing IS, that is recorded as unknown rather than guessed.",
+    "conflictsWithLive": ["game_modes.arena.mega_all_star_cup"]
+  },
+  "game_modes": {
+    "arena": {
+      "mega_all_star_cup": "Mega All-Star Cup is the higher tier alongside All-Star Cup, and the official notes ALSO call it 'Super All-Star Cup' — the same August 2026 notice uses 'Mega All-Star Cup' in its optimization list and 'Super All-Star Cup' in its bug-fix list for the same mode, so both names are official and interchangeable. Beyond receiving the same battle change as All-Star Cup, nothing is documented: what it is, how you enter it, what it rewards, and whether it is a separate mode or a higher tier are all unrecorded. Say so plainly and point at !suggest.",
+      "super_all_star_cup_naming": "'Super All-Star Cup' and 'Mega All-Star Cup' are the SAME mode — both names appear in the official August 2026 notice. The 2026-08-23 preview called it 'Super Starlight Cup'. All three names mean one thing; answer from the Mega All-Star Cup entry."
+    }
+  },
+  "custom_facts": [
+    {
+      "text": "The August 2026 hotfix fixed four issues: the Mystling Collection panel loaded too slowly when opened; the displayed count of duplicate skills was inconsistent between the skill selection screen and the battle screen; enemy names displayed incorrectly when entering Super All-Star Cup battles; and Plant Frenzy applied to incorrect targets.",
+      "added_by": "XYIAN",
+      "added_at": "2026-09-06",
+      "source": "patch_notes",
+      "announced": "2026-08-28"
+    },
+    {
+      "text": "Plant Frenzy is named in the August 2026 hotfix notes ONLY as a bug fix — it applied to incorrect targets and was corrected. What Plant Frenzy actually is, is not documented: do not assume it belongs to Magic Plant Defense or to any other mode. Say it is not documented and point at !suggest.",
+      "added_by": "XYIAN",
+      "added_at": "2026-09-06",
+      "source": "patch_notes",
+      "announced": "2026-08-28"
+    },
+    {
+      "text": "The in-game Update Log for the August 2026 hotfix ends with a 'Collaboration Event Preview' section that was not captured, so anything it contained is unrecorded.",
+      "added_by": "XYIAN",
+      "added_at": "2026-09-06",
+      "source": "patch_notes",
+      "announced": "2026-08-28"
+    }
+  ]
+}

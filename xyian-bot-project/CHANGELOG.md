@@ -4,6 +4,18 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.33.1] - 2026-09-06
+
+### The tail of the hotfix notes — and one mode with two official names
+
+XYIAN sent through six screenshots of the in-game Update Log. The first four matched what v3.33.0 already shipped, name for name. The last two carried the **end of the list, which the text version cut off** — four bug fixes we didn't have.
+
+The interesting one is a naming quirk. The same notice calls one mode **"Mega All-Star Cup"** in its optimization list and **"Super All-Star Cup"** in its bug-fix list. Both are official, and Arch AI now treats them as the same mode — so it answers either way instead of declining on the name it hadn't seen. That also independently confirms the preview-name mapping we'd had to infer: Starlight Cup → All-Star Cup, Super Starlight Cup → Mega/Super All-Star Cup.
+
+Also recorded: the hotfix fixed the slow Mystling Collection panel, a duplicate-skill count that disagreed between the skill-select and battle screens, wrong enemy names in Super All-Star Cup, and **Plant Frenzy** hitting the wrong targets. Plant Frenzy is filed as *named but undocumented* — the notes never say what it is, so the bot says so rather than guessing it belongs to Magic Plant Defense.
+
+The notice ends with a Collaboration Event Preview section that wasn't captured; that's recorded as a known gap.
+
 ## [3.33.0] - 2026-08-28
 
 ### Official patch notes are in — and they renamed four things

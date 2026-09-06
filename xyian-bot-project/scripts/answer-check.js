@@ -100,6 +100,12 @@ const CASES = [
     { q: 'Can I unequip a whole gear preset at once?',           say: [/unequip all|one tap|clear/i], notSay: [] },
     { q: 'What is the Solitary Trial?',                          say: [/7-day|seven-day|task|season launch/i], notSay: [] },
     { q: 'What does the Guild Hall screen show?',               say: [/upgrad|new ui|2026-08-23|predates/i], notSay: [] },
+    // The official notice calls ONE mode two different names in ONE document:
+    // "Mega All-Star Cup" in the optimization list, "Super All-Star Cup" in the
+    // bug-fix list. A member who read the notice may ask either way, and the
+    // decline this used to produce is the exact failure answer-check exists for.
+    { q: 'What is the Super All-Star Cup?',                     say: [/mega all-?star cup/i], notSay: [/no (?:data|information)|not documented.{0,40}(?:at all|entirely)/i] },
+    { q: 'Is Mega All-Star Cup the same as Super All-Star Cup?', say: [/same|both|interchangeab/i], notSay: [/\b(different|separate|not the same)\b/i] },
 ];
 
 /** Sleep, used only to stay under the org's tokens-per-minute ceiling. */

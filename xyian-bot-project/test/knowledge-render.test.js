@@ -35,10 +35,10 @@ test('renders the live knowledge base to the pinned length and hash', () => {
     // message what moved. If it fails after you edited lib/knowledge-render.js,
     // stop: you have changed what the bot is allowed to say.
     const out = renderKnowledge(KNOWLEDGE);
-    assert.strictEqual(out.length, 173629, 'rendered length changed');
+    assert.strictEqual(out.length, 174926, 'rendered length changed');
     assert.strictEqual(
         sha(out),
-        'ee0a1fcc48ee0db8659e531200bb2a52e8d593901c69486e01f4a129e3212df0',
+        '4a55d670a6f777b8111e0a43ae61398d76513b74a8c5718400e027bb94892f3a',
         'rendered content changed',
     );
 });
@@ -235,10 +235,10 @@ test('pins the production configuration, not just the defaults', () => {
     // { suppress, compact }. Pinning only the default left the real prompt
     // unpinned — a change to suppression or compaction would not have moved it.
     const out = renderKnowledge(KNOWLEDGE, PRODUCTION_OPTIONS);
-    assert.strictEqual(out.length, 166308, 'production render length changed');
+    assert.strictEqual(out.length, 167605, 'production render length changed');
     assert.strictEqual(
         sha(out),
-        'c07531c00b432d04bae9b7db5d21d473625172b5188be0ca95b0faa4a4ae2bf6',
+        '58610119e819c9b6e681d3cf206873c1917fadebca36ffe682ee3e2f8c15537c',
         'production render content changed',
     );
 });
