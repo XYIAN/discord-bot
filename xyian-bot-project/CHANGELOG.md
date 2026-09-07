@@ -4,6 +4,12 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.34.1] - 2026-09-07
+
+### The power floors are floors, not walls
+
+Both guilds make exceptions below the power minimum for players who are **active daily and in our Discord** — that's what we actually value. Every place the floor is stated now says so in the same breath: the recurring recruit ad, the welcome, the join DM, `!post-guild-requirements`, and Arch AI itself. Ask the bot "I'm 3M, can I join?" and you get the exception and where to go, not a flat no.
+
 ## [3.34.0] - 2026-09-07
 
 ### ProjectXY is now 4M+, and the welcome points you at recruiting

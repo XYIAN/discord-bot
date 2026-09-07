@@ -87,6 +87,13 @@ test('recruitPointer() asks the XY-or-PXY question and carries the channel ref i
     assert.ok(out.includes('<#123>'));
     for (const g of Object.values(GUILDS)) assert.ok(out.includes(g.short));
 });
+test('the power exception renders beside the floor on every surface', () => {
+    // A floor stated without the exception reads as a hard no. Kyle makes
+    // exceptions for daily-active Discord members, so every surface says so.
+    for (const out of [recruitmentBullets(), welcomeLine(), powerField()]) {
+        assert.ok(out.includes(SHARED.powerException), `a surface states the floor without the exception: ${out.slice(0, 60)}…`);
+    }
+});
 test('applyLine() sends applicants to BOTH guild ids with the right floor beside each', () => {
     // The old ad sent everyone to ProjectXY only, with XYIAN marked "currently full".
     const out = applyLine();
@@ -127,6 +134,15 @@ test('each guild power minimum appears in the knowledge base', () => {
         assert.ok(blob.includes(g.power), `knowledge.json never states ${g.name} = ${g.power}`);
         assert.ok(blob.includes(g.id), `knowledge.json never states ${g.name}'s id ${g.id}`);
     }
+});
+test('the knowledge base states the exception INSIDE each guild power line, not just somewhere', () => {
+    // gpt-4o-mini reads the line it retrieved. "requires 8M+" alone becomes a
+    // flat refusal; the exception has to sit in the same value.
+    for (const key of ['xyian_official_power', 'projectxy_power']) {
+        assert.match(reqs[key], /exception/i, `${key} states the floor without the exception`);
+        assert.match(reqs[key], /active daily/i, `${key} does not say what earns an exception`);
+    }
+    assert.ok(reqs.power_exception, 'no dedicated power_exception entry');
 });
 test('the knowledge base states the SAME donation minimum as the code', () => {
     assert.ok(new RegExp(`${SHARED.donations}x minimum`).test(reqs.shared_activity),

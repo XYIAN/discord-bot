@@ -54,6 +54,12 @@ const GUILDS = Object.freeze({
  * recorded so the knowledge base and the bot answer to both names.
  */
 const SHARED = Object.freeze({
+    /**
+     * The power floors are not absolute. Kyle, 2026-09-07: "we make exceptions
+     * for lower power levels if they are active daily and in our discord
+     * community." Rendered beside every floor so no surface reads as a hard no.
+     */
+    powerException: 'exceptions below the floor for players who are active daily and in our Discord',
     donations: 2,
     monsterInvasion: 2,
     monsterInvasionAlias: 'MI',
@@ -71,6 +77,7 @@ function powerSummary(separator) {
 function recruitmentBullets() {
     return [
         `• 💪 Power: ${powerSummary()}`,
+        `• ⭐ Under the floor? We make ${SHARED.powerException}`,
         `• Daily Monster Invasion (${SHARED.monsterInvasionAlias}) & research — ${SHARED.monsterInvasion}x minimum`,
         `• Daily guild donations — ${SHARED.donations}x minimum`,
         '• Active in Discord',
@@ -79,14 +86,14 @@ function recruitmentBullets() {
 
 /** One-liner for the new-member welcome embed. */
 function welcomeLine() {
-    return `Power: ${powerSummary(', ')}. Both: daily activity. One community, one Discord.`;
+    return `Power: ${powerSummary(', ')} — ${SHARED.powerException}. Both: daily activity. One community, one Discord.`;
 }
 
 /** Field value for the !post-guild-requirements embed. */
 function powerField() {
     return Object.values(GUILDS)
         .map((g) => `**${g.name}** (\`${g.id}\`) — **${g.power} required**`)
-        .join('\n') + '\n• Minimum power to join and stay active';
+        .join('\n') + `\n• Minimum power to join and stay active — ${SHARED.powerException}`;
 }
 
 /**

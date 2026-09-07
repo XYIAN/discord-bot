@@ -64,6 +64,9 @@ const CASES = [
     // negation distributes across "or", which no lookbehind can see. So forbid
     // the AFFIRMATIVE construction a wrong answer must use ("is a great place to
     // start", "serves as a feeder", "before moving up to XY"), never the words.
+    // Below the floor is NOT a flat no. A wrong answer opens with "No" or "not
+    // eligible"; a right one mentions the exception and what earns it.
+    { q: "I'm only 3M power, can I still join PXY?",             say: [/exception|active daily|discord/i], notSay: [/^\s*(?:no|unfortunately)\b/i, /\bnot (?:eligible|able to join|possible)\b/i] },
     { q: 'What is PXY?',                                        say: [/projectxy/i, /4 ?m/i, /competitive/i], notSay: [/(?:\bis|it's|\bits|\bas|serves as|think of it as|acts as) (?:a |the )?(?:great |good |perfect |ideal |natural )?(?:place to start|stepping.?stone|starter guild|feeder(?: guild)?|little brother)/i, /before (?:moving|joining|graduating) (?:up |on )?(?:to )?(?:xy\b|xyian)/i] },
     { q: 'How many guild donations do I need per day?',         say: [/\b2\b|two/i], notSay: [] },
     { q: 'How many MI do I need to do daily?',                  say: [/\b2\b|two/i, /monster invasion/i], notSay: [] },

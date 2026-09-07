@@ -32,6 +32,7 @@ Same Discord. Same AI. Same expectations. Same goal.
 
 ## 📋 Requirements
 • 💪 **Power: 4M+** — the minimum to join *and* to stay
+• ⭐ **Under 4M?** We make exceptions for players active daily and in our Discord — ask.
 • ⚔️ **Monster Invasion (MI):** 2 runs per day minimum
 • 🔬 **Guild research:** daily
 • 💰 **Guild donations:** 2 per day minimum (the first is free — so one proves nothing)
