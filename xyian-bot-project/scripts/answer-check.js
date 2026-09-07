@@ -52,11 +52,11 @@ const MAX_RETRIES = 4;
 const PACING_MS = Number(process.env.ANSWER_CHECK_PACING_MS || 12000);
 
 const CASES = [
-    { q: 'What power do I need to join XYIAN OFFICIAL?',        say: [/8 ?m/i],            notSay: [/\b6 ?m\+? (?:power )?(?:required|minimum|to join)/i] },
-    { q: 'What is the power requirement for ProjectXY?',        say: [/6 ?m/i],            notSay: [] },
+    { q: 'What power do I need to join XYIAN OFFICIAL?',        say: [/8 ?m/i],            notSay: [/\b(?:4|6) ?m\+? (?:power )?(?:required|minimum|to join)/i] },
+    { q: 'What is the power requirement for ProjectXY?',        say: [/4 ?m/i],            notSay: [/\b6 ?m\+? (?:power )?(?:required|minimum|to join)/i] },
     // The everyday names. "XY" must land on XYIAN OFFICIAL (8M), never on
     // ProjectXY, whose full name also contains the letters XY.
-    { q: 'How much power do I need for XY?',                    say: [/8 ?m/i],            notSay: [/\b6 ?m\+? (?:power )?(?:required|minimum|to join)/i] },
+    { q: 'How much power do I need for XY?',                    say: [/8 ?m/i],            notSay: [/\b(?:4|6) ?m\+? (?:power )?(?:required|minimum|to join)/i] },
     // Kyle: 'we are all one clan but we are all competitive and PXY is no different' — the live bot
     // called PXY 'a great place to start', which is the little-brother framing he rejects.
     // NOTE the shape: the KB itself says "not a feeder, a starter guild, or a
@@ -64,7 +64,7 @@ const CASES = [
     // negation distributes across "or", which no lookbehind can see. So forbid
     // the AFFIRMATIVE construction a wrong answer must use ("is a great place to
     // start", "serves as a feeder", "before moving up to XY"), never the words.
-    { q: 'What is PXY?',                                        say: [/projectxy/i, /6 ?m/i, /competitive/i], notSay: [/(?:\bis|it's|\bits|\bas|serves as|think of it as|acts as) (?:a |the )?(?:great |good |perfect |ideal |natural )?(?:place to start|stepping.?stone|starter guild|feeder(?: guild)?|little brother)/i, /before (?:moving|joining|graduating) (?:up |on )?(?:to )?(?:xy\b|xyian)/i] },
+    { q: 'What is PXY?',                                        say: [/projectxy/i, /4 ?m/i, /competitive/i], notSay: [/(?:\bis|it's|\bits|\bas|serves as|think of it as|acts as) (?:a |the )?(?:great |good |perfect |ideal |natural )?(?:place to start|stepping.?stone|starter guild|feeder(?: guild)?|little brother)/i, /before (?:moving|joining|graduating) (?:up |on )?(?:to )?(?:xy\b|xyian)/i] },
     { q: 'How many guild donations do I need per day?',         say: [/\b2\b|two/i], notSay: [] },
     { q: 'How many MI do I need to do daily?',                  say: [/\b2\b|two/i, /monster invasion/i], notSay: [] },
     // The daily requirement is DONATIONS, not bargain — different systems, and

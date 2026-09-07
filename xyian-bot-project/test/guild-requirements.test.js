@@ -14,7 +14,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const { GUILDS, SHARED, powerSummary, recruitmentBullets, welcomeLine, powerField } = require('../lib/guild-requirements');
+const { GUILDS, SHARED, powerSummary, recruitmentBullets, welcomeLine, powerField, guildLines, recruitPointer, applyLine } = require('../lib/guild-requirements');
 
 let passed = 0;
 function test(name, fn) {
@@ -74,6 +74,30 @@ test('no power literal is hardcoded in bot.js', () => {
         assert.ok(!bot.includes(g.power),
             `bot.js hardcodes ${g.power} again — render it from lib/guild-requirements.js`);
     }
+});
+
+test('guildLines() names every guild with its short name and in-game id', () => {
+    const out = guildLines();
+    for (const g of Object.values(GUILDS)) {
+        assert.ok(out.includes(g.name) && out.includes(g.short) && out.includes(g.id), `guildLines is missing ${g.name}`);
+    }
+});
+test('recruitPointer() asks the XY-or-PXY question and carries the channel ref it was given', () => {
+    const out = recruitPointer('<#123>');
+    assert.ok(out.includes('<#123>'));
+    for (const g of Object.values(GUILDS)) assert.ok(out.includes(g.short));
+});
+test('applyLine() sends applicants to BOTH guild ids with the right floor beside each', () => {
+    // The old ad sent everyone to ProjectXY only, with XYIAN marked "currently full".
+    const out = applyLine();
+    for (const g of Object.values(GUILDS)) assert.ok(out.includes(g.id) && out.includes(g.power), `applyLine is missing ${g.name}`);
+});
+test('the welcome never again claims a guild is "currently full" or a "home for new members"', () => {
+    // Both went stale the day XY reopened, and the second is the little-brother
+    // framing Kyle rejects. Copy about the guilds renders from the module now.
+    const bot = read('bot.js');
+    assert.ok(!/currently full/i.test(bot), 'bot.js still says a guild is currently full');
+    assert.ok(!/primary home for new members/i.test(bot), 'bot.js still frames PXY as the starter guild');
 });
 
 console.log('knowledge.json agrees — what the bot SAYS matches what members READ');

@@ -1601,14 +1601,11 @@ async function sendGuildRecruitment() {
     const embed = new EmbedBuilder()
         .setTitle('🏰 XYIAN Family — Guild Recruitment')
         .setDescription(
-            '**One community, two guilds — and the door is open at ProjectXY!**\n\n' +
-            '🚀 **ProjectXY** — `Guild ID: 214890` — **NOW RECRUITING**\n' +
-            'Our brand-new sister guild and the primary home for new members. XYIAN OFFICIAL filled up, so we built the next chapter — same community, same Discord, same standards, fresh leaderboard climb.\n\n' +
-            '🏆 **XYIAN OFFICIAL** — `Guild ID: 213797` — currently full\n' +
-            'Our founding guild. Join ProjectXY and you\'re part of the same family from day one.\n\n' +
+            '**One community, two guilds — both recruiting.**\n\n' +
+            guildReqs.guildLines() + '\n\n' +
             '✨ **What we offer:**\n• Active daily community\n• Expert strategies and guides (+ our Arch AI)\n• Guild events and challenges\n• Supportive and friendly environment\n\n' +
             '🎯 **Requirements:**\n' + guildReqs.recruitmentBullets() + '\n\n' +
-            '**Apply in game → search Guild ID `214890` (ProjectXY). Welcome to the family!**'
+            guildReqs.applyLine()
         )
         .setColor(0xffa500)
         .setTimestamp()
@@ -1921,10 +1918,10 @@ client.on('guildMemberAdd', async (member) => {
             '🎬 <#1419944149410648116> — Share your best clips and highlights\n\n' +
             `**${emoji} Want AI access?**\n` +
             `React with ${emoji} on this message to get the **${roleName}** role and start asking Archero 2 questions in <#${CONFIG.channels.archAi}>!\n\n` +
-            '**Our guilds:**\n' +
-            '🚀 **ProjectXY** (Guild ID: 214890) — our new sister guild and the primary home for new members. Now recruiting!\n' +
-            '🏆 **XYIAN OFFICIAL** (Guild ID: 213797) — our founding guild, currently full.\n' +
-            guildReqs.welcomeLine()
+            '**Our guilds — both recruiting:**\n' +
+            guildReqs.guildLines() + '\n' +
+            guildReqs.welcomeLine() + '\n\n' +
+            guildReqs.recruitPointer(`<#${CONFIG.channels.guildRecruit}>`)
         )
         .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
         .setColor(0x00ff88)
@@ -1996,6 +1993,11 @@ client.on('guildMemberAdd', async (member) => {
                 '`!suggest <text>` — Submit a correction or new info\n' +
                 '`!help` — Full command list\n' +
                 '`!contributors` — See top contributors\n\n' +
+                '**Our guilds — both recruiting:**\n' +
+                guildReqs.guildLines() + '\n' +
+                guildReqs.welcomeLine() + '\n' +
+                // A full URL, not <#id>: channel mentions do not reliably resolve in DMs.
+                guildReqs.recruitPointer(`https://discord.com/channels/${member.guild.id}/${CONFIG.channels.guildRecruit}`) + '\n\n' +
                 '⚔️ **Already in XYIAN OFFICIAL or ProjectXY?**\n' +
                 'React with ⚔️ on this message to request **guild verification**. An admin will confirm and get you set up.\n\n' +
                 '*Thank you in advance for being here. Whether you ask a question, drop a suggestion, or just hang out — you\'re making this community better.*'

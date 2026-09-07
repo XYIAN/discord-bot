@@ -4,6 +4,16 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.34.0] - 2026-09-07
+
+### ProjectXY is now 4M+, and the welcome points you at recruiting
+
+**PXY's power floor drops from 6M+ to 4M+.** XYIAN OFFICIAL stays at 8M+. The bot, the recurring recruit ad, the welcome, and `!post-guild-requirements` all read from one place, so they changed together.
+
+**New members now get pointed at the right channel.** Both the #general welcome and the join DM carry a *"Looking to join XY or PXY?"* line linking straight to #guild-recruit-chat — drop your power there and a leader will get you in.
+
+**Two stale claims are gone.** The welcome and the recurring recruit ad both said XYIAN OFFICIAL was "currently full" and cast PXY as "the primary home for new members." XY is recruiting, and PXY is a competitive guild in its own right — both guilds are recruiting, both are listed, and the ad's apply line names both guild IDs with the right floor beside each. A test now fails if either phrase creeps back into the bot.
+
 ## [3.33.4] - 2026-09-06
 
 ### The repairs never left the repo

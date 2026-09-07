@@ -30,6 +30,7 @@ const GUILDS = Object.freeze({
     xyian: Object.freeze({
         name: 'XYIAN OFFICIAL',
         short: 'XY',
+        badge: '🏆',
         id: '213797',
         power: '8M+',
         blurb: 'our founding guild',
@@ -37,8 +38,9 @@ const GUILDS = Object.freeze({
     projectxy: Object.freeze({
         name: 'ProjectXY',
         short: 'PXY',
+        badge: '🔥',
         id: '214890',
-        power: '6M+',
+        power: '4M+',
         blurb: 'our sister guild — same standards, same ambition, and where most new members land',
     }),
 });
@@ -59,7 +61,7 @@ const SHARED = Object.freeze({
     discordActive: true,
 });
 
-/** "**8M+** for XYIAN OFFICIAL · **6M+** for ProjectXY" */
+/** "**8M+** for XYIAN OFFICIAL · **4M+** for ProjectXY" */
 function powerSummary(separator) {
     const sep = separator || ' · ';
     return Object.values(GUILDS).map((g) => `**${g.power}** for ${g.name}`).join(sep);
@@ -87,4 +89,33 @@ function powerField() {
         .join('\n') + '\n• Minimum power to join and stay active';
 }
 
-module.exports = { GUILDS, SHARED, powerSummary, recruitmentBullets, welcomeLine, powerField };
+/**
+ * One line per guild for the welcome embed and DM. Both guilds recruit; the
+ * old copy said XYIAN was "currently full" and cast ProjectXY as the place new
+ * members go — a claim that went stale the day XY reopened, and a framing Kyle
+ * rejects ("we are all competitive and PXY is no different").
+ */
+function guildLines() {
+    return Object.values(GUILDS)
+        .map((g) => `${g.badge} **${g.name}** (${g.short} · Guild ID \`${g.id}\`) — ${g.blurb}`)
+        .join('\n');
+}
+
+/**
+ * The pointer to #guild-recruit-chat. `ref` is whatever renders as the channel
+ * where the text lands: `<#id>` inside the server, a full
+ * https://discord.com/channels/... URL in a DM (channel mentions do not
+ * reliably resolve there).
+ */
+function recruitPointer(ref) {
+    const [xy, pxy] = Object.values(GUILDS).map((g) => g.short);
+    return `🎯 **Looking to join ${xy} or ${pxy}?** Head to ${ref} — drop your power and a leader will get you in.`;
+}
+
+/** "**Apply in game → search Guild ID `213797` (XYIAN OFFICIAL, 8M+) or `214890` (ProjectXY, 4M+). Welcome to the family!**" */
+function applyLine() {
+    const ids = Object.values(GUILDS).map((g) => `\`${g.id}\` (${g.name}, ${g.power})`).join(' or ');
+    return `**Apply in game → search Guild ID ${ids}. Welcome to the family!**`;
+}
+
+module.exports = { GUILDS, SHARED, powerSummary, recruitmentBullets, welcomeLine, powerField, guildLines, recruitPointer, applyLine };

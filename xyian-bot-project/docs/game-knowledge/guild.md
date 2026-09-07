@@ -453,6 +453,7 @@ Tied directly to the [Camp & Mystlings](camp_mystlings.md) system. The Mystling 
   & research 2x, daily guild donations 2x, active in Discord. *(Historic: 2M+ until
   2026-08-06, then 6M+ for both guilds; the daily requirement was recorded as a bargain
   rather than a donation, which was wrong — those are different systems.)*
+  **Update 2026-09-07:** ProjectXY lowered to **4M+** (XYIAN OFFICIAL stays 8M+).
 
 ## Open questions
 

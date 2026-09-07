@@ -1,0 +1,13 @@
+{
+  "_meta": {
+    "source": "XYIAN (Kyle), 2026-09-07: 'update the requirement for pxy to be 4m instead of 6m'. Guild-owner decision; lib/guild-requirements.js changed in the same commit.",
+    "confidence": "high — the guild owner setting his own guild's requirement.",
+    "conflictsWithLive": ["guild.requirements.projectxy_power", "guild.requirements.short_names"]
+  },
+  "guild": {
+    "requirements": {
+      "projectxy_power": "ProjectXY — called PXY for short (Guild ID 214890) — is XYIAN OFFICIAL's sister guild and requires 4M+ power (lowered from 6M+ on 2026-09-07). It is where most new members land, and it is a competitive guild in its own right: same standards, same daily expectations, same ambition to climb to the top. One community, two guilds, both competitive — PXY is not a feeder, a starter guild, or a 'little brother'. Do not describe it as a place to start before moving on to XY.",
+      "short_names": "Members use short names for both guilds: XY means XYIAN OFFICIAL and PXY means ProjectXY. A question about 'XY' is about XYIAN OFFICIAL (8M+), NOT about ProjectXY — even though ProjectXY's full name also contains the letters XY. A question about 'PXY' is about ProjectXY (4M+). Use the short names naturally in replies, the way members do."
+    }
+  }
+}

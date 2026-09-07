@@ -2,19 +2,19 @@
 
 Posting target: Archero 2 Official server → #guild-recruiting (forum), as a SEPARATE thread from the XYIAN one.
 Forum bot requires the title format `{GuildName} - {GL-XX} - [Range x-y]`.
-Discord limit: 4,000 chars with Nitro (this body is ~2,400 — over the 2,000 non-Nitro limit). Needs its own crest in the XYIAN style — "GUILD PROJECTXY · 6M+ POWER".
+Discord limit: 4,000 chars with Nitro (this body is ~2,400 — over the 2,000 non-Nitro limit). Needs its own crest in the XYIAN style — "GUILD PROJECTXY · 4M+ POWER".
 CONFIRM before posting: PXY is on server GL-1471 (same as XY).
 
 ## Title
 
-ProjectXY (PXY) - GL-1471 - [Range 1471-1480] - 6M+ Power - ID 214890 - Sister Guild of XYIAN
+ProjectXY (PXY) - GL-1471 - [Range 1471-1480] - 4M+ Power - ID 214890 - Sister Guild of XYIAN
 
 ## Body
 
 # 🔥 ProjectXY — Built to Compete
-**Guild ID: 214890 · Server GL-1471 · 6M+ Power**
+**Guild ID: 214890 · Server GL-1471 · 4M+ Power**
 
-XYIAN OFFICIAL filled up. We had two choices: turn people away, or build a second guild with the same standards and the same ambition. We built **ProjectXY** — and to be clear about what it is: **not a feeder, not a farm team, not the little brother.** PXY is a competitive guild that intends to climb the same leaderboards XY does, and it's open at **6M+**.
+XYIAN OFFICIAL filled up. We had two choices: turn people away, or build a second guild with the same standards and the same ambition. We built **ProjectXY** — and to be clear about what it is: **not a feeder, not a farm team, not the little brother.** PXY is a competitive guild that intends to climb the same leaderboards XY does, and it's open at **4M+**.
 
 Same Discord. Same AI. Same expectations. Same goal.
 
@@ -31,7 +31,7 @@ Same Discord. Same AI. Same expectations. Same goal.
 ---
 
 ## 📋 Requirements
-• 💪 **Power: 6M+** — the minimum to join *and* to stay
+• 💪 **Power: 4M+** — the minimum to join *and* to stay
 • ⚔️ **Monster Invasion (MI):** 2 runs per day minimum
 • 🔬 **Guild research:** daily
 • 💰 **Guild donations:** 2 per day minimum (the first is free — so one proves nothing)
@@ -52,4 +52,4 @@ The activity bar is identical to XYIAN's. Only the power floor differs.
 Respect. Growth. Excellence. Loyalty. One community, two guilds, zero passengers.
 
 *"Same name on the banner. Same fire underneath it."*
-🔥 **ProjectXY · ID 214890 · 6M+ · GL-1471** 🔥
+🔥 **ProjectXY · ID 214890 · 4M+ · GL-1471** 🔥
