@@ -59,7 +59,12 @@ const CASES = [
     { q: 'How much power do I need for XY?',                    say: [/8 ?m/i],            notSay: [/\b6 ?m\+? (?:power )?(?:required|minimum|to join)/i] },
     // Kyle: 'we are all one clan but we are all competitive and PXY is no different' — the live bot
     // called PXY 'a great place to start', which is the little-brother framing he rejects.
-    { q: 'What is PXY?',                                        say: [/projectxy/i, /6 ?m/i], notSay: [/place to start|starter|beginner|feeder|little brother|before (?:moving|joining) (?:up|xy)/i] },
+    // NOTE the shape: the KB itself says "not a feeder, a starter guild, or a
+    // 'little brother'", so a CORRECT answer echoes those words negated — and a
+    // negation distributes across "or", which no lookbehind can see. So forbid
+    // the AFFIRMATIVE construction a wrong answer must use ("is a great place to
+    // start", "serves as a feeder", "before moving up to XY"), never the words.
+    { q: 'What is PXY?',                                        say: [/projectxy/i, /6 ?m/i, /competitive/i], notSay: [/(?:\bis|it's|\bits|\bas|serves as|think of it as|acts as) (?:a |the )?(?:great |good |perfect |ideal |natural )?(?:place to start|stepping.?stone|starter guild|feeder(?: guild)?|little brother)/i, /before (?:moving|joining|graduating) (?:up |on )?(?:to )?(?:xy\b|xyian)/i] },
     { q: 'How many guild donations do I need per day?',         say: [/\b2\b|two/i], notSay: [] },
     { q: 'How many MI do I need to do daily?',                  say: [/\b2\b|two/i, /monster invasion/i], notSay: [] },
     // The daily requirement is DONATIONS, not bargain — different systems, and
@@ -111,7 +116,10 @@ const CASES = [
     // bug-fix list. A member who read the notice may ask either way, and the
     // decline this used to produce is the exact failure answer-check exists for.
     { q: 'What is the Super All-Star Cup?',                     say: [/mega all-?star cup/i], notSay: [/no (?:data|information)|not documented.{0,40}(?:at all|entirely)/i] },
-    { q: 'Is Mega All-Star Cup the same as Super All-Star Cup?', say: [/same|both|interchangeab/i], notSay: [/\b(different|separate|not the same)\b/i] },
+    // A correct answer ALSO says Mega/Super is "a different name from the regular
+    // All-Star Cup", so bare "different" flags the right answer. Forbid only the
+    // shape a wrong answer takes: "No" / "are two different modes".
+    { q: 'Is Mega All-Star Cup the same as Super All-Star Cup?', say: [/\b(?:yes|same|both names|interchangeab)/i], notSay: [/^\s*no\b|are (?:two |completely |entirely )?(?:different|separate|distinct) (?:modes|events|tournaments|things|cups)\b/i] },
 ];
 
 /** Sleep, used only to stay under the org's tokens-per-minute ceiling. */
