@@ -77,7 +77,7 @@ function powerSummary(separator) {
 function recruitmentBullets() {
     return [
         `• 💪 Power: ${powerSummary()}`,
-        `• ⭐ Under the floor? We make ${SHARED.powerException}`,
+        `• ⭐ We make ${SHARED.powerException}`,
         `• Daily Monster Invasion (${SHARED.monsterInvasionAlias}) & research — ${SHARED.monsterInvasion}x minimum`,
         `• Daily guild donations — ${SHARED.donations}x minimum`,
         '• Active in Discord',

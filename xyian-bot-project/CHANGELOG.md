@@ -4,6 +4,12 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.34.2] - 2026-09-07
+
+### Wording
+
+The recruit ad's exception bullet said "floor" twice. Now it just says what it means: *We make exceptions below the floor for players who are active daily and in our Discord.*
+
 ## [3.34.1] - 2026-09-07
 
 ### The power floors are floors, not walls
