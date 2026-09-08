@@ -4,6 +4,33 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.35.0] - 2026-09-08
+
+### Achievements that actually fire
+
+The activity ladder — Arch Tactician, Veteran, Warlord, Legend — had **zero holders after five months**. Two reasons, both measured: every point earned before the data volume mounted in May was lost, and the thresholds were about ten times what this server's traffic supports. The most active member here had 64 points, all-time, against a first rung of 100. And only strategy channels counted — 3.6% of what people actually say.
+
+It's replaced by one achievements engine with **tracks**:
+
+- **Community** — every channel except bot plumbing and recruiting. The four Arch roles now sit at **50 / 150 / 2,500 / 10,000** points (1 per message, once a minute) — the first two are where people are, the last two are meant to take years. Plus badges for showing up: First Words, Warming Up, Regular (7 active days), Fixture (30), Year-Rounder (365), streaks (On a Roll 3, Locked In 7, Iron Streak 30), peer approval (Crowd Pleaser 5, Fan Favorite 100), and conversation (Good Company 10 replies, Conversationalist 250). Eighteen members earn Tactician on the full history and thirteen Veteran; nobody holds Warlord or Legend yet.
+- **Cross-Server** — Chatterbox **Bronze 50 · Silver 200 · Gold 2,500 · Platinum 10,000**. Gold is a year away for the most active member; Platinum is meant to take years.
+- **Clips & Highlights** — **Showboat** for your first clip or screenshot, **Highlight Reel** at twenty-five.
+- **Strategy** — Strategist and Theorycrafter keep the strategy-channel identity, no ladder.
+- **Dab Corner** — Pulled Up a Chair, Three-Timer, **Corner Regular** (a role, 7 active days), Corner Fixture, Crowd Favorite, Good Company. Presence and conversation only — by design, nothing in this track measures volume or images.
+- **Arch AI** — your first answered question makes you **Arch Adept**, the first rung under Arch Scholar and Arch Sage.
+
+**Perks:** badges unlock commands. `!cheer @user` (Regular / Tactician), `!spotlight @user` (Fixture / Veteran), and `!invite-ai @user` — Arch Veterans can grant someone AI access themselves, once a day.
+
+**Commands:** `!rank` now shows your community rank *and* your contribution tier side by side (Scholar/Sage were never broken — the old board just didn't show them), every track, badges and perks. `!achievements` lists every badge with progress. `!lb cross` for the cross-server board. All of them work in #general now.
+
+Unlocks announce in the channel they happened in; rank-ups also DM you. Everything is persisted on the volume, and `!achievements rebuild` recomputes from history — so a threshold change is a number, not a reset.
+
+### Also in this release
+
+- `!suggest` and `!approve` no longer report success when the ledger write fails.
+- `!ai off` survives a redeploy — it used to silently flip back on.
+- One shared knowledge-category list for the bot and the sync script (they had drifted); every live category is now approvable.
+
 ## [3.34.2] - 2026-09-07
 
 ### Wording

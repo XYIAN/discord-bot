@@ -53,7 +53,7 @@ Image attachments in `#arch-ai` are gated tighter than text Q&A — they're the 
 | **XYIAN OFFICIAL** | ✅ |
 | **Admin** | ✅ |
 | **Moderator** | ✅ |
-| **Arch Legend** (top activity tier, 1500 XP) | ✅ |
+| **Arch Legend** (top community tier, 10,000 points) | ✅ |
 | Everyone else | ❌ — gets a redirect embed pointing at <#1424322391160393790> for text questions and <#1424785709914521701> for chat. **No OpenAI call is made.** |
 
 Cost guardrails enforced in code:
@@ -79,10 +79,10 @@ AI channels (#arch-ai, #community-ai-discussion) are protected — Admin and Mod
 | Tier | Role | Points | Color |
 |------|------|--------|-------|
 | Base | **ArchAddict** | 0 (auto on join) | -- |
-| 1 | ⚔️ **Arch Tactician** | 100 | Steel blue |
-| 2 | 🛡️ **Arch Veteran** | 350 | Emerald |
-| 3 | 👑 **Arch Warlord** | 750 | Gold |
-| 4 | 🌟 **Arch Legend** | 1500 | Bright cyan |
+| 1 | ⚔️ **Arch Tactician** | 50 | Steel blue |
+| 2 | 🛡️ **Arch Veteran** | 150 | Emerald |
+| 3 | 👑 **Arch Warlord** | 2,500 | Gold |
+| 4 | 🌟 **Arch Legend** | 10,000 | Bright cyan |
 
 Users earn 1 XP per message in any of the 13 Strategy channels (60-second cooldown). Tiers auto-promote with a DM and admin log. Separate from the AI suggestion tiers — users can hold both. Roles stack.
 
@@ -93,8 +93,13 @@ Users earn 1 XP per message in any of the 13 Strategy channels (60-second cooldo
 | `!ping` | Everyone | Bot status |
 | `!help` / `!menu` | Everyone | Command list |
 | `!contributors` | Everyone | Leaderboard of top contributors |
-| `!rank` / `!level` | Everyone | Check activity rank and progress |
-| `!leaderboard` / `!lb` | Everyone | Top 10 strategy channel contributors |
+| `!rank` / `!level` | Community rank + progress bar, contribution tier, per-track stats, badge count, unlocked perks |
+| `!leaderboard` / `!lb [cross]` | Top 10 by community points; `!lb cross` for the #cross-server board |
+| `!achievements` / `!badges [@user]` | Every badge per track, unlocked and locked with progress, plus perk status |
+| `!cheer @user [why]` | Perk (Regular or Arch Tactician): post a celebration |
+| `!spotlight @user` | Perk (Fixture or Arch Veteran): show someone's rank and badges |
+| `!invite-ai @user` | Perk (Arch Veteran): grant a member AI access yourself, once a day |
+| `!achievements rebuild [dry]` | Owner: recompute every badge and rank from channel history |
 | `!suggest <text>` | 🤖 AI Enabled+ | Suggest a correction or new info |
 | `!addfact <text>` | 🎓 Arch Scholar+ | Add a fact to the knowledge base |
 | `!opinion <text>` | 🎓 Arch Scholar+ | Share a gameplay opinion or theory |
@@ -223,7 +228,7 @@ See **`docs/ARCH-AI-AUDIT.md`** for what it checks and the latest snapshot.
 
 | Channel | Content |
 |---------|---------|
-| #guild-requirements | Power minimum (XYIAN OFFICIAL 8M+ / ProjectXY 4M+), daily boss battles, donation requirements and costs |
+| #guild-requirements | Power minimum (XYIAN OFFICIAL 8M+ / ProjectXY 4M+, exceptions for daily-active Discord members), daily boss battles, donation requirements and costs |
 | #community-rules-and-safety | Community guidelines, prohibited behavior, violation consequences |
 | #arch-ai-privacy-policy | AI data disclosure, OpenAI processing, what's not private |
 | #community-ai-discussion | Quick-reference guide (commands, tiers) + 🤖 reaction-role |

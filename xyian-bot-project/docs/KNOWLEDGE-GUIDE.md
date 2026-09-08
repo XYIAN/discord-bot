@@ -180,12 +180,12 @@ These are also added live by users via `!addfact` — see [Fact Sync Workflow](#
 > iterates every top-level key, so an unlisted category still reaches the prompt.
 > Check the live file before assuming a category does not exist.
 
-> **`KNOWLEDGE_CATEGORIES` in `bot.js` is a separate, narrower list.** It gates
-> which categories `!approve <#> <category> <key>` will accept and which a vision
-> candidate may propose. A live category missing from it cannot be extended by
-> the community. Ten still are: `hunt`, `battle_pass`, `mystlings`, `currencies`,
-> `daily_rewards`, `main_screen`, `event_shop`, `skin_exchange_shop`,
-> `reach_rewards`, `shop`. Add a category to BOTH places when you create one.
+> **`KNOWLEDGE_CATEGORIES` lives in `lib/knowledge-categories.js`** — one list
+> shared by `bot.js` (the `!approve <#> <category> <key>` gate and vision
+> candidates) and `scripts/sync-facts.js`. They used to carry private copies
+> that had drifted (22 vs 20). `test/knowledge-categories.test.js` asserts every
+> top-level category in `data/knowledge.json` is in it, so a new category cannot
+> ship uncovered — add it there when you create one.
 
 ### 5. Adding a community opinion
 

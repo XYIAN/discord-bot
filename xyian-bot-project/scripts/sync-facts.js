@@ -157,12 +157,7 @@ function flattenTexts(knowledge) {
 // Whitelist of structured top-level categories an approved suggestion can be
 // routed into. Mirrors KNOWLEDGE_CATEGORIES in bot.js so the round-trip path
 // uses the same shape. Keep these in sync if the bot's set ever changes.
-const KNOWLEDGE_CATEGORIES = new Set([
-    'star_system', 'resonance', 'characters', 'pvp_meta', 'skins', 'gold',
-    'guild', 'gear_sets', 'weapons', 'runes', 'blessings', 'game_modes',
-    'profile_experience', 'tips', 'skills', 'resources', 'privilege_cards',
-    'sacred_hall', 'damage_terminology', 'collectibles',
-]);
+const { KNOWLEDGE_CATEGORIES } = require('../lib/knowledge-categories');
 
 function autoKey(text, fallbackId) {
     const words = (text || '').toLowerCase()

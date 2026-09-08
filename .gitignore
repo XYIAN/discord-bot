@@ -117,3 +117,6 @@ xyian-bot-project/data/rotating-posts.json
 xyian-bot-project/data/schedule-state.json
 xyian-bot-project/data/welcome-dm-messages.json
 xyian-bot-project/data/*.json.tmp
+xyian-bot-project/data/achievements.json
+xyian-bot-project/data/ai-switch.json
+xyian-bot-project/data/activity.json

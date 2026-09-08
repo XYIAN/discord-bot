@@ -34,6 +34,8 @@ const path = require('path');
 const express = require('express');
 const { createLogForwarder, attachConsole } = require('./lib/log-forwarder');
 const { reconcilePlan, backfillApprovers, approvedCountFor, mergeLedgers, mergeCustomFacts, mergeSeedTopics, applyCustomFactRepairs } = require('./lib/contributions');
+const achievements = require('./lib/achievements');
+const achievementTracks = require('./lib/achievement-tracks');
 const modRules = require('./lib/moderation');
 const changelog = require('./lib/changelog');
 const usageLib = require('./lib/usage');
@@ -147,6 +149,12 @@ const CONFIG = {
         guildRecruit: '1419944464608268410',
         changelog: '1424784471395274803',
         general: null,  // resolved on ready by channel name
+        crossServer: '1425322796820725760',
+        clips: '1419944149410648116',
+        dabCorner: '1540418122996121720',
+        debugLogs: '1424329611969433703',
+        aiData: '1424530610059350086',
+        betaTesting: '1429497007814479903',
     },
     ignoreChannelNames: ['guild-recruit-chat', 'xyian-guild', 'guild-chat', 'recruit', 'guild-recruit'],
     generalChatNames: ['general', 'general-chat', 'main-chat', 'arch-2-addicts'],
@@ -177,13 +185,8 @@ const CONFIG = {
         { name: 'Arch Scholar',  threshold: 5,  canAsk: true,  canSuggest: true,  canAddFact: true,  canAddOpinion: true,  canRemoveFact: false, canListFacts: true  },
         { name: 'Arch Sage',    threshold: 15, canAsk: true,  canSuggest: true,  canAddFact: true,  canAddOpinion: true,  canRemoveFact: true,  canListFacts: true  },
     ],
-    activityTiers: [
-        { name: 'Arch Tactician', threshold: 100,  color: 0x7289DA },
-        { name: 'Arch Veteran',   threshold: 350,  color: 0x2ECC71 },
-        { name: 'Arch Warlord',   threshold: 750,  color: 0xFFD700 },
-        { name: 'Arch Legend',     threshold: 1500, color: 0x00FFFF },
-    ],
-    activityChannelIds: new Set([
+    // The 13 strategy channels — the old XP ladder's scope, now the `strategy` achievement track.
+    strategyChannelIds: new Set([
         '1421930658737164531', // arch2-wiki
         '1419944602651197511', // umbral-tempest
         '1421948149827895498', // arena-pvp
@@ -508,7 +511,11 @@ function loadSuggestions() {
 }
 
 function saveSuggestions(suggestions) {
-    try { fs.writeFileSync(SUGGESTIONS_PATH, JSON.stringify(suggestions, null, 2)); } catch { /* best effort */ }
+    // Returns whether the write landed. !suggest and !approve used to reply
+    // "saved" / "approved" regardless — and this ledger is what ranks are
+    // computed from, so a swallowed failure silently cost someone a role.
+    try { fs.writeFileSync(SUGGESTIONS_PATH, JSON.stringify(suggestions, null, 2)); return true; }
+    catch (e) { console.error(`❌ saveSuggestions failed: ${e.message}`); return false; }
 }
 
 // Generate the next suggestion ID. Always max(id) + 1 — never length + 1,
@@ -620,75 +627,255 @@ function applyApprovedToKnowledge({ category, key, text, by, suggestionId, sourc
     return { ok: true, locator: `${category}.${finalKey}` };
 }
 
-// ── Activity leveling system ────────────────────────────────────────────────
+// ── Community achievements ──────────────────────────────────────────────────
+// Replaces the activity XP ladder, which had 0/0/0/0 holders after five months
+// (thresholds ~10× the real traffic; points lost before the volume mounted; no
+// way to recompute). One engine, tracks as config — see lib/achievements.js
+// and lib/achievement-tracks.js. State lives on the volume via state-store.
 
-const ACTIVITY_PATH = path.join(__dirname, 'data', 'activity.json');
-const ACTIVITY_COOLDOWN_MS = 60_000;
+const TRACKS = achievementTracks.buildTracks({
+    strategy: [...CONFIG.strategyChannelIds],
+    communityExclude: [CONFIG.channels.debugLogs, CONFIG.channels.changelog, CONFIG.channels.aiData, CONFIG.channels.betaTesting, CONFIG.channels.guildRecruit],
+    crossServer: CONFIG.channels.crossServer,
+    clips: CONFIG.channels.clips,
+    dabCorner: CONFIG.channels.dabCorner,
+    archAi: CONFIG.channels.archAi,
+});
+for (const problem of achievements.validateTracks(TRACKS)) console.error(`❌ achievement tracks: ${problem}`);
 
-function loadActivity() {
-    try { return JSON.parse(fs.readFileSync(ACTIVITY_PATH, 'utf8')); } catch { return {}; }
+const ACHIEVEMENTS_STORE = 'achievements';
+let achievementState = stateStore.loadState(ACHIEVEMENTS_STORE, achievements.emptyState());
+if (!achievementState.perkUse) achievementState.perkUse = {};
+function saveAchievements() { stateStore.saveState(ACHIEVEMENTS_STORE, achievementState); }
+
+// The owner's !ai on/off choice outlives a redeploy.
+const AI_SWITCH_STORE = 'ai-switch';
+{
+    const sw = stateStore.loadState(AI_SWITCH_STORE, null);
+    if (sw && typeof sw.aiEnabled === 'boolean') {
+        CONFIG.features.aiEnabled = sw.aiEnabled;
+        if (!sw.aiEnabled) console.error(`🤖 AI Q&A is OFF (persisted by ${sw.by || 'owner'} at ${sw.at || '?'}) — \`!ai on\` to re-enable.`);
+    }
 }
 
-function saveActivity(data) {
-    try { fs.writeFileSync(ACTIVITY_PATH, JSON.stringify(data, null, 2)); } catch { /* best effort */ }
+/** Uploaded files only. Link unfurls arrive later via MESSAGE_UPDATE, which nothing hooks, so counting embeds would make live and rebuild disagree. */
+function countMediaAttachments(message) {
+    return message.attachments ? message.attachments.size : 0;
 }
 
-function awardActivityPoint(userId, username) {
-    const data = loadActivity();
-    const now = Date.now();
-    const entry = data[userId] || { points: 0, lastPointAt: 0, username };
-    if (now - entry.lastPointAt < ACTIVITY_COOLDOWN_MS) return null;
-    entry.points++;
-    entry.lastPointAt = now;
-    entry.username = username;
-    data[userId] = entry;
-    saveActivity(data);
-    return entry.points;
+/** The engine's `parentId` means THREAD parent. A text channel's discord.js parentId is its category — never pass that. */
+function threadParentId(channel) {
+    return channel && typeof channel.isThread === 'function' && channel.isThread() ? channel.parentId : null;
 }
 
-async function checkActivityTierUpgrade(guild, userId, username, points) {
-    const member = await guild.members.fetch(userId).catch(() => null);
-    if (!member) return;
-
-    const tierDMs = {
-        'Arch Tactician': {
-            dm: `⚔️ **You've earned the rank of Arch Tactician!**\n\n` +
-                `${username}, your activity in the strategy channels has been noticed. **${points} messages** of real discussion — that puts you above the crowd.\n\n` +
-                `Keep contributing and you'll climb even higher. Next rank: **Arch Veteran** at 350 points.`,
-            debug: `⚔️ **Activity tier: Arch Tactician**\nUser: **${username}** (${userId})\nActivity points: ${points}`,
-        },
-        'Arch Veteran': {
-            dm: `🛡️ **${username}, you are now an Arch Veteran.**\n\n` +
-                `**${points} messages** in the strategy channels. You're one of the most consistent contributors in this community. People are learning from what you share.\n\n` +
-                `Next rank: **Arch Warlord** at 750 points. Keep going.`,
-            debug: `🛡️ **Activity tier: Arch Veteran**\nUser: **${username}** (${userId})\nActivity points: ${points}`,
-        },
-        'Arch Warlord': {
-            dm: `👑 **${username}, you've reached Arch Warlord.**\n\n` +
-                `**${points} messages.** You are among the elite strategists in this community. Your knowledge and dedication are shaping how people play.\n\n` +
-                `One more tier remains: **Arch Legend** at 1500 points. Only the most dedicated reach it.`,
-            debug: `👑 **Activity tier: Arch Warlord**\nUser: **${username}** (${userId})\nActivity points: ${points}`,
-        },
-        'Arch Legend': {
-            dm: `🌟 **${username}, you are now an Arch Legend.**\n\n` +
-                `**${points} messages.** This is the highest activity rank in the community. There are no more tiers — you've reached the top.\n\n` +
-                `You've been one of the most active and helpful voices in the strategy channels. The community is better because of you. Thank you.`,
-            debug: `🌟 **Activity tier: Arch Legend** 🎉\nUser: **${username}** (${userId})\nActivity points: ${points}\n*Highest activity rank achieved.*`,
-        },
-    };
-
-    for (const tier of CONFIG.activityTiers) {
-        if (points >= tier.threshold && !member.roles.cache.some(r => r.name === tier.name)) {
-            const role = guild.roles.cache.find(r => r.name === tier.name);
-            if (!role) continue;
-            await member.roles.add(role);
-            const msgs = tierDMs[tier.name];
-            if (msgs) {
-                await sendToAdmin({ content: msgs.debug });
-                try { await member.user.send(msgs.dm); } catch { /* DMs disabled */ }
+/** Persist first, announce second — a crash in between loses an embed, never duplicates one. */
+async function announceUnlocks(channel, guild, unlocked) {
+    if (!unlocked.length) return;
+    // Until the first rebuild, every returning member's first message would post a
+    // public "First Words" embed. Record silently; the rebuild's reconcile grants roles.
+    if (!achievementState.rebuiltAt) return;
+    const byUser = new Map();
+    for (const u of unlocked) {
+        if (!byUser.has(u.userId)) byUser.set(u.userId, { username: u.username, items: [] });
+        byUser.get(u.userId).items.push(u);
+    }
+    for (const [userId, { username, items }] of byUser) {
+        const member = guild ? await guild.members.fetch(userId).catch(() => null) : null;
+        // Roles: loud on failure. The old ladder's silent `continue` is how a dead feature hid.
+        for (const it of items) {
+            const roleName = it.achievement.role;
+            if (!roleName || !member) continue;
+            const role = guild.roles.cache.find((r) => r.name === roleName);
+            if (!role) { console.error(`❌ Achievement role "${roleName}" not found in guild — cannot grant to ${username}`); continue; }
+            if (member.roles.cache.has(role.id)) continue;
+            try {
+                await member.roles.add(role);
+                console.log(`🏅 Granted ${roleName} to ${username} (${it.trackId})`);
+            } catch (e) {
+                console.error(`❌ FAILED to grant ${roleName} to ${username}: ${e.message}`);
+            }
+        }
+        const tiers = items.filter((it) => it.achievement.tier);
+        const badges = items.filter((it) => !it.achievement.tier);
+        const lines = [];
+        for (const it of tiers) lines.push(`${it.achievement.emoji} Promoted to **${it.achievement.role}** — ${it.achievement.description} in ${TRACKS[it.trackId].name}`);
+        for (const it of badges) lines.push(`${it.achievement.emoji} **${it.achievement.name}** — ${it.achievement.description}${it.achievement.role ? ` · role **${it.achievement.role}**` : ''}`);
+        const embed = new EmbedBuilder()
+            .setTitle(tiers.length ? '🏆 Rank up!' : '🏆 Achievement unlocked')
+            .setDescription(`<@${userId}>\n${lines.join('\n')}`)
+            .setColor(tiers.length ? 0xffd700 : 0x5865f2)
+            .setFooter({ text: '!rank · !achievements · !leaderboard' });
+        try { await channel.send({ embeds: [embed] }); }
+        catch (e) { console.error(`❌ Achievement announce failed in #${channel.name || channel.id}: ${e.message}`); }
+        if (tiers.length) {
+            const last = tiers[tiers.length - 1];
+            const t = last.achievement;
+            await sendToAdmin({ content: `🏅 **${t.role}** — ${username} (${userId}) reached ${t.threshold} ${achievements.STAT_LABELS[t.stat]} in ${TRACKS[last.trackId].name}` });
+            if (member) {
+                try { await member.user.send(`${t.emoji} **You've been promoted to ${t.role}!** ${t.description} in the ${TRACKS[last.trackId].name} track. Check \`!rank\` any time.`); }
+                catch { /* DMs disabled — the public post already went out */ }
             }
         }
     }
+}
+
+async function recordMessageActivity(message) {
+    if (!achievements.eligibleMessage({ authorBot: message.author.bot, webhookId: message.webhookId, system: message.system, guildId: message.guildId, content: message.content })) return;
+    const repliedUser = message.mentions && message.mentions.repliedUser;
+    const evt = {
+        userId: message.author.id, username: message.author.username,
+        channelId: message.channel.id, parentId: threadParentId(message.channel),
+        ts: message.createdTimestamp,
+        isReply: Boolean(message.reference && message.reference.messageId),
+        repliedToUserId: repliedUser ? repliedUser.id : null,
+        attachments: countMediaAttachments(message),
+    };
+    const { unlocked, changed } = achievements.applyMessage(achievementState, TRACKS, evt);
+    if (changed) saveAchievements();
+    await announceUnlocks(message.channel, message.guild, unlocked);
+}
+
+async function recordAiQuestion(message) {
+    const evt = { userId: message.author.id, username: message.author.username, channelId: message.channel.id, parentId: threadParentId(message.channel), ts: Date.now() };
+    const { unlocked, changed } = achievements.applyAiQuestion(achievementState, TRACKS, evt);
+    if (changed) saveAchievements();
+    await announceUnlocks(message.channel, message.guild, unlocked);
+}
+
+async function recordReactionActivity(reaction, user) {
+    if (reaction.partial) await reaction.fetch();
+    const m = reaction.message;
+    if (m.partial) await m.fetch();
+    if (!m.guild || !m.author) return;
+    if (!achievements.eligibleMessage({ authorBot: m.author.bot, webhookId: m.webhookId, system: m.system, guildId: m.guildId, content: m.content })) return;
+    const evt = {
+        messageId: m.id, authorId: m.author.id, authorUsername: m.author.username, reactorId: user.id,
+        channelId: m.channel.id, parentId: threadParentId(m.channel), ts: Date.now(),
+    };
+    const { unlocked, changed } = achievements.applyReaction(achievementState, TRACKS, evt);
+    if (changed) saveAchievements();
+    await announceUnlocks(m.channel, m.guild, unlocked);
+}
+
+/** Grant every earned-but-missing achievement role. Runs with the contributor reconcile. */
+async function reconcileAchievementRoles(guild, { dryRun = false, reason = 'scheduled' } = {}) {
+    const held = new Map();
+    for (const t of Object.values(achievementState.tracks || {})) {
+        for (const id of Object.keys(t.users || {})) {
+            if (held.has(id) || !achievements.rolesOwed(achievementState, TRACKS, id).size) continue;
+            const member = await guild.members.fetch(id).catch(() => null);
+            held.set(id, member ? member.roles.cache.map((r) => r.name) : null);
+        }
+    }
+    const plan = achievements.reconcilePlan(achievementState, TRACKS, (id) => (held.has(id) ? held.get(id) : null));
+    const granted = [];
+    for (const entry of plan) {
+        const member = await guild.members.fetch(entry.userId).catch(() => null);
+        if (!member) continue;
+        for (const roleName of entry.missing) {
+            const role = guild.roles.cache.find((r) => r.name === roleName);
+            if (!role) { console.error(`❌ Achievement reconcile: role "${roleName}" not found — cannot grant to ${entry.username}`); continue; }
+            if (dryRun) { granted.push({ ...entry, roleName, dryRun: true }); continue; }
+            try { await member.roles.add(role); granted.push({ ...entry, roleName }); console.log(`✅ Achievement reconcile: granted ${roleName} to ${entry.username}`); }
+            catch (e) { console.error(`❌ Achievement reconcile: FAILED to grant ${roleName} to ${entry.username}: ${e.message}`); }
+        }
+    }
+    if (granted.length) {
+        const lines = granted.map((g) => `• **${g.username}** → ${g.roleName}`);
+        await sendToAdmin({ content: clip(`🏅 **Achievement roles reconciled** (${reason})${dryRun ? ' — DRY RUN' : ''} — ${granted.length}\n${lines.join('\n')}`) });
+    }
+    return { granted };
+}
+
+/** Discord's 2000-char message cap; sendViaWebhook drops an oversized post silently. */
+function clip(text, max = 1900) {
+    return text.length <= max ? text : `${text.slice(0, max)}\n… (${text.length - max} more chars)`;
+}
+
+/**
+ * Replay channel history through the engine. Stats are recomputed; unlocks are
+ * merged (never removed). Announces NOTHING per user — one admin summary only.
+ */
+async function rebuildAchievements(guild, { dryRun = false } = {}) {
+    const wanted = new Set();
+    for (const t of Object.values(TRACKS)) {
+        const c = t.channels || {};
+        if (Array.isArray(c.include)) c.include.forEach((id) => wanted.add(id));
+        else if (Array.isArray(c.exclude)) guild.channels.cache.filter((ch) => ch.type === 0 && !c.exclude.includes(ch.id)).forEach((ch) => wanted.add(ch.id));
+    }
+    const events = [];
+    let fetched = 0;
+    const skipped = [];
+    // Threads and forum posts count for their parent, live — so the replay must walk them too,
+    // or every rebuild would wipe what members earned there.
+    const targets = [];
+    const me = guild.members.me;
+    for (const id of wanted) {
+        const ch = guild.channels.cache.get(id) || await guild.channels.fetch(id).catch(() => null);
+        if (!ch) { skipped.push(id); continue; }
+        // A channel the bot cannot read is REPORTED, not replayed as empty — an empty replay would erase what members earned there.
+        const perms = me && typeof ch.permissionsFor === 'function' ? ch.permissionsFor(me) : null;
+        if (perms && !(perms.has('ViewChannel') && perms.has('ReadMessageHistory'))) { skipped.push(`${ch.name || id} (no read access)`); continue; }
+        if (ch.messages && typeof ch.messages.fetch === 'function') targets.push({ ch, parentId: null });
+        if (ch.threads && typeof ch.threads.fetchActive === 'function') {
+            const active = await ch.threads.fetchActive().catch(() => null);
+            if (active) for (const th of active.threads.values()) targets.push({ ch: th, parentId: ch.id });
+            const archived = await ch.threads.fetchArchived({ limit: 100 }).catch(() => null);
+            if (archived) for (const th of archived.threads.values()) targets.push({ ch: th, parentId: ch.id });
+        }
+    }
+    async function fetchPage(ch, before) {
+        for (let attempt = 1; attempt <= 3; attempt++) {
+            try { return await ch.messages.fetch({ limit: 100, ...(before ? { before } : {}) }); }
+            catch (e) { if (attempt === 3) throw new Error(`#${ch.name || ch.id}: ${e.message}`); await new Promise((r) => setTimeout(r, 1500 * attempt)); }
+        }
+        return null;
+    }
+    for (const { ch, parentId } of targets) {
+        const keyChannel = parentId || ch.id;
+        let before;
+        for (let page = 0; page < 200; page++) {                         // ≤ 20k messages per channel
+            // A failed page THROWS — replacing everyone's stats with a truncated replay is the one thing a rebuild must never do.
+            const batch = await fetchPage(ch, before);
+            if (!batch || batch.size === 0) break;
+            for (const m of batch.values()) {
+                fetched++;
+                if (!achievements.eligibleMessage({ authorBot: m.author.bot, webhookId: m.webhookId, system: m.system, guildId: m.guildId, content: m.content })) continue;
+                const repliedUser = m.mentions && m.mentions.repliedUser;
+                events.push({ type: 'message', userId: m.author.id, username: m.author.username, channelId: ch.id, parentId, ts: m.createdTimestamp,
+                    isReply: Boolean(m.reference && m.reference.messageId), repliedToUserId: repliedUser ? repliedUser.id : null, attachments: countMediaAttachments(m) });
+                if (keyChannel === CONFIG.channels.archAi) {
+                    // History cannot tell which messages were answered; a member's message in #arch-ai IS a question.
+                    events.push({ type: 'aiQuestion', userId: m.author.id, username: m.author.username, channelId: ch.id, parentId, ts: m.createdTimestamp + 1 });
+                }
+                if (m.reactions.cache.some((r) => r.count > (r.me ? 1 : 0))) {
+                    // Who reacted is not in the history payload; ≥1 reaction (not the bot's own) counts as appreciated once.
+                    events.push({ type: 'reaction', messageId: m.id, authorId: m.author.id, authorUsername: m.author.username, reactorId: 'history', channelId: ch.id, parentId, ts: m.createdTimestamp + 1 });
+                }
+            }
+            before = batch.last().id;
+            if (batch.size < 100) break;
+        }
+    }
+    const next = achievements.rebuild(achievementState, TRACKS, events, new Date().toISOString());
+    next.perkUse = achievementState.perkUse || {};
+    const summary = [];
+    for (const [trackId, t] of Object.entries(TRACKS)) {
+        const users = (next.tracks[trackId] && next.tracks[trackId].users) || {};
+        const line = [];
+        for (const a of achievements.resolveTrack(trackId, t)) {
+            const n = Object.values(users).filter((u) => u.unlocked[a.key]).length;
+            if (n) line.push(`${a.emoji} ${a.name} ${n}`);
+        }
+        summary.push(`**${t.emoji} ${t.name}** — ${Object.keys(users).length} members${line.length ? ' · ' + line.join(' · ') : ''}`);
+    }
+    if (!dryRun) {
+        achievementState = next;
+        saveAchievements();
+        await reconcileAchievementRoles(guild, { reason: 'rebuild' });
+    }
+    await sendToAdmin({ content: clip(`🏆 **Achievements rebuild${dryRun ? ' — DRY RUN' : ''}** — ${fetched} messages scanned, ${events.length} events${skipped.length ? `, ${skipped.length} channel(s) unreadable` : ''}\n${summary.join('\n')}`) });
+    return { fetched, events: events.length, summary };
 }
 
 // ── Role helpers ────────────────────────────────────────────────────────────
@@ -897,6 +1084,8 @@ async function reconcileContributorRoles(guild, { dryRun = false, reason = 'sche
             content: `🔧 **Contributor roles reconciled** (${reason})${dryRun ? ' — DRY RUN' : ''}\n${lines}`,
         });
     }
+    try { await reconcileAchievementRoles(guild, { dryRun, reason }); }
+    catch (e) { console.error(`❌ Achievement reconcile failed: ${e.message}`); }
     return { granted, checked: held.size };
 }
 
@@ -1325,20 +1514,7 @@ function stampVisionCooldown(userId) {
 // top-level keys in knowledge.json. Anything outside this list falls back to
 // custom_facts on approval. opinions and custom_facts are excluded as proposal
 // targets — those are special arrays, not categorical buckets.
-const KNOWLEDGE_CATEGORIES = new Set([
-    'star_system', 'resonance', 'characters', 'pvp_meta', 'skins', 'gold',
-    'guild', 'gear_sets', 'weapons', 'runes', 'blessings', 'game_modes',
-    'profile_experience', 'tips', 'skills', 'resources', 'privilege_cards',
-    'sacred_hall', 'damage_terminology', 'collectibles',
-    // Added with the 2026-08-23 update drop. A live category missing from this
-    // whitelist cannot be an !approve target and cannot be proposed by a vision
-    // candidate, so the community has no route to extend it — which is the
-    // whole point of seeding a topic. NOTE: ten OTHER live categories (hunt,
-    // battle_pass, mystlings, currencies, daily_rewards, main_screen,
-    // event_shop, skin_exchange_shop, reach_rewards, shop) are still missing
-    // here and have the same problem; that predates this change.
-    'umbral_tempest', 'collaborations',
-]);
+const { KNOWLEDGE_CATEGORIES } = require('./lib/knowledge-categories');
 
 function knowledgeCategoryList() {
     return Array.from(KNOWLEDGE_CATEGORIES).join(', ');
@@ -1813,6 +1989,9 @@ function saveWelcomeDmMessages() {
 client.on('messageReactionAdd', async (reaction, user) => {
     if (user.bot) return;
 
+    try { await recordReactionActivity(reaction, user); }
+    catch (e) { console.error(`❌ Achievement reaction hook: ${e.message}`); }
+
     // ⚔️ Guild verification request via DM
     if (reaction.emoji.name === '⚔️' && !welcomeDmMessages.has(reaction.message.id)) {
         // Visibility, mirroring the 🤖 fix: the silent path is how a dead flow
@@ -2023,13 +2202,9 @@ const spamTracker = new Map();
 client.on('messageCreate', async (message) => {
     if (message.author.bot) return;
 
-    // Activity XP: award a point for non-command messages in strategy channels
-    if (message.guild && CONFIG.activityChannelIds.has(message.channel.id) && !message.content.startsWith('!')) {
-        const newPoints = awardActivityPoint(message.author.id, message.author.username);
-        if (newPoints !== null) {
-            await checkActivityTierUpgrade(message.guild, message.author.id, message.author.username, newPoints);
-        }
-    }
+    // Achievements: every eligible message feeds the engine before any gate below can drop it.
+    try { await recordMessageActivity(message); }
+    catch (e) { console.error(`❌ Achievement message hook: ${e.message}`); }
 
     const isCommand = message.content.startsWith('!');
     const isDM = message.channel.type === 1;
@@ -2041,9 +2216,9 @@ client.on('messageCreate', async (message) => {
 
     // General chat: only !help and !menu
     if (message.channel.name && (CONFIG.generalChatNames.includes(message.channel.name) || message.channel.name.toLowerCase().includes('general'))) {
-        if (!isCommand || (!message.content.startsWith('!help') && !message.content.startsWith('!menu') && !message.content.startsWith('!ping'))) {
-            return;
-        }
+        const GENERAL_OK = ['help', 'menu', 'ping', 'rank', 'level', 'lb', 'leaderboard', 'achievements', 'badges', 'cheer', 'spotlight', 'invite-ai'];
+        const word = isCommand ? message.content.slice(1).split(/\s+/)[0].toLowerCase() : '';
+        if (!isCommand || !GENERAL_OK.includes(word)) return;
     }
 
     // Outside arch-ai / DMs: only respond to commands
@@ -2071,8 +2246,10 @@ client.on('messageCreate', async (message) => {
                         '`!help` / `!menu` — This message\n' +
                         '`!contributors` — Leaderboard of top contributors\n' +
                         '`!contributions` — Approved contributions + each member\'s tier\n' +
-                        '`!rank` / `!level` — Check your activity rank and progress\n' +
-                        '`!leaderboard` / `!lb` — Top 10 strategy channel contributors\n\n' +
+                        '`!rank` / `!level` — Your community rank, contribution tier, badges and perks\n' +
+                        '`!leaderboard` / `!lb` — Top 10 by community points (`!lb cross` for #cross-server)\n' +
+                        '`!achievements` / `!badges` — Every badge, unlocked and locked, with progress\n' +
+                        '`!cheer @user` · `!spotlight @user` · `!invite-ai @user` — Perks you unlock by earning badges\n\n' +
                         '**🤖 AI Enabled** (in **#arch-ai**):\n' +
                         'Just type your Archero 2 question — no command needed!\n' +
                         '📸 *Screenshot Q&A:* limited to **XYIAN OFFICIAL · Admin · Moderator · Arch Legend** (cooldown applies). Everyone else, ask in text.\n' +
@@ -2108,7 +2285,8 @@ client.on('messageCreate', async (message) => {
                         '`!reset` — Send daily reset now\n\n' +
                         '**Owner only:**\n' +
                         '`!ai status` / `!ai on` / `!ai off` — Master kill switch for the OpenAI Q&A in #arch-ai\n' +
-                        '`!post-changelog [x.y.z]` — Manually post a CHANGELOG entry to #changelog (omit version for current)'
+                        '`!post-changelog [x.y.z]` — Manually post a CHANGELOG entry to #changelog (omit version for current)\n' +
+                        '`!achievements rebuild [dry]` — Recompute every badge and rank from channel history'
                     )
                     .setColor(0x9b59b6).setTimestamp().setFooter({ text: 'XYIAN Bot' });
                 return message.reply({ embeds: [embed] });
@@ -2155,72 +2333,143 @@ client.on('messageCreate', async (message) => {
             case 'rank':
             case 'level': {
                 const targetUser = message.mentions.users.first() || message.author;
-                const activity = loadActivity();
-                const entry = activity[targetUser.id];
-                const pts = entry ? entry.points : 0;
-
-                let currentTier = 'ArchAddict';
-                let currentColor = 0x808080;
-                let nextTier = CONFIG.activityTiers[0];
-                for (const tier of CONFIG.activityTiers) {
-                    if (pts >= tier.threshold) {
-                        currentTier = tier.name;
-                        currentColor = tier.color;
-                        nextTier = CONFIG.activityTiers[CONFIG.activityTiers.indexOf(tier) + 1] || null;
-                    }
-                }
-
-                let progressLine;
-                if (!nextTier) {
-                    progressLine = '██████████ MAX — You\'ve reached the highest rank!';
-                } else {
-                    const prevThreshold = CONFIG.activityTiers.find(t => t.name === currentTier)?.threshold || 0;
-                    const range = nextTier.threshold - prevThreshold;
-                    const progress = pts - prevThreshold;
-                    const filled = Math.floor((progress / range) * 10);
-                    const bar = '█'.repeat(filled) + '░'.repeat(10 - filled);
-                    progressLine = `${bar} ${pts}/${nextTier.threshold} → next: **${nextTier.name}** (${nextTier.threshold - pts} to go)`;
-                }
-
+                const view = achievements.rankView(achievementState, TRACKS, targetUser.id);
+                const community = view.tracks.find((t) => t.id === 'community');
+                const ladder = community.ladder;
+                const tierName = ladder.current ? ladder.current.role : 'ArchAddict';
+                const progress = ladder.next
+                    ? `${ladder.bar} ${ladder.pts}/${ladder.next.threshold} → next: **${ladder.next.role}** (${ladder.next.threshold - ladder.pts} to go)`
+                    : '██████████ MAX — the highest community rank';
+                // Contribution tier is a SEPARATE ladder (approved suggestions) — show it so
+                // "everyone is ArchAddict" can never again be read as "Scholar/Sage are broken".
+                const approved = approvedCountFor(loadSuggestions(), targetUser.id);
+                const contribTier = [...CONFIG.roleTiers].reverse().find((t) => approved >= t.threshold && t.name !== 'AI Enabled');
+                const others = view.tracks.filter((t) => t.id !== 'community' && t.user).map((t) => {
+                    const u = t.user;
+                    const bits = [];
+                    if (t.id === 'arch-ai') bits.push(`${u.aiQuestions} questions`);
+                    else { bits.push(`${u.msgs} msgs`); if (u.days) bits.push(`${u.days} days`); }
+                    return `${t.emoji} ${t.name}: ${bits.join(' · ')} · ${t.badges.unlocked}/${t.badges.total} badges`;
+                });
+                const perks = achievementTracks.perksFor(achievementState, targetUser.id).map((p) => `${p.emoji} \`${p.usage}\``);
                 const rankEmbed = new EmbedBuilder()
-                    .setTitle(`🏅 ${targetUser.username} — ${currentTier}`)
-                    .setDescription(`**${pts}** activity points\n\n${progressLine}`)
-                    .setColor(currentColor)
+                    .setTitle(`🏅 ${targetUser.username} — ${tierName}`)
+                    .setDescription(
+                        `**${ladder.pts}** community points (messages across the server, 1/min)\n${progress}\n\n` +
+                        `🎓 Contribution: **${contribTier ? contribTier.name : 'none yet'}** (${approved} approved suggestion${approved === 1 ? '' : 's'})\n` +
+                        (others.length ? others.join('\n') + '\n' : '') +
+                        `\n🏆 Badges: **${view.badges.unlocked}/${view.badges.total}** — \`!achievements\` for the list` +
+                        (perks.length ? `\n🔓 Perks: ${perks.join(' ')}` : '')
+                    )
+                    .setColor(ladder.current ? 0xffd700 : 0x808080)
                     .setThumbnail(targetUser.displayAvatarURL({ dynamic: true }))
                     .setTimestamp()
-                    .setFooter({ text: 'XYIAN Bot — Earn points by chatting in strategy channels' });
+                    .setFooter({ text: 'XYIAN Bot — points come from talking anywhere in the server' });
                 return message.reply({ embeds: [rankEmbed] });
             }
-
             case 'leaderboard':
             case 'lb': {
-                const activity = loadActivity();
-                const sorted = Object.entries(activity)
-                    .sort(([, a], [, b]) => b.points - a.points)
-                    .slice(0, 10);
-
-                if (!sorted.length) return message.reply('No activity recorded yet. Start chatting in the strategy channels!');
-
+                const trackId = /cross/i.test(argText) ? 'cross-server' : 'community';
+                const rows = achievements.leaderboard(achievementState, TRACKS, trackId, 10);
+                if (!rows || !rows.length) return message.reply('No activity recorded yet — it starts counting from the first message.');
                 const medals = ['🥇', '🥈', '🥉'];
-                const lines = sorted.map(([, entry], i) => {
-                    const medal = medals[i] || `**${i + 1}.**`;
-                    let tierLabel = '';
-                    for (const tier of CONFIG.activityTiers) {
-                        if (entry.points >= tier.threshold) tierLabel = ` ${tier.name}`;
-                    }
-                    if (!tierLabel) tierLabel = ' ArchAddict';
-                    return `${medal} **${entry.username}** — ${entry.points} pts (${tierLabel.trim()})`;
-                }).join('\n');
-
+                const lines = rows.map((r, i) => `${medals[i] || `**${i + 1}.**`} **${r.username}** — ${r.msgs} pts${r.tier ? ` (${r.tier.role})` : ''}`).join('\n');
                 const lbEmbed = new EmbedBuilder()
-                    .setTitle('🏆 Strategy Activity Leaderboard')
-                    .setDescription(lines + '\n\n*Earn points by posting in strategy channels (1 pt/min cooldown)*')
+                    .setTitle(`🏆 ${TRACKS[trackId].name} Leaderboard`)
+                    .setDescription(lines + `\n\n*1 point per message, once a minute${trackId === 'community' ? ', anywhere in the server' : ', in #cross-server'}.* ${trackId === 'community' ? '`!lb cross` for #cross-server' : '`!lb` for the community board'}`)
                     .setColor(0x00FFFF)
                     .setTimestamp()
                     .setFooter({ text: 'XYIAN Bot — !rank to check your own progress' });
                 return message.reply({ embeds: [lbEmbed] });
             }
-
+            case 'achievements':
+            case 'badges': {
+                const sub = argText.trim().toLowerCase();
+                if (sub.startsWith('rebuild')) {
+                    if (!isOwner(message.author)) return message.reply(ownerDenialMessage());
+                    const dryRun = /dry/.test(sub);
+                    await message.reply(`🏆 Rebuilding achievements from channel history${dryRun ? ' (dry run)' : ''} — this scans every tracked channel and takes a few minutes. Summary lands in <#${CONFIG.channels.debugLogs}>.`);
+                    rebuildAchievements(message.guild, { dryRun })
+                        .then((r) => message.reply(clip(`✅ Rebuild${dryRun ? ' (dry run)' : ''} done — ${r.fetched} messages scanned, ${r.events} events.\n${r.summary.join('\n')}`)))
+                        .catch((e) => { console.error(`❌ Achievements rebuild failed: ${e.message}`); message.reply(`❌ Rebuild failed: ${e.message}`); });
+                    return;
+                }
+                const targetUser = message.mentions.users.first() || message.author;
+                const view = achievements.achievementsView(achievementState, TRACKS, targetUser.id);
+                const fields = view
+                    .filter((t) => t.unlocked.length || t.locked.length)
+                    .map((t) => ({
+                        name: `${t.emoji} ${t.name} — ${t.unlocked.length}/${t.unlocked.length + t.locked.length}`,
+                        value: [
+                            ...t.unlocked.map((a) => `${a.emoji} **${a.name}** — ${a.description}`),
+                            ...t.locked.slice(0, 4).map((a) => `🔒 ${a.name} — ${a.progress}`),
+                            ...(t.locked.length > 4 ? [`🔒 …and ${t.locked.length - 4} more`] : []),
+                        ].join('\n').slice(0, 1024) || '—',
+                    }));
+                const perks = achievementTracks.PERKS.map((p) => `${achievementTracks.perkAllowed(achievementState, targetUser.id, p.command) ? '🔓' : '🔒'} ${p.emoji} \`${p.usage}\` — ${p.description}`);
+                const embed = new EmbedBuilder()
+                    .setTitle(`🏆 ${targetUser.username}'s achievements`)
+                    .addFields(fields.slice(0, 6))
+                    .addFields({ name: '🔑 Perks', value: perks.join('\n') })
+                    .setColor(0x5865f2)
+                    .setThumbnail(targetUser.displayAvatarURL({ dynamic: true }))
+                    .setFooter({ text: 'Badges unlock on the spot; perks unlock commands' });
+                return message.reply({ embeds: [embed] });
+            }
+            case 'cheer': {
+                if (!achievementTracks.perkAllowed(achievementState, message.author.id, 'cheer')) {
+                    return message.reply('🔒 `!cheer` unlocks with **Regular** (7 active days) or **Arch Tactician**. Check `!achievements`.');
+                }
+                const target = message.mentions.users.first();
+                if (!target || target.id === message.author.id) return message.reply('Usage: `!cheer @user [why]` — cheer for someone else!');
+                const why = argText.replace(/<@!?\d+>/g, '').trim();
+                const embed = new EmbedBuilder()
+                    .setTitle('🎉 Cheers!')
+                    .setDescription(`<@${message.author.id}> is cheering for <@${target.id}>${why ? ` — *${why.slice(0, 200)}*` : ''} 🎉`)
+                    .setColor(0xff69b4);
+                return message.channel.send({ embeds: [embed] });
+            }
+            case 'spotlight': {
+                if (!achievementTracks.perkAllowed(achievementState, message.author.id, 'spotlight')) {
+                    return message.reply('🔒 `!spotlight` unlocks with **Fixture** (30 active days) or **Arch Veteran**. Check `!achievements`.');
+                }
+                const target = message.mentions.users.first();
+                if (!target) return message.reply('Usage: `!spotlight @user`');
+                const view = achievements.rankView(achievementState, TRACKS, target.id);
+                const ladder = view.tracks.find((t) => t.id === 'community').ladder;
+                const badges = achievements.achievementsView(achievementState, TRACKS, target.id).flatMap((t) => t.unlocked.map((a) => `${a.emoji} ${a.name}`));
+                const embed = new EmbedBuilder()
+                    .setTitle(`🔦 Spotlight on ${target.username}`)
+                    .setDescription(`Put there by <@${message.author.id}>.\n\n🏅 **${ladder.current ? ladder.current.role : 'ArchAddict'}** · ${ladder.pts} community points\n${badges.length ? badges.join(' · ') : 'No badges yet — the story starts today.'}`)
+                    .setColor(0xffa500)
+                    .setThumbnail(target.displayAvatarURL({ dynamic: true }));
+                return message.channel.send({ embeds: [embed] });
+            }
+            case 'invite-ai': {
+                if (!achievementTracks.perkAllowed(achievementState, message.author.id, 'invite-ai')) {
+                    return message.reply('🔒 `!invite-ai` unlocks at **Arch Veteran** (150 community points). Check `!rank`.');
+                }
+                const target = message.mentions.members && message.mentions.members.first();
+                if (!target || target.id === message.author.id) return message.reply('Usage: `!invite-ai @user` — grant someone else AI access.');
+                if (target.user.bot) return message.reply('Bots do not need AI access.');
+                const today = schedule.dayKey(Date.now());
+                const use = achievementState.perkUse[message.author.id] || {};
+                if (use['invite-ai'] === today) return message.reply('⏳ One `!invite-ai` per day — yours is used. Tomorrow!');
+                const role = message.guild.roles.cache.find((r) => r.name === CONFIG.reactionRole.roleName);
+                if (!role) return message.reply('❌ The AI Enabled role is missing — tell an admin.');
+                if (target.roles.cache.has(role.id)) return message.reply(`${target.user.username} already has AI access.`);
+                try {
+                    await target.roles.add(role);
+                } catch (e) {
+                    console.error(`❌ invite-ai grant failed: ${e.message}`);
+                    return message.reply(`❌ Could not grant the role: ${e.message}`);
+                }
+                achievementState.perkUse[message.author.id] = { ...use, 'invite-ai': today };
+                saveAchievements();
+                await sendToAdmin({ content: `🤖 **AI access granted via !invite-ai** — ${message.author.username} (${message.author.id}) → ${target.user.username} (${target.id})` });
+                try { await target.user.send(`🤖 **${message.author.username} invited you to Arch AI!** You now have the **${role.name}** role — head to <#${CONFIG.channels.archAi}> and ask any Archero 2 question.`); } catch { /* DMs disabled */ }
+                return message.reply(`🤖 Done — <@${target.id}> now has **${role.name}**. Nice one.`);
+            }
             case 'listfacts': {
                 if (!canMemberDo(message.member, 'canListFacts') && !isDM) {
                     return message.reply('❌ You need the **Arch Scholar** role or higher to use this command. Earn it by getting 5 suggestions approved!');
@@ -2357,9 +2606,9 @@ client.on('messageCreate', async (message) => {
 
             case 'ai': {
                 // Owner-only kill switch for the OpenAI-backed Q&A in #arch-ai.
-                // Toggles CONFIG.features.aiEnabled in-memory; resets to true on
-                // every Railway redeploy by design (the source of truth is code,
-                // not state). Use `!ai status` to verify before/after toggling.
+                // Persisted via state-store: it used to reset to ON with every
+                // Railway redeploy (~32 a fortnight), which silently undid an
+                // \`!ai off\` in the one direction that spends money.
                 if (!isOwner(message.author)) {
                     return message.reply(ownerDenialMessage());
                 }
@@ -2380,6 +2629,7 @@ client.on('messageCreate', async (message) => {
                 }
                 if (sub === 'on') {
                     CONFIG.features.aiEnabled = true;
+                    stateStore.saveState(AI_SWITCH_STORE, { aiEnabled: true, by: message.author.username, at: new Date().toISOString() });
                     await sendToAdmin({
                         content: `🤖 **AI Q&A enabled** by ${message.author.username} via \`!ai on\`.`,
                     });
@@ -2387,6 +2637,7 @@ client.on('messageCreate', async (message) => {
                 }
                 if (sub === 'off') {
                     CONFIG.features.aiEnabled = false;
+                    stateStore.saveState(AI_SWITCH_STORE, { aiEnabled: false, by: message.author.username, at: new Date().toISOString() });
                     await sendToAdmin({
                         content: `🤖 **AI Q&A disabled** by ${message.author.username} via \`!ai off\`. Users in #arch-ai will see the offline embed.`,
                     });
@@ -2618,7 +2869,7 @@ client.on('messageCreate', async (message) => {
                     at: new Date().toISOString(),
                     status: 'pending',
                 });
-                saveSuggestions(suggestions);
+                if (!saveSuggestions(suggestions)) return message.reply('❌ Could not save your suggestion — nothing was recorded. Try again in a minute, or tell an admin (it is logged).');
                 recordSuggestion(message.author.id);
                 await sendToAdmin({ content: `💡 **New suggestion** from ${message.author.username}:\n> ${argText.substring(0, 500)}` });
                 return message.reply('💡 Thanks! Your suggestion has been submitted for admin review.');
@@ -2738,7 +2989,7 @@ client.on('messageCreate', async (message) => {
                 }
 
                 saveKnowledge();
-                saveSuggestions(suggestions);
+                if (!saveSuggestions(suggestions)) await message.reply('⚠️ The knowledge entry was saved, but the suggestions ledger write failed — the contributor credit may be missing. Do NOT re-approve; an admin should check the data volume and run `!reconcile`. It is logged.');
 
                 // Check if the contributor earned a tier upgrade. Reconcile
                 // afterwards as a safety net: if the grant above failed for any
@@ -3033,6 +3284,7 @@ client.on('messageCreate', async (message) => {
             // Stamp BEFORE the call so a duplicate within the OpenAI roundtrip
             // window also gets gated.
             stampVisionCooldown(message.author.id);
+            recordAiQuestion(message).catch((e) => console.error(`❌ Achievement AI hook: ${e.message}`));
             const result = await askAIWithVision(message.content, imageUrls, message.author.username, message.author.id);
             answer = result.reply;
             visionCandidates = result.candidates || [];
@@ -3040,6 +3292,7 @@ client.on('messageCreate', async (message) => {
             const textQuestion = visionStripped && !message.content.trim()
                 ? 'I shared a screenshot, but vision is paused right now — anything general you can tell me?'
                 : message.content;
+            recordAiQuestion(message).catch((e) => console.error(`❌ Achievement AI hook: ${e.message}`));
             answer = await askAI(textQuestion, message.author.username, message.author.id);
         }
 
@@ -3169,6 +3422,12 @@ client.once('clientReady', async () => {
     }
 
     console.log(`📊 ${countFacts()} facts loaded from knowledge.json`);
+    {
+        const trackCount = Object.keys(achievementState.tracks || {}).length;
+        const userCount = Object.values(achievementState.tracks || {}).reduce((n, t) => n + Object.keys(t.users || {}).length, 0);
+        console.log(`🏆 Achievements: ${userCount} member record(s) across ${trackCount} track(s)${achievementState.rebuiltAt ? ` (last rebuild ${achievementState.rebuiltAt})` : ''}`);
+        if (!achievementState.rebuiltAt) console.error('🏆 Achievements store has never been rebuilt from history — run `!achievements rebuild dry`, then `!achievements rebuild`.');
+    }
     if (SUPPRESSED_FROM_PROMPT.length) {
         // Never let content vanish from the prompt invisibly — say how much and
         // why, every boot.

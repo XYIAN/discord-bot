@@ -93,6 +93,15 @@ write it.
   channel is what made welcome messages inherit the daily reset's delete slot
   and get deleted. Permanence is the default; rotation is opt-in. See
   `lib/rotating-post.js`.
+- **Achievements are one engine, tracks as config.** `lib/achievements.js` is a
+  pure reducer (message / reaction / AI-question events → per-(track, member)
+  stats; every badge and tier is `stat >= threshold`); `lib/achievement-tracks.js`
+  is the config — a new demographic channel is one entry there. Thresholds are
+  calibrated on measured traffic and the arithmetic sits beside each number:
+  the ladder this replaced (100/350/750/1500, strategy channels only) had
+  0/0/0/0 holders after five months. `!achievements rebuild` replays history
+  through the same reducer, so a threshold is a number plus a rebuild, never a
+  reset. Unlocks are merged on rebuild, never removed.
 - **State that matters must be persisted** via `lib/state-store.js` (atomic
   tmp+rename under `data/`). Railway redeploys often — 32 times in one
   fortnight. Module-level variables holding message ids or clocks WILL be lost,

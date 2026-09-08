@@ -135,3 +135,27 @@ Admin and Moderator roles are denied MANAGE_CHANNELS and MANAGE_ROLES on:
 - `#community-ai-discussion` (`1424785709914521701`)
 
 To get a channel ID: Discord → User Settings → App Settings → Developer Mode ON → right‑click channel → Copy ID.
+
+## Achievements (v3.35.0)
+
+State: `data/achievements.json` (state-store, on the volume) — per-(track, member)
+stats and unlock dates; `data/ai-switch.json` — the owner's `!ai on/off` choice.
+Both gitignored; missing means empty.
+
+Tracks and thresholds live in `lib/achievement-tracks.js`; every rung is
+`stat >= threshold`, calibrated on real traffic (the arithmetic is beside each
+number). Roles the engine grants, resolved BY NAME:
+
+| Role | Track | Earned by |
+|---|---|---|
+| Arch Tactician / Veteran / Warlord / Legend | community | 50 / 150 / 2,500 / 10,000 community points (1 per message, once a minute, anywhere but bot plumbing and #guild-recruit-chat) |
+| Arch Adept | arch-ai | first answered Arch AI question |
+| Dab Corner Regular | dab-corner | 7 distinct active days in #dab-corner |
+
+Arch Scholar / Arch Sage remain the CONTRIBUTION ladder (approved suggestions,
+`lib/contributions.js`) — a different thing, shown side by side in `!rank`.
+
+`!achievements rebuild [dry]` (owner) replays channel history through the same
+reducer: stats are recomputed, unlocks are merged (never removed), roles granted,
+one admin summary, nothing announced per member. Run it after any threshold
+change. `scripts/achievements-report.js` previews the same computation locally.
