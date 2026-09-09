@@ -239,6 +239,24 @@ test('rolesOwed spans tracks: a Corner Regular and an Arch Adept both come back'
     assert.deepStrictEqual([...A.rolesOwed(s, TRACKS, 'u1')].sort(), ['Arch Adept', 'Dab Corner Regular']);
 });
 
+console.log('achievements — recalibration');
+test('recalibratePlan demotes only TIERS whose stat is now below the threshold; badges are untouched', () => {
+    const s = A.emptyState();
+    const u = A.ensureUser(s, 'community', 'u1', 'kyle');
+    u.msgs = 60;
+    u.unlocked['tier:Arch Tactician'] = 'x';          // earned at an old threshold of 50 — still meets 50
+    u.unlocked['tier:Arch Veteran'] = 'x';            // earned at an old 150 — no longer met
+    u.unlocked['regular'] = 'x';                       // a badge: never demoted
+    const plan = A.recalibratePlan(s, TRACKS);
+    assert.deepStrictEqual(plan.map((d) => d.role), ['Arch Veteran']);
+    assert.strictEqual(plan[0].have, 60);
+    A.applyRecalibration(s, plan);
+    assert.ok(!u.unlocked['tier:Arch Veteran']);
+    assert.ok(u.unlocked['tier:Arch Tactician'] && u.unlocked['regular']);
+    assert.ok(!A.rolesOwed(s, TRACKS, 'u1').has('Arch Veteran'), 'reconcile must not re-grant a demoted tier');
+    assert.deepStrictEqual(A.recalibratePlan(s, TRACKS), [], 'idempotent');
+});
+
 console.log('achievements — views');
 test('rankView shows the ladder with a progress bar and counts badges across tracks', () => {
     const s = A.emptyState();

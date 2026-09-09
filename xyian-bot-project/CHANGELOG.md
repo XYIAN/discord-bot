@@ -4,6 +4,14 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.35.1] - 2026-09-08
+
+### One feed for achievements
+
+Every badge and rank-up now posts to **#achievements** instead of the channel it happened in — one scoreboard to scroll, no badge chatter in the middle of conversations. Each post names where it happened. Rank-ups still DM you.
+
+Also: an owner tool to *recalibrate* after a tier threshold is raised — members below the new bar lose that tier and its role, badges stay. The engine never demotes on its own; this is the one deliberate exception, and it's a dry-run-first command.
+
 ## [3.35.0] - 2026-09-08
 
 ### Achievements that actually fire

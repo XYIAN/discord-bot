@@ -342,6 +342,38 @@ function rebuild(oldState, tracks, events, nowIso) {
     return state;
 }
 
+// ── recalibration ───────────────────────────────────────────────────────────
+
+/**
+ * The one deliberate exception to "unlocks are never removed": when the OWNER
+ * raises a tier threshold, members who no longer meet it lose that TIER (and
+ * its role). Badges are never touched — they were earned at the threshold of
+ * their day. Returns the demotions without applying them.
+ */
+function recalibratePlan(state, tracks) {
+    const plan = [];
+    for (const [trackId, track] of Object.entries(tracks || {})) {
+        const users = (state.tracks[trackId] && state.tracks[trackId].users) || {};
+        const tiers = resolveTrack(trackId, track).filter((a) => a.tier);
+        for (const [userId, user] of Object.entries(users)) {
+            for (const t of tiers) {
+                if (user.unlocked[t.key] && (user[t.stat] || 0) < t.threshold) {
+                    plan.push({ trackId, userId, username: user.username, key: t.key, role: t.role, have: user[t.stat] || 0, need: t.threshold });
+                }
+            }
+        }
+    }
+    return plan;
+}
+
+function applyRecalibration(state, plan) {
+    for (const d of plan) {
+        const user = state.tracks[d.trackId] && state.tracks[d.trackId].users[d.userId];
+        if (user) delete user.unlocked[d.key];
+    }
+    return state;
+}
+
 // ── roles ───────────────────────────────────────────────────────────────────
 
 /** Every role name a member has earned across all tracks. */
@@ -481,7 +513,7 @@ module.exports = {
     emptyState, emptyUser, ensureUser,
     channelKey, prevDayKey, tracksForChannel, eligibleMessage, resolveTrack,
     applyMessage, applyAiQuestion, applyReaction, rebuild,
-    rolesOwed, reconcilePlan,
+    rolesOwed, reconcilePlan, recalibratePlan, applyRecalibration,
     tierStatus, rankView, leaderboard, achievementsView, progressText,
     validateTracks,
 };

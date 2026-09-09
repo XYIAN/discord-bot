@@ -155,6 +155,7 @@ const CONFIG = {
         debugLogs: '1424329611969433703',
         aiData: '1424530610059350086',
         betaTesting: '1429497007814479903',
+        achievements: '1547116531161497600',   // the feed every badge / rank-up post goes to
     },
     ignoreChannelNames: ['guild-recruit-chat', 'xyian-guild', 'guild-chat', 'recruit', 'guild-recruit'],
     generalChatNames: ['general', 'general-chat', 'main-chat', 'arch-2-addicts'],
@@ -674,6 +675,11 @@ async function announceUnlocks(channel, guild, unlocked) {
     // Until the first rebuild, every returning member's first message would post a
     // public "First Words" embed. Record silently; the rebuild's reconcile grants roles.
     if (!achievementState.rebuiltAt) return;
+    // One feed for every unlock (#achievements); the originating channel is named in
+    // the embed so the context is not lost. Falls back to that channel if the feed is gone.
+    const feed = CONFIG.channels.achievements ? await client.channels.fetch(CONFIG.channels.achievements).catch(() => null) : null;
+    const target = feed || channel;
+    const origin = feed && channel && channel.id !== feed.id ? `\n-# in <#${channel.id}>` : '';
     const byUser = new Map();
     for (const u of unlocked) {
         if (!byUser.has(u.userId)) byUser.set(u.userId, { username: u.username, items: [] });
@@ -702,11 +708,11 @@ async function announceUnlocks(channel, guild, unlocked) {
         for (const it of badges) lines.push(`${it.achievement.emoji} **${it.achievement.name}** — ${it.achievement.description}${it.achievement.role ? ` · role **${it.achievement.role}**` : ''}`);
         const embed = new EmbedBuilder()
             .setTitle(tiers.length ? '🏆 Rank up!' : '🏆 Achievement unlocked')
-            .setDescription(`<@${userId}>\n${lines.join('\n')}`)
+            .setDescription(`<@${userId}>\n${lines.join('\n')}${origin}`)
             .setColor(tiers.length ? 0xffd700 : 0x5865f2)
             .setFooter({ text: '!rank · !achievements · !leaderboard' });
-        try { await channel.send({ embeds: [embed] }); }
-        catch (e) { console.error(`❌ Achievement announce failed in #${channel.name || channel.id}: ${e.message}`); }
+        try { await target.send({ embeds: [embed] }); }
+        catch (e) { console.error(`❌ Achievement announce failed in #${target.name || target.id}: ${e.message}`); }
         if (tiers.length) {
             const last = tiers[tiers.length - 1];
             const t = last.achievement;
@@ -2286,7 +2292,8 @@ client.on('messageCreate', async (message) => {
                         '**Owner only:**\n' +
                         '`!ai status` / `!ai on` / `!ai off` — Master kill switch for the OpenAI Q&A in #arch-ai\n' +
                         '`!post-changelog [x.y.z]` — Manually post a CHANGELOG entry to #changelog (omit version for current)\n' +
-                        '`!achievements rebuild [dry]` — Recompute every badge and rank from channel history'
+                        '`!achievements rebuild [dry]` — Recompute every badge and rank from channel history\n' +
+                        '`!achievements recalibrate [dry]` — After raising a tier threshold: demote members below it'
                     )
                     .setColor(0x9b59b6).setTimestamp().setFooter({ text: 'XYIAN Bot' });
                 return message.reply({ embeds: [embed] });
@@ -2385,6 +2392,31 @@ client.on('messageCreate', async (message) => {
             case 'achievements':
             case 'badges': {
                 const sub = argText.trim().toLowerCase();
+                if (sub.startsWith('recalibrate')) {
+                    // Owner-only, deliberate: after RAISING a tier threshold, members below
+                    // the new bar lose that tier and its role. Badges are never touched.
+                    if (!isOwner(message.author)) return message.reply(ownerDenialMessage());
+                    const dryRun = /dry/.test(sub);
+                    const plan = achievements.recalibratePlan(achievementState, TRACKS);
+                    if (!plan.length) return message.reply('✅ Everyone holding a tier still meets its threshold — nothing to recalibrate.');
+                    const removed = [];
+                    if (!dryRun) {
+                        for (const d of plan) {
+                            const member = await message.guild.members.fetch(d.userId).catch(() => null);
+                            const role = message.guild.roles.cache.find((r) => r.name === d.role);
+                            if (member && role && member.roles.cache.has(role.id)) {
+                                try { await member.roles.remove(role); removed.push(d); }
+                                catch (e) { console.error(`❌ recalibrate: could not remove ${d.role} from ${d.username}: ${e.message}`); }
+                            }
+                        }
+                        achievements.applyRecalibration(achievementState, plan);
+                        saveAchievements();
+                    }
+                    const lines = plan.map((d) => `• **${d.username}** — ${d.role} (${d.have}/${d.need})`);
+                    const text = clip(`🔧 **Tier recalibration${dryRun ? ' — DRY RUN' : ''}** — ${plan.length} demotion(s)${dryRun ? '' : `, ${removed.length} role(s) removed`}\n${lines.join('\n')}`);
+                    await sendToAdmin({ content: text });
+                    return message.reply(text);
+                }
                 if (sub.startsWith('rebuild')) {
                     if (!isOwner(message.author)) return message.reply(ownerDenialMessage());
                     const dryRun = /dry/.test(sub);
