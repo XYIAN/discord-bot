@@ -4,6 +4,20 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.36.0] - 2026-09-14
+
+### Verifying members is now one word, and every role grant is on the record
+
+**`!newxy @user` and `!newpxy @user`** — the verification command, spelled the way leaders think. `!verify @user xy|pxy` still works, an exact username works when the @ popup won't cooperate, and the usage message now tells you what went wrong instead of silently doing nothing. Anyone with XYIAN OFFICIAL, ProjectXY Official, Moderator or Admin can run them.
+
+**Verification requests reach the people who can act.** When a new member reacts ⚔️ on their welcome DM, the request now posts to #leadership-roundtable — with the exact command to run — not only to #debug-logs.
+
+**Proper audit logs.** Every role handed out by a command (`!verify`, `!newxy`, `!newpxy`, `!grant`, `!invite-ai`, `!role add`) logs who granted what to whom, via which command, in which channel. Every failure is logged too, with a clear reply: someone trying a command they can't use, a member who already has the role, a role that doesn't exist or sits above the bot, or Discord refusing the change.
+
+**Leadership badges.** Bringing people in earns its own track: **Door Opener** (1) → **Recruiter** (5) → **Roundtable Steward** (25) → **Roundtable Marshal** (100). Counts from today.
+
+**The Arch ladder doubled:** Tactician **100**, Veteran **300**, Warlord **5,000**, Legend **20,000**. Six members drop a rung with the recalibration that follows this release; everything they earned stays earned.
+
 ## [3.35.1] - 2026-09-08
 
 ### One feed for achievements

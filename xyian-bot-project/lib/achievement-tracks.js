@@ -23,18 +23,19 @@
 function buildTracks(ch) {
     return {
         // Every channel except the bot's own plumbing and the recruit channel.
-        // Full-history replay (16k messages, 2026-09-08): Tactician 18, Veteran 13.
-        // Kyle: keep the low rungs, make everything past silver hard. Top poster
-        // is 1,852 over ~12 months (~155/month): Warlord 2,500 ≈ 4 months away for
-        // one person, Legend 10,000 ≈ 4-5 years for that person — meant to last.
+        // Full-history replay (16k messages, 2026-09-08) at 50/150: Tactician 18,
+        // Veteran 13. Kyle then doubled the ladder (2026-09-14): at 100/300 it is
+        // 15 / 10, six members drop a rung (handled by !achievements recalibrate).
+        // Top poster is 1,852 over ~12 months (~155/month): Warlord 5,000 ≈ 20
+        // months away for one person, Legend 20,000 ≈ a decade — meant to last.
         community: {
             name: 'Community', emoji: '🏘️',
             channels: { exclude: ch.communityExclude },
             tiers: [
-                { role: 'Arch Tactician', threshold: 50,   emoji: '⚔️' },
-                { role: 'Arch Veteran',   threshold: 150,  emoji: '🛡️' },
-                { role: 'Arch Warlord',   threshold: 2500, emoji: '👑' },
-                { role: 'Arch Legend',    threshold: 10000, emoji: '🌟' },  // gates vision access — stays scarce
+                { role: 'Arch Tactician', threshold: 100,  emoji: '⚔️' },
+                { role: 'Arch Veteran',   threshold: 300,  emoji: '🛡️' },
+                { role: 'Arch Warlord',   threshold: 5000, emoji: '👑' },
+                { role: 'Arch Legend',    threshold: 20000, emoji: '🌟' },  // gates vision access — stays scarce
             ],
             achievements: [
                 'first-words', 'warming-up',
@@ -102,6 +103,20 @@ function buildTracks(ch) {
             channels: { include: [ch.archAi] },
             stats: ['aiQuestions'],
             achievements: [{ id: 'first-question', role: 'Arch Adept' }],
+            leaderboard: false,
+        },
+
+        // Kyle: "achievements for granting roles… start easy and get harder…
+        // leadership roundtable style theme". Fed by the audited role-grant
+        // path (verify / newxy / newpxy / grant / invite-ai / role add), from
+        // whatever channel the command ran in. Nothing to replay — counts from
+        // v3.36.0 onward.
+        leadership: {
+            name: 'Leadership', emoji: '🛡️',
+            channels: { include: [] },            // never matches a message — fed only by applyRoleGrant
+
+            stats: ['roleGrants'],
+            achievements: ['door-opener', 'recruiter', 'roundtable-steward', 'roundtable-marshal'],
             leaderboard: false,
         },
     };

@@ -148,12 +148,25 @@ number). Roles the engine grants, resolved BY NAME:
 
 | Role | Track | Earned by |
 |---|---|---|
-| Arch Tactician / Veteran / Warlord / Legend | community | 50 / 150 / 2,500 / 10,000 community points (1 per message, once a minute, anywhere but bot plumbing and #guild-recruit-chat) |
+| Arch Tactician / Veteran / Warlord / Legend | community | 100 / 300 / 5,000 / 20,000 community points (1 per message, once a minute, anywhere but bot plumbing and #guild-recruit-chat) |
 | Arch Adept | arch-ai | first answered Arch AI question |
 | Dab Corner Regular | dab-corner | 7 distinct active days in #dab-corner |
 
 Arch Scholar / Arch Sage remain the CONTRIBUTION ladder (approved suggestions,
 `lib/contributions.js`) — a different thing, shown side by side in `!rank`.
+
+**Leadership track** (v3.36.0): every member a leader verifies or grants access to
+(`!verify` / `!newxy` / `!newpxy` / `!grant` / `!invite-ai` / `!role add`) counts
+toward Door Opener (1) → Recruiter (5) → Roundtable Steward (25) → Roundtable
+Marshal (100). Not channel-based; nothing to replay — counts from launch.
+
+**Role-grant audit** (v3.36.0): all of those commands go through
+`grantRoleAudited()` in bot.js, so #debug-logs carries a uniform line per grant
+(role → member, by whom, via which command, in which channel) and a line per
+failure: permission denied (who tried what), role missing, already held, role
+above the bot, or Discord refusing the change. Verification requests (⚔️ on the
+welcome DM) now post to #leadership-roundtable as well as #debug-logs, with the
+exact `!newxy` / `!newpxy` command to run.
 
 `!achievements rebuild [dry]` (owner) replays channel history through the same
 reducer: stats are recomputed, unlocks are merged (never removed), roles granted,

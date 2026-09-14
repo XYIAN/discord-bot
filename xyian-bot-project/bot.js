@@ -156,6 +156,7 @@ const CONFIG = {
         aiData: '1424530610059350086',
         betaTesting: '1429497007814479903',
         achievements: '1547116531161497600',   // the feed every badge / rank-up post goes to
+        leadership: '1498069222801277038',     // #leadership-roundtable — officials read this, not #debug-logs
     },
     ignoreChannelNames: ['guild-recruit-chat', 'xyian-guild', 'guild-chat', 'recruit', 'guild-recruit'],
     generalChatNames: ['general', 'general-chat', 'main-chat', 'arch-2-addicts'],
@@ -748,6 +749,12 @@ async function recordAiQuestion(message) {
     await announceUnlocks(message.channel, message.guild, unlocked);
 }
 
+async function recordRoleGrant(message) {
+    const { unlocked, changed } = achievements.applyRoleGrant(achievementState, TRACKS, { userId: message.author.id, username: message.author.username, ts: Date.now() });
+    if (changed) saveAchievements();
+    await announceUnlocks(message.channel, message.guild, unlocked);
+}
+
 async function recordReactionActivity(reaction, user) {
     if (reaction.partial) await reaction.fetch();
     const m = reaction.message;
@@ -929,6 +936,96 @@ function isAdmin(member) {
 function isModerator(member) {
     if (!member || !member.roles) return false;
     return isAdmin(member) || member.roles.cache.some(r => r.name === 'Moderator');
+}
+
+const MOD_ROLES_TEXT = '**Moderator**, **XYIAN OFFICIAL**, **ProjectXY Official** or **Admin**';
+
+/**
+ * A member tried a command they cannot run. Reply with WHO can, and log it —
+ * Kyle: "if someone tried it who doesn't have the right rank … it should be logged".
+ */
+async function denyAndLog(message, cmd, needed) {
+    await sendToAdmin({ content: `🚫 **Denied** \`!${cmd}\` — ${message.author.username} (${message.author.id}) in <#${message.channel.id}> — needs ${needed}` });
+    return message.reply(`❌ \`!${cmd}\` needs ${needed}. This attempt was logged.`);
+}
+
+/**
+ * Every role handed out by a member command goes through here, so the audit
+ * trail in #debug-logs is uniform — who granted what to whom, via which command —
+ * and every failure mode replies clearly AND is logged: role missing, already
+ * held, above the bot in the hierarchy, or Discord refusing the add.
+ *
+ * Returns true on a real grant, false otherwise (callers decide the DM/reply).
+ */
+const LEADERSHIP_COUNTS = new Set(['verify', 'newxy', 'newpxy', 'grant', 'invite-ai']);
+
+async function grantRoleAudited({ message, target, roleName, via, reason }) {
+    const actor = `${message.author.username} (${message.author.id})`;
+    const who = `${target.user.username} (${target.id})`;
+    const role = message.guild.roles.cache.find((r) => r.name === roleName);
+    if (!role) {
+        await sendToAdmin({ content: `⚠️ **Grant failed** \`!${via}\` — role **${roleName}** does not exist — ${actor} → ${who}` });
+        await message.reply(`❌ The role **${roleName}** doesn't exist in this server — an admin needs to create it. Logged.`);
+        return false;
+    }
+    if (target.roles.cache.has(role.id)) {
+        await sendToAdmin({ content: `ℹ️ **Already held** \`!${via}\` — ${who} already has **${roleName}** — attempted by ${actor}` });
+        await message.reply(`ℹ️ **${target.user.username}** already has **${roleName}** — nothing to do.`);
+        return false;
+    }
+    const botTop = message.guild.members.me ? message.guild.members.me.roles.highest.position : 0;
+    if (role.position >= botTop) {
+        await sendToAdmin({ content: `⚠️ **Grant failed** \`!${via}\` — **${roleName}** sits above the bot's role — ${actor} → ${who}` });
+        await message.reply(`❌ **${roleName}** sits above my role in the server settings, so I can't assign it. Logged for an admin.`);
+        return false;
+    }
+    try {
+        await target.roles.add(role, `${reason || via} by ${message.author.tag}`);
+    } catch (e) {
+        console.error(`❌ grantRoleAudited: ${roleName} → ${who} by ${actor}: ${e.message}`);
+        await sendToAdmin({ content: `❌ **Grant failed** \`!${via}\` — **${roleName}** → ${who} by ${actor}: ${e.message}` });
+        await message.reply(`❌ Discord refused the role change: ${e.message}. Logged.`);
+        return false;
+    }
+    await sendToAdmin({ content: `🛡️ **Role granted** — **${roleName}** → ${who}\nBy: ${actor} · via \`!${via}\` in <#${message.channel.id}>` });
+    // Leadership achievements: bringing OTHER people in is what the roundtable is for —
+    // verification and access grants only, never a role you gave yourself.
+    if (LEADERSHIP_COUNTS.has(via) && target.id !== message.author.id) {
+        try { await recordRoleGrant(message); } catch (e) { console.error(`❌ Achievement role-grant hook: ${e.message}`); }
+    }
+    return true;
+}
+
+/**
+ * Who is the command about? The first <@mention> typed in the text wins (not a
+ * reply-ping, not whichever mention discord.js lists first). Failing that, an
+ * EXACT username; failing that, an EXACT display name — never a prefix match,
+ * because a prefix can hand a guild role to a stranger, and never when two
+ * members match, because nicknames are self-set and impersonation is free.
+ * Returns { member } or { error } so the caller can explain the miss.
+ */
+async function resolveMemberArg(message, text) {
+    const raw = String(text || '');
+    const idMatch = /<@!?(\d+)>/.exec(raw);
+    if (idMatch) {
+        const m = message.mentions.members && message.mentions.members.get(idMatch[1]);
+        if (m) return { member: m };
+        const fetched = await message.guild.members.fetch(idMatch[1]).catch(() => null);
+        return fetched ? { member: fetched } : { error: 'That mention is not a member of this server.' };
+    }
+    // Skip anything that reads as a guild word (single source: lib/guild-verify.js), take the first remaining word.
+    const words = raw.trim().split(/\s+/).filter(Boolean).map((w) => w.replace(/^@/, ''));
+    const name = words.find((w) => !guildVerify.resolveGuildArg(w));
+    if (!name) return { error: null };
+    const lower = name.toLowerCase();
+    const hits = await message.guild.members.search({ query: name, limit: 25 }).catch(() => null);
+    if (!hits || !hits.size) return { error: `No member named **${name}** — @mention them so it turns blue.` };
+    const byUsername = hits.filter((m) => m.user.username.toLowerCase() === lower);
+    const byDisplay = byUsername.size ? byUsername : hits.filter((m) => (m.displayName || '').toLowerCase() === lower);
+    if (byDisplay.size === 1) return { member: byDisplay.first() };
+    if (byDisplay.size > 1) return { error: `**${name}** matches more than one member — @mention the right one.` };
+    const near = hits.first();
+    return { error: `No exact match for **${name}**${near ? ` (did you mean **${near.user.username}**?)` : ''} — @mention them so it turns blue.` };
 }
 
 function hasVerifiedRole(member) {
@@ -1378,6 +1475,10 @@ function installConsoleForwarding() {
 }
 
 async function sendToAdmin(content) {
+    // A bare string used to be object-spread into an empty webhook payload and
+    // swallowed — every logModAction() line (timeout, kick, ban, role remove)
+    // silently never reached #debug-logs. Normalise here so no caller can repeat it.
+    if (typeof content === 'string') content = { content };
     // Record for dedup, but never let it block the actual alert.
     try { logForwarder.noteExplicitAlert(content); } catch { /* best effort */ }
     return sendViaWebhook(webhooks.admin, null, null, content);
@@ -2009,11 +2110,16 @@ client.on('messageReactionAdd', async (reaction, user) => {
         welcomeDmMessages.delete(reaction.message.id);
         saveWelcomeDmMessages();
         try {
-            await sendToAdmin({
-                content: `⚔️ **Guild verification request**\n` +
-                    `User: **${info.username}** (<@${info.userId}>)\n` +
-                    `They reacted to their welcome DM — check which guild they're in (XYIAN OFFICIAL \`213797\` or ProjectXY \`214890\`) and run ${guildVerify.usageLine()}. Add \`!grant @user\` too if they still need AI access.`,
-            });
+            const request = `⚔️ **Guild verification request**\n` +
+                `User: **${info.username}** (<@${info.userId}>)\n` +
+                `They reacted to their welcome DM — check which guild they're in (XYIAN OFFICIAL \`213797\` or ProjectXY \`214890\`) and run \`!newxy @${info.username}\` or \`!newpxy @${info.username}\`. Add \`!grant @${info.username}\` too if they still need AI access.`;
+            await sendToAdmin({ content: request });
+            // Officials read #leadership-roundtable, not #debug-logs — post it where it can be acted on.
+            if (CONFIG.channels.leadership) {
+                const lead = await client.channels.fetch(CONFIG.channels.leadership).catch((e) => { console.error(`❌ Could not fetch leadership channel ${CONFIG.channels.leadership}: ${e.message}`); return null; });
+                if (!lead) console.error(`❌ Verification request for ${info.username} reached #debug-logs only — leadership channel unavailable`);
+                else await lead.send({ content: request }).catch((e) => console.error(`❌ Could not post verification request to leadership: ${e.message}`));
+            }
             await user.send('⚔️ Your guild verification request has been sent! An admin will review it shortly.');
         } catch (e) {
             console.error('❌ Guild verify request error:', e.message);
@@ -2255,7 +2361,8 @@ client.on('messageCreate', async (message) => {
                         '`!rank` / `!level` — Your community rank, contribution tier, badges and perks\n' +
                         '`!leaderboard` / `!lb` — Top 10 by community points (`!lb cross` for #cross-server)\n' +
                         '`!achievements` / `!badges` — Every badge, unlocked and locked, with progress\n' +
-                        '`!cheer @user` · `!spotlight @user` · `!invite-ai @user` — Perks you unlock by earning badges\n\n' +
+                        '`!cheer @user` · `!spotlight @user` · `!invite-ai @user` — Perks you unlock by earning badges\n' +
+                        '🛡️ Leaders: every member you verify or grant access to counts toward Leadership badges (Door Opener → Recruiter → Roundtable Steward → Marshal)\n\n' +
                         '**🤖 AI Enabled** (in **#arch-ai**):\n' +
                         'Just type your Archero 2 question — no command needed!\n' +
                         '📸 *Screenshot Q&A:* limited to **XYIAN OFFICIAL · Admin · Moderator · Arch Legend** (cooldown applies). Everyone else, ask in text.\n' +
@@ -2274,7 +2381,7 @@ client.on('messageCreate', async (message) => {
                         '`!edit <#> <text>` — Fix typos / clean OCR errors before approval\n' +
                         '`!approve <#> [category] [key] [| override]` — Approve into the right knowledge category\n' +
                         '`!reject <#> [reason]` — Reject a suggestion\n' +
-                        '`!grant @user` — Manually assign a role\n' +
+                        '`!grant @user` — Give AI access (the AI Enabled role)\n' +
                         '`!reconcile [dry]` — Re-apply earned contributor roles from the ledger\n' +
                         '`!role @user add|remove <role>` — Add or remove a role\n' +
                         '`!timeout @user <30m|2h|7d> [reason]` — Temporarily mute a member\n' +
@@ -2286,7 +2393,7 @@ client.on('messageCreate', async (message) => {
                         '`!unban <user id> [reason]` — Lift a ban\n' +
                         '`!setupreaction` — Post a reaction-role message\n' +
                         '`!recruit` — Send guild recruitment now\n' +
-                        '`!verify @user xyian|projectxy` — Verify a guild member (assigns the Guild Verified role)\n' +
+                        '`!verify @user xy|pxy` · `!newxy @user` · `!newpxy @user` — Verify a guild member (Guild Verified role); officials of either guild can run it\n' +
                         '`!post-guild-requirements` — Post guild requirements embed\n' +
                         '`!reset` — Send daily reset now\n\n' +
                         '**Owner only:**\n' +
@@ -2395,7 +2502,7 @@ client.on('messageCreate', async (message) => {
                 if (sub.startsWith('recalibrate')) {
                     // Owner-only, deliberate: after RAISING a tier threshold, members below
                     // the new bar lose that tier and its role. Badges are never touched.
-                    if (!isOwner(message.author)) return message.reply(ownerDenialMessage());
+                    if (!isOwner(message.author)) { await sendToAdmin({ content: `🚫 **Denied** \`!achievements recalibrate\` — ${message.author.username} (${message.author.id})` }); return message.reply(ownerDenialMessage()); }
                     const dryRun = /dry/.test(sub);
                     const plan = achievements.recalibratePlan(achievementState, TRACKS);
                     if (!plan.length) return message.reply('✅ Everyone holding a tier still meets its threshold — nothing to recalibrate.');
@@ -2418,7 +2525,7 @@ client.on('messageCreate', async (message) => {
                     return message.reply(text);
                 }
                 if (sub.startsWith('rebuild')) {
-                    if (!isOwner(message.author)) return message.reply(ownerDenialMessage());
+                    if (!isOwner(message.author)) { await sendToAdmin({ content: `🚫 **Denied** \`!achievements rebuild\` — ${message.author.username} (${message.author.id})` }); return message.reply(ownerDenialMessage()); }
                     const dryRun = /dry/.test(sub);
                     await message.reply(`🏆 Rebuilding achievements from channel history${dryRun ? ' (dry run)' : ''} — this scans every tracked channel and takes a few minutes. Summary lands in <#${CONFIG.channels.debugLogs}>.`);
                     rebuildAchievements(message.guild, { dryRun })
@@ -2479,7 +2586,9 @@ client.on('messageCreate', async (message) => {
             }
             case 'invite-ai': {
                 if (!achievementTracks.perkAllowed(achievementState, message.author.id, 'invite-ai')) {
-                    return message.reply('🔒 `!invite-ai` unlocks at **Arch Veteran** (150 community points). Check `!rank`.');
+                    await sendToAdmin({ content: `🚫 **Denied** \`!invite-ai\` — ${message.author.username} (${message.author.id}) has not unlocked the perk (Arch Veteran)` });
+                    const vet = TRACKS.community.tiers.find((t) => t.role === 'Arch Veteran');
+                    return message.reply(`🔒 \`!invite-ai\` unlocks at **Arch Veteran** (${vet ? vet.threshold : '?'} community points). Check \`!rank\`. This attempt was logged.`);
                 }
                 const target = message.mentions.members && message.mentions.members.first();
                 if (!target || target.id === message.author.id) return message.reply('Usage: `!invite-ai @user` — grant someone else AI access.');
@@ -2488,17 +2597,10 @@ client.on('messageCreate', async (message) => {
                 const use = achievementState.perkUse[message.author.id] || {};
                 if (use['invite-ai'] === today) return message.reply('⏳ One `!invite-ai` per day — yours is used. Tomorrow!');
                 const role = message.guild.roles.cache.find((r) => r.name === CONFIG.reactionRole.roleName);
-                if (!role) return message.reply('❌ The AI Enabled role is missing — tell an admin.');
-                if (target.roles.cache.has(role.id)) return message.reply(`${target.user.username} already has AI access.`);
-                try {
-                    await target.roles.add(role);
-                } catch (e) {
-                    console.error(`❌ invite-ai grant failed: ${e.message}`);
-                    return message.reply(`❌ Could not grant the role: ${e.message}`);
-                }
+                const ok = await grantRoleAudited({ message, target, roleName: CONFIG.reactionRole.roleName, via: 'invite-ai', reason: 'AI access (perk)' });
+                if (!ok) return;
                 achievementState.perkUse[message.author.id] = { ...use, 'invite-ai': today };
                 saveAchievements();
-                await sendToAdmin({ content: `🤖 **AI access granted via !invite-ai** — ${message.author.username} (${message.author.id}) → ${target.user.username} (${target.id})` });
                 try { await target.user.send(`🤖 **${message.author.username} invited you to Arch AI!** You now have the **${role.name}** role — head to <#${CONFIG.channels.archAi}> and ask any Archero 2 question.`); } catch { /* DMs disabled */ }
                 return message.reply(`🤖 Done — <@${target.id}> now has **${role.name}**. Nice one.`);
             }
@@ -2684,7 +2786,10 @@ client.on('messageCreate', async (message) => {
                 const resolved = await resolveModTarget(message, argText);
                 if (!resolved) return;
                 const denied = modGuard(message, 'role', resolved.target);
-                if (denied) return message.reply(denied);
+                if (denied) {
+                    await sendToAdmin({ content: `🚫 **Denied** \`!role\` — ${message.author.username} (${message.author.id}) → ${resolved.target.user.username}: ${denied.replace(/[*_`]/g, '')}` });
+                    return message.reply(denied);
+                }
 
                 const m = /^(add|remove)\s+([\s\S]+)$/i.exec(resolved.reason);
                 if (!m) return message.reply('❌ Usage: `!role @user add <role name>` or `!role @user remove <role name>`');
@@ -2693,20 +2798,26 @@ client.on('messageCreate', async (message) => {
                 const role = message.guild.roles.cache.find(r => r.name.toLowerCase() === roleName.toLowerCase());
                 if (!role) return message.reply(`❌ No role called "${roleName}".`);
 
-                // A role at or above the bot cannot be assigned — same Discord rule.
-                const botTop = message.guild.members.me ? message.guild.members.me.roles.highest.position : 0;
-                if (role.position >= botTop) {
-                    return message.reply(`❌ **${role.name}** sits above the bot in the role list, so I can't assign it. Move my role higher.`);
+                if (adding) {
+                    const ok = await grantRoleAudited({ message, target: resolved.target, roleName: role.name, via: 'role add', reason: 'manual role add' });
+                    if (!ok) return;
+                    return message.reply(`✅ Added **${role.name}** to ${resolved.target.user.tag}.`);
                 }
-                const auditReason = `by ${message.author.tag}`;
-                if (adding) await resolved.target.roles.add(role, auditReason);
-                else await resolved.target.roles.remove(role, auditReason);
+                if (!resolved.target.roles.cache.has(role.id)) {
+                    await sendToAdmin({ content: `ℹ️ **Not held** \`!role remove\` — ${resolved.target.user.username} (${resolved.target.id}) does not have **${role.name}** — attempted by ${message.author.username} (${message.author.id})` });
+                    return message.reply(`ℹ️ **${resolved.target.user.username}** doesn't have **${role.name}** — nothing to remove.`);
+                }
+                try { await resolved.target.roles.remove(role, `by ${message.author.tag}`); }
+                catch (e) {
+                    await sendToAdmin({ content: `❌ **Remove failed** \`!role remove\` — **${role.name}** from ${resolved.target.user.username} by ${message.author.username}: ${e.message}` });
+                    return message.reply(`❌ Discord refused the role change: ${e.message}. Logged.`);
+                }
                 await logModAction({
-                    action: adding ? 'Role added' : 'Role removed',
+                    action: 'Role removed',
                     actor: `<@${message.author.id}>`, target: `<@${resolved.target.id}>`,
                     detail: role.name, reason: 'No reason given',
                 });
-                return message.reply(`✅ ${adding ? 'Added' : 'Removed'} **${role.name}** ${adding ? 'to' : 'from'} ${resolved.target.user.tag}.`);
+                return message.reply(`✅ Removed **${role.name}** from ${resolved.target.user.tag}.`);
             }
 
             case 'timeout': {
@@ -2908,9 +3019,7 @@ client.on('messageCreate', async (message) => {
             }
 
             case 'syncreport': {
-                if (!isModerator(message.member)) {
-                    return message.reply('❌ This command requires the **Moderator**, **XYIAN OFFICIAL**, or **Admin** role.');
-                }
+                if (!isModerator(message.member)) return denyAndLog(message, cmd, MOD_ROLES_TEXT);
                 // The weekly knowledge report + dated backup, on demand. Exists
                 // so a fact sync into the repo can use a backup that includes
                 // TODAY's approvals instead of waiting for Saturday's timer.
@@ -2924,9 +3033,7 @@ client.on('messageCreate', async (message) => {
             }
 
             case 'suggestions': {
-                if (!isModerator(message.member)) {
-                    return message.reply('❌ This command requires the **Moderator**, **XYIAN OFFICIAL**, or **Admin** role.');
-                }
+                if (!isModerator(message.member)) return denyAndLog(message, cmd, MOD_ROLES_TEXT);
                 const all = loadSuggestions();
                 const pending = all.filter(s => s.status === 'pending');
                 if (!pending.length) return message.reply('📭 No pending suggestions!');
@@ -2949,9 +3056,7 @@ client.on('messageCreate', async (message) => {
             }
 
             case 'edit': {
-                if (!isModerator(message.member)) {
-                    return message.reply('❌ This command requires the **Moderator**, **XYIAN OFFICIAL**, or **Admin** role.');
-                }
+                if (!isModerator(message.member)) return denyAndLog(message, cmd, MOD_ROLES_TEXT);
                 const editParts = argText.split(/\s+/);
                 const editId = parseInt(editParts[0], 10);
                 const newText = editParts.slice(1).join(' ').trim();
@@ -2977,9 +3082,7 @@ client.on('messageCreate', async (message) => {
             }
 
             case 'approve': {
-                if (!isModerator(message.member)) {
-                    return message.reply('❌ This command requires the **Moderator**, **XYIAN OFFICIAL**, or **Admin** role.');
-                }
+                if (!isModerator(message.member)) return denyAndLog(message, cmd, MOD_ROLES_TEXT);
                 const args = parseApproveArgs(argText);
                 if (!args.id || Number.isNaN(args.id)) {
                     return message.reply('Usage: `!approve <#> [category] [key] [| override text]`\nExamples:\n`!approve 5` — files into custom_facts\n`!approve 5 runes frostshard_rune` — files into knowledge.runes.frostshard_rune\n`!approve 5 weapons | Cleaned up text` — categorize + override the text in one shot');
@@ -3065,9 +3168,7 @@ client.on('messageCreate', async (message) => {
             }
 
             case 'reject': {
-                if (!isModerator(message.member)) {
-                    return message.reply('❌ This command requires the **Moderator**, **XYIAN OFFICIAL**, or **Admin** role.');
-                }
+                if (!isModerator(message.member)) return denyAndLog(message, cmd, MOD_ROLES_TEXT);
                 const rejSuggestions = loadSuggestions();
                 const parts = argText.split(/\s+/);
                 const rejectId = parseInt(parts[0], 10);
@@ -3097,26 +3198,25 @@ client.on('messageCreate', async (message) => {
                 return message.reply(`🗑️ Suggestion #${rejectId} rejected. Reason: ${reason}`);
             }
 
-            case 'verify': {
-                if (!isModerator(message.member)) {
-                    return message.reply('❌ This command requires the **Moderator**, **XYIAN OFFICIAL**, or **Admin** role.');
+            case 'verify':
+            case 'newxy':
+            case 'newpxy': {
+                if (!isModerator(message.member)) return denyAndLog(message, cmd, MOD_ROLES_TEXT);
+                // !newxy @user / !newpxy @user fix the guild; !verify @user <guild> names it.
+                // NO default guild: with two guilds a silent default would verify people into the wrong one.
+                const fixed = cmd === 'newxy' ? guildVerify.GUILDS.xyian : cmd === 'newpxy' ? guildVerify.GUILDS.projectxy : null;
+                const named = guildVerify.resolveGuildArg(argText);
+                if (fixed && named && named.key !== fixed.key) {
+                    return message.reply(`❌ \`!${cmd}\` verifies into **${fixed.label}**, but you also wrote **${named.label}**. Use \`!newxy\`, \`!newpxy\`, or \`!verify @user xy|pxy\` — no guessing with two guilds.`);
                 }
-                const target = message.mentions.members?.first();
-                const guild = guildVerify.resolveGuildArg(argText);
-                if (!target || !guild) {
-                    // NO default guild: with two guilds a silent default would
-                    // verify people into the wrong one.
-                    return message.reply(`Usage: ${guildVerify.usageLine()}`);
+                const guild = fixed || named;
+                const found = await resolveMemberArg(message, argText);
+                if (!found.member || !guild) {
+                    return message.reply(`${found.error ? found.error + '\n' : ''}Usage: ${guildVerify.usageLine()} — or \`!newxy @user\` / \`!newpxy @user\`. Pick the member from the @ popup so it turns blue; an exact username also works.`);
                 }
-                const role = message.guild.roles.cache.find(r => r.name === guild.roleName);
-                if (!role) return message.reply(`❌ Role "${guild.roleName}" not found in this server.`);
-                if (target.roles.cache.has(role.id)) {
-                    return message.reply(`${target.user.username} already has **${guild.roleName}**.`);
-                }
-                await target.roles.add(role);
-                await sendToAdmin({
-                    content: `⚔️ **Guild verified**\nUser: **${target.user.username}** (${target.id})\nGuild: **${guild.label}** (${guild.gameGuildId})\nRole: **${guild.roleName}**\nVerified by: ${message.author.username}`,
-                });
+                const target = found.member;
+                const ok = await grantRoleAudited({ message, target, roleName: guild.roleName, via: cmd, reason: `guild verification: ${guild.label}` });
+                if (!ok) return;
                 try {
                     await target.user.send(
                         `⚔️ **You're verified as a ${guild.label} guild member!**\n\n` +
@@ -3128,21 +3228,13 @@ client.on('messageCreate', async (message) => {
             }
 
             case 'grant': {
-                if (!isModerator(message.member)) {
-                    return message.reply('❌ This command requires the **Moderator**, **XYIAN OFFICIAL**, or **Admin** role.');
-                }
-                const mentioned = message.mentions.members?.first();
-                if (!mentioned) return message.reply('Usage: `!grant @user` — assigns the reaction role.');
+                if (!isModerator(message.member)) return denyAndLog(message, cmd, MOD_ROLES_TEXT);
+                const foundG = await resolveMemberArg(message, argText);
+                if (!foundG.member) return message.reply(`${foundG.error ? foundG.error + '\n' : ''}Usage: \`!grant @user\` — gives AI access (the **AI Enabled** role).`);
+                const mentioned = foundG.member;
                 const grantRoleName = CONFIG.reactionRole.roleName;
-                const grantRole = message.guild.roles.cache.find(r => r.name === grantRoleName);
-                if (!grantRole) return message.reply(`❌ Role "${grantRoleName}" not found in this server.`);
-                if (mentioned.roles.cache.has(grantRole.id)) {
-                    return message.reply(`${mentioned.user.username} already has the **${grantRoleName}** role.`);
-                }
-                await mentioned.roles.add(grantRole);
-                await sendToAdmin({
-                    content: `🤖 **Role manually granted**\nUser: **${mentioned.user.username}** (${mentioned.id})\nRole: **${grantRoleName}**\nGranted by: ${message.author.username}`,
-                });
+                const ok = await grantRoleAudited({ message, target: mentioned, roleName: grantRoleName, via: 'grant', reason: 'AI access' });
+                if (!ok) return;
                 try {
                     await mentioned.user.send(
                         `🤖 **You've been granted the ${grantRoleName} role!**\n\n` +

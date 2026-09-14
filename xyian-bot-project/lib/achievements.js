@@ -30,7 +30,7 @@ const { dayKey } = require('./schedule');
 const COOLDOWN_MS = 60_000;
 
 /** Every stat the engine knows. A track may restrict which of these it records. */
-const STATS = Object.freeze(['msgs', 'days', 'streak', 'bestStreak', 'appreciated', 'replies', 'aiQuestions', 'attachments']);
+const STATS = Object.freeze(['msgs', 'days', 'streak', 'bestStreak', 'appreciated', 'replies', 'aiQuestions', 'attachments', 'roleGrants']);
 
 const STAT_LABELS = Object.freeze({
     msgs: 'messages',
@@ -41,6 +41,7 @@ const STAT_LABELS = Object.freeze({
     replies: 'replies to others',
     aiQuestions: 'AI questions',
     attachments: 'clips & screenshots posted',
+    roleGrants: 'members verified or granted access',
 });
 
 /**
@@ -78,6 +79,12 @@ const CATALOG = Object.freeze({
     // #clips-and-highlights: the only track allowed to record attachments (see validateTracks).
     'showboat':         { name: 'Showboat',         emoji: '🎬', stat: 'attachments', threshold: 1,   description: 'Posted your first clip or screenshot' },
     'highlight-reel':   { name: 'Highlight Reel',   emoji: '🎞️', stat: 'attachments', threshold: 25,  description: '25 clips or screenshots' },
+    // Leadership (roundtable theme): earned by verifying members and granting access via the
+    // bot's commands. Starts easy, gets hard — no history to replay, so it counts from launch.
+    'door-opener':      { name: 'Door Opener',      emoji: '🚪', stat: 'roleGrants',  threshold: 1,   description: 'Verified your first member or granted their access' },
+    'recruiter':        { name: 'Recruiter',        emoji: '📜', stat: 'roleGrants',  threshold: 5,   description: '5 members verified or granted access' },
+    'roundtable-steward':{ name: 'Roundtable Steward', emoji: '🍷', stat: 'roleGrants', threshold: 25, description: '25 members brought in' },
+    'roundtable-marshal':{ name: 'Roundtable Marshal', emoji: '⚔️', stat: 'roleGrants', threshold: 100, description: '100 members brought in' },
 });
 
 // ── state ───────────────────────────────────────────────────────────────────
@@ -91,7 +98,7 @@ function emptyUser(username) {
         username: username || '',
         msgs: 0, lastMsgAt: 0,
         days: 0, lastDay: null, streak: 0, bestStreak: 0,
-        appreciated: 0, replies: 0, aiQuestions: 0, attachments: 0,
+        appreciated: 0, replies: 0, aiQuestions: 0, attachments: 0, roleGrants: 0,
         firstAt: null,
         unlocked: {},
     };
@@ -184,7 +191,10 @@ function resolveTrack(trackId, track) {
 }
 
 /** Stats a track must NAME in `stats` to record; everything else is on by default. */
-const OPT_IN_STATS = Object.freeze(['attachments', 'aiQuestions']);
+const OPT_IN_STATS = Object.freeze(['attachments', 'aiQuestions', 'roleGrants']);
+
+/** Stats that come from live commands, not from channel history — a rebuild must carry them over, not zero them. */
+const UNREPLAYABLE_STATS = Object.freeze(['roleGrants']);
 
 /**
  * Does this track record a stat? `attachments` is OPT-IN — "how much did you
@@ -285,6 +295,26 @@ function applyAiQuestion(state, tracks, evt) {
 const APPRECIATED_MEMORY = 500;
 
 /**
+ * A successful role grant by a member command (verify / newxy / grant / invite-ai / role add).
+ * Not a channel event: it lands on every track that records `roleGrants`, wherever the
+ * command was typed. evt = { userId, username, ts }.
+ */
+function applyRoleGrant(state, tracks, evt) {
+    const unlocked = [];
+    let changed = false;
+    const nowIso = new Date(evt.ts).toISOString();
+    for (const [trackId, track] of Object.entries(tracks || {})) {
+        if (!trackRecords(track, 'roleGrants')) continue;
+        const user = ensureUser(state, trackId, evt.userId, evt.username);
+        if (!user.firstAt) user.firstAt = nowIso;
+        user.roleGrants += 1;
+        changed = true;
+        for (const a of evaluate(trackId, track, user, nowIso)) unlocked.push({ trackId, userId: evt.userId, username: user.username, achievement: a });
+    }
+    return { unlocked, changed };
+}
+
+/**
  * A reaction from someone other than the author. A message counts as
  * appreciated ONCE, remembered by id — so toggling a reaction on and off
  * cannot farm it, and a peer reaction after the author's own still counts.
@@ -333,6 +363,8 @@ function rebuild(oldState, tracks, events, nowIso) {
         for (const [userId, old] of Object.entries(t.users || {})) {
             const user = ensureUser(state, trackId, userId, null);
             if (!user.username && old.username) user.username = old.username;
+            // History has no record of these; keep the live count (never lower it).
+            for (const stat of UNREPLAYABLE_STATS) if ((old[stat] || 0) > (user[stat] || 0)) user[stat] = old[stat];
             for (const [key, when] of Object.entries(old.unlocked || {})) {
                 if (!user.unlocked[key] || when < user.unlocked[key]) user.unlocked[key] = when;
             }
@@ -509,10 +541,10 @@ function validateTracks(tracks) {
 }
 
 module.exports = {
-    COOLDOWN_MS, STATS, STAT_LABELS, CATALOG, OPT_IN_STATS,
+    COOLDOWN_MS, STATS, STAT_LABELS, CATALOG, OPT_IN_STATS, UNREPLAYABLE_STATS,
     emptyState, emptyUser, ensureUser,
     channelKey, prevDayKey, tracksForChannel, eligibleMessage, resolveTrack,
-    applyMessage, applyAiQuestion, applyReaction, rebuild,
+    applyMessage, applyAiQuestion, applyRoleGrant, applyReaction, rebuild,
     rolesOwed, reconcilePlan, recalibratePlan, applyRecalibration,
     tierStatus, rankView, leaderboard, achievementsView, progressText,
     validateTracks,

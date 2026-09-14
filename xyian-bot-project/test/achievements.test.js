@@ -143,7 +143,7 @@ test('a streak survives a DST change — yesterday is the previous calendar day,
 test('tierStatus honours a tier someone EARNED before its threshold was raised', () => {
     const s = A.emptyState();
     const u = A.ensureUser(s, 'community', 'u1', 'kyle');
-    u.msgs = 60; u.unlocked['tier:Arch Warlord'] = '2026-01-01T00:00:00.000Z';   // earned under an old, lower threshold
+    u.msgs = 120; u.unlocked['tier:Arch Warlord'] = '2026-01-01T00:00:00.000Z';   // earned under an old, lower threshold
     const ladder = A.tierStatus(TRACKS.community, u);
     assert.strictEqual(ladder.current.role, 'Arch Warlord', 'rank must agree with the role they hold');
     assert.strictEqual(ladder.next.role, 'Arch Legend');
@@ -186,10 +186,10 @@ test('crossing a threshold unlocks exactly once', () => {
     assert.ok(!r2.unlocked.some((u) => u.achievement.id === 'first-words'), 'second message must not re-unlock');
     assert.strictEqual(s.tracks.community.users.u1.unlocked['first-words'], '2026-09-07T18:00:00.000Z', 'the original unlock date survives');
 });
-test('a tier is an achievement too: 50 messages → Arch Tactician, recorded under tier:<role>', () => {
+test('a tier is an achievement too: 100 messages → Arch Tactician, recorded under tier:<role>', () => {
     const s = A.emptyState();
     let promoted = null;
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 100; i++) {
         const r = A.applyMessage(s, TRACKS, msg({ ts: T('2026-09-07T00:00:00Z') + i * 61000 }));
         const t = r.unlocked.find((u) => u.achievement.tier);
         if (t) promoted = t;
@@ -239,17 +239,44 @@ test('rolesOwed spans tracks: a Corner Regular and an Arch Adept both come back'
     assert.deepStrictEqual([...A.rolesOwed(s, TRACKS, 'u1')].sort(), ['Arch Adept', 'Dab Corner Regular']);
 });
 
+console.log('achievements — leadership');
+test('a role grant counts only on the Leadership track and unlocks Door Opener at once', () => {
+    const s = A.emptyState();
+    const r = A.applyRoleGrant(s, TRACKS, { userId: 'u1', username: 'kyle', channelId: 'general', parentId: null, ts: T('2026-09-14T18:00:00Z') });
+    assert.strictEqual(s.tracks.leadership.users.u1.roleGrants, 1);
+    assert.strictEqual(s.tracks.community, undefined, 'a grant is not a message — no other track is touched');
+    assert.ok(r.unlocked.some((u) => u.achievement.id === 'door-opener'));
+    for (let i = 0; i < 4; i++) A.applyRoleGrant(s, TRACKS, { userId: 'u1', username: 'kyle', channelId: 'general', parentId: null, ts: T('2026-09-14T18:00:00Z') + i });
+    assert.ok(s.tracks.leadership.users.u1.unlocked['recruiter'], '5 grants → Recruiter');
+});
+test('a REBUILD carries leadership counts over — history has no role-grant events', () => {
+    const live = A.emptyState();
+    for (let i = 0; i < 7; i++) A.applyRoleGrant(live, TRACKS, { userId: 'u1', username: 'kyle', ts: T('2026-09-14T18:00:00Z') + i });
+    const rebuilt = A.rebuild(live, TRACKS, [{ type: 'message', ...msg({}) }], 'now');
+    assert.strictEqual(rebuilt.tracks.leadership.users.u1.roleGrants, 7, 'a rebuild must not zero what only live commands can count');
+    assert.ok(rebuilt.tracks.leadership.users.u1.unlocked['recruiter']);
+});
+test('the community ladder is pinned at the doubled thresholds (Kyle, 2026-09-14)', () => {
+    assert.deepStrictEqual(TRACKS.community.tiers.map((t) => [t.role, t.threshold]),
+        [['Arch Tactician', 100], ['Arch Veteran', 300], ['Arch Warlord', 5000], ['Arch Legend', 20000]]);
+});
+test('the leadership ladder starts at 1 and ascends', () => {
+    const thr = A.resolveTrack('leadership', TRACKS.leadership).map((a) => a.threshold);
+    assert.strictEqual(thr[0], 1);
+    for (let i = 1; i < thr.length; i++) assert.ok(thr[i] > thr[i - 1]);
+});
+
 console.log('achievements — recalibration');
 test('recalibratePlan demotes only TIERS whose stat is now below the threshold; badges are untouched', () => {
     const s = A.emptyState();
     const u = A.ensureUser(s, 'community', 'u1', 'kyle');
-    u.msgs = 60;
-    u.unlocked['tier:Arch Tactician'] = 'x';          // earned at an old threshold of 50 — still meets 50
-    u.unlocked['tier:Arch Veteran'] = 'x';            // earned at an old 150 — no longer met
+    u.msgs = 120;
+    u.unlocked['tier:Arch Tactician'] = 'x';          // meets 100
+    u.unlocked['tier:Arch Veteran'] = 'x';            // earned at an old 150 — no longer met at 300
     u.unlocked['regular'] = 'x';                       // a badge: never demoted
     const plan = A.recalibratePlan(s, TRACKS);
     assert.deepStrictEqual(plan.map((d) => d.role), ['Arch Veteran']);
-    assert.strictEqual(plan[0].have, 60);
+    assert.strictEqual(plan[0].have, 120);
     A.applyRecalibration(s, plan);
     assert.ok(!u.unlocked['tier:Arch Veteran']);
     assert.ok(u.unlocked['tier:Arch Tactician'] && u.unlocked['regular']);
@@ -266,7 +293,7 @@ test('rankView shows the ladder with a progress bar and counts badges across tra
     assert.strictEqual(community.ladder.pts, 12);
     assert.strictEqual(community.ladder.current, null);
     assert.strictEqual(community.ladder.next.role, 'Arch Tactician');
-    assert.match(community.ladder.bar, /^█{2}░{8}$/, community.ladder.bar);
+    assert.match(community.ladder.bar, /^█{1}░{9}$/, community.ladder.bar);   // 12 of 100
     assert.strictEqual(v.badges.unlocked, 2, 'First Words + Warming Up');
 });
 test('leaderboard is null for a track that forbids one', () => {

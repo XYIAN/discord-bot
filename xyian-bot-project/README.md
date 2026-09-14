@@ -53,7 +53,7 @@ Image attachments in `#arch-ai` are gated tighter than text Q&A — they're the 
 | **XYIAN OFFICIAL** | ✅ |
 | **Admin** | ✅ |
 | **Moderator** | ✅ |
-| **Arch Legend** (top community tier, 10,000 points) | ✅ |
+| **Arch Legend** (top community tier, 20,000 points) | ✅ |
 | Everyone else | ❌ — gets a redirect embed pointing at <#1424322391160393790> for text questions and <#1424785709914521701> for chat. **No OpenAI call is made.** |
 
 Cost guardrails enforced in code:
@@ -74,15 +74,15 @@ Owner can flip the master switch any time via `!ai off` (in-memory; resets on Ra
 
 AI channels (#arch-ai, #community-ai-discussion) are protected — Admin and Moderator cannot delete or modify them. Rules & Requirements channels (#guild-requirements, #community-rules, #privacy-policy) are read-only for everyone except the bot.
 
-## Activity Leveling (Strategy Channels)
+## Community Ranks (every channel, 1 point per message per minute)
 
 | Tier | Role | Points | Color |
 |------|------|--------|-------|
 | Base | **ArchAddict** | 0 (auto on join) | -- |
-| 1 | ⚔️ **Arch Tactician** | 50 | Steel blue |
-| 2 | 🛡️ **Arch Veteran** | 150 | Emerald |
-| 3 | 👑 **Arch Warlord** | 2,500 | Gold |
-| 4 | 🌟 **Arch Legend** | 10,000 | Bright cyan |
+| 1 | ⚔️ **Arch Tactician** | 100 | Steel blue |
+| 2 | 🛡️ **Arch Veteran** | 300 | Emerald |
+| 3 | 👑 **Arch Warlord** | 5,000 | Gold |
+| 4 | 🌟 **Arch Legend** | 20,000 | Bright cyan |
 
 Users earn 1 XP per message in any of the 13 Strategy channels (60-second cooldown). Tiers auto-promote with a DM and admin log. Separate from the AI suggestion tiers — users can hold both. Roles stack.
 
