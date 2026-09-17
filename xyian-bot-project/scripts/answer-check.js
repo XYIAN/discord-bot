@@ -2,7 +2,7 @@
 
 // Answer-level check: what does the bot SAY, not what does it retrieve.
 //
-//   node scripts/answer-check.js        (needs OPENAI_API_KEY; ~$0.05 a run)
+//   node scripts/answer-check.js        (needs OPENAI_API_KEY; ~$0.40 a run)
 //
 // Deliberately NOT under test/ — test/run-all.js discovers every
 // test/*.test.js, and `npm test` must stay free and offline. Run this by hand
@@ -48,8 +48,9 @@ const KB = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'knowledge.json'),
 const systemPrompt = prompts.buildTextPrompt(renderKnowledge(KB, PRODUCTION_OPTIONS));
 
 const MAX_RETRIES = 4;
-// One prompt is ~40k tokens against a 200k/min org ceiling.
-const PACING_MS = Number(process.env.ANSWER_CHECK_PACING_MS || 12000);
+// One prompt is ~55k tokens (since the Version 1.1.9 drop) against a 200k/min
+// org ceiling, so one call every 18s stays clear of it.
+const PACING_MS = Number(process.env.ANSWER_CHECK_PACING_MS || 18000);
 
 const CASES = [
     { q: 'What power do I need to join XYIAN OFFICIAL?',        say: [/8 ?m/i],            notSay: [/\b(?:4|6) ?m\+? (?:power )?(?:required|minimum|to join)/i] },
@@ -109,8 +110,30 @@ const CASES = [
     // confidently, the alias fix has swung too far into invention.
     { q: 'What are the rules of the Mega All-Star Cup?',         say: [/not documented|no.*(?:detail|data|record)|!suggest|don't (?:have|know)/i], notSay: [] },
     // New content from the official notes.
-    { q: 'What new campaign stages were added?',                 say: [/191|200/], notSay: [] },
-    { q: 'After which chapter was campaign difficulty reduced in the newest update?', say: [/130/], notSay: [] },
+    // Re-pinned for Version 1.1.9 (2026-09-17): 201-210 and "past Chapter 100" are
+    // now the newest; 191-200 / Chapter 130 are history and may be mentioned as such.
+    { q: 'What new campaign stages were added?',                 say: [/201|210/], notSay: [] },
+    { q: 'After which chapter was campaign difficulty reduced in the newest update?', say: [/\b100\b/], notSay: [] },
+    // Version 1.1.9 in-game notice (2026-09-17). The notSay shapes are the
+    // AFFIRMATIVE wrong answers — a right answer legitimately mentions the old
+    // 6-tier Arena, Supreme II, or Peak Arena while ruling them out.
+    { q: 'What are the Arena tiers now?',                        say: [/transcendant/i, /supreme ii/i, /\b(?:8|eight)\b/], notSay: [/\b(?:there are|has|arena has|into) (?:6|six) tiers\b/i] },
+    { q: 'I was in Supreme tier, where do I land after the arena rework?', say: [/supreme i\b(?!i)/i], notSay: [/you(?:'ll| will)? (?:move|be placed|land|go) (?:directly )?(?:in|into|to) \[?supreme ii\b/i] },
+    { q: 'Does the arena tier rework apply to Peak Arena?',      say: [/standard arena|main arena|does not (?:apply|affect)|doesn't (?:apply|affect)|not affect|unaffected|only/i], notSay: [/^\s*yes\b/i, /\b(?:also )?applies to peak arena\b/i] },
+    { q: 'How many free arena refreshes do I get?',              say: [/\b(?:two|2)\b/], notSay: [] },
+    { q: 'When does the fishing event start and what is the new mystling?', say: [/(?:september|sept?\.?)\s*19|19(?:th)?\s*(?:of\s*)?(?:september|sept)|0?9\/19/i, /dragon gate koi/i], notSay: [] },
+    { q: 'What skins can I get from Starfall Disc?',             say: [/moonwake shimmer/i, /silkveil harvest/i], notSay: [] },
+    { q: 'When does the next Guild Expedition season start and what is the new tier?', say: [/(?:october|oct\.?)\s*5|5(?:th)?\s*(?:of\s*)?(?:october|oct)|10\/0?5/i, /starbound eternity/i], notSay: [] },
+    { q: 'What is the new All-Star Cup season theme?',           say: [/plant build/i, /(?:october|oct\.?)\s*5|5(?:th)?\s*(?:of\s*)?(?:october|oct)|10\/0?5/i], notSay: [] },
+    { q: 'Did the Dragoon set get nerfed?',                      say: [/not (?:say|state|document|specif)|unclear|(?:doesn't|does not) (?:say|state|specify)|neither|old (?:version|and new)/i], notSay: [/^\s*yes\b.{0,40}nerf/i, /\bwas nerfed\b/i, /\b(?:is|was) (?:a )?(?:buff|nerf)\b/i] },
+    { q: 'Can I switch the Dragoon set back to the old version?', say: [/\byes\b|can (?:be )?switch|switch(?:ed)? (?:back|between|manually)/i], notSay: [/^\s*no\b/i, /\bcannot switch|can't switch|not possible to switch/i] },
+    { q: 'When is Rumble Ladder open?',                          say: [/1:00/, /10:00/, /utc/i], notSay: [/19:00|13:00|7:00-10:00/] },
+    { q: 'What happens if I score own goals in Football Rumble?', say: [/cred score/i, /\b(?:3|three)\b/], notSay: [] },
+    { q: 'Does Guild Raid start automatically now?',             say: [/24 hours|auto/i], notSay: [] },
+    { q: 'How many times can I discard skills for free each day?', say: [/\b(?:3|three)\b/], notSay: [] },
+    { q: 'What version is the game on?',                         say: [/1\.1\.9/], notSay: [/(?:is|on|running) (?:version )?1\.1\.[78]\b/i] },
+    // Negative control: named in the notice, not explained. Must decline, not invent.
+    { q: 'What is Football Rumble?',                             say: [/not documented|doesn't (?:describe|say|explain)|does not (?:describe|say|explain)|!suggest|rumble ladder/i], notSay: [] },
     { q: 'Can I unequip a whole gear preset at once?',           say: [/unequip all|one tap|clear/i], notSay: [] },
     { q: 'What is the Solitary Trial?',                          say: [/7-day|seven-day|task|season launch/i], notSay: [] },
     { q: 'What does the Guild Hall screen show?',               say: [/upgrad|new ui|2026-08-23|predates/i], notSay: [] },

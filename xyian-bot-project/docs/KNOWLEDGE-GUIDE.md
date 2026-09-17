@@ -86,6 +86,10 @@ A fragment may therefore carry a `custom_facts_repairs` array:
   a typo cannot no-op and look like success.
 - Re-running an applied repair is a clean no-op — the replacement is already
   present, so there is nothing stale to report.
+- Repairs chain. Repairing a fact that an earlier fragment already repaired
+  means `match_text` is that earlier repair's `text`; the seed manifest keeps
+  both entries and the boot pass applies them in order (X→Y, then Y→Z), so a
+  volume holding either the original or the once-repaired text ends at Z.
 
 ### How a repair reaches production — the seed manifests
 

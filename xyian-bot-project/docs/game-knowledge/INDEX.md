@@ -22,6 +22,13 @@ _Contributed 2026-08-04 by stacey-fails. Describes an earlier game update — a 
 - [events.md](events.md) — Arena (4 modes) + Challenge + Dungeon sub-tabs
 - [more_shops.md](more_shops.md) — Event Shop (Island Store / Darksurge Vault) and Skin Exchange Shop (Hero Skin / Reforger)
 
+## Update notices
+
+Verbatim transcripts of in-game Update Log notices, folded into the knowledge
+base through a fragment under `data/knowledge-fragments/`:
+
+- [updates/2026-09-17-version-1.1.9.md](updates/2026-09-17-version-1.1.9.md) — Version 1.1.9 (Starmoon Vow, 8-tier Arena rework, Guild Raid, Dragoon rebalance, chapters 201-210) → `update-2026-09-17-version-1-1-9.json`
+
 ## Pending sections
 
 - **umbral_tempest.md** — still needs fresh screenshots for the core loop,

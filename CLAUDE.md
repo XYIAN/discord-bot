@@ -127,6 +127,10 @@ write it.
   green — they checked the repo, and the repo was right. Deleting a key from
   the repo does NOT delete it from the volume. `test/seed-manifest.test.js`
   guards the manifest; a live question in `#arch-ai` is the only real proof.
+  Custom-fact repairs CHAIN: repairing an already-repaired fact adds a second
+  manifest entry that matches the first repair's text, and the boot pass
+  applies them in array order (X→Y, then Y→Z). The seed-manifest test follows
+  the chain instead of demanding every entry's text still exist in data/.
 - `findKnowledgeGaps()` derives the daily "🧙 Arch AI has a question…" post.
   It has been observed inventing gaps for topics the knowledge base fully
   documents, so the bot publicly announces ignorance it does not have.

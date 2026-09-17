@@ -4,6 +4,25 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.36.1] - 2026-09-17
+
+### Version 1.1.9 is in the knowledge base — the Arena has 8 tiers now
+
+Arch AI now knows the whole **Version 1.1.9** Update Log, transcribed from eight in-game Notice screenshots (`docs/game-knowledge/updates/2026-09-17-version-1.1.9.md`):
+
+- 🌕 **Starmoon Vow** Mid-Autumn series: Angler's Bounty Special Edition with the Fullmoon Pool zone and the new Epic Mystling **Dragon Gate Koi** (19 Sep–2 Oct), Starfall Disc with the Legendary skins **Moonwake Shimmer** (Artemis) and **Silkveil Harvest** (Demeter), a 7-Day Sign-in and Alliance Treasure rewards
+- ⚔️ **Arena rework**: 8 tiers — Bronze, Gold, Diamond, Master, Transcendant I/II, Supreme I/II — plus matchmaking ranges from 21 Sep, new points rules, a repeat-opponent filter, defense loss protection and two free list refreshes. Standard Arena only; Peak Arena untouched
+- 🏰 **Guild Expedition** season on 5 Oct with the new tier **Starbound Eternity**; Guild Raid gets difficulty recommendations, first-time auto-open and a settlement countdown
+- 🏆 All-Star Cup and Mega All-Star Cup **Plant build** season from 5 Oct, 0:00 UTC
+- 🐉 **Dragoon Set** and Meteor build rune rebalance with new affixes; the Dragoon Set can be switched between its old and new versions. Every pre-1.1.9 Dragoon and Meteor entry now says it may be out of date
+- 🗺️ Campaign chapters **201-210** (difficulty reduced past Chapter 100), Hard Mode **186-195**, Shackled Jungle stages **1701-2150**
+- 🥅 Rumble Ladder: Home screen shortcut, Charm intro, MVP screen, Football Rumble own-goal Cred Score penalties, new availability 1:00–4:59:59 and 10:00–17:59:59 UTC
+- 🧰 Cosmetic previews, an "Again" retry button, bulk conversion of collab items, Friend list sorting, 3 free skill discards a day, the Seraph boss nerf, and seven bug fixes
+
+47 existing entries were repaired rather than left to contradict the new ones: the 6-tier Arena table, the two-reduction campaign entry, the old Rumble windows, "Season 4 begins", the Rick and Morty end date, and every "in this update" that no longer had one update to point at. Where the notice names something without explaining it (Football Rumble, Starfall Disc, King Fisher Tickets, Nian Beast, Starbound Eternity…), the bot says so and points at `!suggest` instead of guessing.
+
+Also: the answer check gains 15 cases for the new content and re-pins the two that assumed 191-200 and Chapter 130 were newest.
+
 ## [3.36.0] - 2026-09-14
 
 ### Verifying members is now one word, and every role grant is on the record

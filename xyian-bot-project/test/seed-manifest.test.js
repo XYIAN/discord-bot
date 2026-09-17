@@ -51,10 +51,26 @@ test('every path in _repairs exists in the repo (a repair of nothing is a typo)'
 });
 
 test('every custom fact repair resolves to a text the repo actually holds', () => {
+    // Repairs CHAIN. When a fact repaired in August is repaired again in
+    // September, the manifest holds both entries: X→Y and Y→Z. Y is no longer
+    // in data/, and that is correct — applyCustomFactRepairs() walks the array
+    // in order, so a volume holding X becomes Y and then Z, and a volume that
+    // already holds Y becomes Z. An entry therefore resolves if its text is
+    // live OR a LATER entry matches that text and itself resolves. A superseding
+    // entry that sat EARLIER in the array would never see the text it matches,
+    // which is why the order is asserted too.
     const live = new Set((DATA.custom_facts || []).map((f) => normFactText(f.text)));
-    for (const r of SEED._custom_facts_repairs || []) {
-        assert.ok(live.has(normFactText(r.text)), `_custom_facts_repairs points at text not in data/: ${r.text.slice(0, 60)}…`);
-    }
+    const entries = SEED._custom_facts_repairs || [];
+    const resolves = (i, depth = 0) => {
+        assert.ok(depth < entries.length, 'custom fact repair chain loops');
+        const text = normFactText(entries[i].text);
+        if (live.has(text)) return true;
+        const next = entries.findIndex((e, j) => j !== i && normFactText(e.match_text) === text);
+        assert.ok(next !== -1, `_custom_facts_repairs points at text not in data/: ${entries[i].text.slice(0, 60)}…`);
+        assert.ok(next > i, `repair chain out of order: entry ${next} supersedes entry ${i} but would apply first`);
+        return resolves(next, depth + 1);
+    };
+    entries.forEach((_, i) => assert.ok(resolves(i)));
 });
 
 test('THE GUARD: every repair a fragment applied is named in seeds/_repairs', () => {
