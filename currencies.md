@@ -1,0 +1,64 @@
+# Currencies & Resources
+
+## Primary currencies (top header bar)
+
+| Currency | Icon | Notes |
+|---|---|---|
+| **Energy** | Lightning bolt | Consumed to play stages (5 energy per attempt). Regenerates over time. **Base max = 20** for new players. Privilege Cards and other buffs raise the cap (e.g., Hunting Warrior Card adds +20). |
+| **Power Level** | **Gold arrow / chevron badge** | Not spent — represents total combat power across gear/heroes/runes. Used as a progress indicator. |
+| **Gold** | Coin | Soft currency. Used for upgrades and most non-premium purchases. |
+| **Gems** | **Green gem** | In-game currency. **NOT used for buying Privilege Cards or Daily Reward packs.** Used for: gear chests (Mythstone, Chromatic, Silver, Obsidian), Wishes, certain items in the first daily shop section, and buying additional event tries during temporary events. Many Privilege Cards pay out daily in green gems. |
+
+## Premium-pack currency
+
+| Currency | Icon | Notes |
+|---|---|---|
+| **Aurocite** | **Pink triangle gem** | Real-money currency. Used to renew Privilege Cards (499 Aurocite/month) and to buy Daily Reward packs (99 / 199 / 299 / 499 Aurocite). The "+10% bonus Aurocite when purchasing from the Habby Store" banner refers to this. |
+
+### Aurocite-as-default behavior
+
+The game treats Aurocite as its default real-money currency — think of it like dollars-to-crypto. If you have enough Aurocite to cover a paid item's price, the game displays the price in Aurocite. If you don't, it falls back to your local fiat currency (USD for this player). So the same purchase can appear priced differently to different players depending on Aurocite balance.
+
+## Gear chest keys (consumable items)
+
+Each chest type uses its own key. **1 key = 1 pull**, or you can spend Gems if you're out of keys.
+
+| Key | Icon | Used for |
+|---|---|---|
+| **Gray key** | Gray | Silver Chest |
+| **Purple key** | Purple | Obsidian Chest |
+| **Purple-faded-to-blue key** | Purple→Blue gradient | Mythstone Chest AND Chromatic Chest (shared) |
+
+## Sacred Hall progression currencies
+
+| Currency | Icon | Used for |
+|---|---|---|
+| **Character Shadows** | Purple gem | Sacred Hall **Upgrade** track. Sourced from Shard Exchange (excess hero shards convert 1:1) and other progression rewards. |
+| **Abyssal Stonework** | Blue | Sacred Hall **Build** track. Source TBD. |
+
+## Rune Enchantment currencies
+
+| Currency | Icon | Used for |
+|---|---|---|
+| **Enchantium** | Green triangle with arrowhead | Standard Enchantizer pulls (1,000 Enchantium per pull). Convertible from gems at escalating rates (e.g., 21–30th purchase = 300 gems/attempt; 31–40th = 400 gems/attempt). |
+| **Advanced Enchantium** | Pink circle with arrowhead | Advanced Enchantizer pulls (1 Advanced Enchantium per pull). Drop rates ~44× better for Mythic vs standard. Earned passively at 1 per 100 standard Enchant pulls; also directly purchasable. |
+
+## Camp / Mystling currencies
+
+| Currency | Icon | Used for |
+|---|---|---|
+| **Spirit Pact Seed** | Blue plum-seed shape | Pact Sanctum upgrades (alongside gold). **Confirmed source: Magic Plant Defense Exchange Shop.** Likely also from Mystling-related events/rewards. |
+
+## Hero shards
+
+Each hero is unlocked and starred up via shards specific to that hero (no universal shards). Shards drop from Hunt, Daily Rewards (Bonus Pack), Limited Offer packs, and events. Excess shards can be converted to Character Shadows via the Sacred Hall Shard Exchange.
+
+> **Important — icon distinction:** Power Level uses a **gold arrow/chevron** badge. Aurocite uses a **pink triangle gem**. They are easy to confuse. Power lives in the main screen header; Aurocite shows up on the shop/pack/Privilege Card renewal screens.
+
+## Items found in packs / chests (need verification)
+
+- **Phynx Shards** — hero shards used to upgrade/unlock the Phynx hero. Random Phynx Shard Pack drop rates: x1 (70%), x2 (25%), x3 (3%), x4 (1.39%), x5 (0.5%), x10 (0.1%), x50 (0.01%).
+- **Chromatic Chest key** — used to open Chromatic chests
+- **Wish Coin** — currency for the Wish system (TBD)
+- **Relic Shovel** — used in Rune Ruins / digging mechanic
+- **Draw Item Choice Chest** — when opened, lets you pick from: 1× Chromatic Chest key, 1× Wish Coin, 2× Relic Shovel

@@ -1,0 +1,288 @@
+# Characters (Heroes)
+
+Accessed via the **Gear** bottom-nav tab → **Characters** sub-tab. Heroes are the playable characters; you select one as your active hero per loadout, and their kit + star bonuses determine how runs play out.
+
+## Hero rarity tiers
+
+Heroes are grouped by rarity (separate inventory tabs / pools):
+
+- **Rare**
+- **Epic**
+- **Legendary**
+
+Each rarity is its own pool with different heroes; tier doesn't directly imply power level since a fully-leveled lower-rarity hero can outperform a low-star higher-rarity hero. **Each hero is locked to one rarity** — they do not ascend tiers (Otta is always Legendary, Alex is always Rare, etc.).
+
+## Star system (max 8 stars per hero)
+
+Every hero has 8 star tiers, unlocked by collecting hero shards (the "X/150" or "X/100" counters on hero cards). Each star unlocks a different kind of reward:
+
+| Star | What unlocks |
+|---|---|
+| 0★ (just unlocked) | Hero's unique **Level 1** skill |
+| 1★ | **[All] unique buff** (global stat bonus that applies to every hero you own) |
+| 2★ | Hero's unique **Level 2** skill |
+| 3★ | **Resonance unlock** (first resonance slot) |
+| 4★ | **[All] unique buff** (global) |
+| 5★ | Hero's unique **Level 3** skill |
+| 6★ | **Resonance slot +1** (second resonance slot) |
+| 7★ | **[All] unique buff** (global) |
+| 8★ | Hero's unique **Level 4** skill (MAX — final form) |
+
+### Pattern summary
+
+- **Skill levels** unlock at stars 0/2/5/8 — four power steps per hero's signature kit.
+- **[All] buffs** unlock at stars 1/4/7 — three per hero, each adds a permanent global bonus across your account.
+- **Resonance** unlocks at 3★, with a second slot at 6★.
+
+## [All] global buffs
+
+The "[All]" prefix on a star-up bonus means it applies to **every hero you own**, not just the one being starred up. Examples observed:
+- "[All] CRIT DMG REDUC +15%"
+- "[All] CRIT Rate +4%"
+
+This makes 1★/4★/7★ on every hero permanently account-positive — even heroes you never plan to use as your active should be starred for the global buffs.
+
+## Resonance system
+
+Unlocked at 3★ (1 slot) and 6★ (2 slots). **Resonance lets your active hero "pull" the unique skill + skill level of another unlocked hero per slot.** Sacred Hall further extends this with skin-talent inheritance.
+
+### Resonance screen layout (Skill Resonance)
+
+Two rows of slots:
+
+- **Character Skills row — 2 slots total.** Slot 1 unlocks at 3★, slot 2 at 6★. Fill each with another hero's signature kit at whatever level you've unlocked it on the source hero.
+- **Skin Skills row — 4 slots total.** Slot count is fixed; slots are unlocked progressively (Sacred Hall privileges grant "+1 skin talent(s) of character in Resonance slot #N"). Once unlocked, fill with skin talents from any character.
+- **Resonance section (below the slots)** — lists the cumulative effects of everything currently equipped across both rows.
+
+So a fully built-out hero at 6★ with Sacred Hall progress can wield: their own kit + 2 borrowed hero kits + 4 borrowed skin skills, all simultaneously.
+
+### Strategic implication
+
+The Resonance system makes building **multiple heroes deep** valuable, even if you only ever play one. Levelling secondary heroes unlocks more (and stronger) skills you can resonate into your main. Same for collecting and starring up skins.
+
+---
+
+## Rare heroes catalog (6 documented)
+
+Each hero entry: **Name** — *Signature kit name* (and Lv. 1/2/3/4 abilities)
+
+### Alex — *Braveheart*
+- **Lv. 1:** Increases Red Heart drops
+- **Lv. 2:** ATK SPD +10% for 10s after a CRIT
+- **Lv. 3:** In-match EXP gain +10%
+- **Lv. 4:** Guarantees a CRIT on the next attack after taking DMG
+- **Star up [All] buffs:** Max HP +3% (1★, 4★, 7★)
+
+### Nyanja — *Cloudfooted*
+- **Lv. 1:** MOV SPD +10% and periodically releases Swift Wind to push back and damage enemies
+- **Lv. 2:** Increases Swift Wind range and doubles Swift Wind DMG
+- **Lv. 3:** Swift Wind triggers an explosion on enemy contact
+- **Lv. 4:** Significantly reduces Swift Wind cycle
+- **Star up [All] buffs:** MOV SPD +2% (1★, 4★, 7★)
+
+### Helix — *Absolute Counter*
+- **Lv. 1:** Lower HP increases ATK, up to +20%
+- **Lv. 2:** ATK SPD +20% for 5s after taking DMG
+- **Lv. 3:** ATK PWR +20% for 10s after taking DMG
+- **Lv. 4:** ATK +20% when HP is <50%
+- **Star up [All] buffs:** ATK PWR +3% (1★, 4★, 7★)
+
+### Hela — *Hadean Blessing* (support / aura)
+- **Lv. 1:** Hela increases her own and all nearby allies' ATK by 5%
+- **Lv. 2:** Hela restores 1% HP to herself and all nearby allies over time
+- **Lv. 3:** Hela increases her own and all nearby allies' CRIT Rate by 5%
+- **Lv. 4:** Hela increases her own and all nearby allies' CRIT DMG by 20%
+- **Star up [All] buffs:** Max HP +3% (1★, 4★, 7★)
+
+### Mymu — *Immortal Curse* (high-risk Overdraw)
+- **Lv. 1:** When HP reaches 0 for the first time, 60% chance to enter [Overdraw], consuming [50%–100%] of HP. −50% ATK and MOV SPD when [Overdraw] is active
+- **Lv. 2:** Defeating monsters has a small chance of removing [Overdraw]
+- **Lv. 3:** When [Overdraw] is active, −30% ATK and MOV SPD to surrounding monsters
+- **Lv. 4:** When entering [Overdraw], Overdraw HP drain range increases to [100%–150%]
+- **Star up [All] buffs:** ATK PWR +3% (1★, 4★, 7★)
+
+### Hou Yi — *Sunpiercer* (boss-stack scaling)
+- **Lv. 1:** Gain 1 [Sunpiercer] stack for each boss defeated. Each stack increases ATK SPD by 4% (max 9 stacks)
+- **Lv. 2:** Each [Sunpiercer] stack additionally increases ATK by 4%
+- **Lv. 3:** Gain 2 [Sunpiercer] stacks for each boss defeated, and 1 stack for each elite defeated
+- **Lv. 4:** Gain 2 [Sunpiercer] stacks when entering battle. Each stack additionally increases CRIT DMG by 4%
+- **Star up [All] buffs:** ATK PWR +3% (1★, 4★, 7★)
+
+### Notes on the Rare set
+
+The 7 documented heroes appear to be the complete Rare roster. Many of their signature kits also appear in Resonance (e.g., Mymu's Immortal Curse is widely used as a resonance pull).
+
+---
+
+## Epic heroes catalog (6 documented)
+
+### Seraph — *Divine Favor* (Angel/Devil interaction)
+- **Lv. 1:** 50% chance to encounter the Valkyrie at the start
+- **Lv. 2:** Chance to get another skill when Healing is selected during Angel encounter
+- **Lv. 3:** Chance that Max HP is not reduced when making Devil Pact
+- **Lv. 4:** Easier to get higher-quality skills when acquiring new skills
+- **Star up [All] buffs:** CRIT DMG REDUC +15% (1★, 4★, 7★)
+- *Currently the player's main active hero*
+
+### Dracoola — *Lifesteal* (vampire-themed sustain)
+- **Lv. 1:** Chance to absorb enemy HP during attacks
+- **Lv. 2:** Excess healing will be converted into damage on the next attack
+- **Lv. 3:** When HP is >50%, MOV SPD +20%
+- **Lv. 4:** At full HP, ATK PWR +40%
+- **Star up [All] buffs:** Gears' Base Stats Increase +5% (4★)
+
+### Rolla — *Frostsinger* (ice/freeze theme)
+- **Lv. 1:** Attacks are imbued with ice
+- **Lv. 2:** Enemy ATK is reduced for 5s after being unfrozen
+- **Lv. 3:** Attacks are imbued with the formidable ice element
+- **Lv. 4:** Summons Frost Meteor when attacking frozen enemies
+- **Star up [All] buffs:** CRIT DMG +10% (1★, 4★, 7★)
+
+### Loki — *Fervent Rhythm* (movement-based ATK buff)
+- **Lv. 1:** When moving, there is a chance to enter [Focus State], increasing ATK by 20% for 15s
+- **Lv. 2:** After entering [Focus State] 2 times, the next time this state is active, ATK SPD is increased by 30%, and duration is doubled
+- **Lv. 3:** When [Focus State] fades, there is 30% chance to enter this state again
+- **Lv. 4:** When battling players, if [Focus State] is active, there is a chance to gain immunity to all Control effects (PvP-flavored)
+- **Star up [All] buffs:** More damage VS players +5% (4★) — heavily PvP-tuned
+
+### Phynx — *Desert Tribunal* (Bleed elemental synergy)
+- **Lv. 1:** Mix sand into the elements. Elemental DMG inflicts [Bleed], dealing 15% Bleed DMG every 0.15s
+- **Lv. 2:** Every 10 Bleed hits increases Elemental DMG by 5% for 5s (Max 5 stacks)
+- **Lv. 3:** Against Burning or Poisoned enemies, +50% Bleed DMG dealt. Their Burn and Poison debuffs also tick 20% faster
+- **Lv. 4:** If enemy takes Lightning or Ice DMG, all remaining Bleed ticks are resolved instantly
+- **Star up [All] buffs:** CRIT Rate +2% (1★, 4★, 7★)
+- *Phynx is the default hero of the Daily Rewards bonus pack rotation*
+
+### Nezha — *Cosmic Hoop* (skin-name shared!)
+- **Lv. 1:** The character's movement path will burn for an extended duration
+- **Lv. 2:** Main Weapon attacks have a chance to fire 2 [Cosmic Hoops] at target
+- **Lv. 3:** [Cosmic Hoops] gain [Fiery Path] effect and can track enemies
+- **Lv. 4:** Main Weapon attacks have a chance to fire 3 [Cosmic Hoops] at target, with a chance to chain-fire
+- **Acquisition:** event-only — "Join Limited-time event(s) to obtain" (no shop/shard farm path)
+
+> **Note:** "Cosmic Hoop" is both Nezha's signature kit AND the name of a Griffin weapon skin (see [gear.md](gear.md)). Skin names appear to mirror their corresponding heroes' kits.
+
+### [Additional Epic heroes — 6 documented from 20 screenshots; more likely exist]
+
+---
+
+## Legendary heroes catalog
+
+### Otta — *Brutality* (CRIT-focused, otter pirate captain)
+- **Lv. 1:** The higher the enemy's HP, the easier it is to land a CRIT
+- **Lv. 2:** After taking damage, gain +40% Crit Rate and +60% Crit DMG for 5s
+- **Lv. 3:** CRIT hits can insta-kill minions below 30% HP
+- **Lv. 4:** The farther the range, the higher the CRIT Rate, up to 15%
+- **Star up [All] buffs:** CRIT Rate +4% (1★, 4★, 7★)
+
+### Demon King Atreus — *Demon King Energy* (shield-based)
+- **Lv. 1:** Starts off with shield equal to 50% HP. When shield is active, elemental DMG +10%, Crit DMG +30%
+- **Lv. 2:** Chance to summon dark energy orbs when enemies are hit; can pull hate. Energy orbs release energy rings to attack nearby enemies. Up to 3 orbs can be present
+- **Lv. 3:** When HP is below 50%, absorbs dark energy orbs on the map to restore shield HP (each orb restores 10% HP). Only triggers 1 time per game
+- **Lv. 4:** Dark energy orbs will form a binding field when destroyed. Enemies caught in the field will have their projectiles slowed and DMG taken increased. Field lasts 10s
+- **Star up [All] buffs:** Shield HP +10% (1★, 4★, 7★)
+
+### Thor — *Storm's Judgment* (Lightning, very common resonance pick)
+- **Lv. 1:** Weapon detaches and auto-attacks
+- **Lv. 2:** When moving, there is a chance to summon Mjolnir, homing in on enemies and dealing 100% DMG
+- **Lv. 3:** Attacks deal Lightning damage. Mjolnir inherits the hero's CRIT Rate. After dealing a critical hit, there is a chance to paralyze enemies for 0.5s
+- **Lv. 4:** When paralyzing enemies, fires 3 additional Mini-Mjolnirs
+- **Star up [All] buffs:** Lightning DMG +30% (1★, 4★, 7★)
+- *Storm's Judgment is one of the most popular resonance picks observed across builds*
+
+### Cleo — *Ember Throne* (Fire-themed)
+- **Lv. 1:** Attacks are greatly enhanced by Fire
+- **Lv. 2:** For every 20 Fire hits, mark the enemy with the highest percentage HP on the field. After 1s, trigger a cross-shaped explosion and remove the mark, dealing 300% DMG and leaving behind a burning trail
+- **Lv. 3:** Trigger a cross-shaped explosion at your location after marking a target, dealing 300% DMG and leaving behind a burning trail. ATK +40% for 3s after marking
+- **Lv. 4:** Marking an enemy also Frightens them. Marked enemies suffer −50% ATK before exploding. Marked players suffer −35% ATK before exploding
+- **Star up [All] buffs:** Flame DMG +30% (1★, 4★, 7★)
+
+### Wukong — *Monkey Brethren* (summon-based, event-only)
+- **Lv. 1:** Summons 1 permanent [Monkey Mirage] after entering battle
+- **Lv. 2:** When attacking or taking damage, chance to summon 1 [Monkey Mirage] for 10s. Up to 6 [Monkey Mirages] can exist
+- **Lv. 3:** For each [Monkey Mirage] on the map, increase ATK, DMG REDUC, and Control RES by 3.5%
+- **Lv. 4:** [Monkey Mirages] have a chance to steal nearby enemy Hearts and Potions, increasing Wukong's ATK by 20% for 7s
+- **Acquisition:** "Join Limited-time event(s) to obtain" (event-locked, no shop path)
+
+### [Additional Legendary heroes — 5 documented; more likely exist (16 screenshots covered)]
+
+---
+
+## Hero acquisition paths summary
+
+| Source | Notes |
+|---|---|
+| **Daily Rewards Bonus Pack** | Random shards for the selected hero (default Phynx); shard quantity scales with rarity (×1 70%, ×2 25%, etc. — see daily_rewards.md) |
+| **Limited Offer packs** | Event/seasonal hero shards |
+| **Event-only heroes** | E.g., Nezha, Wukong — only obtainable during their corresponding limited-time events |
+| **Shard Exchange (one-way)** | Excess hero shards → Character Shadows (NOT into other heroes' shards) |
+
+> **Hero shards do NOT drop from Mythstone/Chromatic Chests or from Hunt.** Chests give gear; Hunt gives gear, runes, gear scrolls, gold, and EXP only.
+
+## Hero unique skills (named kits)
+
+Each hero has one named signature ability set that levels up across 4 tiers (Lv. 1 → 4) as the hero stars up. The name is unique per hero. Examples:
+
+- **Seraph** → "Divine Favor" (Epic hero, healing/Angel-flavored)
+- **Otta** → "Brutality" (Legendary hero, CRIT-focused)
+
+The Lv. 1 skill is the baseline (you have it from 0★). Lv. 2 unlocks at 2★, Lv. 3 at 5★, Lv. 4 at 8★.
+
+See the rarity catalogs below for hero-specific kit details.
+
+## Hero shards
+
+Heroes are unlocked and starred up by collecting **shards** (the "X/Y" counter on hero cards). Sources include:
+
+- Daily Rewards (Bonus Pack — random hero shard pack tied to the selected Phynx-style character)
+- Limited Offer packs
+- Events
+- (NOT Hunt — Hunt does not drop hero shards)
+
+## Outfit
+
+The Outfit button on the hero portrait is **where you apply skins and cosmetics** to the hero. Detailed mechanics deferred — covered when skin/cosmetic application screenshots are added.
+
+## Sacred Hall
+
+A **building structure** accessed from the Sacred Hall button on the hero portrait. Provides global ATK and HP bonuses **plus a wide range of privileges** that apply across the whole account.
+
+### Top-level view (3 sub-tabs)
+
+- **Upgrade** — spend **Character Shadows** (purple gem currency) to raise Sacred Hall level (apply privileges to the existing structure)
+- **Build** — spend **Abyssal Stonework** (blue currency) to build/expand Sacred Hall (separate from Upgrade)
+- **Display Case** — visual showcase for up to **6 characters** of your choice. Cosmetic only.
+
+> Build and Upgrade are two distinct progression tracks using two different currencies. You need both to fully advance Sacred Hall.
+
+### Side panel options on the Upgrade view
+
+- **Overview** — full Sacred Hall Privileges list (cumulative + unlocks-to-come)
+- **Shard Exchange** — convert excess hero shards into **Character Shadows** (a separate currency)
+
+### Privilege track
+
+Each Sacred Hall level grants new privileges. Examples observed (cumulative):
+
+- Building stats: **ATK +5,000, HP +20,000** at Lv. 46 (preview shows next: ATK +5,800, HP +25,000)
+- "Main hero can activate **+1 skin skills**" (raises the cap on simultaneously active skin skills)
+- "Stage/Hunt **EXP and Gold Gain +15%**"
+- "Stage/Hunt **Scroll Gain +15%**"
+- "Main character can inherit **+1 skin talent(s) of character in Resonance slot #1**"
+- "**Energy restoration speed +10% / +20%**"
+- "**Max Energy +20 / +10**" (multiple instances stack the cap)
+- "**Gold Shop's gold exchange bonus +20%**"
+- "Main character can inherit **+1 skin talent(s) of character in Resonance slot #2**"
+- "**Skin Collection Stats +15% / +30%**" (recurs at multiple tiers — multiplier on skins' Collectible Stats)
+- "**Activated weapon reforge count limit +1**" (recurs)
+- "**Max deployed Mystlings in Peak Arena, Arena, Guild Expedition +1**" (recurs)
+
+### Shard Exchange
+
+Hero cards with overflow shards (e.g., 178 shards on a hero you don't need more of) can be converted into **Character Shadows** at a 1:1 ratio. There's a "Salvage All" bulk option. Character Shadows feed directly into the Sacred Hall **Upgrade** track, so excess hero shards become Sacred Hall progress.
+
+### Strategic implication
+
+Sacred Hall is a **slow, permanent power floor raise**. Upgrading it is always strictly better — every hero benefits, and many privileges (energy regen, scroll/gold gain, max energy) make every other system more efficient too.
+
+> **Skin Collection Stats clarification:** Skin Collectible Stats are **static** (always-on for every owned skin, not equipped-gated). The Sacred Hall +15%/+30% multiplier most likely applies to **ALL owned skins' Collectible Stats account-wide** — i.e., it boosts every Collectible Stat in your library, not just the equipped skin's. Verify in-game by comparing total stat displays after a Sacred Hall upgrade if needed.
