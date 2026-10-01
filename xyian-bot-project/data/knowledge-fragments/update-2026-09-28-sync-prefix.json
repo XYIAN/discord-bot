@@ -1,0 +1,12 @@
+{
+  "_meta": {
+    "source": "Housekeeping after the Version 1.1.9 drop (v3.36.1), 2026-09-28. The 2026-09-17 repair of gold.community_weapon_cap changed the first sentence of a community !addfact (period → colon, capital L), which is inside the first 40 characters scripts/sync-facts.js keys its duplicate detection on — so the dry run re-proposed fails_8743's original post as a new fact. This restores the contributor's opening wording byte-for-byte and changes nothing else.",
+    "confidence": "exact — the only change is punctuation in the first sentence; every fact stays as repaired on 2026-09-17. Rule recorded in docs/KNOWLEDGE-DROP-PLAYBOOK.md Step 0: keep the first 40 characters of a repaired community fact identical.",
+    "conflictsWithLive": [
+      "gold.community_weapon_cap"
+    ]
+  },
+  "gold": {
+    "community_weapon_cap": "There are 2 main uses for gold. Leveling up weapons and purchasing talent cards. Weapon max level was raised from 150 to 200 in an update before Version 1.1.9 (gear level runs 1-200 per gear_sets.gear_levels; the Version 1.1.9 notice of 17 September 2026 does not mention weapon levels). Talent cards can be bought every 10 profile levels; when this was recorded they maxed out at level 50, and whether more were added at level 60 was not yet known — not documented since."
+  }
+}

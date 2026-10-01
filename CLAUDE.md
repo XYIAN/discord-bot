@@ -20,8 +20,9 @@ better structured — worth copying *decisions* from, not its architecture.
   the Tempest bot. `lib/changelog.js` parses it; a release is a new
   `## [x.y.z]` section. Entries may be prose OR bullets (v3.18.1 shipped
   nothing to #changelog because the parser only understood bullets).
-- **Screenshots and images are gitignored** (`screenshots/`, `*.png`, `*.jpg`,
-  …). Do not commit them.
+- **Only `screenshots/` directories are gitignored** — `*.png` / `*.jpg` are
+  NOT (checked with `git check-ignore`, 2026-09-28). Put every image under a
+  `screenshots/` folder and `git add` files by name, never `-A`.
 - **Production runs OpenAI `gpt-4o-mini`.** Assume a SMALL model: it follows the
   most directive sentence it finds, does not reconcile facts that disagree — it
   picks one — and will not notice that a stale "no data on X" line is outranked
@@ -36,8 +37,9 @@ better structured — worth copying *decisions* from, not its architecture.
 - `node --check xyian-bot-project/bot.js` — bot.js is a large single file; check
   syntax before committing.
 - `node xyian-bot-project/scripts/answer-check.js` — asks the REAL model the real
-  questions and asserts on the ANSWER. Needs `OPENAI_API_KEY`, ~$0.08 and a few
-  minutes (it paces itself under the 200k/min TPM ceiling). **Run it before
+  questions and asserts on the ANSWER. Needs `OPENAI_API_KEY`, ~$0.40 and ~14
+  minutes for 45 cases (it paces itself under the 200k/min TPM ceiling) — run
+  it in the background and read the log. **Run it before
   shipping any change to `data/knowledge.json` or to a prompt.** Every other
   test checks what was RENDERED into the prompt; only this checks what the bot
   SAYS, and it has already caught four defects the render tests passed clean.
@@ -47,6 +49,9 @@ better structured — worth copying *decisions* from, not its architecture.
   Additive by default; `--repair <dotted.path>` to overwrite one reviewed value.
   It backs up, validates, mirrors `seeds/`, and handles `custom_facts` too. A
   fragment must replay as a clean no-op — that is what makes it a record.
+  The full procedure for a game update — transcript, diff, fragment, review,
+  apply, re-pin, answer-check, release — is
+  `xyian-bot-project/docs/KNOWLEDGE-DROP-PLAYBOOK.md`.
 
 ## Inspecting the live bot — read text, don't drive the screen
 

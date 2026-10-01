@@ -86,9 +86,9 @@ Copy this for each release:
 ## Common Scenarios
 
 ### Knowledge-only update (fact sync, new data)
-1. Edit `data/knowledge.json`
-2. Add patch entry to `CHANGELOG.md`
-3. Validate JSON
+1. Write a fragment under `data/knowledge-fragments/` and merge it with `scripts/merge-knowledge.js` — never edit `data/knowledge.json` by hand (full procedure: `docs/KNOWLEDGE-DROP-PLAYBOOK.md`)
+2. Re-pin `test/knowledge-render.test.js`, run `npm test` from the repo root, run `scripts/answer-check.js`
+3. Add patch entry to `CHANGELOG.md`
 4. Commit, push
 
 ### New feature (command, system, integration)

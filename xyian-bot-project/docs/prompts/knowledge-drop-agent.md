@@ -1,0 +1,34 @@
+# Prompt — knowledge drop agent
+
+Precondition: v3.36.2 (this playbook, prompt, workflow, the sync-prefix repair
+and the re-pinned render hashes) must be committed and pushed first — `git
+status` on the repo must be clean before this prompt is handed over.
+
+Copy everything below the line into a fresh Claude Code session opened on
+`/Users/kyle/code/discord/discord-bot`. Replace the two `<…>` placeholders in
+the first paragraph and in the Step 0 sentence; leave `<date>-<topic>` in
+Step 1 — the agent fills that in (date = capture date, YYYY-MM-DD). The word
+**ultracode** in the first line is what opts the session into multi-agent
+workflows; keep it.
+
+---
+
+ultracode — Archero 2 has had a new update and I have screenshots of <runes / new characters / …>. Prepare to fold them into the XY Elder bot's knowledge base and release, exactly the way v3.36.1 was done (that drop is described in the playbook's opening paragraph and in `xyian-bot-project/CHANGELOG.md` under [3.36.1]; the worked example in item 4 is its transcript and fragment).
+
+Repo: `/Users/kyle/code/discord/discord-bot` (the bot is in `xyian-bot-project/`; the sibling `discord-bot-tempest` repo is a different bot — do not touch it). If the CLAUDE.md injected into this session mentions tsx, TypeScript or Wittle Defender, the session was opened in the wrong folder — say so and stop. Read, in this order, before doing anything:
+
+1. `xyian-bot-project/docs/KNOWLEDGE-DROP-PLAYBOOK.md` — the whole procedure, the entry shapes, the failure modes to hunt, the workflow recipe.
+2. `xyian-bot-project/docs/KNOWLEDGE-GUIDE.md` (only the sections the playbook names — its older sections are stale) and `xyian-bot-project/docs/RELEASE-GUIDE.md`.
+3. `CLAUDE.md` at the repo root — hard rules and gotchas.
+4. The worked example: `xyian-bot-project/docs/game-knowledge/updates/2026-09-17-version-1.1.9.md` and `xyian-bot-project/data/knowledge-fragments/update-2026-09-17-version-1-1-9.json`.
+
+Then run the playbook's Step 0: clean tree — if `git status --short` prints anything, stop and ask me, do not stash or commit it; `sync-facts.js` dry run showing `NEW facts to add: 0` and `Approved suggestions not synced: 0` — if not, tell me and wait, do not `--apply` on your own; the last boot notice in `#debug-logs` shows the current version; the time-bound, gap and directive sweeps. Tell me what the knowledge base currently says about <the topic>, which entries marked "not documented / named only" these screenshots could fill, and which counts and "newest" claims they will overturn; pre-draft the workflow's `sections` and `questions`; then ask me for the screenshots and end your turn. When they arrive:
+
+- Step 0.5: pasted screenshots are saved at `/Users/kyle/.claude/uploads/<session id>/<hash>-image.png` (the session id is the folder name in your scratchpad path). Copy them, in reading order, to `/Users/kyle/code/discord/discord-bot/screenshots/<date>-<topic>/01.png …` — `screenshots/` is the ONLY gitignored image location (`*.png` is not ignored; never put images under `docs/`). Keep the absolute paths: the workflow's `images` arg needs them.
+- Step 1: transcribe them (verbatim body; italic preamble with source, capture date, captured by, what is editorial, the screenshot file names) to `xyian-bot-project/docs/game-knowledge/updates/<date>-<topic>.md` and add it to the "Update notices" list in `xyian-bot-project/docs/game-knowledge/INDEX.md` (fill in the `→ update-….json` fragment name once Step 3 names it). Do NOT re-read the images yourself — the Workflow's first phase runs the two independent re-reads and corrects the transcript.
+- Step 1's re-reads and Steps 2–4: call `Workflow({ scriptPath: '/Users/kyle/code/discord/discord-bot/xyian-bot-project/docs/workflows/knowledge-drop.workflow.js', args: { date, transcript, images, scratch, fragment, sections, questions } })` — `args` is a real JSON object, not a string; `transcript` and `fragment` are relative to `xyian-bot-project/` (e.g. `docs/game-knowledge/updates/<date>-<topic>.md`, no `xyian-bot-project/` prefix) or absolute; `images`, `scratch` and `scriptPath` are absolute. Write `sections` (`[{key, title, entities}]`, `entities` one string, always including the stale-sweep section) and `questions` yourself from the transcript. If a result looks empty, Read `<transcriptDir>/journal.jsonl` (the directory is in the Workflow tool result) — it holds each agent's actual return value.
+- Steps 5–8 in the main loop: apply with every `--repair` flag (`export F=…`, then the playbook's node snippet), replay as a no-op, re-pin the golden render and the three pinned line counts in `test/knowledge-render.test.js` (the 26 and 15 move on Ability/Enhancement and Etched rune ladders respectively, the 7 moves only on a weapons/gear ladder), `npm test` from the repo root, add answer-check cases and run `scripts/answer-check.js` once with `run_in_background: true` (45 cases today ≈ $0.40 / ~14 min; with your 10–15 new cases expect ~18 min / ≈ $0.50 — the `~$0.05` in KNOWLEDGE-GUIDE is stale), a patch entry (`## [x.y.z] - YYYY-MM-DD`, member-facing title and bullets) at the TOP of `xyian-bot-project/CHANGELOG.md` — that heading IS the version; do not touch either package.json — commit with `vx.y.z: …` as the subject and **no Co-Authored-By / Generated-with trailer**, push, then poll `#debug-logs` with `scripts/read-channel.js debug-logs 60 | grep -B1 -A2 'Bot deployed'` for the boot notice and the fact count, ask three questions in #arch-ai as me via Claude in Chrome (ask which browser; one on a repaired value, one on a new entry, one negative control) and read the replies with `read-channel.js arch-ai 10`, then re-run the `sync-facts.js` dry run (must list nothing).
+
+Rules that are not negotiable: never hand-edit `data/knowledge.json` or `seeds/`; every fact traces to the screenshots verbatim and anything the screenshots do not explain is recorded as "not documented — !suggest", never guessed; repair stale entries instead of adding contradicting ones; keep the first 40 characters of a community fact identical when repairing it; images only under `screenshots/`; absolute paths in any commands that run in parallel; the version lives only in `CHANGELOG.md` — never bump package.json, whatever the sibling repo's CLAUDE.md says; this bot is OpenAI-only (`gpt-4o-mini`; `OPENAI_API_KEY` comes from `xyian-bot-project/.env` — never print it, and do not add an Anthropic path or key).
+
+Deliver: the transcript, the fragment, the merged and re-pinned repo pushed to `main`, the boot notice from `#debug-logs`, the answer-check tally, the three live #arch-ai answers (this is the only proof a repair reached the volume), a clean post-release sync-facts dry run, and a short list of anything the screenshots named but did not explain (so I can capture more).

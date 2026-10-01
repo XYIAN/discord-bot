@@ -124,9 +124,16 @@ fragment, not how to apply it.
 
 ## How to Add Data
 
+> The sections below describe the SHAPE of an entry. They predate the fragment
+> workflow: never open `data/knowledge.json` to type one in — put the entry in a
+> fragment and merge it (see "How to add data — use a fragment" above). The
+> shapes as they are actually stored today, including the three different rune
+> ladders, are tabulated in [`KNOWLEDGE-DROP-PLAYBOOK.md`](KNOWLEDGE-DROP-PLAYBOOK.md)
+> Step 3; where an example here disagrees with that table, the table is right.
+
 ### 1. Adding a new entry to an existing category
 
-Open `data/knowledge.json` and add your entry under the right category. Follow the existing format for that category.
+Add your entry under the right category, via a fragment. Follow the existing format for that category.
 
 **Example — adding a weapon:**
 ```json
@@ -281,7 +288,7 @@ Each sync is a patch version bump with its own CHANGELOG entry.
 
 **You don't normally edit `seeds/` directly.** It's kept in sync automatically:
 - `scripts/sync-facts.js` mirrors every `data/knowledge.json` write into `seeds/knowledge.json` (look for `🌱 seeds/knowledge.json refreshed` in the script output).
-- After any manual edit to `data/knowledge.json`, mirror it forward with: `cp xyian-bot-project/data/knowledge.json xyian-bot-project/seeds/knowledge.json` and commit both.
+- Never `cp data → seeds` by hand: that drops the `_repairs` / `_custom_facts_repairs` manifests (see "How a repair reaches production"). `merge-knowledge.js` and `sync-facts.js` write `seeds/` for you; commit both files together.
 
 If `seeds/` and `data/` ever drift, the active bot keeps using `data/` — `seeds/` only matters on the first boot after a fresh volume attach.
 
@@ -291,7 +298,7 @@ A fact reaching the prompt is not the same as the bot saying it. Before shipping
 a change to `knowledge.json`:
 
 ```bash
-node scripts/answer-check.js     # needs OPENAI_API_KEY, ~$0.05 a run
+node scripts/answer-check.js     # needs OPENAI_API_KEY, ~$0.40 and ~14 min for 45 cases — run it in the background
 ```
 
 Two rules this has already caught the hard way:

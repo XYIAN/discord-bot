@@ -4,6 +4,17 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.36.2] - 2026-09-30
+
+### The knowledge-drop procedure is written down
+
+No new game facts this release — the next update's screenshots are on their way, and the way we fold them in is now a document instead of a memory:
+
+- 📘 **`docs/KNOWLEDGE-DROP-PLAYBOOK.md`** — the whole procedure that shipped the August patch notes and Version 1.1.9: transcribe, diff against what the bot already knows, draft the fragment, adversarial review, apply, re-pin the tests, run the paid answer check, release, verify. With the entry shapes as they really are in the knowledge base and the failure modes each review caught.
+- 📋 **`docs/prompts/knowledge-drop-agent.md`** — the copy-paste prompt that hands the job to a fresh agent.
+- ⚙️ **`docs/workflows/knowledge-drop.workflow.js`** — the multi-agent orchestration (two image re-reads, one diff per section, draft, three review lenses, fix), generalised from the Version 1.1.9 run.
+- 🧹 One housekeeping repair: the Version 1.1.9 drop changed a comma's worth of a community gold fact and the fact sync started re-proposing the original. Restored the contributor's opening wording; the sync is clean again.
+
 ## [3.36.1] - 2026-09-17
 
 ### Version 1.1.9 is in the knowledge base — the Arena has 8 tiers now

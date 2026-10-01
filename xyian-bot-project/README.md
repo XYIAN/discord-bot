@@ -261,6 +261,7 @@ The bot posts release notes to #changelog (`1424784471395274803`) on every deplo
 | [`docs/RELEASE-GUIDE.md`](docs/RELEASE-GUIDE.md) | Commit, push & deploy protocol — checklist, what to update before pushing, what happens on deploy |
 | [`docs/FACT-SYNC.md`](docs/FACT-SYNC.md) | Syncing live facts into the repo — script usage, full workflow, role tiers, troubleshooting |
 | [`docs/KNOWLEDGE-GUIDE.md`](docs/KNOWLEDGE-GUIDE.md) | How to add data to knowledge.json — formats, categories, quality rules, fact sync workflow |
+| [`docs/KNOWLEDGE-DROP-PLAYBOOK.md`](docs/KNOWLEDGE-DROP-PLAYBOOK.md) | Folding a game update (patch notes, screenshots of runes / characters / events) into the knowledge base and releasing it — the step-by-step procedure, entry shapes, review lenses; `docs/prompts/knowledge-drop-agent.md` is the copy-paste prompt and `docs/workflows/knowledge-drop.workflow.js` the orchestration |
 | [`docs/PERSONA.md`](docs/PERSONA.md) | Arch AI's voice, tone, humor style, and inspiration references |
 | [`docs/ENV-AND-CHANNELS.md`](docs/ENV-AND-CHANNELS.md) | Environment variables and Discord channel IDs |
 | [`docs/RESTART-PLAN.md`](docs/RESTART-PLAN.md) | Original restart plan from the rebuild |
