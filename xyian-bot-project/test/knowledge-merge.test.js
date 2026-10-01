@@ -315,6 +315,21 @@ test('records each repaired path in _repairs', () => {
     assert.deepStrictEqual(out._repairs, ['a.b']);
     assert.strictEqual(out.a.b, 'fixed');
 });
+test('a repair that lands an OBJECT names its leaves too', () => {
+    // characters.artemis went from a one-line stub to a full hero entry
+    // (2026-09-30). A volume still holding the string is repaired through the
+    // parent path; a volume already holding an object is only repaired leaf by
+    // leaf — so the manifest must carry both.
+    const merged = { characters: { artemis: { rarity: 'legendary', aka: [], skill_levels: { 1: 'a', 2: 'b' } } } };
+    const out = withSeedManifests({}, merged, ['characters.artemis'], []);
+    assert.deepStrictEqual(out._repairs, [
+        'characters.artemis',
+        'characters.artemis.rarity',
+        'characters.artemis.aka',
+        'characters.artemis.skill_levels.1',
+        'characters.artemis.skill_levels.2',
+    ]);
+});
 test('manifests ACCUMULATE across runs and never duplicate', () => {
     const first = withSeedManifests({}, { a: 1 }, ['x.y'], [{ match_text: 'old', text: 'new' }]);
     const second = withSeedManifests(first, { a: 2 }, ['x.y', 'p.q'], [{ match_text: 'old', text: 'new' }, { match_text: 'o2', text: 'n2' }]);

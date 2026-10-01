@@ -469,7 +469,7 @@ every writer runs alone. The generalised script is at
 
 ```
 Workflow({ scriptPath: "/Users/kyle/code/discord/discord-bot/xyian-bot-project/docs/workflows/knowledge-drop.workflow.js",
-           args: { date, transcript, images, scratch, fragment, sections, questions?, version?, today? } })
+           args: { date, transcript, images, scratch, fragment, sections, questions?, version?, today?, factSource? } })
 ```
 
 `args` is a real JSON object, not a string. `transcript` and `fragment` may be
@@ -497,6 +497,64 @@ real return value. After a kill, a pause or a script edit, relaunch with
 from cache, only edited or new ones run. If the tool refuses a repo
 `scriptPath`, Read the file and pass its contents via `script` instead (same
 `args`); the result then gives a persisted path to reuse.
+
+Lessons from the 30 September 2026 hero-and-rune drop (37 screens in eleven
+batches, v3.36.3):
+
+- **Batches are intake, not runs.** Copy each batch to `screenshots/`, extend
+  the transcript, report what is captured and what is clipped, and wait. Launch
+  the Workflow once, after the last batch. If more screens arrive seconds after
+  launch, stop it (TaskStop) and relaunch with the full image list rather than
+  editing the transcript under the verifiers; if they arrive late, file them
+  for a follow-up fragment.
+- **The owner's statements are a source.** Record them in the transcript under
+  their own heading, in his words, numbered, with corrections kept beside the
+  statement they supersede. Entries attribute them ("per XYIAN, the guild
+  owner, <date>") and never present them as screen text. Pass
+  `factSource: "screenshot"` so custom facts are not labelled patch notes, and
+  give no `version` when the source is not a game update.
+- **Rune popups scroll and print no tier names.** A list that seems to start at
+  the blue dot is scrolled; ask for the top. Tiers are coloured dots (grey,
+  green, blue, purple, yellow, red = Common … Mythic) and numbered markers
+  (1–3 = Legendary +1 … +3). Untiered sword / heart lines and the Enchantment
+  Stats block belong to the copy, not the rune.
+- **A repair that turns a stub into an object** (a name-only hero becoming a
+  full entry) is recorded in the seed manifest with every leaf as well as the
+  parent — `withSeedManifests` does it, and `test/seed-manifest.test.js`
+  fails without it.
+- **When a case fails, read the whole answer several times before rewording.**
+  `node scripts/ask.js --repeat 3 "the question"` prints full answers from the
+  real model with the production prompt (answer-check truncates at 300
+  characters). Wrong 3 times in 3 is a defect in the entry; wrong 1 time in 3
+  is sampling. What the v3.36.3 failures turned out to be, in the order to
+  check them:
+  1. *A second, partial copy of the fact.* Another entry in the same fragment
+     summarised Sprite's Awe's Mythic line as "summons 1 random Elemental
+     Sprite" and the model answered from the summary. Grep the PRODUCTION
+     render for a distinctive phrase; every hit outside the ladder is a rival.
+  2. *A caveat ahead of, or beside, the ladder.* "The heal amount is not
+     documented — do not give one" and "may be out of date — say so" were each
+     recited as the answer to an unrelated tier question, and the second made
+     the bot decline a line it holds. A note about one tier attracts every
+     tier question on that rune. Keep ladder keys to the ladder; if a note is
+     unavoidable make it trailing, neutral and free of instructions.
+  3. *A line that carries several effects.* "X and additionally Y. Also, Z"
+     lost Z every time. Write "(three effects): (1) Z. (2) X. (3) Y" with the
+     easiest-to-drop effect first; the transcript keeps the printed wording.
+  4. *A hero question asked "at N stars".* The hero object does not say which
+     star unlocks which level; one sentence in `star_system.skill_level_unlocks`
+     telling the model which level answers such a question fixed it for every
+     hero at once.
+  5. *A limit of the model.* Two adjacent tier lines that differ by one token
+     ("ATK" / "ATK SPD") are answered from the first about two times in three
+     under every wording — proven by a Mythic line with no "ATK" in it still
+     being answered "ATK". Stop there: record the limit in `_meta`, assert
+     something the model gets right, and tell Kyle.
+  And two regexes failed on CORRECT answers ("two different labels for the same
+  track", "cannot say it was nerfed") — fix the regex, never the entry.
+- **Answer-check pacing scales with the prompt.** tokens ≈ render chars ÷ 4;
+  keep (60 ÷ pacing seconds) × tokens under the 200k/min ceiling. At 262k
+  chars that is 22 s a call, ~25 min and ~$0.65 for 68 cases.
 
 Steps 5–8 stay in the main loop: they are mechanical, sequential, and the paid
 check should run exactly once. Timings from v3.36.1: ~55 min workflow, ~5 min

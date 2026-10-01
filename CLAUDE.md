@@ -37,8 +37,8 @@ better structured — worth copying *decisions* from, not its architecture.
 - `node --check xyian-bot-project/bot.js` — bot.js is a large single file; check
   syntax before committing.
 - `node xyian-bot-project/scripts/answer-check.js` — asks the REAL model the real
-  questions and asserts on the ANSWER. Needs `OPENAI_API_KEY`, ~$0.40 and ~14
-  minutes for 45 cases (it paces itself under the 200k/min TPM ceiling) — run
+  questions and asserts on the ANSWER. Needs `OPENAI_API_KEY`, ~$0.65 and ~25
+  minutes for 68 cases (it paces itself under the 200k/min TPM ceiling) — run
   it in the background and read the log. **Run it before
   shipping any change to `data/knowledge.json` or to a prompt.** Every other
   test checks what was RENDERED into the prompt; only this checks what the bot
@@ -136,6 +136,9 @@ write it.
   manifest entry that matches the first repair's text, and the boot pass
   applies them in array order (X→Y, then Y→Z). The seed-manifest test follows
   the chain instead of demanding every entry's text still exist in data/.
+  A repair that replaces a string with an OBJECT (a name-only hero stub
+  becoming a full entry) is recorded with every leaf as well as the parent,
+  so a volume holding either shape converges.
 - `findKnowledgeGaps()` derives the daily "🧙 Arch AI has a question…" post.
   It has been observed inventing gaps for topics the knowledge base fully
   documents, so the bot publicly announces ignorance it does not have.

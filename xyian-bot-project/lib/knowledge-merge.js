@@ -294,7 +294,19 @@ function truncatedValues(obj, prefix) {
 function withSeedManifests(existingSeed, merged, repairedPaths, customRepairs) {
     const prev = existingSeed && typeof existingSeed === 'object' ? existingSeed : {};
     const repairs = new Set(Array.isArray(prev._repairs) ? prev._repairs : []);
-    for (const p of repairedPaths || []) if (p && !p.startsWith('custom_facts[')) repairs.add(p);
+    // A repair can replace a LEAF with an OBJECT — a name-only hero stub
+    // (a string) becoming a full entry. On a volume that still holds the string,
+    // the boot merge replaces it via the parent path. On a volume that already
+    // holds an object there, the boot merge walks INTO it and only a named leaf
+    // is overwritten — so name every leaf as well. Both states then converge.
+    const leafPaths = (v, p) => (isPlainObject(v) ? Object.keys(v).flatMap((k) => leafPaths(v[k], `${p}.${k}`)) : [p]);
+    const at = (o, p) => p.split('.').reduce((a, b) => (a && typeof a === 'object' ? a[b] : undefined), o);
+    for (const p of repairedPaths || []) {
+        if (!p || p.startsWith('custom_facts[')) continue;
+        repairs.add(p);
+        const v = at(merged, p);
+        if (isPlainObject(v)) for (const leaf of leafPaths(v, p)) repairs.add(leaf);
+    }
 
     const cf = Array.isArray(prev._custom_facts_repairs) ? prev._custom_facts_repairs.slice() : [];
     const seen = new Set(cf.map((r) => normFactText(r && r.match_text)));

@@ -298,7 +298,7 @@ A fact reaching the prompt is not the same as the bot saying it. Before shipping
 a change to `knowledge.json`:
 
 ```bash
-node scripts/answer-check.js     # needs OPENAI_API_KEY, ~$0.40 and ~14 min for 45 cases — run it in the background
+node scripts/answer-check.js     # needs OPENAI_API_KEY, ~$0.65 and ~25 min for 68 cases — run it in the background
 ```
 
 Two rules this has already caught the hard way:

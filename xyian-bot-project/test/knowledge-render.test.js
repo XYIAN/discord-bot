@@ -35,10 +35,10 @@ test('renders the live knowledge base to the pinned length and hash', () => {
     // message what moved. If it fails after you edited lib/knowledge-render.js,
     // stop: you have changed what the bot is allowed to say.
     const out = renderKnowledge(KNOWLEDGE);
-    assert.strictEqual(out.length, 227061, 'rendered length changed');
+    assert.strictEqual(out.length, 268309, 'rendered length changed');
     assert.strictEqual(
         sha(out),
-        '531b8c767eb6bd6ee598f0bca41324daebf824dcdd3de61d9e1e169b4e54c1c2',
+        '71b6851a8794da38acd75454b9c32d781b9c82331ba2d21262fc9eb6b9b703c0',
         'rendered content changed',
     );
 });
@@ -209,9 +209,9 @@ test('all 26 enchantment-unlock lines survive', () => {
     const out = renderKnowledge(KNOWLEDGE, { compact: true });
     assert.strictEqual((out.match(/No additional buff but/g) || []).length, 26);
 });
-test('all 15 real Legendary +N buff lines survive', () => {
+test('all 24 real Legendary +N buff lines survive', () => {
     const out = renderKnowledge(KNOWLEDGE, { compact: true });
-    assert.strictEqual((out.match(/Legendary \+\d+: (?!No additional buff)/g) || []).length, 15);
+    assert.strictEqual((out.match(/Legendary \+\d+: (?!No additional buff)/g) || []).length, 24);
 });
 test('all 7 weapons no-op lines survive', () => {
     // Render the category alone rather than slicing it out of the full text:
@@ -235,10 +235,10 @@ test('pins the production configuration, not just the defaults', () => {
     // { suppress, compact }. Pinning only the default left the real prompt
     // unpinned — a change to suppression or compaction would not have moved it.
     const out = renderKnowledge(KNOWLEDGE, PRODUCTION_OPTIONS);
-    assert.strictEqual(out.length, 219740, 'production render length changed');
+    assert.strictEqual(out.length, 260492, 'production render length changed');
     assert.strictEqual(
         sha(out),
-        'd52cee70014bdc0a22d1af1eb11efdfe7a693b6c8b8fcf70dfabe3dfb6a8eb0c',
+        '6f0f1599156f5f45081bc693acd1ee8e7eddaec0002748192a86fe459b86ab59',
         'production render content changed',
     );
 });

@@ -15,6 +15,7 @@
 //                                                     strings is also accepted): the hit-list for that section written
 //                                                     from the transcript — names, spelling variants, KNOWN conflicts
 //                                                     already spotted. Always include a stale-sweep section.
+//   factSource  "screenshot"                       — optional; the `source` value custom facts carry (default "patch_notes")
 //   questions   ["what are the new arena tiers", ...] — member questions the retrieval lens walks (optional)
 //   repo        optional; defaults to the archero2 bot directory
 //
@@ -46,6 +47,7 @@ const IMAGES = args.images
 const DATE = args.date
 const TODAY = args.today
 const VERSION = args.version
+const FACT_SOURCE = args.factSource || 'patch_notes'
 const SCRATCH = args.scratch
 const SECTIONS = args.sections
 const QUESTIONS = args.questions || [
@@ -56,7 +58,7 @@ if (!Array.isArray(IMAGES) || !IMAGES.length) throw new Error('args.images must 
 if (!Array.isArray(SECTIONS) || !SECTIONS.length) throw new Error('args.sections must be a non-empty array of {key, title, entities}')
 const hitList = (e) => (Array.isArray(e) ? e.join('; ') : String(e))
 // The custom_facts shape every writer is held to. game_version is guessed by nobody: it comes from args.version or the source.
-const CF_SHAPE = `{text, added_by:'XYIAN', added_at:'${DATE}', source:'patch_notes', game_version:${VERSION ? `'${VERSION}'` : "'<the version the source names, e.g. 1.1.9>' (omit the field if the source names none)"}, announced:'${DATE}'}`
+const CF_SHAPE = `{text, added_by:'XYIAN', added_at:'${DATE}', source:'${FACT_SOURCE}', game_version:${VERSION ? `'${VERSION}'` : "'<the version the source names, e.g. 1.1.9>' (omit the field if the source names none)"}, announced:'${DATE}'}`
 
 const PRE = `CONTEXT. You are working in the archero2 Discord bot repo at ${REPO} (CommonJS Node, run scripts as \`node scripts/<name>.js\`). This is NOT the tempest TypeScript repo: if an injected CLAUDE.md talks about tsx, TypeScript, Wittle Defender or src/features, ignore it. The procedure is ${REPO}/docs/KNOWLEDGE-DROP-PLAYBOOK.md; each task below names the sections you need. Hard rules from the repo's CLAUDE.md apply.
 The knowledge base is ${REPO}/data/knowledge.json: a flat JSON object of top-level categories; \`custom_facts\` is an ARRAY of {text, added_by, added_at, source?, game_version?, announced?} (repaired entries also carry repair_reason/repaired_at, written by the merge). The bot renders it into a gpt-4o-mini prompt: object KEYS are rendered verbatim as retrieval labels; entries with a .text field render that text; other objects are JSON-serialised. gpt-4o-mini follows the most directive sentence it finds and does NOT reconcile two facts that disagree — it picks one — so the corpus must be contradiction-free and unambiguous.

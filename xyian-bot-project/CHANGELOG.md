@@ -4,6 +4,24 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.36.3] - 2026-09-30
+
+### Four heroes, eight runes, and how Twinborn actually works
+
+Arch AI just learned a lot from 37 in-game screenshots and the guild owner's own notes:
+
+- 🦸 **Morty, Rick and Artemis** are full hero entries now — every skill level and every star-up card. **Wukong's** star ladder is confirmed too. All four are Legendary.
+- ⭐ **Heroes go to 8 stars**, with skill level 4 on the 8th. The bot used to say 7.
+- 💎 **Etched runes:** full ladders for **Sprite's Awe**, **Elemental Crit** and **Echo Scythe**, and **Arrow of Echoes** re-confirmed line for line. Ask about "AoE" and it knows you mean Arrow of Echoes.
+- 🪽 **Healing Sprite** corrected to what the game prints today: all Sprites +25% ATK at Legendary and +25% attack speed at Mythic, with Healing Sprites getting the same again.
+- ♊ **Twinborn runes:** the first full Twinborn ladder (**Twin Meteors**), how to spot one (a dot on each side of the icon), and what a merge costs — **40 Twinborn Cores** for a left or right rune, **80** for a Blessing rune, **160** for an Etched rune.
+- 🛡️ **Blessing runes:** ladders for **Guardian** and **Lucky Shadow**.
+- 🗺️ **The Runes screen:** Enhancement runes on the left (octagon), Ability runes on the right (star), Blessing in the centre (circle), Etched along the bottom (diamond).
+- 🎣 **How to get Etched runes:** shops and events hand them out at Rare or Epic; the best free route is saving gems for lures in the monthly **Angler's Bounty** fishing event.
+- ✨ Real enchantment examples, and which colour is best (red).
+
+Where a screen names something without explaining it — a Spinning Slash, an Elemental Sprite, how Artemis is obtained — the bot says so and points at `!suggest` instead of guessing.
+
 ## [3.36.2] - 2026-09-30
 
 ### The knowledge-drop procedure is written down

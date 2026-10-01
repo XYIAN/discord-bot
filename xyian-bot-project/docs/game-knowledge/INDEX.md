@@ -27,6 +27,7 @@ _Contributed 2026-08-04 by stacey-fails. Describes an earlier game update — a 
 Verbatim transcripts of in-game Update Log notices, folded into the knowledge
 base through a fragment under `data/knowledge-fragments/`:
 
+- [updates/2026-09-30-characters-runes.md](updates/2026-09-30-characters-runes.md) — 37 hero and rune screens plus the guild owner's statements (Morty, Rick, Artemis, Wukong; Etched, Ability, Twinborn and Blessing ladders; Runes screen layout; enchantments; how Etched runes are obtained) → `update-2026-09-30-characters-runes.json`
 - [updates/2026-09-17-version-1.1.9.md](updates/2026-09-17-version-1.1.9.md) — Version 1.1.9 (Starmoon Vow, 8-tier Arena rework, Guild Raid, Dragoon rebalance, chapters 201-210) → `update-2026-09-17-version-1-1-9.json`
 
 ## Pending sections

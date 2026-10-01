@@ -2,7 +2,7 @@
 
 // Answer-level check: what does the bot SAY, not what does it retrieve.
 //
-//   node scripts/answer-check.js        (needs OPENAI_API_KEY; ~$0.40 a run)
+//   node scripts/answer-check.js        (needs OPENAI_API_KEY; ~$0.65 a run, ~25 min)
 //
 // Deliberately NOT under test/ — test/run-all.js discovers every
 // test/*.test.js, and `npm test` must stay free and offline. Run this by hand
@@ -48,9 +48,11 @@ const KB = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'knowledge.json'),
 const systemPrompt = prompts.buildTextPrompt(renderKnowledge(KB, PRODUCTION_OPTIONS));
 
 const MAX_RETRIES = 4;
-// One prompt is ~55k tokens (since the Version 1.1.9 drop) against a 200k/min
-// org ceiling, so one call every 18s stays clear of it.
-const PACING_MS = Number(process.env.ANSWER_CHECK_PACING_MS || 18000);
+// One prompt is ~66k tokens (since the 30 September 2026 hero and rune drop)
+// against a 200k/min org ceiling, so one call every 22s stays clear of it.
+// Re-derive this whenever the production render grows: tokens ≈ chars / 4,
+// and pacing must keep (60 / seconds) × tokens under the ceiling.
+const PACING_MS = Number(process.env.ANSWER_CHECK_PACING_MS || 22000);
 
 const CASES = [
     { q: 'What power do I need to join XYIAN OFFICIAL?',        say: [/8 ?m/i],            notSay: [/\b(?:4|6) ?m\+? (?:power )?(?:required|minimum|to join)/i] },
@@ -86,7 +88,9 @@ const CASES = [
     { q: 'Who is Mr. Meeseeks?',                                say: [/mystling/i, /meeseeks directive/i], notSay: [] },
     { q: 'Which characters can only be obtained during events?', say: [/rick/i, /morty/i], notSay: [] },
     { q: 'When does the Rick and Morty event end?',             say: [/(september|sept)\s*11|11\s*(september|sept)/i], notSay: [] },
-    { q: 'Is Heroic mode the same as Hard mode?',               say: [/same/i], notSay: [/\b(different|not the same|separate)\b/i] },
+    // 'two different LABELS for the same track' is a right answer — forbid only the
+    // shape of a wrong one.
+    { q: 'Is Heroic mode the same as Hard mode?',               say: [/same/i], notSay: [/\bnot the same\b|\b(?:are|is) (?:two )?(?:different|separate|distinct) (?:modes|tracks|campaigns|things)\b/i] },
     { q: 'Should I wait for my guild to bargain before I buy the daily item?', say: [/no advantage|no need to wait|refund|difference is return|get.*back|mail/i], notSay: [] },
     // The count may be worded "5 per day", "5 times a day" or "up to five times
     // a day" — all correct. An assertion that only accepts one phrasing tests
@@ -125,7 +129,7 @@ const CASES = [
     { q: 'What skins can I get from Starfall Disc?',             say: [/moonwake shimmer/i, /silkveil harvest/i], notSay: [] },
     { q: 'When does the next Guild Expedition season start and what is the new tier?', say: [/(?:october|oct\.?)\s*5|5(?:th)?\s*(?:of\s*)?(?:october|oct)|10\/0?5/i, /starbound eternity/i], notSay: [] },
     { q: 'What is the new All-Star Cup season theme?',           say: [/plant build/i, /(?:october|oct\.?)\s*5|5(?:th)?\s*(?:of\s*)?(?:october|oct)|10\/0?5/i], notSay: [] },
-    { q: 'Did the Dragoon set get nerfed?',                      say: [/not (?:say|state|document|specif)|unclear|(?:doesn't|does not) (?:say|state|specify)|neither|old (?:version|and new)/i], notSay: [/^\s*yes\b.{0,40}nerf/i, /\bwas nerfed\b/i, /\b(?:is|was) (?:a )?(?:buff|nerf)\b/i] },
+    { q: 'Did the Dragoon set get nerfed?',                      say: [/not (?:say|state|document|specif)|unclear|(?:doesn't|does not) (?:say|state|specify)|neither|old (?:version|and new)/i], notSay: [/^\s*yes\b.{0,40}nerf/i, /(?:^|[.!?]\s+)(?:the )?dragoon set (?:was|got|has been) nerfed\b/i] },
     { q: 'Can I switch the Dragoon set back to the old version?', say: [/\byes\b|can (?:be )?switch|switch(?:ed)? (?:back|between|manually)/i], notSay: [/^\s*no\b/i, /\bcannot switch|can't switch|not possible to switch/i] },
     { q: 'When is Rumble Ladder open?',                          say: [/1:00/, /10:00/, /utc/i], notSay: [/19:00|13:00|7:00-10:00/] },
     { q: 'What happens if I score own goals in Football Rumble?', say: [/cred score/i, /\b(?:3|three)\b/], notSay: [] },
@@ -134,6 +138,38 @@ const CASES = [
     { q: 'What version is the game on?',                         say: [/1\.1\.9/], notSay: [/(?:is|on|running) (?:version )?1\.1\.[78]\b/i] },
     // Negative control: named in the notice, not explained. Must decline, not invent.
     { q: 'What is Football Rumble?',                             say: [/not documented|doesn't (?:describe|say|explain)|does not (?:describe|say|explain)|!suggest|rumble ladder/i], notSay: [] },
+    // Hero and rune screens captured 30 September 2026 (37 screenshots plus the
+    // guild owner's statements). notSay holds only the AFFIRMATIVE wrong shape:
+    // a right answer may mention the old 7-star rule or the old 50% Healing
+    // Sprite value while ruling it out.
+    { q: 'What does Morty do?',                                  say: [/aw geez adventure/i, /drone cannon/i], notSay: [] },
+    { q: "What is Rick's skill and what does it do at 8 stars?", say: [/garage inventions/i, /wired|phoenix protocol/i], notSay: [] },
+    { q: 'What rarity is Artemis and what is her skill?',        say: [/legendary/i, /silvermoon hunt/i], notSay: [/\bis an? (?:rare|epic) (?:hero|character)\b/i] },
+    { q: 'How many stars can a hero have and when do I get skill level 4?', say: [/\b8\b|eight/i], notSay: [/(?:level|lv\.?) ?4 (?:at|unlocks at|is unlocked at|comes at|is at) (?:star )?(?:7|seven)\b/i, /max(?:imum)? (?:of )?(?:7|seven) stars/i] },
+    { q: 'Does Wukong have a star-up buff?',                     say: [/crit dmg/i, /20%/], notSay: [/\bno star-up (?:buff|\[all\])|does not have a star-up/i] },
+    { q: "What does Sprite's Awe do at Mythic?",                 say: [/elemental sprite/i, /30%/], notSay: [] },
+    { q: 'What does the Echo Scythe rune do?',                   say: [/bounce/i, /scythe/i], notSay: [] },
+    { q: 'What rune do players call AoE?',                       say: [/arrow of echoes/i], notSay: [] },
+    // Healing Sprite was corrected from the screen on 30 September 2026. Tier
+    // questions on this rune are NOT asserted: asked about Mythic the model
+    // answers with the Legendary line about two times in three under every
+    // wording tried. What is asserted is that the superseded numbers are gone.
+    { q: 'How much does Healing Sprite heal?',                   say: [/small amount/i], notSay: [/\b1% (?:of )?max hp\b/i, /0\.5x/i] },
+    { q: 'What does Melee Sprite do at Mythic?',                 say: [/50%/], notSay: [/^\s*(?:melee sprite'?s? mythic (?:effect )?is )?not documented/i] },
+    { q: 'How do I tell if a rune is Twinborn?',                 say: [/dot|gem/i], notSay: [] },
+    { q: 'How many Twinborn Cores does it cost to twinborn an etched rune?', say: [/160/], notSay: [] },
+    { q: 'Can Echo Scythe be twinborn with Arrow of Echoes?',    say: [/\byes\b|can be|pairing|recorded/i], notSay: [/^\s*no\b/i] },
+    { q: 'What does the Twin Meteors rune do?',                  say: [/shockwave/i, /giant meteor|star of time/i], notSay: [] },
+    { q: 'Where are ability runes on the rune screen and what shape are they?', say: [/right/i, /star/i], notSay: [/ability runes?[^.]{0,40}\b(?:on|down) the left\b/i] },
+    { q: 'What is the lowest rarity etched rune I can receive?', say: [/\brare\b|blue/i], notSay: [] },
+    { q: 'How do I get a Legendary etched rune?',                say: [/bundle|real[- ]money|\$ ?100/i], notSay: [] },
+    { q: 'How much does an enchant roll cost?',                  say: [/1,?000/, /enchantium/i], notSay: [] },
+    { q: "Is the monthly fishing event called Angler's Bounty?", say: [/angler'?s bounty/i], notSay: [/\b(?:is|it is|it's) not (?:stated|documented|confirmed|known)\b/i] },
+    { q: 'What does the Guardian blessing rune do?',             say: [/dmg taken|damage taken/i, /5%/], notSay: [] },
+    { q: 'What does Lucky Shadow give at Mythic?',               say: [/15%/, /10%/], notSay: [] },
+    // Negative controls: named on the screens, never explained. Must decline.
+    { q: 'What is a Spinning Slash?',                            say: [/not documented|doesn't (?:explain|say)|does not (?:explain|say)|!suggest|no (?:further )?(?:detail|information|explanation)/i], notSay: [] },
+    { q: 'How do I obtain Artemis?',                             say: [/not documented|!suggest|doesn't (?:show|say)|does not (?:show|say)/i], notSay: [/\b(?:obtained|available) (?:from|through|via|in) (?:the )?(?:shop|gacha|summon|starfall disc|chest)/i] },
     { q: 'Can I unequip a whole gear preset at once?',           say: [/unequip all|one tap|clear/i], notSay: [] },
     { q: 'What is the Solitary Trial?',                          say: [/7-day|seven-day|task|season launch/i], notSay: [] },
     { q: 'What does the Guild Hall screen show?',               say: [/upgrad|new ui|2026-08-23|predates/i], notSay: [] },
