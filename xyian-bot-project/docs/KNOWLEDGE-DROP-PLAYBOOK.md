@@ -550,6 +550,35 @@ batches, v3.36.3):
      under every wording — proven by a Mythic line with no "ATK" in it still
      being answered "ATK". Stop there: record the limit in `_meta`, assert
      something the model gets right, and tell Kyle.
+  6. *An instruction in the wrong person — and why we did NOT fix it.*
+     15 October 2026, found by the live test in #arch-ai. The entry
+     `game_modes.airship_trade.trading_items_with_another_player` ends with
+     "If a member asks whether they can trade an item to a friend or
+     guildmate, say that …, and point at !suggest", and the bot answered a
+     member with the right facts PLUS "if a member asks about trading items,
+     it is best to clarify…". Write what is TRUE, not what to SAY.
+     Three rewrites were measured with `scripts/ask.js` and every one was
+     worse somewhere else, so the blemish SHIPPED and the entry still reads
+     that way:
+     - ending with the usual "— say so and point at !suggest" fired the
+       bot's empty-memory template; one reply in three then carried NO
+       information, and two invented "the game primarily focuses on
+       individual progression";
+     - opening "this knowledge base records no way to …" — a claim about the
+       CORPUS being empty rather than about the game — measurably primed that
+       template on UNRELATED questions: "Who is Mr. Meeseeks?" answered
+       correctly 4/4 on the shipped text and 1/3 with that wording, on a
+       prompt 49 characters longer;
+     - leading with the one documented exception instead still left Meeseeks
+       at 2/3 and made every trade answer open with the empty template.
+     The lesson is not a wording rule. At ~70k tokens the whole knowledge
+     base is in every prompt with no retrieval stage, and single-fact recall
+     is already probabilistic: a few dozen characters anywhere can move an
+     answer on the other side of the corpus. Before rewording a working
+     entry, sample the question AND an unrelated control question with
+     `scripts/ask.js`, both before and after. If the fix is cosmetic and the
+     control moves, keep the blemish. Prompt size is the real defect here —
+     see the prompt-budget bullet in Step 3.
   And two regexes failed on CORRECT answers ("two different labels for the same
   track", "cannot say it was nerfed") — fix the regex, never the entry.
 - **Answer-check pacing scales with the prompt.** tokens ≈ render chars ÷ 4;

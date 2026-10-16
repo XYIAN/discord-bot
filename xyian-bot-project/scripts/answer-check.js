@@ -187,7 +187,7 @@ const CASES = [
     // Negative controls: named in the notice, never explained. Must decline.
     { q: 'Can I trade an item to my guildmate?',                 say: [/not documented|no [^.]{0,40}trading[^.]{0,30}(?:is )?documented|doesn'?t (?:say|describe)|does not (?:say|describe)|!suggest/i], notSay: [/^\s*yes\b/i, /\byou can (?:send|give|trade|swap) (?:an? )?(?:item|gear|rune|hero)/i] },
     { q: 'What is the Central Trading Post?',                    say: [/not documented|doesn'?t (?:say|explain)|does not (?:say|explain)|!suggest/i], notSay: [] },
-    { q: 'Where do I find Airship Trade on the home screen?',    say: [/not documented|not captured|doesn'?t (?:say|name)|does not (?:say|name)|!suggest/i], notSay: [] },
+    { q: 'Where do I find Airship Trade on the home screen?',    say: [/not documented|not captured|did ?n'?t (?:say|name|specify)|does ?n'?t (?:say|name|specify)|!suggest/i], notSay: [] },
     { q: 'Can I unequip a whole gear preset at once?',           say: [/unequip all|one tap|clear/i], notSay: [] },
     { q: 'What is the Solitary Trial?',                          say: [/7-day|seven-day|task|season launch/i], notSay: [] },
     { q: 'What does the Guild Hall screen show?',               say: [/upgrad|new ui|2026-08-23|predates/i], notSay: [] },

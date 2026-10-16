@@ -4,6 +4,18 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.36.5] - 2026-10-15
+
+### What the live test found, and what we chose not to change
+
+No knowledge changed in this release. Asking the bot the Airship Trade questions in #arch-ai turned up one blemish and one bigger thing worth writing down.
+
+Asked whether you can trade an item to a guildmate, the bot gives the right answer and then talks to you as though you were running it: *"if a member asks about trading items, it's best to clarify…"*. That is the entry's fault — it tells the bot what to **say** instead of what is **true**.
+
+Three rewrites were tried and measured against the real model. Every one fixed the voice and broke something else: one made the bot answer with nothing at all once in three tries, another knocked an unrelated question — "who is Mr. Meeseeks?" — from right four times out of four down to once in three. So the blemish stays, and the reasoning is written into the playbook instead.
+
+The real finding is underneath it. The whole knowledge base now goes into every single question as one ~70,000-token prompt, with nothing selecting the relevant parts first. At that size recall is already a coin-weighting rather than a lookup, and a few dozen characters anywhere can change an answer on the other side of the corpus. That is worth fixing properly, and it is bigger than any one entry.
+
 ## [3.36.4] - 2026-10-15
 
 ### Airship Trade — the bot is ready for the new mode
