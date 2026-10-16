@@ -4,6 +4,22 @@ All notable changes to the Arch 2 Addicts Discord Bot project will be documented
 
 **Versioning:** Major = rebuilds, Minor = new features, Patch = fact syncs / bug fixes / docs. Every fact sync from the live bot into the repo gets a patch bump and its own entry here.
 
+## [3.36.4] - 2026-10-15
+
+### Airship Trade — the bot is ready for the new mode
+
+Arch AI now knows the **Airship Trade** update, from the in-game notice captured 15 October 2026:
+
+- 🚢 **Airship Trade opens 19 October (UTC)** with five parts: **Guild Trade** (compete for cabin slots and escort cargo to the Central Trading Post for Gear, Characters, Runes and Mystlings), **Personal Trade** (send out your Personal Airship and refresh cargo quality), **Trade Raids** (PvP battles against other players' airships — beat the guards and loot the cargo), **Escort & Wanted** (set a defense lineup, and put a bounty on whoever raids you), and **Trade World** (the new trade map, live airship routes, shared raid targets).
+- ♊ **Twinborn runes can now be dismantled** even while equipped or in a preset. Locked runes still have to be unlocked first.
+- 🦅 **Griffin Amulet** reflect damage no longer triggers twice, and its counterattack is capped at your ATK × 10,000 per hit. Every entry recommending the amulet now says so.
+- 🌴 **Shackled Jungle stage 1600** got easier. That one stage only — the stage list is unchanged.
+- 🖼️ The Guild Expedition **S5** avatar frame was improved, and chat history loads better.
+
+Two things the bot will deliberately not guess at. **It will not call this update a version** — the notice prints no version number, and the old 1.1.9 banner sitting in the carousel belongs to September's notice. And **it will not tell you that you can trade items to another player**: the notice describes escorting cargo and raiding airships, never handing an item to a friend, so that question gets an honest "not documented" and a nudge to `!suggest`.
+
+Where the notice names something without explaining it — cargo quality, cabin slots, the Central Trading Post, guards, bounties, trade resources, and where the mode is even entered from — the bot says so rather than inventing an answer. Ask it about a "raid" and it will check whether you mean a Trade Raid, Guild Raid, Monster Invasion or Quick Raid.
+
 ## [3.36.3] - 2026-09-30
 
 ### Four heroes, eight runes, and how Twinborn actually works

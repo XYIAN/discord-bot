@@ -37,8 +37,8 @@ better structured — worth copying *decisions* from, not its architecture.
 - `node --check xyian-bot-project/bot.js` — bot.js is a large single file; check
   syntax before committing.
 - `node xyian-bot-project/scripts/answer-check.js` — asks the REAL model the real
-  questions and asserts on the ANSWER. Needs `OPENAI_API_KEY`, ~$0.65 and ~25
-  minutes for 68 cases (it paces itself under the 200k/min TPM ceiling) — run
+  questions and asserts on the ANSWER. Needs `OPENAI_API_KEY`, ~$0.80 and ~30
+  minutes for 75 cases (it paces itself under the 200k/min TPM ceiling) — run
   it in the background and read the log. **Run it before
   shipping any change to `data/knowledge.json` or to a prompt.** Every other
   test checks what was RENDERED into the prompt; only this checks what the bot

@@ -59,7 +59,7 @@ Both bots have been bitten by this.
   had the same exposure until v3.32.0; `scripts/answer-check.js` now closes it.
 
   ```bash
-  node xyian-bot-project/scripts/answer-check.js   # needs OPENAI_API_KEY, ~$0.05
+  node xyian-bot-project/scripts/answer-check.js   # OPENAI_API_KEY, ~$0.80, ~30 min — run it in the background
   ```
 
   Run it by hand before shipping a change to `data/knowledge.json` or to the

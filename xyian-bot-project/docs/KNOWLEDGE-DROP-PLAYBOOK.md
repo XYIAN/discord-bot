@@ -553,8 +553,8 @@ batches, v3.36.3):
   And two regexes failed on CORRECT answers ("two different labels for the same
   track", "cannot say it was nerfed") — fix the regex, never the entry.
 - **Answer-check pacing scales with the prompt.** tokens ≈ render chars ÷ 4;
-  keep (60 ÷ pacing seconds) × tokens under the 200k/min ceiling. At 262k
-  chars that is 22 s a call, ~25 min and ~$0.65 for 68 cases.
+  keep (60 ÷ pacing seconds) × tokens under the 200k/min ceiling. At 278k
+  chars that is 24 s a call, ~30 min and ~$0.80 for 75 cases.
 
 Steps 5–8 stay in the main loop: they are mechanical, sequential, and the paid
 check should run exactly once. Timings from v3.36.1: ~55 min workflow, ~5 min

@@ -2,7 +2,7 @@
 
 // Answer-level check: what does the bot SAY, not what does it retrieve.
 //
-//   node scripts/answer-check.js        (needs OPENAI_API_KEY; ~$0.65 a run, ~25 min)
+//   node scripts/answer-check.js        (needs OPENAI_API_KEY; ~$0.80 a run, ~30 min)
 //
 // Deliberately NOT under test/ — test/run-all.js discovers every
 // test/*.test.js, and `npm test` must stay free and offline. Run this by hand
@@ -48,11 +48,11 @@ const KB = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'knowledge.json'),
 const systemPrompt = prompts.buildTextPrompt(renderKnowledge(KB, PRODUCTION_OPTIONS));
 
 const MAX_RETRIES = 4;
-// One prompt is ~66k tokens (since the 30 September 2026 hero and rune drop)
-// against a 200k/min org ceiling, so one call every 22s stays clear of it.
+// One prompt is ~70k tokens (since the 15 October 2026 Airship Trade drop)
+// against a 200k/min org ceiling, so one call every 24s stays clear of it.
 // Re-derive this whenever the production render grows: tokens ≈ chars / 4,
 // and pacing must keep (60 / seconds) × tokens under the ceiling.
-const PACING_MS = Number(process.env.ANSWER_CHECK_PACING_MS || 22000);
+const PACING_MS = Number(process.env.ANSWER_CHECK_PACING_MS || 24000);
 
 const CASES = [
     { q: 'What power do I need to join XYIAN OFFICIAL?',        say: [/8 ?m/i],            notSay: [/\b(?:4|6) ?m\+? (?:power )?(?:required|minimum|to join)/i] },
@@ -117,7 +117,9 @@ const CASES = [
     // Re-pinned for Version 1.1.9 (2026-09-17): 201-210 and "past Chapter 100" are
     // now the newest; 191-200 / Chapter 130 are history and may be mentioned as such.
     { q: 'What new campaign stages were added?',                 say: [/201|210/], notSay: [] },
-    { q: 'After which chapter was campaign difficulty reduced in the newest update?', say: [/\b100\b/], notSay: [] },
+    // Was 'in the newest update'; that rots — the newest update (15 October 2026)
+    // reduced a Shackled Jungle stage, not a campaign chapter. Pinned to the version.
+    { q: 'After which chapter was campaign difficulty reduced in Version 1.1.9?', say: [/\b100\b/], notSay: [] },
     // Version 1.1.9 in-game notice (2026-09-17). The notSay shapes are the
     // AFFIRMATIVE wrong answers — a right answer legitimately mentions the old
     // 6-tier Arena, Supreme II, or Peak Arena while ruling them out.
@@ -170,6 +172,22 @@ const CASES = [
     // Negative controls: named on the screens, never explained. Must decline.
     { q: 'What is a Spinning Slash?',                            say: [/not documented|doesn't (?:explain|say)|does not (?:explain|say)|!suggest|no (?:further )?(?:detail|information|explanation)/i], notSay: [] },
     { q: 'How do I obtain Artemis?',                             say: [/not documented|!suggest|doesn't (?:show|say)|does not (?:show|say)/i], notSay: [/\b(?:obtained|available) (?:from|through|via|in) (?:the )?(?:shop|gacha|summon|starfall disc|chest)/i] },
+    // Airship Trade notice captured 15 October 2026 (opens 19 October 2026).
+    // notSay holds only the AFFIRMATIVE shape of a WRONG answer: a right answer
+    // legitimately mentions Guild Raid or the Guild Merchant while ruling them out.
+    { q: 'What is Airship Trade?',                               say: [/cargo|airship/i, /guild trade|personal trade|trade raid/i], notSay: [/\b(?:airship trade|this mode) (?:is|was) (?:part of |introduced in )?version 1\.1\.9\b/i] },
+    { q: 'When does Airship Trade open?',                        say: [/october 19|19 october|10\/19/i], notSay: [] },
+    { q: 'What do I get from Guild Trade?',                      say: [/gear/i, /rune/i, /mystling/i], notSay: [] },
+    { q: 'What is Personal Trade?',                              say: [/personal airship/i, /cargo quality|quality/i], notSay: [] },
+    { q: 'What is a Trade Raid?',                                say: [/pvp|battle/i, /cargo|airship/i], notSay: [/trade raids? (?:is|are) (?:the same as|another name for|just) (?:a )?guild raid/i] },
+    { q: 'How do I protect my cargo?',                           say: [/defense lineup/i], notSay: [] },
+    { q: 'What is the Trade World?',                             say: [/trade map|map/i], notSay: [] },
+    { q: 'Can I dismantle a Twinborn rune?',                     say: [/\byes\b|can (?:now )?be dismantled|can dismantle/i], notSay: [/^\s*no\b/i, /\b(?:cannot|can't) (?:be )?dismantle/i] },
+    { q: 'What happened to the Griffin Amulet?',                 say: [/cap|10,?000/i], notSay: [] },
+    // Negative controls: named in the notice, never explained. Must decline.
+    { q: 'Can I trade an item to my guildmate?',                 say: [/not documented|no [^.]{0,40}trading[^.]{0,30}(?:is )?documented|doesn'?t (?:say|describe)|does not (?:say|describe)|!suggest/i], notSay: [/^\s*yes\b/i, /\byou can (?:send|give|trade|swap) (?:an? )?(?:item|gear|rune|hero)/i] },
+    { q: 'What is the Central Trading Post?',                    say: [/not documented|doesn'?t (?:say|explain)|does not (?:say|explain)|!suggest/i], notSay: [] },
+    { q: 'Where do I find Airship Trade on the home screen?',    say: [/not documented|not captured|doesn'?t (?:say|name)|does not (?:say|name)|!suggest/i], notSay: [] },
     { q: 'Can I unequip a whole gear preset at once?',           say: [/unequip all|one tap|clear/i], notSay: [] },
     { q: 'What is the Solitary Trial?',                          say: [/7-day|seven-day|task|season launch/i], notSay: [] },
     { q: 'What does the Guild Hall screen show?',               say: [/upgrad|new ui|2026-08-23|predates/i], notSay: [] },
